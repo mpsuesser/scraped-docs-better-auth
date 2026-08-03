@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/spotify
 title: "Spotify"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Spotify
@@ -12,63 +12,53 @@ Spotify provider setup and usage.
 
 
 
-<Steps>
-  <Step>
-    Get your Spotify Credentials [#get-your-spotify-credentials]
 
-    To use Spotify sign in, you need a client ID and client secret. You can get them from the [Spotify Developer Portal](https://developer.spotify.com/dashboard/applications).
+### Get your Spotify Credentials
+To use Spotify sign in, you need a client ID and client secret. You can get them from the [Spotify Developer Portal](https://developer.spotify.com/dashboard/applications).
 
-    **Important:** Spotify no longer supports `localhost` as a redirect URI. You must use `127.0.0.1` for local development.
+**Important:** Spotify no longer supports `localhost` as a redirect URI. You must use `127.0.0.1` for local development.
 
-    Make sure to set the redirect URL to `http://127.0.0.1:3000/api/auth/callback/spotify` in your Spotify Dashboard.
+Make sure to set the redirect URL to `http://127.0.0.1:3000/api/auth/callback/spotify` in your Spotify Dashboard.
 
-    Consequently, ensure you access your local app via `http://127.0.0.1:3000` (not `localhost:3000`) so the browser URL matches the redirect URI exactly.
+Consequently, ensure you access your local app via `http://127.0.0.1:3000` (not `localhost:3000`) so the browser URL matches the redirect URI exactly.
 
-    For production, you should set it to the URL of your application (must be HTTPS). If you change the base path of the auth routes, you should update the redirect URL accordingly.
-  </Step>
+For production, you should set it to the URL of your application (must be HTTPS). If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-  <Step>
-    Configure the provider [#configure-the-provider]
+### Configure the provider
+To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
+You must also ensure your environment variables use the correct loopback IP to match the redirect URI. Update your `.env` file:
 
-    You must also ensure your environment variables use the correct loopback IP to match the redirect URI. Update your `.env` file:
+```bash title=".env"
+BETTER_AUTH_URL=http://127.0.0.1:3000
+```
 
-    ```bash title=".env"
-    BETTER_AUTH_URL=http://127.0.0.1:3000
-    ```
+```ts title="auth.ts"  
+import { betterAuth } from "better-auth"
 
-    ```ts title="auth.ts"  
-    import { betterAuth } from "better-auth"
+export const auth = betterAuth({
+    
+    socialProviders: {
+        spotify: { // [!code highlight]
+            clientId: process.env.SPOTIFY_CLIENT_ID as string, // [!code highlight]
+            clientSecret: process.env.SPOTIFY_CLIENT_SECRET as string, // [!code highlight]
+        }, // [!code highlight]
+    },
+})
+```
 
-    export const auth = betterAuth({
-        
-        socialProviders: {
-            spotify: { // [!code highlight]
-                clientId: process.env.SPOTIFY_CLIENT_ID as string, // [!code highlight]
-                clientSecret: process.env.SPOTIFY_CLIENT_SECRET as string, // [!code highlight]
-            }, // [!code highlight]
-        },
+### Sign In with Spotify
+To sign in with Spotify, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
+
+* `provider`: The provider to use. It should be set to `spotify`.
+
+```ts title="auth-client.ts"
+import { createAuthClient } from "better-auth/client"
+const authClient =  createAuthClient()
+
+const signIn = async () => {
+    const data = await authClient.signIn.social({
+        provider: "spotify"
     })
-    ```
-  </Step>
-
-  <Step>
-    Sign In with Spotify [#sign-in-with-spotify]
-
-    To sign in with Spotify, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
-
-    * `provider`: The provider to use. It should be set to `spotify`.
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    const authClient =  createAuthClient()
-
-    const signIn = async () => {
-        const data = await authClient.signIn.social({
-            provider: "spotify"
-        })
-    }
-    ```
-  </Step>
-</Steps>
+}
+```

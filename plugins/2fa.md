@@ -2,15 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/plugins/2fa
 title: "2fa"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
-# Two-Factor Authentication (2FA)
-
 Enhance your app's security with two-factor authentication.
-
-
 
 `OTP` `TOTP` `Backup Codes` `Trusted Devices`
 
@@ -23,210 +19,99 @@ This plugin offers two main methods to do a second factor verification:
 
 **Additional features include:**
 
-* Generating backup codes for account recovery
-* Enabling/disabling 2FA
-* Managing trusted devices
+- Generating backup codes for account recovery
+- Enabling/disabling 2FA
+- Managing trusted devices
 
-Installation [#installation]
+## Installation
 
-<Steps>
-  <Step>
-    Add the plugin to your auth config [#add-the-plugin-to-your-auth-config]
+### Add the plugin to your auth config
 
-    Add the two-factor plugin to your auth configuration and specify your app name as the issuer.
+Add the two-factor plugin to your auth configuration and specify your app name as the issuer.
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
-    import { twoFactor } from "better-auth/plugins" // [!code highlight]
+```
+import { betterAuth } from "better-auth"
+import { twoFactor } from "better-auth/plugins"
 
-    export const auth = betterAuth({
-        // ... other config options
-        appName: "My App", // provide your app name. It'll be used as an issuer. // [!code highlight]
-        plugins: [
-            twoFactor() // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
+export const auth = betterAuth({
+    // ... other config options
+    appName: "My App", // provide your app name. It'll be used as an issuer.
+    plugins: [
+        twoFactor() 
+    ]
+})
+```
 
-  <Step>
-    Migrate the database [#migrate-the-database]
+### Migrate the database
 
-    Run the migration or generate the schema to add the necessary fields and tables to the database.
+Run the migration or generate the schema to add the necessary fields and tables to the database.
 
-    <Tabs items={["migrate", "generate"]}>
-      <Tab value="migrate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
+#### migrate
 
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
+#### npm
 
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
+#### generate
 
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
+```
+npx auth migrate
+```
 
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth migrate
-            ```
-          </CodeBlockTab>
+#### pnpm
 
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth migrate
-            ```
-          </CodeBlockTab>
+#### yarn
 
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth migrate
-            ```
-          </CodeBlockTab>
+#### bun
 
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth migrate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
+See the [Schema](#schema) section to add the fields manually.
 
-      <Tab value="generate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
+### Add the client plugin
 
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
+Add the client plugin and Specify where the user should be redirected if they need to verify 2nd factor
 
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
+```
+import { createAuthClient } from "better-auth/client"
+import { twoFactorClient } from "better-auth/client/plugins"
 
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
+export const authClient = createAuthClient({
+    plugins: [
+        twoFactorClient() 
+    ]
+})
+```
 
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth generate
-            ```
-          </CodeBlockTab>
+## Usage
 
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth generate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
-    </Tabs>
-
-    See the [Schema](#schema) section to add the fields manually.
-  </Step>
-
-  <Step>
-    Add the client plugin [#add-the-client-plugin]
-
-    Add the client plugin and Specify where the user should be redirected if they need to verify 2nd factor
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    import { twoFactorClient } from "better-auth/client/plugins" // [!code highlight]
-
-    export const authClient = createAuthClient({
-        plugins: [
-            twoFactorClient() // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
-</Steps>
-
-Usage [#usage]
-
-Enabling 2FA [#enabling-2fa]
+### Enabling 2FA
 
 To enable two-factor authentication, call `twoFactor.enable` with the user's password (required for credential accounts) and issuer (optional). If you enable `allowPasswordless`, the password can be omitted for users without a credential account.
 
+POST/two-factor/enable
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.twoFactor.enable({
-    password: secure-password, // optional
-    issuer: my-app-name, // optional
+    password: "secure-password",
+    issuer: "my-app-name",
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.enableTwoFactor({
-    body: {
-        password: secure-password, // optional
-        issuer: my-app-name, // optional
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
-```
+`password` string
 
-### Type Definition
+The user's password (required for credential accounts)
 
-```ts
-type enableTwoFactor = {
-      /**
-       * The user's password (required for credential accounts)
-       */
-      password?: string = "secure-password"
-      /**
-       * An optional custom issuer for the TOTP URI. Defaults to app-name defined in your auth config.
-       */
-      issuer?: string = "my-app-name"
-  
-}
-```
+`issuer` string
 
+An optional custom issuer for the TOTP URI. Defaults to app-name defined in your auth config.
 
 When 2FA is enabled:
 
-* An encrypted `secret` and `backupCodes` are generated.
-* `enable` returns `totpURI` and `backupCodes`.
+- An encrypted `secret` and `backupCodes` are generated.
+- `enable` returns `totpURI` and `backupCodes`.
 
 Note: `twoFactorEnabled` won’t be set to `true` until the user verifies their TOTP code. Learn more about verifying TOTP in the [TOTP section](#totp). You can skip verification by setting `skipVerificationOnEnable` to true in your plugin config.
 
-<Callout type="warn">
-  By default, the two-factor plugin requires a credential (password) account. To allow passwordless users (passkeys, magic links, email OTP, OAuth/social, or anonymous) to enable and manage 2FA, set `allowPasswordless: true`. This option does not change which sign-in methods are challenged for 2FA.
-</Callout>
-
-Sign In with 2FA [#sign-in-with-2fa]
+### Sign In with 2FA
 
 When a user with 2FA enabled tries to sign in via email, username, or phone number, the response object will contain `twoFactorRedirect` set to `true` and `twoFactorMethods` — an array of the 2FA methods available for the user (e.g. `["totp"]`, `["totp", "otp"]`). Use `twoFactorMethods` to decide which verification UI to show.
 
@@ -234,13 +119,9 @@ By default, 2FA sign-in enforcement applies to the credential-based sign-in endp
 
 If your app needs to require 2FA for those sign-in methods, add custom hook handling for those endpoints and redirect users into your 2FA verification flow before treating the sign-in as complete.
 
-<Callout type="warn">
-  When a 2FA-enabled user signs in via a credential endpoint, the plugin issues a 2FA challenge instead of completing the sign-in. As part of this, the pending session is discarded and `ctx.context.newSession` is reset to `null` — there is no authenticated session until the user verifies the second factor. Server-side hooks (e.g. `after` hooks on the sign-in endpoints) that read `ctx.context.newSession` must null-check it before accessing `newSession.user`, otherwise they will throw while a 2FA challenge is in flight.
-</Callout>
-
 You can handle this in the `onSuccess` callback or by providing a `onTwoFactorRedirect` callback in the plugin config.
 
-```tsx
+```
 import { authClient } from "@/lib/auth-client"
 
 await authClient.signIn.email({
@@ -260,7 +141,7 @@ await authClient.signIn.email({
 
 Using the `onTwoFactorRedirect` config:
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client";
 import { twoFactorClient } from "better-auth/client/plugins";
 
@@ -278,7 +159,7 @@ const authClient = createAuthClient({
 
 Using the `twoFactorPage` config:
 
-```ts title="sign-in.ts"
+```
 import { createAuthClient } from "better-auth/client";
 import { twoFactorClient } from "better-auth/client/plugins";
 
@@ -291,434 +172,240 @@ const authClient = createAuthClient({
 });
 ```
 
-<Callout type="warn">
-  Using the `twoFactorPage` option will cause a full page reload when redirecting users to the two-factor authentication page. If you want to avoid page reloads, consider using the `onTwoFactorRedirect` callback instead to handle the redirect programmatically within your application.
-</Callout>
-
-<Callout type="warn">
-  **With `auth.api`**
-
-  When you call `auth.api.signInEmail` on the server, and the user has 2FA enabled, it will return an object where `twoFactorRedirect` is set to `true`. This behavior isn’t inferred in TypeScript, which can be misleading. You can check using `in` instead to check if `twoFactorRedirect` is set to `true`.
-
-  `authClient.twoFactor.*` handles cookies automatically in the browser. If you continue the 2FA flow with `auth.api.*` on the server, you must pass the relevant headers so Better Auth can read the current 2FA state and set the resulting 2FA/session cookies. The generated examples below use `await headers()` for this, but in other frameworks you should pass the equivalent incoming request headers.
-
-  If you chain multiple `auth.api.*` calls in the same server flow, make sure you forward the cookies from the previous auth response into the next call.
-
-  ```ts title="sign-in.ts"
-  import { auth } from "@/lib/auth"
-
-  const { headers: responseHeaders, response } = await auth.api.signInEmail({
-  	returnHeaders: true,
-  	body: {
-  		email: "test@test.com",
-  		password: "test",
-  	},
-  });
-
-  if ("twoFactorRedirect" in response) {
-  	// response.twoFactorMethods is e.g. ["totp", "otp"]
-  	// Forward the cookies from responseHeaders into the next auth.api 2FA call.
-  	// Handle the 2FA verification in place
-  }
-  ```
-</Callout>
-
-Disabling 2FA [#disabling-2fa]
+### Disabling 2FA
 
 To disable two-factor authentication, call `twoFactor.disable` with the user's password (required for credential accounts). If you enable `allowPasswordless`, the password can be omitted for users without a credential account.
 
+POST/two-factor/disable
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.twoFactor.disable({
-    password, // optional
+    password,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.disableTwoFactor({
-    body: {
-        password, // optional
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
-```
+`password` string
 
-### Type Definition
+The user's password (required for credential accounts)
 
-```ts
-type disableTwoFactor = {
-      /**
-       * The user's password (required for credential accounts)
-       */
-      password?: string
-  
-}
-```
-
-
-TOTP [#totp]
+### TOTP
 
 TOTP (Time-Based One-Time Password) is an algorithm that generates a unique password for each login attempt using time as a counter. Every fixed interval (Better Auth defaults to 30 seconds), a new password is generated. This addresses several issues with traditional passwords: they can be forgotten, stolen, or guessed. OTPs solve some of these problems, but their delivery via SMS or email can be unreliable (or even risky, considering it opens new attack vectors).
 
 TOTP, however, generates codes offline, making it both secure and convenient. You just need an authenticator app on your phone.
 
-Getting TOTP URI [#getting-totp-uri]
+#### Getting TOTP URI
 
 After enabling 2FA, you can get the TOTP URI to display to the user. This URI is generated by the server using the `secret` and `issuer` and can be used to generate a QR code for the user to scan with their authenticator app.
 
+POST/two-factor/get-totp-uri
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.twoFactor.getTotpUri({
-    password, // optional
+    password,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.getTOTPURI({
-    body: {
-        password, // optional
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
-```
+`password` string
 
-### Type Definition
-
-```ts
-type getTOTPURI = {
-      /**
-       * The user's password (required for credential accounts)
-       */
-      password?: string
-  
-}
-```
-
+The user's password (required for credential accounts)
 
 **Example: Using React**
 
 Once you have the TOTP URI, you can use it to generate a QR code for the user to scan with their authenticator app.
 
-```tsx
+```
 import { authClient } from "@/lib/auth-client"
 import QRCode from "react-qr-code";
 
 export default function UserCard({ password }: { password: string }){
     const { data: session } = authClient.useSession();
-	const { data: qr } = useQuery({
-		queryKey: ["two-factor-qr"],
-		queryFn: async () => {
-			const res = await authClient.twoFactor.getTotpUri({ password });
-			return res.data;
-		},
-		enabled: !!session?.user.twoFactorEnabled,
-	});
+    const { data: qr } = useQuery({
+        queryKey: ["two-factor-qr"],
+        queryFn: async () => {
+            const res = await authClient.twoFactor.getTotpUri({ password });
+            return res.data;
+        },
+        enabled: !!session?.user.twoFactorEnabled,
+    });
     return (
         <QRCode value={qr?.totpURI || ""} />
    )
 }
 ```
 
-<Callout>
-  By default the issuer for TOTP is set to the app name provided in the auth config or if not provided it will be set to `Better Auth`. You can override this by passing `issuer` to the plugin config.
-</Callout>
-
-Verifying TOTP [#verifying-totp]
+#### Verifying TOTP
 
 After the user has entered their 2FA code, you can verify it using `twoFactor.verifyTotp` method. `Better Auth` follows standard practice by accepting TOTP codes from one period before and one after the current code, ensuring users can authenticate even with minor time delays on their end.
 
+POST/two-factor/verify-totp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.twoFactor.verifyTotp({
-    code: 012345,
-    trustDevice, // optional
+    code: "012345", // required
+    trustDevice: true,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.verifyTOTP({
-    body: {
-        code: 012345,
-        trustDevice, // optional
-    }
-});
-```
+`code` stringrequired
 
-### Type Definition
+The otp code to verify.
 
-```ts
-type verifyTOTP = {
-      /**
-       * The otp code to verify. 
-       */
-      code: string = "012345"
-      /**
-       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. 
-       */
-      trustDevice?: boolean = true
-  
-}
-```
+`trustDevice` boolean
 
+If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
 
-OTP [#otp]
+### OTP
 
 OTP (One-Time Password) is similar to TOTP but a random code is generated and sent to the user's email or phone.
 
 Before using OTP to verify the second factor, you need to configure `sendOTP` in your Better Auth instance. This function is responsible for sending the OTP to the user's email, phone, or any other method supported by your application.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { twoFactor } from "better-auth/plugins"
 
 export const auth = betterAuth({
     plugins: [
         twoFactor({
-          	otpOptions: {
-				async sendOTP({ user, otp }, ctx) {
+              otpOptions: {
+                async sendOTP({ user, otp }, ctx) {
                     // send otp to user
-				},
-			},
+                },
+            },
         })
     ]
 })
 ```
 
-Sending OTP [#sending-otp]
+#### Sending OTP
 
 Sending an OTP is done by calling the `authClient.twoFactor.sendOtp` function on the client or `auth.api.sendTwoFactorOTP` on the server. This function will trigger your sendOTP implementation that you provided in the Better Auth configuration.
 
+POST/two-factor/send-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.twoFactor.sendOtp({
-    trustDevice, // optional
+    trustDevice: true,
 });
-```
 
-### Server Side
-
-```ts
-const data = await auth.api.sendTwoFactorOTP({
-    body: {
-        trustDevice, // optional
-    }
-});
-```
-
-### Type Definition
-
-```ts
-type sendTwoFactorOTP = {
-      /**
-       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. 
-       */
-      trustDevice?: boolean = true
-  
+if (data) {
+    // redirect or show the user to enter the code
 }
 ```
 
+Parameters
 
-Verifying OTP [#verifying-otp]
+`trustDevice` boolean
+
+If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
+
+#### Verifying OTP
 
 After the user has entered their OTP code, you can verify it using `authClient.twoFactor.verifyOtp` on the client or `auth.api.verifyTwoFactorOTP` on the server.
 
+POST/two-factor/verify-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.twoFactor.verifyOtp({
-    code: 012345,
-    trustDevice, // optional
+    code: "012345", // required
+    trustDevice: true,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.verifyTwoFactorOTP({
-    body: {
-        code: 012345,
-        trustDevice, // optional
-    }
-});
-```
+`code` stringrequired
 
-### Type Definition
+The otp code to verify.
 
-```ts
-type verifyTwoFactorOTP = {
-      /**
-       * The otp code to verify. 
-       */
-      code: string = "012345"
-      /**
-       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. 
-       */
-      trustDevice?: boolean = true
-  
-}
-```
+`trustDevice` boolean
 
+If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
 
-Backup Codes [#backup-codes]
+### Backup Codes
 
 Backup codes are generated and stored in the database. This can be used to recover access to the account if the user loses access to their phone or email.
 
-Generating Backup Codes [#generating-backup-codes]
+#### Generating Backup Codes
 
 Generate backup codes for account recovery:
 
+POST/two-factor/generate-backup-codes
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.twoFactor.generateBackupCodes({
-    password, // optional
+    password,
 });
-```
 
-### Server Side
-
-```ts
-const data = await auth.api.generateBackupCodes({
-    body: {
-        password, // optional
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
-```
-
-### Type Definition
-
-```ts
-type generateBackupCodes = {
-      /**
-       * The users password (required for credential accounts). 
-       */
-      password?: string
-  
+if (data) {
+    // Show the backup codes to the user
 }
 ```
 
+Parameters
 
-<Callout type="warn">
-  When you generate backup codes, the old backup codes will be deleted and new ones will be generated.
-</Callout>
+`password` string
 
-Using Backup Codes [#using-backup-codes]
+The users password (required for credential accounts).
+
+#### Using Backup Codes
 
 You can now allow users to provide a backup code as an account recovery method.
 
+POST/two-factor/verify-backup-code
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.twoFactor.verifyBackupCode({
-    code: 123456,
-    disableSession, // optional
-    trustDevice, // optional
+    code: "123456", // required
+    disableSession: false,
+    trustDevice: true,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.verifyBackupCode({
-    body: {
-        code: 123456,
-        disableSession, // optional
-        trustDevice, // optional
-    }
-});
-```
+`code` stringrequired
 
-### Type Definition
+A backup code to verify.
 
-```ts
-type verifyBackupCode = {
-      /**
-       * A backup code to verify. 
-       */
-      code: string = "123456"
-      /**
-       * If true, the session cookie will not be set. 
-       */
-      disableSession?: boolean = false
-      /**
-       * If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time. 
-       */
-      trustDevice?: boolean = true
-  
-}
-```
+`trustDevice` boolean
 
+If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
 
-<Callout>
-  Once a backup code is used, it will be removed from the database and can't be used again.
-</Callout>
-
-Viewing Backup Codes [#viewing-backup-codes]
+#### Viewing Backup Codes
 
 To display the backup codes to the user, you can call `viewBackupCodes` on the server. This will return the backup codes in the response. You should only do this if the user has a fresh session - a session that was just created.
 
-
-### Client Side
-
-```ts
-const { data, error } = await authClient.twoFactor.viewBackupCodes({
-    userId: user-id, // optional
-});
 ```
-
-### Server Side
-
-```ts
 const data = await auth.api.viewBackupCodes({
     body: {
-        userId: user-id, // optional
-    }
+        userId: "user-id",
+    },
 });
 ```
 
-### Type Definition
+Parameters
 
-```ts
-type viewBackupCodes = {
-      /**
-       * The user ID to view all backup codes. 
-       */
-      userId?: string | null = "user-id"
-  
-}
-```
+`userId` string | null
 
+The user ID to view all backup codes.
 
-Trusted Devices [#trusted-devices]
+### Trusted Devices
 
 You can mark a device as trusted by passing `trustDevice` to `verifyTotp` or `verifyOtp`.
 
-```ts
+```
 const verify2FA = async (code: string) => {
     const { data, error } = await authClient.twoFactor.verifyTotp({
         code,
-        trustDevice: true, // Mark this device as trusted // [!code highlight]
+        trustDevice: true, // Mark this device as trusted
     })
     if (data) {
         // 2FA verified and device trusted
@@ -728,89 +415,115 @@ const verify2FA = async (code: string) => {
 
 When `trustDevice` is set to `true`, the current device will be remembered for 30 days. During this period, the user won't be prompted for 2FA on subsequent sign-ins from this device. The trust period is refreshed each time the user signs in successfully.
 
-Issuer [#issuer]
+### Issuer
 
 By adding an `issuer` you can set your application name for the 2fa application.
 
 For example, if your user uses Google Auth, the default appName will show up as `Better Auth`. However, by using the following code, it will show up as `my-app-name`.
 
-```ts
+```
 twoFactor({
-    issuer: "my-app-name" // [!code highlight]
+    issuer: "my-app-name"
 })
 ```
 
-***
+---
 
-Schema [#schema]
+## Schema
 
 The plugin requires 1 additional field in the `user` table and 1 additional table to store the two factor authentication data.
 
 Table: `user`
 
-export const twoFactorUserTableFields = [
-	{
-		name: "twoFactorEnabled",
-		type: "boolean",
-		description: "Whether two factor authentication is enabled for the user.",
-		isOptional: true,
-	},
-];
+Table
 
-<DatabaseTable name="user" fields={twoFactorUserTableFields} />
+Field
+
+Type
+
+Key
+
+Description
+
+twoFactorEnabled?
+
+boolean
+
+\-
+
+Whether two factor authentication is enabled for the user.
 
 Table: `twoFactor`
 
-export const twoFactorTableFields = [
-	{
-		name: "id",
-		type: "string",
-		description: "The ID of the two factor authentication.",
-		isPrimaryKey: true,
-	},
-	{
-		name: "userId",
-		type: "string",
-		description: "The ID of the user",
-		isForeignKey: true,
-		references: { model: "user", field: "id" },
-	},
-	{
-		name: "secret",
-		type: "string",
-		description: "The secret used to generate the TOTP code.",
-	},
-	{
-		name: "backupCodes",
-		type: "string",
-		description:
-			"The backup codes used to recover access to the account if the user loses access to their phone or email.",
-	},
-	{
-		name: "verified",
-		type: "boolean",
-		description: "Whether this TOTP secret has been verified during enrollment",
-	},
-	{
-		name: "failedVerificationCount",
-		type: "number",
-		description:
-			"Consecutive failed second-factor verifications, used for account lockout.",
-	},
-	{
-		name: "lockedUntil",
-		type: "date",
-		description:
-			"When the account lockout expires; null when the account is not locked.",
-		isOptional: true,
-	},
-];
+Table
 
-<DatabaseTable name="twoFactor" fields={twoFactorTableFields} />
+Field
 
-Options [#options]
+Type
 
-Server [#server]
+Key
+
+Description
+
+id
+
+string
+
+PK
+
+The ID of the two factor authentication.
+
+userId
+
+string
+
+FK
+
+The ID of the user
+
+secret
+
+string
+
+\-
+
+The secret used to generate the TOTP code.
+
+backupCodes
+
+string
+
+\-
+
+The backup codes used to recover access to the account if the user loses access to their phone or email.
+
+verified
+
+boolean
+
+\-
+
+Whether this TOTP secret has been verified during enrollment
+
+failedVerificationCount
+
+number
+
+\-
+
+Consecutive failed second-factor verifications, used for account lockout.
+
+lockedUntil?
+
+date
+
+\-
+
+When the account lockout expires; null when the account is not locked.
+
+## Options
+
+### Server
 
 **twoFactorTable**: The name of the table that stores the two factor authentication data. Default: `twoFactor`.
 
@@ -824,114 +537,42 @@ Server [#server]
 
 these are options for TOTP.
 
-export const twoFactorTotpOptionsType = {
-  digits: {
-    description: "The number of digits the otp to be",
-    type: "number",
-    default: 6,
-  },
-  period: {
-    description: "The period for totp in seconds.",
-    type: "number",
-    default: 30,
-  },
-}
-
-<TypeTable type={twoFactorTotpOptionsType} />
+Prop
 
 **OTP options**
 
 these are options for OTP.
 
-export const twoFactorOtpOptionsType = {
-  sendOTP: {
-    description: "a function that sends the otp to the user's email or phone number. It takes two parameters: user and otp",
-    type: "function",
-  },
-  period: {
-    description: "The period for otp in minutes.",
-    type: "number",
-    default: 3,
-  },
-  storeOTP: {
-    description:
-      "How to transform the stored OTP value, whether plain text, encrypted, or hashed. You can also provide a custom encryptor or hasher. The storage backend is controlled by the global verification config, so secondary storage can be used instead of the database.",
-    type: "string",
-    default: "plain",
-  },
-}
-
-<TypeTable type={twoFactorOtpOptionsType} />
+Prop
 
 **Backup Code Options**
 
 backup codes are generated and stored in the database when the user enabled two factor authentication. This can be used to recover access to the account if the user loses access to their phone or email.
 
-export const twoFactorBackupCodeOptionsType = {
-  amount: {
-    description: "The amount of backup codes to generate",
-    type: "number",
-    default: 10,
-  },
-  length: {
-    description: "The length of the backup codes",
-    type: "number",
-    default: 10,
-  },
-  customBackupCodesGenerate: {
-    description: "A function that generates custom backup codes. It takes no parameters and returns an array of strings.",
-    type: "function",
-  },
-  storeBackupCodes: {
-    description:
-      "How to store the backup codes in the database. Whether to store it as plain text or encrypted. You can also provide a custom encryptor.",
-    type: "string",
-    default: "plain",
-  },
-}
-
-<TypeTable type={twoFactorBackupCodeOptionsType} />
+Prop
 
 **Account lockout**
 
 After repeated failed verifications during sign-in, the account is temporarily locked. The limit applies per account across sign-in challenges and across factors: TOTP, OTP, and backup codes share one counter, and a successful verification resets it. Locked attempts return `429` with the `ACCOUNT_TEMPORARILY_LOCKED` error code. Enabled by default.
 
-export const twoFactorAccountLockoutOptionsType = {
-  enabled: {
-    description: "Whether account-level lockout is enforced.",
-    type: "boolean",
-    default: true,
-  },
-  maxFailedAttempts: {
-    description: "Consecutive failed verifications, across challenges and factors, before the account is locked.",
-    type: "number",
-    default: 10,
-  },
-  durationSeconds: {
-    description: "How long the account stays locked, in seconds.",
-    type: "number",
-    default: 900,
-  },
-}
+Prop
 
-<TypeTable type={twoFactorAccountLockoutOptionsType} />
-
-Client [#client]
+### Client
 
 To use the two factor plugin in the client, you need to add it on your plugins list.
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client"
 import { twoFactorClient } from "better-auth/client/plugins"
 
 const authClient =  createAuthClient({
     plugins: [
-        twoFactorClient({ // [!code highlight]
-            onTwoFactorRedirect({ twoFactorMethods }){ // [!code highlight]
-                // twoFactorMethods is e.g. ["totp", "otp"] // [!code highlight]
-                window.location.href = "/2fa" // Handle the 2FA verification redirect // [!code highlight]
-            } // [!code highlight]
-        }) // [!code highlight]
+        twoFactorClient({ 
+            onTwoFactorRedirect({ twoFactorMethods }){ 
+                // twoFactorMethods is e.g. ["totp", "otp"]
+                window.location.href = "/2fa" // Handle the 2FA verification redirect
+            } 
+        }) 
     ]
 })
 ```

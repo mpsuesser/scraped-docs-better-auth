@@ -2,225 +2,102 @@
 url: https://better-auth.com/llms.txt/docs/plugins/autumn
 title: "Autumn"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Autumn Billing
 
 Better Auth Plugin for Autumn Billing
 
+[Autumn](https://useautumn.com/) is open source infrastructure to run SaaS pricing plans. It sits between your app and Stripe, and acts as the database for your customers' subscription status, usage metering and feature permissions.
 
+### [Get help on Autumn's Discord](https://discord.gg/STqxY92zuS)
 
-import { HomeIcon } from "lucide-react";
-import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
+## Features
 
-[Autumn](https://useautumn.com) is open source infrastructure to run SaaS pricing plans. It sits between your app and Stripe, and acts as the database for your customers' subscription status, usage metering and feature permissions.
+- One function for all checkout, subscription and payment flows
+- No webhooks required: query Autumn for the data you need
+- Manages your application's free and paid plans
+- Usage tracking for usage billing and periodic limits
+- Custom plans and pricing changes through Autumn's dashboard
 
-<Callout>
-  This plugin is maintained by the Autumn team. For bugs, issues or feature requests,
-  please visit the [Autumn GitHub repo](https://github.com/useautumn/autumn).
-</Callout>
+### Setup Autumn Account
 
-<Card href="https://discord.gg/STqxY92zuS" title="Get help on Autumn's Discord">
-  We're online to help you with any questions you have.
-</Card>
+First, create your pricing plans in Autumn's [dashboard](https://app.useautumn.com/), where you define what each plan and product gets access to and how it should be billed. In this example, we're handling the free and pro plans for an AI chatbot, which comes with a number of `messages` per month.
 
-Features [#features]
+### Install Autumn SDK
 
-* One function for all checkout, subscription and payment flows
-* No webhooks required: query Autumn for the data you need
-* Manages your application's free and paid plans
-* Usage tracking for usage billing and periodic limits
-* Custom plans and pricing changes through Autumn's dashboard
+#### npm
 
-<Steps>
-  <Step>
-    Setup Autumn Account [#setup-autumn-account]
+```
+npm install autumn-js
+```
 
-    First, create your pricing plans in Autumn's [dashboard](https://app.useautumn.com), where you define what each plan and product gets access to and how it should be billed. In this example, we're handling the free and pro plans for an AI chatbot, which comes with a number of `messages` per month.
-  </Step>
+#### pnpm
 
-  <Step>
-    Install Autumn SDK [#install-autumn-sdk]
+#### yarn
 
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+#### bun
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+### Add AUTUMN\_SECRET\_KEY to your environment variables
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+You can find it in Autumn's dashboard under " [Developer](https://app.useautumn.com/sandbox/onboarding) ".
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+```
+AUTUMN_SECRET_KEY=am_sk_xxxxxxxxxx
+```
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install autumn-js
-        ```
-      </CodeBlockTab>
+### Add the Autumn plugin to your auth config
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add autumn-js
-        ```
-      </CodeBlockTab>
+#### User
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add autumn-js
-        ```
-      </CodeBlockTab>
+```
+import { autumn } from "autumn-js/better-auth";
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add autumn-js
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
+export const auth = betterAuth({
+  // ...
+  plugins: [autumn()],
+});
+```
 
-    <Callout>
-      If you're using a separate client and server setup, make sure to install the plugin in both parts of your project.
-    </Callout>
-  </Step>
+#### Organization
 
-  <Step>
-    Add AUTUMN_SECRET_KEY to your environment variables [#add-autumn_secret_key-to-your-environment-variables]
+#### User & Organization
 
-    You can find it in Autumn's dashboard under "[Developer](https://app.useautumn.com/sandbox/onboarding)".
+#### Custom
 
-    ```bash title=".env"
-    AUTUMN_SECRET_KEY=am_sk_xxxxxxxxxx
-    ```
-  </Step>
+### Add <AutumnProvider />
 
-  <Step>
-    Add the Autumn plugin to your auth config [#add-the-autumn-plugin-to-your-auth-config]
+In your layout file, wrap your application with the AutumnProvider component, and pass in the `useBetterAuth` to true.
 
-    <Tabs items={["User", "Organization", "User & Organization", "Custom"]}>
-      <Tab value="User">
-        ```ts title="auth.ts"
-        import { autumn } from "autumn-js/better-auth";
+```
+import { AutumnProvider } from "autumn-js/react";
 
-        export const auth = betterAuth({
-          // ...
-          plugins: [autumn()],
-        });
-        ```
-      </Tab>
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html>
+      <body>
+        <AutumnProvider useBetterAuth={true}>
+          {children}
+        </AutumnProvider>
+      </body>
+    </html>
+  );
+}
+```
 
-      <Tab value="Organization">
-        ```ts title="auth.ts"
-        import { autumn } from "autumn-js/better-auth";
-        import { organization } from "better-auth/plugins";
+## Usage
 
-        export const auth = betterAuth({
-          // ...
-          plugins: [organization(), autumn({ customerScope: "organization" })],
-        });
-        ```
-      </Tab>
-
-      <Tab value="User & Organization">
-        ```ts title="auth.ts"
-        import { autumn } from "autumn-js/better-auth";
-        import { organization } from "better-auth/plugins";
-
-        export const auth = betterAuth({
-          // ...
-          plugins: [
-            organization(),
-            autumn({ customerScope: "user_and_organization" })
-          ],
-        });
-        ```
-      </Tab>
-
-      <Tab value="Custom">
-        ```ts title="auth.ts"
-        import { autumn } from "autumn-js/better-auth";
-        import { organization } from "better-auth/plugins";
-
-        export const auth = betterAuth({
-          // ...
-          plugins: [
-            organization(),
-            autumn({
-              identify: async ({ session, organization }) => {
-                return {
-                  customerId: "your_customer_id",
-                  customerData: {
-                    name: "Customer Name",
-                    email: "customer@gmail.com",
-                  },
-                };
-              },
-            }),
-          ],
-        });
-        ```
-      </Tab>
-    </Tabs>
-
-    <Callout>
-      Autumn will auto-create your customers when they sign up, and assign them any
-      default plans you created (eg your Free plan). You can choose who becomes a customer: individual users, organizations, both, or something custom like workspaces.
-    </Callout>
-  </Step>
-
-  <Step>
-    Add <AutumnProvider /> [#add-autumnprovider-]
-
-    In your layout file, wrap your application with the AutumnProvider component, and pass in the `useBetterAuth` to true.
-
-    ```tsx title="app/layout.tsx"
-    import { AutumnProvider } from "autumn-js/react";
-
-    export default function RootLayout({
-      children,
-    }: {
-      children: React.ReactNode;
-    }) {
-      return (
-        <html>
-          <body>
-            <AutumnProvider useBetterAuth={true}>
-              {children}
-            </AutumnProvider>
-          </body>
-        </html>
-      );
-    }
-    ```
-  </Step>
-</Steps>
-
-Usage [#usage]
-
-Handle payments [#handle-payments]
+### Handle payments
 
 Call `attach` to redirect the customer to a Stripe checkout page when they want to purchase the Pro plan.
 
 If their payment method is already on file, `AttachDialog` will open instead to let the customer confirm their new subscription or purchase, and handle the payment.
 
-<Callout type="warn">
-  {" "}
-
-  Make sure you've pasted in your [Stripe test secret
-  key](https://dashboard.stripe.com/test/apikeys) in the [Autumn
-  dashboard](https://app.useautumn.com/integrations/stripe).
-</Callout>
-
-```tsx
+```
 import { useCustomer, AttachDialog } from "autumn-js/react";
 
 export default function PurchaseButton() {
@@ -241,83 +118,57 @@ export default function PurchaseButton() {
 }
 ```
 
-The AttachDialog component can be used directly from the `autumn-js/react`
-library (as shown in the example above), or downloaded as a [shadcn/ui component](https://docs.useautumn.com/quickstart/shadcn) to customize.
+The AttachDialog component can be used directly from the `autumn-js/react` library (as shown in the example above), or downloaded as a [shadcn/ui component](https://docs.useautumn.com/quickstart/shadcn) to customize.
 
-Integrate Pricing Logic [#integrate-pricing-logic]
+### Integrate Pricing Logic
 
 Integrate your client and server pricing tiers logic with the following functions:
 
-* `check` to see if the customer is `allowed` to send a message.
-* `track` a usage event in Autumn (typically done server-side)
-* `customer` to display any relevant billing data in your UI (subscriptions, feature balances)
+- `check` to see if the customer is `allowed` to send a message.
+- `track` a usage event in Autumn (typically done server-side)
+- `customer` to display any relevant billing data in your UI (subscriptions, feature balances)
 
 Server-side, you can access Autumn's functions through the `auth` object.
 
-<Tabs items={["Client", "Server"]}>
-  <Tab value="Client">
-    ```jsx
-    import { useCustomer } from "autumn-js/react";
+#### Client
 
-    export default function SendChatMessage() {
-      const { customer, allowed, refetch } = useCustomer();
+```
+import { useCustomer } from "autumn-js/react";
 
-      return (
-        <>
-          <button
-            onClick={async () => {
-              if (allowed({ featureId: "messages" })) {
-                //... send chatbot message server-side, then
-                await refetch(); // refetch customer usage data
-                alert(
-                  "Remaining messages: " + customer?.features.messages?.balance
-                );
-              } else {
-                alert("You're out of messages");
-              }
-            }}
-          >
-            Send Message
-          </button>
-        </>
-      );
-    }
-    ```
-  </Tab>
+export default function SendChatMessage() {
+  const { customer, allowed, refetch } = useCustomer();
 
-  <Tab value="Server">
-    ```typescript Server
-    import { auth } from "@/lib/auth";
+  return (
+    <>
+      <button
+        onClick={async () => {
+          if (allowed({ featureId: "messages" })) {
+            //... send chatbot message server-side, then
+            await refetch(); // refetch customer usage data
+            alert(
+              "Remaining messages: " + customer?.features.messages?.balance
+            );
+          } else {
+            alert("You're out of messages");
+          }
+        }}
+      >
+        Send Message
+      </button>
+    </>
+  );
+}
+```
 
-    // check on the backend if the customer can send a message
-    const { allowed } = await auth.api.check({
-      headers: await headers(), // pass the request headers
-      body: {
-        featureId: "messages",
-      },
-    });
+#### Server
 
-    // server-side function to send the message
+### Additional Functions
 
-    // then track the usage
-    await auth.api.track({
-      headers: await headers(),
-      body: {
-        featureId: "messages",
-        value: 2,
-      },
-    });
-    ```
-  </Tab>
-</Tabs>
-
-Additional Functions [#additional-functions]
-
-openBillingPortal() [#openbillingportal]
+#### openBillingPortal()
 
 Opens a billing portal where the customer can update their payment method or cancel their plan.
 
-```tsx
+```
 import { useCustomer } from "autumn-js/react";
 
 export default function BillingSettings() {
@@ -337,11 +188,11 @@ export default function BillingSettings() {
 }
 ```
 
-cancel() [#cancel]
+#### cancel()
 
 Cancel a product or subscription.
 
-```tsx
+```
 import { useCustomer } from "autumn-js/react";
 
 export default function CancelSubscription() {
@@ -359,11 +210,11 @@ export default function CancelSubscription() {
 }
 ```
 
-Get invoice history [#get-invoice-history]
+#### Get invoice history
 
 Pass in an `expand` param into `useCustomer` to get additional information. You can expand `invoices`, `trials_used`, `payment_method`, or `rewards`.
 
-```tsx
+```
 import { useCustomer } from "autumn-js/react";
 
 export default function CustomerProfile() {

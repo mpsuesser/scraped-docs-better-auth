@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/test-utils
 title: "Test Utils"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Test Utils
@@ -14,51 +14,39 @@ Testing utilities for integration and E2E testing
 
 The Test Utils plugin provides helpers for writing integration and E2E tests against Better Auth. It includes factories, database helpers, authentication helpers, and OTP capture functionality.
 
-<Callout type="warn">
-  This plugin is designed for test environments only. It does not add public routes, but it does expose privileged helpers on `ctx.test`. Prefer keeping it out of production auth configs.
-</Callout>
+> This plugin is designed for test environments only. It does not add public routes, but it does expose privileged helpers on `ctx.test`. Prefer keeping it out of production auth configs.
 
-Installation [#installation]
+## Installation
+### Add the plugin to a test-only auth config
+```ts title="auth.test.ts"
+import { betterAuth } from "better-auth"
+import { testUtils } from "better-auth/plugins" // [!code highlight]
 
-<Steps>
-  <Step>
-    Add the plugin to a test-only auth config [#add-the-plugin-to-a-test-only-auth-config]
+export const auth = betterAuth({
+    // ... other config options
+    plugins: [
+        testUtils() // [!code highlight]
+    ]
+})
+```
 
-    ```ts title="auth.test.ts"
-    import { betterAuth } from "better-auth"
-    import { testUtils } from "better-auth/plugins" // [!code highlight]
+Keeping `testUtils()` in a separate test-only auth instance preserves type inference for `ctx.test` without adding the plugin to your production auth config.
 
-    export const auth = betterAuth({
-        // ... other config options
-        plugins: [
-            testUtils() // [!code highlight]
-        ]
-    })
-    ```
+### Access test helpers via context
+```ts title="test-setup.ts"
+const ctx = await auth.$context
+const test = ctx.test
+```
 
-    Keeping `testUtils()` in a separate test-only auth instance preserves type inference for `ctx.test` without adding the plugin to your production auth config.
-  </Step>
 
-  <Step>
-    Access test helpers via context [#access-test-helpers-via-context]
-
-    ```ts title="test-setup.ts"
-    const ctx = await auth.$context
-    const test = ctx.test
-    ```
-  </Step>
-</Steps>
-
-Can I include this in production? [#can-i-include-this-in-production]
-
+## Can I include this in production?
 `testUtils()` does not register HTTP routes or API endpoints. Simply adding it to `plugins` does not create a public auth bypass on its own.
 
 However, it still adds privileged server-side helpers on `ctx.test`. Those helpers can create sessions, persist users and organizations, and delete records directly through the auth context. When `captureOTP: true` is enabled, the plugin also installs a verification hook and stores OTPs in memory for later retrieval.
 
 Because of that, the recommended setup is to keep `testUtils` out of your production auth config and add it from a separate test-only auth instance such as `auth.test.ts` or a dedicated test auth factory. That keeps the helpers available in tests without shipping them as part of your production server context.
 
-TypeScript caveat [#typescript-caveat]
-
+## TypeScript caveat
 Better Auth infers plugin helpers best from statically defined plugin arrays. If you conditionally spread `testUtils()` into `plugins`, TypeScript can stop inferring `ctx.test` correctly.
 
 ```ts title="auth.ts"
@@ -76,14 +64,11 @@ export const auth = betterAuth({
 
 If you include `testUtils()` unconditionally to preserve static type inference, treat that as a convenience tradeoff rather than the recommended default. It still does not expose public routes, but you should avoid using `ctx.test` in production code paths.
 
-Usage [#usage]
-
-Factories [#factories]
-
+## Usage
+## Factories
 Factories create objects without writing to the database. Use them to generate test data with sensible defaults.
 
-createUser [#createuser]
-
+## createUser
 Creates a user object with default values that can be overridden.
 
 ```ts
@@ -99,8 +84,7 @@ const user = test.createUser({
 })
 ```
 
-createOrganization [#createorganization]
-
+## createOrganization
 Creates an organization object. Only available when the organization plugin is installed.
 
 ```ts
@@ -110,12 +94,10 @@ const org = test.createOrganization({
 })
 ```
 
-Database Helpers [#database-helpers]
-
+## Database Helpers
 Database helpers persist and remove test data from the database.
 
-saveUser [#saveuser]
-
+## saveUser
 Saves a user to the database.
 
 ```ts
@@ -123,16 +105,14 @@ const user = test.createUser({ email: "test@example.com" })
 const savedUser = await test.saveUser(user)
 ```
 
-deleteUser [#deleteuser]
-
+## deleteUser
 Deletes a user from the database.
 
 ```ts
 await test.deleteUser(user.id)
 ```
 
-saveOrganization [#saveorganization]
-
+## saveOrganization
 Saves an organization to the database. Only available with the organization plugin.
 
 ```ts
@@ -140,16 +120,14 @@ const org = test.createOrganization({ name: "Test Org" })
 const savedOrg = await test.saveOrganization(org)
 ```
 
-deleteOrganization [#deleteorganization]
-
+## deleteOrganization
 Deletes an organization from the database. Only available with the organization plugin.
 
 ```ts
 await test.deleteOrganization(org.id)
 ```
 
-addMember [#addmember]
-
+## addMember
 Adds a user as a member of an organization. Only available with the organization plugin.
 
 ```ts
@@ -160,12 +138,10 @@ const member = await test.addMember({
 })
 ```
 
-Auth Helpers [#auth-helpers]
-
+## Auth Helpers
 Auth helpers create authenticated sessions for testing protected routes.
 
-login [#login]
-
+## login
 Creates a session for a user and returns session details, headers, cookies, and token.
 
 ```ts
@@ -180,8 +156,7 @@ const { session, user, headers, cookies, token } = await test.login({
 // token - The session token string
 ```
 
-getAuthHeaders [#getauthheaders]
-
+## getAuthHeaders
 Returns a `Headers` object with the session cookie set. Useful for making authenticated requests.
 
 ```ts
@@ -194,8 +169,7 @@ const session = await auth.api.getSession({ headers })
 const response = await fetch("/api/protected", { headers })
 ```
 
-getCookies [#getcookies]
-
+## getCookies
 Returns an array of cookie objects compatible with browser testing tools like Playwright and Puppeteer.
 
 ```ts
@@ -223,13 +197,10 @@ Each cookie object contains:
 * `secure` - Whether cookie requires HTTPS
 * `sameSite` - SameSite attribute ("Lax", "Strict", or "None")
 
-OTP Capture [#otp-capture]
-
+## OTP Capture
 When `captureOTP: true` is set, the plugin passively captures OTPs as they are created. This allows you to retrieve OTPs in tests without needing to mock email or SMS sending.
 
-<Callout>
-  OTP capture is passive - it does not prevent OTPs from being sent via your configured `sendVerificationOTP` function. It simply stores a copy for test retrieval.
-</Callout>
+> OTP capture is passive - it does not prevent OTPs from being sent via your configured `sendVerificationOTP` function. It simply stores a copy for test retrieval.
 
 ```ts title="auth.test.ts"
 import { betterAuth } from "better-auth"
@@ -247,8 +218,7 @@ export const auth = betterAuth({
 })
 ```
 
-getOTP [#getotp]
-
+## getOTP
 Retrieves a captured OTP by identifier (email or phone number).
 
 ```ts
@@ -262,16 +232,13 @@ const otp = test.getOTP("user@example.com")
 // "123456"
 ```
 
-Options [#options]
-
+## Options
 | Option       | Type      | Default | Description                                       |
 | ------------ | --------- | ------- | ------------------------------------------------- |
 | `captureOTP` | `boolean` | `false` | Enable OTP capture for testing verification flows |
 
-Examples [#examples]
-
-Integration Test (Vitest) [#integration-test-vitest]
-
+## Examples
+## Integration Test (Vitest)
 ```ts
 import { describe, it, expect, beforeAll } from "vitest"
 import { auth } from "./auth"
@@ -303,8 +270,7 @@ describe("protected route", () => {
 })
 ```
 
-E2E Test (Playwright) [#e2e-test-playwright]
-
+## E2E Test (Playwright)
 ```ts
 import { test, expect } from "@playwright/test"
 import { auth } from "./auth"
@@ -338,8 +304,7 @@ test("dashboard shows user name", async ({ context, page }) => {
 })
 ```
 
-OTP Verification Test [#otp-verification-test]
-
+## OTP Verification Test
 ```ts
 import { describe, it, expect, beforeAll, beforeEach } from "vitest"
 import { auth } from "./auth"

@@ -2,211 +2,87 @@
 url: https://better-auth.com/llms.txt/docs/plugins/passkey
 title: "Passkey"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
-# Passkey
-
 Passkey
-
-
 
 Passkeys are a secure, passwordless authentication method using cryptographic key pairs, supported by WebAuthn and FIDO2 standards in web browsers. They replace passwords with unique key pairs: a private key stored on the user's device and a public key shared with the website. Users can log in using biometrics, PINs, or security keys, providing strong, phishing-resistant authentication without traditional passwords.
 
 The passkey plugin implementation is powered by [SimpleWebAuthn](https://simplewebauthn.dev/) behind the scenes.
 
-Installation [#installation]
+## Installation
 
-<Steps>
-  <Step>
-    Install the plugin [#install-the-plugin]
+### Install the plugin
 
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+#### npm
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+```
+npm install @better-auth/passkey
+```
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+#### pnpm
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+#### yarn
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install @better-auth/passkey
-        ```
-      </CodeBlockTab>
+#### bun
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add @better-auth/passkey
-        ```
-      </CodeBlockTab>
+### Add the plugin to your auth config
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add @better-auth/passkey
-        ```
-      </CodeBlockTab>
+To add the passkey plugin to your auth config, you need to import the plugin and pass it to the `plugins` option of the auth instance.
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add @better-auth/passkey
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Step>
+```
+import { betterAuth } from "better-auth"
+import { passkey } from "@better-auth/passkey"
 
-  <Step>
-    Add the plugin to your auth config [#add-the-plugin-to-your-auth-config]
+export const auth = betterAuth({
+    plugins: [ 
+        passkey(), 
+    ],
+})
+```
 
-    To add the passkey plugin to your auth config, you need to import the plugin and pass it to the `plugins` option of the auth instance.
+### Migrate the database
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
-    import { passkey } from "@better-auth/passkey" // [!code highlight]
+Run the migration or generate the schema to add the necessary fields and tables to the database.
 
-    export const auth = betterAuth({
-        plugins: [ 
-            passkey(), // [!code highlight]
-        ],
-    })
-    ```
-  </Step>
+#### migrate
 
-  <Step>
-    Migrate the database [#migrate-the-database]
+#### npm
 
-    Run the migration or generate the schema to add the necessary fields and tables to the database.
+#### generate
 
-    <Tabs items={["migrate", "generate"]}>
-      <Tab value="migrate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
+```
+npx auth migrate
+```
 
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
+#### pnpm
 
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
+#### yarn
 
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
+#### bun
 
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth migrate
-            ```
-          </CodeBlockTab>
+See the [Schema](#schema) section to add the fields manually.
 
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth migrate
-            ```
-          </CodeBlockTab>
+### Add the client plugin
 
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth migrate
-            ```
-          </CodeBlockTab>
+```
+import { createAuthClient } from "better-auth/client"
+import { passkeyClient } from "@better-auth/passkey/client"
 
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth migrate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
+export const authClient = createAuthClient({
+    plugins: [
+        passkeyClient() 
+    ]
+})
+```
 
-      <Tab value="generate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
-
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth generate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
-    </Tabs>
-
-    See the [Schema](#schema) section to add the fields manually.
-  </Step>
-
-  <Step>
-    Add the client plugin [#add-the-client-plugin]
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    import { passkeyClient } from "@better-auth/passkey/client" // [!code highlight]
-
-    export const authClient = createAuthClient({
-        plugins: [
-            passkeyClient() // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
-</Steps>
-
-Configuration (Optional) [#configuration-optional]
+## Configuration (Optional)
 
 You can customize the passkey plugin to support passkey-first onboarding or WebAuthn extensions.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { passkey } from "@better-auth/passkey"
 
@@ -233,11 +109,11 @@ export const auth = betterAuth({
 })
 ```
 
-Passkey-first registration (pre-auth) [#passkey-first-registration-pre-auth]
+### Passkey-first registration (pre-auth)
 
 When `registration.requireSession` is `false`, passkey registration can be initiated without a session. You can pass an opaque `context` to the registration options endpoint; it will be forwarded to `resolveUser`.
 
-```ts
+```
 await auth.api.generatePasskeyRegistrationOptions({
   context: "signed-registration-token",
 })
@@ -245,130 +121,84 @@ await auth.api.generatePasskeyRegistrationOptions({
 
 When using passkey-first flows (`registration.requireSession: false`), pass the same `context` from the client when registering the passkey so the server can resolve the user during verification:
 
-```ts
+```
 await authClient.passkey.addPasskey({
   name: "Primary passkey",
   context: "signed-registration-token",
 })
 ```
 
-Usage [#usage]
+## Usage
 
-Add/Register a passkey [#addregister-a-passkey]
+### Add/Register a passkey
 
 To add or register a passkey make sure a user is authenticated and then call the `passkey.addPasskey` function provided by the client.
 
+POST/passkey/add-passkey
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.passkey.addPasskey({
-    name: example-passkey-name, // optional
-    authenticatorAttachment: cross-platform, // optional
-    extensions, // optional
-    returnWebAuthnResponse, // optional
-    context, // optional
+    name: "example-passkey-name",
+    authenticatorAttachment: "cross-platform",
+    extensions,
+    returnWebAuthnResponse,
+    context,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.addPasskey({
-    body: {
-        name: example-passkey-name, // optional
-        authenticatorAttachment: cross-platform, // optional
-        extensions, // optional
-        returnWebAuthnResponse, // optional
-        context, // optional
-    }
-});
-```
+`name` string
 
-### Type Definition
+An optional name to label the authenticator account being registered. If not provided, it will default to the user's email address or user ID
 
-```ts
-type addPasskey = {
-      /**
-       * An optional name to label the authenticator account being registered. If not provided, it will default to the user's email address or user ID
-      */
-      name?: string = "example-passkey-name"
-      /**
-       * You can also specify the type of authenticator you want to register. Default behavior allows both platform and cross-platform passkeys
-      */
-      authenticatorAttachment?: "platform" | "cross-platform" = "cross-platform"
-      /**
-       * Optional WebAuthn extensions (e.g., PRF, credProps, largeBlob)
-       */
-      extensions?: AuthenticationExtensionsClientInputs
-      /**
-       * Return WebAuthn response and extension results
-       */
-      returnWebAuthnResponse?: boolean
-      /**
-       * Optional context for passkey-first registration flows. Forwarded to `registration.resolveUser`.
-       */
-      context?: string
-  
-}
-```
+`authenticatorAttachment` "platform" | "cross-platform"
 
+You can also specify the type of authenticator you want to register. Default behavior allows both platform and cross-platform passkeys
 
-<Callout>
-  Setting `throw: true` in the fetch options has no effect for the register and sign-in passkey responses — they will always return a data object containing the error object.
-</Callout>
+`extensions` AuthenticationExtensionsClientInputs
 
-Sign in with a passkey [#sign-in-with-a-passkey]
+Optional WebAuthn extensions (e.g., PRF, credProps, largeBlob)
+
+`returnWebAuthnResponse` boolean
+
+Return WebAuthn response and extension results
+
+`context` string
+
+Optional context for passkey-first registration flows. Forwarded to `registration.resolveUser`.
+
+### Sign in with a passkey
 
 To sign in with a passkey you can use the `signIn.passkey` method. This will prompt the user to sign in with their passkey.
 
+POST/sign-in/passkey
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.signIn.passkey({
-    autoFill, // optional
-    extensions, // optional
-    returnWebAuthnResponse, // optional
+    autoFill: true,
+    extensions,
+    returnWebAuthnResponse,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.signInPasskey({
-    body: {
-        autoFill, // optional
-        extensions, // optional
-        returnWebAuthnResponse, // optional
-    }
-});
+`autoFill` boolean
+
+Browser autofill, a.k.a. Conditional UI. Read more: https://simplewebauthn.dev/docs/packages/browser#browser-autofill-aka-conditional-ui
+
+`extensions` AuthenticationExtensionsClientInputs
+
+Optional WebAuthn extensions (e.g., PRF, credProps, largeBlob)
+
+`returnWebAuthnResponse` boolean
+
+Return WebAuthn response and extension results
+
+#### Example Usage
+
 ```
-
-### Type Definition
-
-```ts
-type signInPasskey = {
-      /**
-       * Browser autofill, a.k.a. Conditional UI. Read more: https://simplewebauthn.dev/docs/packages/browser#browser-autofill-aka-conditional-ui
-      */
-      autoFill?: boolean = true
-      /**
-       * Optional WebAuthn extensions (e.g., PRF, credProps, largeBlob)
-       */
-      extensions?: AuthenticationExtensionsClientInputs
-      /**
-       * Return WebAuthn response and extension results
-       */
-      returnWebAuthnResponse?: boolean
-  
-}
-```
-
-
-Example Usage [#example-usage]
-
-```ts
 import { authClient } from "@/lib/auth-client";
 
 // With post authentication redirect
@@ -389,11 +219,11 @@ await authClient.signIn.passkey({
 });
 ```
 
-Extensions [#extensions]
+### Extensions
 
 You can use WebAuthn extensions through the client API by passing `extensions`. When `returnWebAuthnResponse` is true, the client returns `webauthn.clientExtensionResults`.
 
-```ts
+```
 const result = await authClient.passkey.addPasskey({
   name: "My Passkey",
   extensions: {
@@ -406,37 +236,17 @@ const result = await authClient.passkey.addPasskey({
 console.log(result.webauthn?.clientExtensionResults);
 ```
 
-List passkeys [#list-passkeys]
+### List passkeys
 
 You can list all of the passkeys for the authenticated user by calling `passkey.listUserPasskeys`:
 
+GET/passkey/list-user-passkeys
 
-### Client Side
-
-```ts
-const { data, error } = await authClient.passkey.listUserPasskeys({});
+```
+const { data: passkeys, error } = await authClient.passkey.listUserPasskeys();
 ```
 
-### Server Side
-
-```ts
-const passkeys = await auth.api.listPasskeys({
-
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
-```
-
-### Type Definition
-
-```ts
-type listPasskeys = {
-  
-}
-```
-
-
-Naming passkeys by authenticator [#naming-passkeys-by-authenticator]
+### Naming passkeys by authenticator
 
 When a user registers a passkey without naming it, the stored `name` is left empty. You can show a friendly default in your UI instead, derived from the authenticator that created the credential.
 
@@ -444,7 +254,7 @@ Every passkey row carries an `aaguid`, the identifier of the authenticator *mode
 
 The plugin ships a small, best-effort lookup for the most common authenticators:
 
-```ts title="passkey-list.tsx"
+```
 import { getAuthenticatorName } from "@better-auth/passkey";
 
 const passkeys = await authClient.passkey.listUserPasskeys();
@@ -456,9 +266,9 @@ for (const passkey of passkeys.data ?? []) {
 
 The built-in list is intentionally small and not authoritative. Many authenticators are missing, and privacy-preserving platforms report an all-zero AAGUID that resolves to nothing (Apple devices do this under the default `attestation: "none"` flow). Extend it with the exported `commonAuthenticatorNames` map, or resolve against the community-maintained source for full coverage:
 
-* [passkeydeveloper/passkey-authenticator-aaguids](https://github.com/passkeydeveloper/passkey-authenticator-aaguids)
+- [passkeydeveloper/passkey-authenticator-aaguids](https://github.com/passkeydeveloper/passkey-authenticator-aaguids)
 
-```ts title="passkey-list.tsx"
+```
 import { commonAuthenticatorNames } from "@better-auth/passkey";
 
 const names = { ...commonAuthenticatorNames, "your-aaguid": "Your Provider" };
@@ -466,7 +276,7 @@ const names = { ...commonAuthenticatorNames, "your-aaguid": "Your Provider" };
 
 To set a default label on the server at registration time, return a `name` from `registration.afterVerification`. The AAGUID is available on `verification.registrationInfo.aaguid`, and a client-supplied name always takes precedence:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { passkey, getAuthenticatorName } from "@better-auth/passkey";
 
@@ -483,219 +293,182 @@ export const auth = betterAuth({
 });
 ```
 
-Deleting passkeys [#deleting-passkeys]
+### Deleting passkeys
 
 You can delete a passkey by calling `passkey.delete` and providing the passkey ID.
 
+POST/passkey/delete-passkey
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.passkey.deletePasskey({
-    id: some-passkey-id,
+    id: "some-passkey-id", // required
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.deletePasskey({
-    body: {
-        id: some-passkey-id,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
+`id` stringrequired
+
+The ID of the passkey to delete.
+
+### Updating passkey names
+
+POST/passkey/update-passkey
+
 ```
-
-### Type Definition
-
-```ts
-type deletePasskey = {
-      /**
-       * The ID of the passkey to delete. 
-       */
-      id: string = "some-passkey-id"
-  
-}
-```
-
-
-Updating passkey names [#updating-passkey-names]
-
-
-### Client Side
-
-```ts
 const { data, error } = await authClient.passkey.updatePasskey({
-    id: id of passkey,
-    name: my-new-passkey-name,
+    id: "id of passkey", // required
+    name: "my-new-passkey-name", // required
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.updatePasskey({
-    body: {
-        id: id of passkey,
-        name: my-new-passkey-name,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
-```
+`id` stringrequired
 
-### Type Definition
+The ID of the passkey which you want to update.
 
-```ts
-type updatePasskey = {
-      /**
-       * The ID of the passkey which you want to update.
-       */
-      id: string = "id of passkey"
-      /**
-       * The new name which the passkey will be updated to. 
-       */
-      name: string = "my-new-passkey-name"
-  
-}
-```
+`name` stringrequired
 
+The new name which the passkey will be updated to.
 
-Conditional UI [#conditional-ui]
+### Conditional UI
 
 The plugin supports conditional UI, which allows the browser to autofill the passkey if the user has already registered a passkey.
 
 There are two requirements for conditional UI to work:
 
-<Steps>
-  <Step>
-    Update input fields [#update-input-fields]
+#### Update input fields
 
-    Add the `autocomplete` attribute with the value `webauthn` to your input fields. You can add this attribute to multiple input fields, but at least one is required for conditional UI to work.
+Add the `autocomplete` attribute with the value `webauthn` to your input fields. You can add this attribute to multiple input fields, but at least one is required for conditional UI to work.
 
-    The `webauthn` value should also be the last entry of the `autocomplete` attribute.
+The `webauthn` value should also be the last entry of the `autocomplete` attribute.
 
-    ```html
-    <label for="name">Username:</label>
-    <input type="text" name="name" autocomplete="username webauthn">
-    <label for="password">Password:</label>
-    <input type="password" name="password" autocomplete="current-password webauthn">
-    ```
-  </Step>
+```
+<label for="name">Username:</label>
+<input type="text" name="name" autocomplete="username webauthn">
+<label for="password">Password:</label>
+<input type="password" name="password" autocomplete="current-password webauthn">
+```
 
-  <Step>
-    Preload the passkeys [#preload-the-passkeys]
+#### Preload the passkeys
 
-    When your component mounts, you can preload the user's passkeys by calling the `authClient.signIn.passkey` method with the `autoFill` option set to `true`.
+When your component mounts, you can preload the user's passkeys by calling the `authClient.signIn.passkey` method with the `autoFill` option set to `true`.
 
-    To prevent unnecessary calls, we will also add a check to see if the browser supports conditional UI.
+To prevent unnecessary calls, we will also add a check to see if the browser supports conditional UI.
 
-    <Tabs items={["React"]}>
-      <Tab value="React">
-        ```ts
-        useEffect(() => {
-           if (!PublicKeyCredential.isConditionalMediationAvailable ||
-               !PublicKeyCredential.isConditionalMediationAvailable()) {
-             return;
-           }
+#### React
 
-          void authClient.signIn.passkey({ autoFill: true })
-        }, [])
-        ```
-      </Tab>
-    </Tabs>
-  </Step>
-</Steps>
+```
+useEffect(() => {
+   if (!PublicKeyCredential.isConditionalMediationAvailable ||
+       !PublicKeyCredential.isConditionalMediationAvailable()) {
+     return;
+   }
+
+  void authClient.signIn.passkey({ autoFill: true })
+}, [])
+```
 
 Depending on the browser, a prompt will appear to autofill the passkey. If the user has multiple passkeys, they can select the one they want to use.
 
 Some browsers also require the user to first interact with the input field before the autofill prompt appears.
 
-Debugging [#debugging]
+### Debugging
 
 To test your passkey implementation you can use [emulated authenticators](https://developer.chrome.com/docs/devtools/webauthn). This way you can test the registration and sign-in process without even owning a physical device.
 
-Schema [#schema]
+## Schema
 
 The plugin require a new table in the database to store passkey data.
 
 Table Name: `passkey`
 
-export const passkeyTableFields = [
-	{
-		name: "id",
-		type: "string",
-		description: "Unique identifier for each passkey",
-		isPrimaryKey: true,
-	},
-	{
-		name: "name",
-		type: "string",
-		description: "The name of the passkey",
-		isOptional: true,
-	},
-	{
-		name: "publicKey",
-		type: "string",
-		description: "The public key of the passkey",
-	},
-	{
-		name: "userId",
-		type: "string",
-		description: "The ID of the user",
-		isForeignKey: true,
-		references: { model: "user", field: "id" },
-	},
-	{
-		name: "credentialID",
-		type: "string",
-		description: "The unique identifier of the registered credential",
-	},
-	{
-		name: "counter",
-		type: "number",
-		description: "The counter of the passkey",
-	},
-	{
-		name: "deviceType",
-		type: "string",
-		description: "The type of device used to register the passkey",
-	},
-	{
-		name: "backedUp",
-		type: "boolean",
-		description: "Whether the passkey is backed up",
-	},
-	{
-		name: "transports",
-		type: "string",
-		description: "The transports used to register the passkey",
-		isOptional: true,
-	},
-	{
-		name: "createdAt",
-		type: "Date",
-		description: "The time when the passkey was created",
-		isOptional: true,
-	},
-	{
-		name: "aaguid",
-		type: "string",
-		description:
-			"Authenticator's Attestation GUID indicating the type of the authenticator",
-		isOptional: true,
-	},
-];
+Table
 
-<DatabaseTable name="passkey" fields={passkeyTableFields} />
+Field
 
-Options [#options]
+Type
 
-**rpID**: A unique identifier for your website based on your auth server origin.
-`'localhost'` is okay for local dev. RP ID can be formed by discarding zero or more labels from the left of its effective domain
-until it hits an effective TLD. So `www.example.com` can use the RP IDs `www.example.com` or `example.com`. But not `com`, because that's an eTLD.
+Key
+
+Description
+
+id
+
+string
+
+PK
+
+Unique identifier for each passkey
+
+name?
+
+string
+
+\-
+
+The name of the passkey
+
+publicKey
+
+string
+
+\-
+
+The public key of the passkey
+
+userId
+
+string
+
+FK
+
+The ID of the user
+
+credentialID
+
+string
+
+\-
+
+The unique identifier of the registered credential
+
+counter
+
+number
+
+\-
+
+The counter of the passkey
+
+backedUp
+
+boolean
+
+\-
+
+Whether the passkey is backed up
+
+createdAt?
+
+Date
+
+\-
+
+The time when the passkey was created
+
+aaguid?
+
+string
+
+\-
+
+Authenticator's Attestation GUID indicating the type of the authenticator
+
+## Options
+
+**rpID**: A unique identifier for your website based on your auth server origin. `'localhost'` is okay for local dev. RP ID can be formed by discarding zero or more labels from the left of its effective domain until it hits an effective TLD. So `www.example.com` can use the RP IDs `www.example.com` or `example.com`. But not `com`, because that's an eTLD.
 
 **rpName**: Human-readable title for your website.
 
@@ -703,36 +476,36 @@ until it hits an effective TLD. So `www.example.com` can use the RP IDs `www.exa
 
 **authenticatorSelection**: Allows customization of WebAuthn authenticator selection criteria. Leave unspecified for default settings.
 
-* `authenticatorAttachment`: Specifies the type of authenticator
-  * `platform`: Authenticator is attached to the platform (e.g., fingerprint reader)
-  * `cross-platform`: Authenticator is not attached to the platform (e.g., security key)
-  * Default: `not set` (both platform and cross-platform allowed, with platform preferred)
-* `residentKey`: Determines credential storage behavior.
-  * `required`: User MUST store credentials on the authenticator (highest security)
-  * `preferred`: Encourages credential storage but not mandatory
-  * `discouraged`: No credential storage required (fastest experience)
-  * Default: `preferred`
-* `userVerification`: Controls biometric/PIN verification during authentication:
-  * `required`: User MUST verify identity (highest security)
-  * `preferred`: Verification encouraged but not mandatory
-  * `discouraged`: No verification required (fastest experience)
-  * Default: `preferred`
+- `authenticatorAttachment`: Specifies the type of authenticator
+	- `platform`: Authenticator is attached to the platform (e.g., fingerprint reader)
+		- `cross-platform`: Authenticator is not attached to the platform (e.g., security key)
+		- Default: `not set` (both platform and cross-platform allowed, with platform preferred)
+- `residentKey`: Determines credential storage behavior.
+	- `required`: User MUST store credentials on the authenticator (highest security)
+		- `preferred`: Encourages credential storage but not mandatory
+		- `discouraged`: No credential storage required (fastest experience)
+		- Default: `preferred`
+- `userVerification`: Controls biometric/PIN verification during authentication:
+	- `required`: User MUST verify identity (highest security)
+		- `preferred`: Verification encouraged but not mandatory
+		- `discouraged`: No verification required (fastest experience)
+		- Default: `preferred`
 
 **advanced**: Advanced options
 
-* `webAuthnChallengeCookie`: Cookie name for storing WebAuthn challenge ID during authentication flow (Default: `better-auth-passkey`)
+- `webAuthnChallengeCookie`: Cookie name for storing WebAuthn challenge ID during authentication flow (Default: `better-auth-passkey`)
 
-Expo Integration [#expo-integration]
+## Expo Integration
 
 When using the passkey plugin with Expo, you need to configure the `cookiePrefix` option in the Expo client to ensure passkey cookies are properly detected and stored.
 
 By default, the passkey plugin uses `"better-auth-passkey"` as the challenge cookie name. Since this starts with `"better-auth"`, it will work with the default Expo client configuration. However, if you customize the `webAuthnChallengeCookie` option, you must also update the `cookiePrefix` in your Expo client configuration.
 
-Example Configuration [#example-configuration]
+### Example Configuration
 
 If you're using a custom cookie name:
 
-```ts title="Server: auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { passkey } from "@better-auth/passkey";
 
@@ -749,7 +522,7 @@ export const auth = betterAuth({
 
 Make sure to configure your Expo client with the matching prefix:
 
-```ts title="Client: auth-client.ts"
+```
 import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
 import { passkeyClient } from "@better-auth/passkey/client";
@@ -769,15 +542,11 @@ export const authClient = createAuthClient({
 
 If you're using multiple authentication systems or custom cookie names, you can provide an array of prefixes:
 
-```ts title="Client: auth-client.ts"
+```
 expoClient({
     storage: SecureStore,
     cookiePrefix: ["better-auth", "my-app", "custom-auth"]
 })
 ```
 
-<Callout type="warn">
-  If the `cookiePrefix` doesn't match the prefix of your `webAuthnChallengeCookie`, the passkey authentication flow will fail because the challenge cookie won't be stored and sent back to the server during verification.
-</Callout>
-
-For more information on Expo integration, see the [Expo documentation](/docs/integrations/expo).
+For more information on Expo integration, see the [Expo documentation](https://better-auth.com/docs/integrations/expo).

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/multi-session
 title: "Multi Session"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Multi Session
@@ -14,48 +14,38 @@ Learn how to use multi-session plugin in Better Auth.
 
 The multi-session plugin allows users to maintain multiple active sessions across different accounts in the same browser. This plugin is useful for applications that require users to switch between multiple accounts without logging out.
 
-Installation [#installation]
+## Installation
+### Add the plugin to your auth config
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
+import { multiSession } from "better-auth/plugins"  // [!code highlight]
 
-<Steps>
-  <Step>
-    Add the plugin to your auth config [#add-the-plugin-to-your-auth-config]
+export const auth = betterAuth({
+    plugins: [
+        multiSession(), // [!code highlight]
+    ]
+})
+```
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
-    import { multiSession } from "better-auth/plugins"  // [!code highlight]
+### Add the client Plugin
+Add the client plugin and Specify where the user should be redirected if they need to verify 2nd factor
 
-    export const auth = betterAuth({
-        plugins: [
-            multiSession(), // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
+```ts title="auth-client.ts"
+import { createAuthClient } from "better-auth/client"
+import { multiSessionClient } from "better-auth/client/plugins"  // [!code highlight]
 
-  <Step>
-    Add the client Plugin [#add-the-client-plugin]
+export const authClient = createAuthClient({
+    plugins: [
+        multiSessionClient()  // [!code highlight]
+    ]
+})
+```
 
-    Add the client plugin and Specify where the user should be redirected if they need to verify 2nd factor
 
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    import { multiSessionClient } from "better-auth/client/plugins"  // [!code highlight]
-
-    export const authClient = createAuthClient({
-        plugins: [
-            multiSessionClient()  // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
-</Steps>
-
-Usage [#usage]
-
+## Usage
 Whenever a user logs in, the plugin will add additional cookie to the browser. This cookie will be used to maintain multiple sessions across different accounts.
 
-List all device sessions [#list-all-device-sessions]
-
+## List all device sessions
 To list all active sessions for the current user, you can call the `listDeviceSessions` method.
 
 
@@ -84,8 +74,7 @@ type listDeviceSessions = {
 ```
 
 
-Set active session [#set-active-session]
-
+## Set active session
 To set the active session, you can call the `setActive` method.
 
 
@@ -122,8 +111,7 @@ type setActiveSession = {
 ```
 
 
-Revoke a session [#revoke-a-session]
-
+## Revoke a session
 To revoke a session, you can call the `revoke` method.
 
 
@@ -160,12 +148,10 @@ type revokeDeviceSession = {
 ```
 
 
-Signout and Revoke all sessions [#signout-and-revoke-all-sessions]
-
+## Signout and Revoke all sessions
 When a user logs out, the plugin will revoke all active sessions for the user. You can do this by calling the existing `signOut` method, which handles revoking all sessions automatically.
 
-Max Sessions [#max-sessions]
-
+## Max Sessions
 You can specify the maximum number of sessions a user can have by passing the `maximumSessions` option to the plugin. By default, the plugin allows 5 sessions per device.
 
 ```ts title="auth.ts"

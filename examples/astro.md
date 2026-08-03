@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/examples/astro
 title: "Astro"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Astro Example
@@ -17,24 +17,11 @@ This is an example of how to use Better Auth with Astro. It uses Solid for build
 **Implements the following features:**
 Email & Password . Social Sign-in with Google . Passkeys . Email Verification . Password Reset . Two Factor Authentication . Profile Update . Session Management
 
-<ForkButton url="better-auth/examples/tree/main/astro-example" />
+[View example on GitHub](https://github.com/better-auth/examples/tree/main/astro-example)
 
-<iframe
-  src="https://stackblitz.com/github/better-auth/examples/tree/main/astro-example?codemirror=1&fontsize=14&hidenavigation=1&runonclick=1&hidedevtools=1"
-  style={{
-width: "100%",
-height: "500px",
-border: 0,
-borderRadius: "4px",
-overflow: "hidden"
-}}
-  title="Better Auth Astro+Solid Example"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-/>
+[Better Auth Astro+Solid Example](https://stackblitz.com/github/better-auth/examples/tree/main/astro-example?codemirror=1&fontsize=14&hidenavigation=1&runonclick=1&hidedevtools=1)
 
-How to run [#how-to-run]
-
+## How to run
 1. Clone the code sandbox (or the repo) and open it in your code editor
 
 2. Provide .env file with the following variables

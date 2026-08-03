@@ -2,28 +2,20 @@
 url: https://better-auth.com/llms.txt/docs/concepts/rate-limit
 title: "Rate Limit"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Rate Limit
 
 Learn how to configure rate limiting in Better Auth, including IP address detection, IPv6 support, custom rate limit windows, storage backends, error handling, and per-endpoint rules.
 
-
-
 Better Auth includes a built-in rate limiter to help manage traffic and prevent abuse. By default, in production mode, the rate limiter is set to:
 
-* Window: 60 seconds
-* Max Requests: 100 requests
-
-<Callout type="warning">
-  Server-side requests made using `auth.api` aren't affected by rate limiting. Rate limits only apply to client-initiated requests.
-</Callout>
+- Window: 60 seconds
+- Max Requests: 100 requests
 
 You can easily customize these settings by passing the rateLimit object to the betterAuth function.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -36,7 +28,7 @@ export const auth = betterAuth({
 
 Rate limiting is disabled in development mode by default. In order to enable it, set `enabled` to `true`:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -49,23 +41,21 @@ export const auth = betterAuth({
 
 In addition to the default settings, Better Auth provides custom rules for specific paths. For example:
 
-* `/sign-in/email`: Is limited to 3 requests within 10 seconds.
+- `/sign-in/email`: Is limited to 3 requests within 10 seconds.
 
 In addition, plugins also define custom rules for specific paths. For example, `twoFactor` plugin has custom rules:
 
-* `/two-factor/verify`: Is limited to 3 requests within 10 seconds.
+- `/two-factor/verify`: Is limited to 3 requests within 10 seconds.
 
 These custom rules ensure that sensitive operations are protected with stricter limits.
 
-Configuring Rate Limit [#configuring-rate-limit]
+## Configuring Rate Limit
 
-Connecting IP Address [#connecting-ip-address]
+### Connecting IP Address
 
-Rate limiting uses the connecting IP address to track the number of requests made by a user. The
-default header checked is `x-forwarded-for`, which is commonly used in production environments. If
-you are using a different header to track the user's IP address, you'll need to specify it.
+Rate limiting uses the connecting IP address to track the number of requests made by a user. The default header checked is `x-forwarded-for`, which is commonly used in production environments. If you are using a different header to track the user's IP address, you'll need to specify it.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -83,14 +73,11 @@ export const auth = betterAuth({
 })
 ```
 
-By default Better Auth does not trust comma-separated forwarded IP chains, since
-the leftmost `X-Forwarded-For` token is client-controlled behind an appending
-proxy. Behind a reverse proxy or load balancer, do one of the following.
+By default Better Auth does not trust comma-separated forwarded IP chains, since the leftmost `X-Forwarded-For` token is client-controlled behind an appending proxy. Behind a reverse proxy or load balancer, do one of the following.
 
-Point `ipAddressHeaders` at a single trusted header your proxy sets (for example
-`x-real-ip` or `cf-connecting-ip`):
+Point `ipAddressHeaders` at a single trusted header your proxy sets (for example `x-real-ip` or `cf-connecting-ip`):
 
-```ts title="auth.ts"
+```
 export const auth = betterAuth({
     advanced: {
         ipAddress: {
@@ -100,10 +87,9 @@ export const auth = betterAuth({
 })
 ```
 
-Or list your proxies in `trustedProxies`. Better Auth walks the chain right to
-left, skips the trusted hops, and takes the first untrusted address as the client:
+Or list your proxies in `trustedProxies`. Better Auth walks the chain right to left, skips the trusted hops, and takes the first untrusted address as the client:
 
-```ts title="auth.ts"
+```
 export const auth = betterAuth({
     advanced: {
         ipAddress: {
@@ -114,26 +100,19 @@ export const auth = betterAuth({
 })
 ```
 
-<Callout type="warning">
-  `trustedProxies` only interprets the forwarded header chain and cannot verify the
-  direct sender. Keep your origin reachable only through these proxies, and make each
-  proxy overwrite or sanitize the forwarded IP headers. Otherwise a client can set
-  `X-Forwarded-For` directly and spoof its address.
-</Callout>
-
-IPv6 Address Support [#ipv6-address-support]
+#### IPv6 Address Support
 
 Better Auth automatically normalizes IPv6 addresses to prevent bypass attacks where attackers use different representations of the same IPv6 address (e.g., `2001:db8::1` vs `2001:0db8:0000:0000:0000:0000:0000:0001`). This ensures that all representations of the same IPv6 address are treated as the same for rate limiting purposes.
 
 Additionally, IPv4-mapped IPv6 addresses (e.g., `::ffff:192.0.2.1`) are automatically converted to their IPv4 form (`192.0.2.1`) to prevent attackers from bypassing rate limits by switching between IPv4 and IPv6 representations.
 
-IPv6 Subnet Rate Limiting [#ipv6-subnet-rate-limiting]
+#### IPv6 Subnet Rate Limiting
 
 By default, IPv6 addresses are rate limited per `/64` subnet, not per individual address. ISPs and cloud providers assign IPv6 prefixes (typically `/64` for residential users per [RFC 6177](https://datatracker.ietf.org/doc/html/rfc6177)) rather than single addresses, so any per-address counter would let one client rotate through 2^64 source addresses without exhausting the limit.
 
 You can override the prefix length via the `ipv6Subnet` option if your deployment needs a different allocation boundary:
 
-```ts title="auth.ts"
+```
 export const auth = betterAuth({
     //...other options
     advanced: {
@@ -151,21 +130,17 @@ export const auth = betterAuth({
 
 Common IPv6 prefix lengths:
 
-* `128`: Individual IPv6 address. Most restrictive. Only safe when you control the network and trust that each address maps to a distinct client.
-* `64` (default): /64 subnet. Typical home or business allocation.
-* `56`: /56 subnet. Residential ISP allocation per [RFC 6177](https://datatracker.ietf.org/doc/html/rfc6177).
-* `48`: /48 subnet. Larger network allocation.
-* `32`: /32 subnet. ISP-level allocation.
+- `128`: Individual IPv6 address. Most restrictive. Only safe when you control the network and trust that each address maps to a distinct client.
+- `64` (default): /64 subnet. Typical home or business allocation.
+- `56`: /56 subnet. Residential ISP allocation per [RFC 6177](https://datatracker.ietf.org/doc/html/rfc6177).
+- `48`: /48 subnet. Larger network allocation.
+- `32`: /32 subnet. ISP-level allocation.
 
 Any integer prefix length from `0` to `128` is accepted; the values above are the most common.
 
-<Callout type="info">
-  IPv6 subnet configuration only affects IPv6 addresses. IPv4 addresses are always rate limited individually.
-</Callout>
+### Rate Limit Window
 
-Rate Limit Window [#rate-limit-window]
-
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -179,7 +154,7 @@ export const auth = betterAuth({
 
 You can also pass custom rules for specific paths.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -206,7 +181,7 @@ export const auth = betterAuth({
 
 If you like to disable rate limiting for a specific path, you can set it to `false` or return `false` from the custom rule function.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -219,13 +194,13 @@ export const auth = betterAuth({
 })
 ```
 
-Storage [#storage]
+### Storage
 
 By default, rate limit data is stored in memory, which may not be suitable for many use cases, particularly in serverless environments. To address this, you can use a database, secondary storage, or custom storage for storing rate limit data.
 
 **Using Database**
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -239,65 +214,29 @@ export const auth = betterAuth({
 
 Make sure to run `migrate` to create the rate limit table in your database:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
+#### npm
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
+```
+npx auth@latest migrate
+```
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
+#### pnpm
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### yarn
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npx auth@latest migrate
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm dlx auth@latest migrate
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn dlx auth@latest migrate
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="bun">
-    ```bash
-    bun x auth@latest migrate
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-<Callout type="info">
-  The `migrate` command only works if you're using the built-in Kysely adapter. If you're using Prisma, Drizzle, or another ORM, run `npx auth@latest generate` first, then apply the schema using your ORM's migration tool. For more info, see the [Better Auth CLI](/docs/concepts/cli).
-</Callout>
+#### bun
 
 **Using Secondary Storage**
 
-If a [Secondary Storage](/docs/concepts/database#secondary-storage) has been configured you can use that to store rate limit data.
+If a [Secondary Storage](https://better-auth.com/docs/concepts/database#secondary-storage) has been configured you can use that to store rate limit data.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
     //...other options
     rateLimit: {
-		storage: "secondary-storage"
+        storage: "secondary-storage"
     },
 })
 ```
@@ -306,7 +245,7 @@ export const auth = betterAuth({
 
 If none of the above solutions suits your use case you can implement a `customStorage`.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -324,17 +263,17 @@ export const auth = betterAuth({
 })
 ```
 
-Handling Rate Limit Errors [#handling-rate-limit-errors]
+## Handling Rate Limit Errors
 
 When a request exceeds the rate limit, Better Auth returns the following header:
 
-* `X-Retry-After`: The number of seconds until the user can make another request.
+- `X-Retry-After`: The number of seconds until the user can make another request.
 
 To handle rate limit errors on the client side, you can manage them either globally or on a per-request basis. Since Better Auth clients wrap over Better Fetch, you can pass `fetchOptions` to handle rate limit errors
 
 **Global Handling**
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client";
 
 export const authClient = createAuthClient({
@@ -343,7 +282,7 @@ export const authClient = createAuthClient({
             const { response } = context;
             if (response.status === 429) {
                 const retryAfter = response.headers.get("X-Retry-After");
-                console.log(`Rate limit exceeded. Retry after ${retryAfter} seconds`);
+                console.log(\`Rate limit exceeded. Retry after ${retryAfter} seconds\`);
             }
         },
     }
@@ -352,7 +291,7 @@ export const authClient = createAuthClient({
 
 **Per Request Handling**
 
-```ts title="auth-client.ts"
+```
 import { authClient } from "./auth-client";
 
 await authClient.signIn.email({
@@ -361,42 +300,57 @@ await authClient.signIn.email({
             const { response } = context;
             if (response.status === 429) {
                 const retryAfter = response.headers.get("X-Retry-After");
-                console.log(`Rate limit exceeded. Retry after ${retryAfter} seconds`);
+                console.log(\`Rate limit exceeded. Retry after ${retryAfter} seconds\`);
             }
         },
     }
 })
 ```
 
-Schema [#schema]
+### Schema
 
 If you are using a database to store rate limit data you need this schema:
 
 Table Name: `rateLimit`
 
-export const rateLimitTableFields = [
-	{
-		name: "id",
-		type: "string",
-		description: "Database ID",
-		isPrimaryKey: true,
-	},
-	{
-		name: "key",
-		type: "string",
-		description: "Unique identifier for each rate limit key",
-		isUnique: true,
-	},
-	{
-		name: "count",
-		type: "integer",
-		description: "Number of requests made in the current window",
-	},
-	{
-		name: "lastRequest",
-		type: "bigint",
-		description: "Timestamp of the last request (epoch ms)",
-	},
-];
+Table
 
-<DatabaseTable name="rateLimit" fields={rateLimitTableFields} />
+Field
+
+Type
+
+Key
+
+Description
+
+id
+
+string
+
+PK
+
+Database ID
+
+key
+
+string
+
+\-
+
+Unique identifier for each rate limit key
+
+count
+
+integer
+
+\-
+
+Number of requests made in the current window
+
+lastRequest
+
+bigint
+
+\-
+
+Timestamp of the last request (epoch ms)

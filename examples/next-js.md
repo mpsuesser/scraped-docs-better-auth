@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/examples/next-js
 title: "Next Js"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Next.js Example
@@ -19,24 +19,11 @@ Email & Password . Social Sign-in . Passkeys . Email Verification . Password Res
 
 See [Demo](https://demo.better-auth.com)
 
-<ForkButton url="better-auth/better-auth/tree/main/demo/nextjs" />
+[View example on GitHub](https://github.com/better-auth/better-auth/tree/main/demo/nextjs)
 
-<iframe
-  src="https://stackblitz.com/github/better-auth/better-auth/tree/main/demo/nextjs?codemirror=1&fontsize=14&hidenavigation=1&runonclick=1&hidedevtools=1"
-  style={{
-width: "100%",
-height: "500px",
-border: 0,
-borderRadius: "4px",
-overflow: "hidden"
-}}
-  title="Better Auth Next.js Example"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-/>
+[Better Auth Next.js Example](https://stackblitz.com/github/better-auth/better-auth/tree/main/demo/nextjs?codemirror=1&fontsize=14&hidenavigation=1&runonclick=1&hidedevtools=1)
 
-How to run [#how-to-run]
-
+## How to run
 1. Clone the code sandbox (or the repo) and open it in your code editor
 2. Move .env.example to .env and provide necessary variables
 3. Run the following commands
@@ -46,10 +33,8 @@ How to run [#how-to-run]
    ```
 4. Open the browser and navigate to `http://localhost:3000`
 
-SSO Login Example [#sso-login-example]
-
+## SSO Login Example
 For this example, we utilize DummyIDP. Initiate the login from the [DummyIDP login](https://dummyidp.com/apps/app_01k16v4vb5yytywqjjvv2b3435/login), click "Proceed", and from here it will direct you to user's dashboard.
 
-SCIM Sync Example [#scim-sync-example]
-
+## SCIM Sync Example
 For this example, we utilize DummyIDP. Head out to the [IDP dashboard](https://dummyidp.com/apps/app_01k16v4vb5yytywqjjvv2b3435) and try to add, update or remove users, then go to the admin page or directly to your database and watch the synchronization work.

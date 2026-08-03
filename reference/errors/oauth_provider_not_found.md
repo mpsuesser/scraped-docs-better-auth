@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/oauth_provider_not_found
 title: "Oauth_provider_not_found"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # oauth_provider_not_found
@@ -12,8 +12,7 @@ The OAuth provider was not found.
 
 
 
-What is it? [#what-is-it]
-
+## What is it?
 This error occurs when Better Auth cannot identify a provider for the callback path—either because the provider
 segment is missing or because no provider with that id is configured.
 
@@ -22,35 +21,28 @@ If the `<provider>` segment is absent (e.g., request hits `/api/auth/callback`),
 we cannot determine which integration should handle the callback and the
 request is rejected.
 
-Common Causes [#common-causes]
-
+## Common Causes
 * Visiting `/api/auth/callback` directly without the trailing provider segment.
 
-How to resolve [#how-to-resolve]
-
-Use the correct callback route shape [#use-the-correct-callback-route-shape]
-
+## How to resolve
+## Use the correct callback route shape
 * Ensure your application exposes a callback route like `/api/auth/callback/[provider]` (framework-specific).
 * When initiating the OAuth flow, ensure the redirect URI includes the provider segment so the provider
   returns to `/api/auth/callback/<provider>`.
 
-Configure infrastructure to preserve the path [#configure-infrastructure-to-preserve-the-path]
-
+## Configure infrastructure to preserve the path
 * Check proxy/CDN rewrites (Vercel, Cloudflare, Nginx) to make sure they do not strip the final path segment.
 * Align trailing slash behavior across environments so that `/api/auth/callback/<provider>` is preserved.
 
-Avoid manual access to the base callback route [#avoid-manual-access-to-the-base-callback-route]
-
+## Avoid manual access to the base callback route
 * Do not navigate to `/api/auth/callback` directly; always start OAuth via Better Auth APIs which generate
   the correct provider-specific callback URL.
 
-Debug locally [#debug-locally]
-
+## Debug locally
 * Inspect the request URL received by your server to confirm the `<provider>` segment is present.
 * Log router/path parameters in your callback handler to verify the provider value.
 * Compare environment configs (routes, basePath, rewrites) to ensure the same path structure is used everywhere.
 
-Edge cases to consider [#edge-cases-to-consider]
-
+## Edge cases to consider
 * Trailing slash normalization may alter routing if your framework treats `/callback/google/` differently
   from `/callback/google`. Configure consistent behavior.

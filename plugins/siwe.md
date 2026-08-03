@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/siwe
 title: "Siwe"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Sign In With Ethereum (SIWE)
@@ -14,168 +14,123 @@ Sign in with Ethereum plugin for Better Auth
 
 The Sign in with Ethereum (SIWE) plugin allows users to authenticate using their Ethereum wallets following the [ERC-4361 standard](https://eips.ethereum.org/EIPS/eip-4361). This plugin provides flexibility by allowing you to implement your own message verification and nonce generation logic.
 
-Installation [#installation]
+## Installation
+### Add the Server Plugin
+Add the SIWE plugin to your auth configuration:
 
-<Steps>
-  <Step>
-    Add the Server Plugin [#add-the-server-plugin]
+```ts title="auth.ts"
+import { betterAuth } from "better-auth";
+import { siwe } from "better-auth/plugins"; // [!code highlight]
 
-    Add the SIWE plugin to your auth configuration:
-
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
-    import { siwe } from "better-auth/plugins"; // [!code highlight]
-
-    export const auth = betterAuth({
-        plugins: [
-            siwe({
-                domain: "example.com",
-                emailDomainName: "example.com", // optional
-                anonymous: false, // optional, default is true
-                getNonce: async () => {
-                    // Implement your nonce generation logic here
-                    return "your-secure-random-nonce";
-                },
-                verifyMessage: async (args) => {
-                    // Implement your SIWE message verification logic here
-                    // This should verify the signature against the message
-                    return true; // return true if signature is valid
-                },
-                ensLookup: async (args) => {
-                    // Optional: Implement ENS lookup for user names and avatars
-                    return {
-                        name: "user.eth",
-                        avatar: "https://example.com/avatar.png"
-                    };
-                },
-            }),
-        ],
-    });
-    ```
-  </Step>
-
-  <Step>
-    Migrate the database [#migrate-the-database]
-
-    Run the migration or generate the schema to add the necessary fields and tables to the database.
-
-    <Tabs items={["migrate", "generate"]}>
-      <Tab value="migrate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
-
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth migrate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth migrate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth migrate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth migrate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
-
-      <Tab value="generate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
-
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth generate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
-    </Tabs>
-
-    See the [Schema](#schema) section to add the fields manually.
-  </Step>
-
-  <Step>
-    Add the Client Plugin [#add-the-client-plugin]
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client";
-    import { siweClient } from "better-auth/client/plugins"; // [!code highlight]
-
-    export const authClient = createAuthClient({
+export const auth = betterAuth({
     plugins: [
-        siweClient() // [!code highlight]
-    ]
-    });
-    ```
-  </Step>
-</Steps>
+        siwe({
+            domain: "example.com",
+            emailDomainName: "example.com", // optional
+            anonymous: false, // optional, default is true
+            getNonce: async () => {
+                // Implement your nonce generation logic here
+                return "your-secure-random-nonce";
+            },
+            verifyMessage: async (args) => {
+                // Implement your SIWE message verification logic here
+                // This should verify the signature against the message
+                return true; // return true if signature is valid
+            },
+            ensLookup: async (args) => {
+                // Optional: Implement ENS lookup for user names and avatars
+                return {
+                    name: "user.eth",
+                    avatar: "https://example.com/avatar.png"
+                };
+            },
+        }),
+    ],
+});
+```
 
-Usage [#usage]
+### Migrate the database
+Run the migration or generate the schema to add the necessary fields and tables to the database.
 
-Generate a Nonce [#generate-a-nonce]
 
+#### migrate
+
+
+
+
+#### npm
+
+```bash
+npx auth migrate
+```
+
+#### pnpm
+
+```bash
+pnpm dlx auth migrate
+```
+
+#### yarn
+
+```bash
+yarn dlx auth migrate
+```
+
+#### bun
+
+```bash
+bun x auth migrate
+```
+
+
+#### generate
+
+
+
+
+#### npm
+
+```bash
+npx auth generate
+```
+
+#### pnpm
+
+```bash
+pnpm dlx auth generate
+```
+
+#### yarn
+
+```bash
+yarn dlx auth generate
+```
+
+#### bun
+
+```bash
+bun x auth generate
+```
+
+
+
+See the [Schema](#schema) section to add the fields manually.
+
+### Add the Client Plugin
+```ts title="auth-client.ts"
+import { createAuthClient } from "better-auth/client";
+import { siweClient } from "better-auth/client/plugins"; // [!code highlight]
+
+export const authClient = createAuthClient({
+plugins: [
+    siweClient() // [!code highlight]
+]
+});
+```
+
+
+## Usage
+## Generate a Nonce
 Before signing a SIWE message, you need to generate a nonce for the wallet address:
 
 ```ts
@@ -191,8 +146,7 @@ if (data) {
 }
 ```
 
-Sign In with Ethereum [#sign-in-with-ethereum]
-
+## Sign In with Ethereum
 After generating a nonce and creating a SIWE message, verify the signature to authenticate:
 
 ```ts
@@ -211,16 +165,11 @@ if (data) {
 }
 ```
 
-<Callout type="warning">
-  `message` must be a valid [ERC-4361](https://eips.ethereum.org/EIPS/eip-4361) message (which every standard SIWE client produces). Before accepting the signature, the plugin parses the message and requires its **nonce**, **domain**, **address**, and **Chain ID** to match the server-issued nonce and your configured `domain`, and it honors the message's `Expiration Time` / `Not Before` bounds. Signature recovery alone is **not** sufficient — this binding ensures a signature is only accepted together with the message it was produced for, bound to the current server-issued nonce. Verification fails with a 401 (`UNAUTHORIZED_SIWE_MESSAGE_MISMATCH`) if any field doesn't match.
-</Callout>
+> `message` must be a valid [ERC-4361](https://eips.ethereum.org/EIPS/eip-4361) message (which every standard SIWE client produces). Before accepting the signature, the plugin parses the message and requires its **nonce**, **domain**, **address**, and **Chain ID** to match the server-issued nonce and your configured `domain`, and it honors the message's `Expiration Time` / `Not Before` bounds. Signature recovery alone is **not** sufficient — this binding ensures a signature is only accepted together with the message it was produced for, bound to the current server-issued nonce. Verification fails with a 401 (`UNAUTHORIZED_SIWE_MESSAGE_MISMATCH`) if any field doesn't match.
 
-<Callout type="warning">
-  A SIWE signature proves control of the wallet, not ownership of the `email` you pass. The plugin stores that email unverified and only binds it to the new account when it is not already in use. When `anonymous` is `false` and the supplied email already belongs to another account, the new wallet account is created with a wallet-derived address instead, so a sign-in cannot attach an email another account owns.
-</Callout>
+> A SIWE signature proves control of the wallet, not ownership of the `email` you pass. The plugin stores that email unverified and only binds it to the new account when it is not already in use. When `anonymous` is `false` and the supplied email already belongs to another account, the new wallet account is created with a wallet-derived address instead, so a sign-in cannot attach an email another account owns.
 
-Chain-Specific Examples [#chain-specific-examples]
-
+## Chain-Specific Examples
 Here are examples for different blockchain networks:
 
 ```ts
@@ -271,14 +220,10 @@ const { data, error } = await authClient.siwe.verify({
 });
 ```
 
-<Callout type="warning">
-  The `chainId` must match the Chain ID specified in your SIWE message. Verification will fail with a 401 error if there's a mismatch between the message's Chain ID and the `chainId` parameter.
-</Callout>
+> The `chainId` must match the Chain ID specified in your SIWE message. Verification will fail with a 401 error if there's a mismatch between the message's Chain ID and the `chainId` parameter.
 
-Configuration Options [#configuration-options]
-
-Server Options [#server-options]
-
+## Configuration Options
+## Server Options
 The SIWE plugin accepts the following configuration options:
 
 * **domain**: The domain name of your application (required for SIWE message generation)
@@ -288,8 +233,7 @@ The SIWE plugin accepts the following configuration options:
 * **verifyMessage**: Function to verify the signature over the SIWE message. It only needs to perform signature recovery for the supplied address (e.g. viem's `verifyMessage`) and return `Promise<boolean>` — the plugin independently validates the message's nonce, domain, address, Chain ID, and time bounds before creating a session
 * **ensLookup**: Optional function to lookup ENS names and avatars for Ethereum addresses
 
-Client Options [#client-options]
-
+## Client Options
 The SIWE client plugin doesn't require any configuration options, but you can pass them if needed for future extensibility:
 
 ```ts title="auth-client.ts"
@@ -305,8 +249,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-Schema [#schema]
-
+## Schema
 The SIWE plugin adds a `walletAddress` table to store user wallet associations:
 
 | Field     | Type    | Description                               |
@@ -318,8 +261,7 @@ The SIWE plugin adds a `walletAddress` table to store user wallet associations:
 | isPrimary | boolean | Whether this is the user's primary wallet |
 | createdAt | date    | Creation timestamp                        |
 
-Example Implementation [#example-implementation]
-
+## Example Implementation
 Here's a complete example showing how to implement SIWE authentication:
 
 ```ts title="auth.ts"

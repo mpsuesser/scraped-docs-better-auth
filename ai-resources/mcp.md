@@ -2,78 +2,34 @@
 url: https://better-auth.com/llms.txt/docs/ai-resources/mcp
 title: "Mcp"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
-# MCP
-
 Connect Better Auth documentation to MCP-capable clients via the remote documentation MCP server.
-
-
 
 Better Auth hosts a **remote MCP server** that exposes documentation search, examples, and setup help to any MCP-capable client (Cursor, Claude Code, Open Code, and others).
 
 **Endpoint:** `https://mcp.better-auth.com/mcp`
 
-This is separate from the [MCP plugin](/docs/plugins/mcp), which adds MCP *provider authentication* to your app. The server above is for **consuming** Better Auth docs inside your editor or agent.
+This is separate from the [MCP plugin](https://better-auth.com/docs/plugins/mcp), which adds MCP *provider authentication* to your app. The server above is for **consuming** Better Auth docs inside your editor or agent.
 
-Using the CLI [#using-the-cli]
+## Using the CLI
 
-Run the [Better Auth CLI](/docs/concepts/cli) and pick your client:
+Run the [Better Auth CLI](https://better-auth.com/docs/concepts/cli) and pick your client:
 
-```bash title="terminal"
+```
 npx auth@latest mcp
 ```
 
 With no flags, the command lists supported targets. You can pass a target directly:
 
-<Tabs items={["Cursor", "Claude Code", "Open Code", "Manual"]}>
-  <Tab value="Cursor">
-    ```bash title="terminal"
-    npx auth@latest mcp --cursor
-    ```
+#### Cursor
 
-    This opens Cursor with a deeplink so the server is added to your MCP configuration.
+```
+npx auth@latest mcp --cursor
+```
 
-    You can also use the one-click control on this site:
+This opens Cursor with a deeplink so the server is added to your MCP configuration.
 
-    <AddToCursor />
-  </Tab>
-
-  <Tab value="Claude Code">
-    ```bash title="terminal"
-    npx auth@latest mcp --claude-code
-    ```
-
-    This runs `claude mcp add` with the Better Auth URL. If that fails, the CLI prints the exact command to run yourself.
-  </Tab>
-
-  <Tab value="Open Code">
-    ```bash title="terminal"
-    npx auth@latest mcp --open-code
-    ```
-
-    This merges a `better-auth` entry into `opencode.json` in the current directory (remote transport, URL above).
-  </Tab>
-
-  <Tab value="Manual">
-    ```bash title="terminal"
-    npx auth@latest mcp --manual
-    ```
-
-    Writes or merges `mcp.json` in the current working directory with:
-
-    ```json
-    {
-      "better-auth": {
-        "url": "https://mcp.better-auth.com/mcp"
-      }
-    }
-    ```
-
-    For **Cursor**, you can add the same `better-auth` entry to MCP config—commonly `~/.cursor/mcp.json` (user) or `.cursor/mcp.json` (project)—using the shape your Cursor version expects for HTTP servers (`url` for remote MCP).
-
-    Restart or reload MCP in your client after changes.
-  </Tab>
-</Tabs>
+You can also use the one-click control on this site:

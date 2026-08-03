@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/cookies
 title: "Cookies"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Cookies
@@ -14,8 +14,7 @@ Learn how Better Auth uses cookies, including cookie prefixes, custom cookie att
 
 Cookies are used to store data such as session tokens, session data, OAuth state, and more. All cookies are signed using the `secret` key provided in the auth options or the `BETTER_AUTH_SECRET` environment variable. If you use [versioned secrets](/docs/reference/options#secrets) for rotation, encrypted cookie data (such as JWE session caches) will automatically use the current key and remain decryptable with previous keys.
 
-Cookie Prefix [#cookie-prefix]
-
+## Cookie Prefix
 By default, Better Auth cookies follow the format `${prefix}.${cookie_name}`. The default prefix is "better-auth". You can change the prefix by setting `cookiePrefix` in the `advanced` object of the auth options.
 
 ```ts title="auth.ts"
@@ -28,8 +27,7 @@ export const auth = betterAuth({
 })
 ```
 
-Custom Cookies [#custom-cookies]
-
+## Custom Cookies
 All cookies are `httpOnly` and `secure` when the server is running in production mode.
 
 If you want to set custom cookie names and attributes, you can do so by setting `cookies` in the `advanced` object of the auth options.
@@ -59,19 +57,16 @@ export const auth = betterAuth({
 })
 ```
 
-Cross Subdomain Cookies [#cross-subdomain-cookies]
-
+## Cross Subdomain Cookies
 Sometimes you may need to share cookies across subdomains.
 For example, if you authenticate on `auth.example.com`, you may also want to access the same session on `app.example.com`.
 
-<Callout type="warn">
-  The `domain` attribute controls which domains can access the cookie. Setting it to your root domain (e.g. `example.com`) makes the cookie accessible across all subdomains. For security, follow these guidelines:
-
-  1. Only enable cross-subdomain cookies if it's necessary
-  2. Set the domain to the most specific scope needed (e.g. `app.example.com` instead of `.example.com`)
-  3. Be cautious of untrusted subdomains that could potentially access these cookies
-  4. Consider using separate domains for untrusted services (e.g. `status.company.com` vs `app.company.com`)
-</Callout>
+> The `domain` attribute controls which domains can access the cookie. Setting it to your root domain (e.g. `example.com`) makes the cookie accessible across all subdomains. For security, follow these guidelines:
+> 
+> 1. Only enable cross-subdomain cookies if it's necessary
+> 2. Set the domain to the most specific scope needed (e.g. `app.example.com` instead of `.example.com`)
+> 3. Be cautious of untrusted subdomains that could potentially access these cookies
+> 4. Consider using separate domains for untrusted services (e.g. `status.company.com` vs `app.company.com`)
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
@@ -91,8 +86,7 @@ export const auth = betterAuth({
 })
 ```
 
-Secure Cookies [#secure-cookies]
-
+## Secure Cookies
 By default, cookies are secure only when the server is running in production mode. You can force cookies to be always secure by setting `useSecureCookies` to `true` in the `advanced` object in the auth options.
 
 ```ts title="auth.ts"
@@ -105,8 +99,7 @@ export const auth = betterAuth({
 })
 ```
 
-Safari, ITP, and Cross-Domain Setups [#safari-itp-and-cross-domain-setups]
-
+## Safari, ITP, and Cross-Domain Setups
 Safari includes a privacy feature called Intelligent Tracking Prevention (ITP) that blocks third-party cookies.
 
 If your Better Auth API is hosted on a different domain than your frontend, Safari may block authentication cookies entirely.
@@ -134,8 +127,7 @@ To solve this, there are two solutions:
 1. Using a reverse proxy to proxy the request to the API.
 2. Using a shared parent domain.
 
-Using a Reverse Proxy [#using-a-reverse-proxy]
-
+## Using a Reverse Proxy
 Instead of calling your API directly, you can proxy it through the same domain as your frontend.
 
 For example, instead of calling:
@@ -154,8 +146,7 @@ Then configure your hosting provider to proxy the request to your actual API ser
 
 This makes the request appear first-party to Safari, allowing cookies to function correctly.
 
-Example with Netlify [#example-with-netlify]
-
+## Example with Netlify
 ```toml title="netlify.toml"
 [[redirects]]
   from = "/api/*"
@@ -164,8 +155,7 @@ Example with Netlify [#example-with-netlify]
   force = true
 ```
 
-Example with Vercel [#example-with-vercel]
-
+## Example with Vercel
 ```ts title="vercel.json"
 {
   "rewrites": [
@@ -177,8 +167,7 @@ Example with Vercel [#example-with-vercel]
 }
 ```
 
-Using a Shared Parent Domain [#using-a-shared-parent-domain]
-
+## Using a Shared Parent Domain
 You can also use a shared parent domain to allow cookies to be shared across subdomains:
 
 ```

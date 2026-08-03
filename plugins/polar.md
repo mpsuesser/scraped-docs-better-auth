@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/polar
 title: "Polar"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Polar
@@ -14,14 +14,11 @@ Better Auth Plugin for Payment and Checkouts using Polar
 
 [Polar](https://polar.sh) is a developer first payment infrastructure. Out of the box it provides a lot of developer first integrations for payments, checkouts and more. This plugin helps you integrate Polar with Better Auth to make your auth + payments flow seamless.
 
-<Callout>
-  This plugin is maintained by Polar team. For bugs, issues or feature requests,
-  please visit the [Polar GitHub
-  repo](https://github.com/polarsource/polar-adapters).
-</Callout>
+> This plugin is maintained by Polar team. For bugs, issues or feature requests,
+> please visit the [Polar GitHub
+> repo](https://github.com/polarsource/polar-adapters).
 
-Features [#features]
-
+## Features
 * Checkout Integration
 * Customer Portal
 * Automatic Customer creation on signup
@@ -29,14 +26,12 @@ Features [#features]
 * Handle Polar Webhooks securely with signature verification
 * Reference System to associate purchases with organizations
 
-Installation [#installation]
-
+## Installation
 ```bash
 pnpm add better-auth @polar-sh/better-auth @polar-sh/sdk
 ```
 
-Preparation [#preparation]
-
+## Preparation
 Go to your Polar Organization Settings, and create an Organization Access Token. Add it to your environment.
 
 ```bash
@@ -44,8 +39,7 @@ Go to your Polar Organization Settings, and create an Organization Access Token.
 POLAR_ACCESS_TOKEN=...
 ```
 
-Configuring BetterAuth Server [#configuring-betterauth-server]
-
+## Configuring BetterAuth Server
 The Polar plugin comes with a handful additional plugins which adds functionality to your stack.
 
 * Checkout - Enables a seamless checkout integration
@@ -98,8 +92,7 @@ const auth = betterAuth({
 });
 ```
 
-Configuring BetterAuth Client [#configuring-betterauth-client]
-
+## Configuring BetterAuth Client
 You will be using the BetterAuth Client to interact with the Polar functionalities.
 
 ```typescript
@@ -113,8 +106,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-Configuration Options [#configuration-options]
-
+## Configuration Options
 ```typescript
 import { betterAuth } from "better-auth";
 import {
@@ -153,23 +145,19 @@ const auth = betterAuth({
 });
 ```
 
-Required Options [#required-options]
-
+## Required Options
 * `client`: Polar SDK client instance
 
-Optional Options [#optional-options]
-
+## Optional Options
 * `createCustomerOnSignUp`: Automatically create a Polar customer when a user signs up
 * `getCustomerCreateParams`: Custom function to provide additional customer creation metadata
 
-Customers [#customers]
-
+## Customers
 When `createCustomerOnSignUp` is enabled, a new Polar Customer is automatically created when a new User is added in the Better-Auth Database.
 
 All new customers are created with an associated `externalId`, which is the ID of your User in the Database. This allows us to skip any Polar to User mapping in your Database.
 
-Checkout Plugin [#checkout-plugin]
-
+## Checkout Plugin
 To support checkouts in your app, simply pass the Checkout plugin to the use-property.
 
 ```typescript
@@ -210,8 +198,7 @@ Checkouts will automatically carry the authenticated User as the customer to the
 
 If `authenticatedUsersOnly` is `false` - then it will be possible to trigger checkout sessions without any associated customer.
 
-Organization Support [#organization-support]
-
+## Organization Support
 This plugin supports the Organization plugin. If you pass the organization ID to the Checkout referenceId, you will be able to keep track of purchases made from organization members.
 
 ```typescript
@@ -227,8 +214,7 @@ await authClient.checkout({
 });
 ```
 
-Portal Plugin [#portal-plugin]
-
+## Portal Plugin
 A plugin which enables customer management of their purchases, orders and subscriptions.
 
 ```typescript
@@ -250,16 +236,14 @@ const auth = betterAuth({
 
 The portal-plugin gives the BetterAuth Client a set of customer management methods, scoped under `authClient.customer`.
 
-Customer Portal Management [#customer-portal-management]
-
+## Customer Portal Management
 The following method will redirect the user to the Polar Customer Portal, where they can see orders, purchases, subscriptions, benefits, etc.
 
 ```typescript
 await authClient.customer.portal();
 ```
 
-Customer State [#customer-state]
-
+## Customer State
 The portal plugin also adds a convenient state-method for retrieving the general Customer State.
 
 ```typescript
@@ -278,14 +262,12 @@ Thus, with that single object, you have all the required information to check if
 
 [You can learn more about the Polar Customer State in the Polar Docs](https://docs.polar.sh/integrate/customer-state).
 
-Benefits, Orders & Subscriptions [#benefits-orders--subscriptions]
-
+## Benefits, Orders & Subscriptions
 The portal plugin adds 3 convenient methods for listing benefits, orders & subscriptions relevant to the authenticated user/customer.
 
 [All of these methods use the Polar CustomerPortal APIs](https://docs.polar.sh/api-reference/customer-portal)
 
-Benefits [#benefits]
-
+## Benefits
 This method only lists granted benefits for the authenticated user/customer.
 
 ```typescript
@@ -297,8 +279,7 @@ const { data: benefits } = await authClient.customer.benefits.list({
 });
 ```
 
-Orders [#orders]
-
+## Orders
 This method lists orders like purchases and subscription renewals for the authenticated user/customer.
 
 ```typescript
@@ -311,8 +292,7 @@ const { data: orders } = await authClient.customer.orders.list({
 });
 ```
 
-Subscriptions [#subscriptions]
-
+## Subscriptions
 This method lists the subscriptions associated with authenticated user/customer.
 
 ```typescript
@@ -350,8 +330,7 @@ const userShouldHaveAccess = subscriptions.some(
 )
 ```
 
-Usage Plugin [#usage-plugin]
-
+## Usage Plugin
 A simple plugin for Usage Based Billing.
 
 ```typescript
@@ -372,8 +351,7 @@ const auth = betterAuth({
 });
 ```
 
-Event Ingestion [#event-ingestion]
-
+## Event Ingestion
 Polar's Usage Based Billing builds entirely on event ingestion. Ingest events from your application, create Meters to represent that usage, and add metered prices to Products to charge for it.
 
 [Learn more about Usage Based Billing in the Polar Docs.](https://docs.polar.sh/features/usage-based-billing/introduction)
@@ -389,8 +367,7 @@ const { data: ingested } = await authClient.usage.ingest({
 
 The authenticated user is automatically associated with the ingested event.
 
-Customer Meters [#customer-meters]
-
+## Customer Meters
 A simple method for listing the authenticated user's Usage Meters, or as we call them, Customer Meters.
 
 Customer Meter's contains all information about their consumption on your defined meters.
@@ -411,8 +388,7 @@ const { data: customerMeters } = await authClient.usage.meters.list({
 });
 ```
 
-Webhooks Plugin [#webhooks-plugin]
-
+## Webhooks Plugin
 The Webhooks plugin can be used to capture incoming events from your Polar organization.
 
 ```typescript

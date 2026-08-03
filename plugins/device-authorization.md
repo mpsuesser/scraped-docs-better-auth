@@ -2,67 +2,31 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
-# Device Authorization
-
 OAuth 2.0 Device Authorization Grant for limited-input devices
-
-
 
 `RFC 8628` `CLI` `Smart TV` `IoT`
 
 The Device Authorization plugin implements the OAuth 2.0 Device Authorization Grant ([RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628)), enabling authentication for devices with limited input capabilities such as smart TVs, CLI applications, IoT devices, and gaming consoles.
 
-Try It Out [#try-it-out]
+## Try It Out
 
 You can test the device authorization flow right now using the Better Auth CLI:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
+#### npm
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
+```
+npx auth login
+```
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
+#### pnpm
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### yarn
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npx auth login
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm dlx auth login
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn dlx auth login
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="bun">
-    ```bash
-    bun x auth login
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
+#### bun
 
 This will demonstrate the complete device authorization flow by:
 
@@ -71,154 +35,64 @@ This will demonstrate the complete device authorization flow by:
 3. Opening your browser to the verification page
 4. Polling for authorization completion
 
-<Callout type="info">
-  The CLI login command is a demo feature that connects to the Better Auth demo server to showcase the device authorization flow in action.
-</Callout>
+## Installation
 
-Installation [#installation]
+### Add the plugin to your auth config
 
-<Steps>
-  <Step>
-    Add the plugin to your auth config [#add-the-plugin-to-your-auth-config]
+Add the device authorization plugin to your server configuration.
 
-    Add the device authorization plugin to your server configuration.
+```
+import { betterAuth } from "better-auth";
+import { deviceAuthorization } from "better-auth/plugins"; 
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
-    import { deviceAuthorization } from "better-auth/plugins"; // [!code highlight]
+export const auth = betterAuth({
+  // ... other config
+  plugins: [
+    deviceAuthorization({ 
+      verificationUri: "/device", 
+    }), 
+  ],
+});
+```
 
-    export const auth = betterAuth({
-      // ... other config
-      plugins: [
-        deviceAuthorization({ // [!code highlight]
-          verificationUri: "/device", // [!code highlight]
-        }), // [!code highlight]
-      ],
-    });
-    ```
-  </Step>
+### Migrate the database
 
-  <Step>
-    Migrate the database [#migrate-the-database]
+Run the migration or generate the schema to add the necessary tables to the database.
 
-    Run the migration or generate the schema to add the necessary tables to the database.
+#### migrate
 
-    <Tabs items={["migrate", "generate"]}>
-      <Tab value="migrate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
+#### npm
 
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
+#### generate
 
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
+```
+npx auth migrate
+```
 
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
+#### pnpm
 
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth migrate
-            ```
-          </CodeBlockTab>
+#### yarn
 
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth migrate
-            ```
-          </CodeBlockTab>
+#### bun
 
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth migrate
-            ```
-          </CodeBlockTab>
+See the [Schema](#schema) section to add the fields manually.
 
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth migrate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
+### Add the client plugin
 
-      <Tab value="generate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
+Add the device authorization plugin to your client.
 
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
+```
+import { createAuthClient } from "better-auth/client";
+import { deviceAuthorizationClient } from "better-auth/client/plugins"; 
 
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
+export const authClient = createAuthClient({
+  plugins: [
+    deviceAuthorizationClient(), 
+  ],
+});
+```
 
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
-
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth generate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
-    </Tabs>
-
-    See the [Schema](#schema) section to add the fields manually.
-  </Step>
-
-  <Step>
-    Add the client plugin [#add-the-client-plugin]
-
-    Add the device authorization plugin to your client.
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client";
-    import { deviceAuthorizationClient } from "better-auth/client/plugins"; // [!code highlight]
-
-    export const authClient = createAuthClient({
-      plugins: [
-        deviceAuthorizationClient(), // [!code highlight]
-      ],
-    });
-    ```
-  </Step>
-</Steps>
-
-How It Works [#how-it-works]
+## How It Works
 
 The device flow follows these steps:
 
@@ -227,61 +101,39 @@ The device flow follows these steps:
 3. **Device polls for token**: The device polls the server until the user completes authorization
 4. **Access granted**: Once authorized, the device receives an access token
 
-Basic Usage [#basic-usage]
+## Basic Usage
 
-Requesting Device Authorization [#requesting-device-authorization]
+### Requesting Device Authorization
 
 To initiate device authorization, call `device.code` with the client ID:
 
+POST/device/code
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.device.code({
-    client_id,
-    scope, // optional
-    user_id, // optional
+    client_id, // required
+    scope,
+    user_id,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.deviceCode({
-    body: {
-        client_id,
-        scope, // optional
-        user_id, // optional
-    }
-});
-```
+`client_id` string;required
 
-### Type Definition
+The OAuth client identifier
 
-```ts
-type deviceCode = {
-      /**
-       * The OAuth client identifier
-       */
-      client_id: string;
-      /**
-       * Space-separated list of requested scopes (optional)
-       */
-      scope?: string;
-      /**
-       * The user ID to which the device code should be pre-bound.
-       * When set, only that user can approve or deny the code.
-       * Pass this from trusted server-side code only. (optional)
-       */
-      user_id?: string;
-  
-}
-```
+`scope` string;
 
+Space-separated list of requested scopes (optional)
+
+`user_id` string;
+
+The user ID to which the device code should be pre-bound. When set, only that user can approve or deny the code. Pass this from trusted server-side code only. (optional)
 
 Example usage:
 
-```ts
+```
 import { authClient } from "@/lib/auth-client"
 
 const { data } = await authClient.device.code({
@@ -290,19 +142,19 @@ const { data } = await authClient.device.code({
 });
 
 if (data) {
-  console.log(`User code: ${data.user_code}`);
-  console.log(`Verification URL: ${data.verification_uri}`);
-  console.log(`Complete verification URL: ${data.verification_uri_complete}`);
+  console.log(\`User code: ${data.user_code}\`);
+  console.log(\`Verification URL: ${data.verification_uri}\`);
+  console.log(\`Complete verification URL: ${data.verification_uri_complete}\`);
 }
 ```
 
-Pre-binding to a User [#pre-binding-to-a-user]
+### Pre-binding to a User
 
 If your server already knows which user a device belongs to, pass `user_id` when requesting the device code. The code is then bound to that user from the start. It skips the claiming step, and only the bound user can approve or deny it. Any other signed-in user receives an `access_denied` error.
 
 This is useful when the user code is displayed where others can see it, because no one else can claim the code before the intended user verifies it.
 
-```ts title="server.ts"
+```
 const data = await auth.api.deviceCode({
   body: {
     client_id: "your-client-id",
@@ -312,61 +164,37 @@ const data = await auth.api.deviceCode({
 });
 ```
 
-<Callout type="warn">
-  Pass `user_id` from trusted server-side code. The parameter only restricts who can approve the code, so an untrusted device cannot use it to access another user's account. The protection is only meaningful when your server controls how codes are issued.
-</Callout>
-
-Polling for Token [#polling-for-token]
+### Polling for Token
 
 After displaying the user code, poll for the access token:
 
+POST/device/token
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.device.token({
-    grant_type,
-    device_code,
-    client_id,
+    grant_type, // required
+    device_code, // required
+    client_id, // required
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.deviceToken({
-    body: {
-        grant_type,
-        device_code,
-        client_id,
-    }
-});
-```
+`grant_type` string;required
 
-### Type Definition
+Must be "urn:ietf:params:oauth:grant-type:device\_code"
 
-```ts
-type deviceToken = {
-      /**
-       * Must be "urn:ietf:params:oauth:grant-type:device_code"
-       */
-      grant_type: string;
-      /**
-       * The device code from the initial request
-       */
-      device_code: string;
-      /**
-       * The OAuth client identifier
-       */
-      client_id: string;
-  
-}
-```
+`device_code` string;required
 
+The device code from the initial request
+
+`client_id` string;required
+
+The OAuth client identifier
 
 Example polling implementation:
 
-```ts
+```
 let pollingInterval = 5; // Start with 5 seconds
 const pollForToken = async () => {
   const { data, error } = await authClient.device.token({
@@ -375,7 +203,7 @@ const pollForToken = async () => {
     client_id: yourClientId,
     fetchOptions: {
       headers: {
-        "user-agent": `My CLI`,
+        "user-agent": \`My CLI\`,
       },
     },
   });
@@ -397,7 +225,7 @@ const pollForToken = async () => {
         console.error("The device code has expired. Please try again.");
         return;
       default:
-        console.error(`Error: ${error.error_description}`);
+        console.error(\`Error: ${error.error_description}\`);
         return;
     }
     setTimeout(pollForToken, pollingInterval * 1000);
@@ -407,20 +235,16 @@ const pollForToken = async () => {
 pollForToken();
 ```
 
-User Authorization Flow [#user-authorization-flow]
+### User Authorization Flow
 
 The user authorization flow requires two steps:
 
 1. **Code Verification**: Validate the user code via `GET /device`. The verification request claims the pending device code for the calling session.
 2. **Authorization**: The session that claimed the code can approve or deny it.
 
-<Callout type="warn">
-  Users must be authenticated when calling `GET /device`, because the verification step binds the pending device code to that session. Only the same session can later approve or deny. If the user is not authenticated when entering the code, redirect them to the login page with a return URL and re-call `GET /device` after sign-in.
-</Callout>
-
 Create a page where users can enter their code:
 
-```tsx title="app/device/page.tsx"
+```
 export default function DeviceAuthorizationPage() {
   const { data: session } = authClient.useSession();
   const searchParams = useSearchParams();
@@ -433,11 +257,11 @@ export default function DeviceAuthorizationPage() {
     try {
       // Format the code: remove dashes and convert to uppercase
       const formattedCode = userCode.trim().replace(/-/g, "").toUpperCase();
-      const approvalPath = `/device/approve?user_code=${encodeURIComponent(formattedCode)}`;
+      const approvalPath = \`/device/approve?user_code=${encodeURIComponent(formattedCode)}\`;
 
       if (!session?.user) {
-        const verificationPath = `/device?user_code=${encodeURIComponent(formattedCode)}`;
-        window.location.href = `/login?redirect=${encodeURIComponent(verificationPath)}`;
+        const verificationPath = \`/device?user_code=${encodeURIComponent(formattedCode)}\`;
+        window.location.href = \`/login?redirect=${encodeURIComponent(verificationPath)}\`;
         return;
       }
 
@@ -471,85 +295,45 @@ export default function DeviceAuthorizationPage() {
 }
 ```
 
-Approving or Denying Device [#approving-or-denying-device]
+### Approving or Denying Device
 
 Users must be authenticated to approve or deny device authorization requests:
 
-Approve Device [#approve-device]
+#### Approve Device
 
+POST/device/approve
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.device.approve({
-    userCode,
+    userCode, // required
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.deviceApprove({
-    body: {
-        userCode,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
+`userCode` string;required
+
+The user code to approve
+
+#### Deny Device
+
+POST/device/deny
+
 ```
-
-### Type Definition
-
-```ts
-type deviceApprove = {
-      /**
-       * The user code to approve
-       */
-      userCode: string;
-  
-}
-```
-
-
-Deny Device [#deny-device]
-
-
-### Client Side
-
-```ts
 const { data, error } = await authClient.device.deny({
-    userCode,
+    userCode, // required
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.deviceDeny({
-    body: {
-        userCode,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
+`userCode` string;required
+
+The user code to deny
+
+#### Example Approval Page
+
 ```
-
-### Type Definition
-
-```ts
-type deviceDeny = {
-      /**
-       * The user code to deny
-       */
-      userCode: string;
-  
-}
-```
-
-
-Example Approval Page [#example-approval-page]
-
-```tsx title="app/device/approve/page.tsx"
 export default function DeviceApprovalPage() {
   const { user } = useAuth(); // Must be authenticated
   const searchParams = useSearchParams();
@@ -587,8 +371,8 @@ export default function DeviceApprovalPage() {
 
   if (!user) {
     // Redirect to login if not authenticated
-    const verificationPath = `/device?user_code=${encodeURIComponent(userCode || "")}`;
-    window.location.href = `/login?redirect=${encodeURIComponent(verificationPath)}`;
+    const verificationPath = \`/device?user_code=${encodeURIComponent(userCode || "")}\`;
+    window.location.href = \`/login?redirect=${encodeURIComponent(verificationPath)}\`;
     return null;
   }
   
@@ -609,13 +393,13 @@ export default function DeviceApprovalPage() {
 }
 ```
 
-Advanced Configuration [#advanced-configuration]
+## Advanced Configuration
 
-Client Validation [#client-validation]
+### Client Validation
 
 You can validate client IDs to ensure only authorized applications can use the device flow:
 
-```ts
+```
 deviceAuthorization({
   validateClient: async (clientId) => {
     // Check if client is authorized
@@ -630,11 +414,11 @@ deviceAuthorization({
 })
 ```
 
-Custom Code Generation [#custom-code-generation]
+### Custom Code Generation
 
 Customize how device and user codes are generated:
 
-```ts
+```
 deviceAuthorization({
   generateDeviceCode: async () => {
     // Custom device code generation
@@ -655,27 +439,23 @@ deviceAuthorization({
 })
 ```
 
-Error Handling [#error-handling]
+## Error Handling
 
 The device flow defines specific error codes:
 
-| Error Code              | Description                                 |
-| ----------------------- | ------------------------------------------- |
+| Error Code | Description |
+| --- | --- |
 | `authorization_pending` | User hasn't approved yet (continue polling) |
-| `slow_down`             | Polling too frequently (increase interval)  |
-| `expired_token`         | Device code has expired                     |
-| `access_denied`         | User denied the authorization               |
-| `invalid_grant`         | Invalid device code or client ID            |
+| `slow_down` | Polling too frequently (increase interval) |
+| `expired_token` | Device code has expired |
+| `access_denied` | User denied the authorization |
+| `invalid_grant` | Invalid device code or client ID |
 
-Example: CLI Application [#example-cli-application]
+## Example: CLI Application
 
 Here's a complete example for a CLI application based on the actual demo:
 
-<Callout type="info">
-  To use the access token for API requests, ensure you have added the [Bearer plugin](/docs/plugins/bearer) to your auth instance.
-</Callout>
-
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client";
 import { deviceAuthorizationClient } from "better-auth/client/plugins";
 import open from "open";
@@ -710,15 +490,15 @@ async function authenticateCLI() {
     } = data;
     
     console.log("\n📱 Device Authorization in Progress");
-    console.log(`Please visit: ${verification_uri}`);
-    console.log(`Enter code: ${user_code}\n`);
+    console.log(\`Please visit: ${verification_uri}\`);
+    console.log(\`Enter code: ${user_code}\n\`);
     
     // Open browser to verification page
     const urlToOpen = verification_uri_complete || verification_uri;
     console.log("🌐 Opening browser...");
     await open(urlToOpen);
     
-    console.log(`⏳ Waiting for authorization... (polling every ${interval}s)`);
+    console.log(\`⏳ Waiting for authorization... (polling every ${interval}s)\`);
     
     // Poll for token
     await pollForToken(device_code, interval);
@@ -748,12 +528,12 @@ async function pollForToken(deviceCode: string, interval: number) {
           const { data: session } = await authClient.getSession({
             fetchOptions: {
               headers: {
-                Authorization: `Bearer ${data.access_token}`,
+                Authorization: \`Bearer ${data.access_token}\`,
               },
             },
           });
           
-          console.log(`Hello, ${session?.user?.name || "User"}!`);
+          console.log(\`Hello, ${session?.user?.name || "User"}!\`);
           resolve();
           process.exit(0);
         } else if (error) {
@@ -763,7 +543,7 @@ async function pollForToken(deviceCode: string, interval: number) {
               break;
             case "slow_down":
               pollingInterval += 5;
-              console.log(`⚠️  Slowing down polling to ${pollingInterval}s`);
+              console.log(\`⚠️  Slowing down polling to ${pollingInterval}s\`);
               break;
             case "access_denied":
               console.error("❌ Access was denied by the user");
@@ -799,7 +579,7 @@ authenticateCLI().catch((err) => {
 });
 ```
 
-Security Considerations [#security-considerations]
+## Security Considerations
 
 1. **Rate Limiting**: The plugin enforces polling intervals to prevent abuse
 2. **Code Expiration**: Device and user codes expire after the configured time (default: 30 minutes)
@@ -809,9 +589,9 @@ Security Considerations [#security-considerations]
 6. **Authentication Required**: Users must be authenticated when calling `GET /device`. The verification step claims the pending device code for the calling session, and only that session can later approve or deny it
 7. **Pre-binding**: Device codes issued with `user_id` skip the claiming step and can only be approved or denied by that user. Pass `user_id` from trusted server-side code only
 
-Options [#options]
+## Options
 
-Server [#server]
+### Server
 
 **verificationUri**: The URL of the verification page where users can enter their device code. Match this to the route of your verification page. Returned as `verification_uri` in the response. Can be an absolute URL (e.g., `https://example.com/device`) or relative path (e.g., `/device`). Default: `/device`.
 
@@ -831,79 +611,108 @@ Server [#server]
 
 **onDeviceAuthRequest**: Hook called when device authorization is requested. Takes clientId and optional scope.
 
-Client [#client]
+### Client
 
 No client-specific configuration options. The plugin adds the following methods:
 
-* **device()**: Verify user code validity
-* **device.code()**: Request device and user codes
-* **device.token()**: Poll for access token
-* **device.approve()**: Approve device (requires authentication)
-* **device.deny()**: Deny device (requires authentication)
+- **device()**: Verify user code validity
+- **device.code()**: Request device and user codes
+- **device.token()**: Poll for access token
+- **device.approve()**: Approve device (requires authentication)
+- **device.deny()**: Deny device (requires authentication)
 
-Schema [#schema]
+## Schema
 
 The plugin requires a new table to store device authorization data.
 
 Table Name: `deviceCode`
 
-export const deviceCodeTableFields = [
-	{
-		name: "id",
-		type: "string",
-		description: "Unique identifier for the device authorization request",
-		isPrimaryKey: true,
-	},
-	{
-		name: "deviceCode",
-		type: "string",
-		description: "The device verification code",
-	},
-	{
-		name: "userCode",
-		type: "string",
-		description: "The user-friendly code for verification",
-	},
-	{
-		name: "userId",
-		type: "string",
-		description: "The ID of the user who approved/denied",
-		isOptional: true,
-	},
-	{
-		name: "clientId",
-		type: "string",
-		description: "The OAuth client identifier",
-		isOptional: true,
-	},
-	{
-		name: "scope",
-		type: "string",
-		description: "Requested OAuth scopes",
-		isOptional: true,
-	},
-	{
-		name: "status",
-		type: "string",
-		description: "Current status: pending, approved, or denied",
-	},
-	{
-		name: "expiresAt",
-		type: "Date",
-		description: "When the device code expires",
-	},
-	{
-		name: "lastPolledAt",
-		type: "Date",
-		description: "Last time the device polled for status",
-		isOptional: true,
-	},
-	{
-		name: "pollingInterval",
-		type: "number",
-		description: "Minimum seconds between polls",
-		isOptional: true,
-	},
-];
+Table
 
-<DatabaseTable name="deviceCode" fields={deviceCodeTableFields} />
+Field
+
+Type
+
+Key
+
+Description
+
+id
+
+string
+
+PK
+
+Unique identifier for the device authorization request
+
+deviceCode
+
+string
+
+\-
+
+The device verification code
+
+userCode
+
+string
+
+\-
+
+The user-friendly code for verification
+
+userId?
+
+string
+
+\-
+
+The ID of the user who approved/denied
+
+clientId?
+
+string
+
+\-
+
+The OAuth client identifier
+
+scope?
+
+string
+
+\-
+
+Requested OAuth scopes
+
+status
+
+string
+
+\-
+
+Current status: pending, approved, or denied
+
+expiresAt
+
+Date
+
+\-
+
+When the device code expires
+
+lastPolledAt?
+
+Date
+
+\-
+
+Last time the device polled for status
+
+pollingInterval?
+
+number
+
+\-
+
+Minimum seconds between polls

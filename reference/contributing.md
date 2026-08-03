@@ -2,155 +2,126 @@
 url: https://better-auth.com/llms.txt/docs/reference/contributing
 title: "Contributing"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Contributing to BetterAuth
 
 A concise guide to contributing to BetterAuth
 
-
-
 Thank you for your interest in contributing to Better Auth! This guide is a concise guide to contributing to Better Auth.
 
-Getting Started [#getting-started]
+## Getting Started
 
 Before diving in, here are a few important resources:
 
-* Take a look at our existing <Link href="https://github.com/better-auth/better-auth/issues">issues</Link> and <Link href="https://github.com/better-auth/better-auth/pulls">pull requests</Link>
-* Join our community discussions in <Link href="https://discord.gg/better-auth">Discord</Link>
+- Take a look at our existing [issues](https://github.com/better-auth/better-auth/issues) and [pull requests](https://github.com/better-auth/better-auth/pulls)
+- Join our community discussions in [Discord](https://discord.gg/better-auth)
 
-Development Setup [#development-setup]
+## Development Setup
 
 To get started with development:
 
-<Callout type="warn">
-  Make sure you have <Link href="https://nodejs.org/en/download">Node.JS</Link>{" "}
-  installed, preferably on LTS.
-</Callout>
+### 1\. Fork the repository
 
-<Steps>
-  <Step>
-    1. Fork the repository [#1-fork-the-repository]
+Visit [https://github.com/better-auth/better-auth](https://github.com/better-auth/better-auth)
 
-    Visit [https://github.com/better-auth/better-auth](https://github.com/better-auth/better-auth)
+Click the "Fork" button in the top right.
 
-    Click the "Fork" button in the top right.
-  </Step>
+### 2\. Clone your fork
 
-  <Step>
-    2. Clone your fork [#2-clone-your-fork]
+```
+# Replace YOUR-USERNAME with your GitHub username
+git clone https://github.com/YOUR-USERNAME/better-auth.git
+cd better-auth
+```
 
-    ```bash
-    # Replace YOUR-USERNAME with your GitHub username
-    git clone https://github.com/YOUR-USERNAME/better-auth.git
-    cd better-auth
-    ```
-  </Step>
+### 3\. Install dependencies
 
-  <Step>
-    3. Install dependencies [#3-install-dependencies]
+Make sure you have [pnpm](https://pnpm.io/installation) installed!
 
-    Make sure you have <Link href="https://pnpm.io/installation">pnpm</Link> installed!
+```
+pnpm install
+```
 
-    ```bash
-    pnpm install
-    ```
-  </Step>
+### 4\. Prepare ENV files
 
-  <Step>
-    4. Prepare ENV files [#4-prepare-env-files]
+Copy the example env file to create your new `.env` file.
 
-    Copy the example env file to create your new `.env` file.
+```
+cp -n ./docs/.env.example ./docs/.env
+```
 
-    ```bash
-    cp -n ./docs/.env.example ./docs/.env
-    ```
-  </Step>
-</Steps>
-
-Making changes [#making-changes]
+## Making changes
 
 Once you have an idea of what you want to contribute, you can start making changes. Here are some steps to get started:
 
-<Steps>
-  <Step>
-    1. Create a new branch [#1-create-a-new-branch]
+### 1\. Create a new branch
 
-    ```bash
-    # Add upstream remote (if not already added)
-    git remote add upstream https://github.com/better-auth/better-auth.git
+```
+# Add upstream remote (if not already added)
+git remote add upstream https://github.com/better-auth/better-auth.git
 
-    # Make sure you're on main
-    git checkout main
+# Make sure you're on main
+git checkout main
 
-    # Pull latest changes
-    git pull upstream main
+# Pull latest changes
+git pull upstream main
 
-    # Create and switch to a new branch
-    git checkout -b feature/your-feature-name
-    ```
-  </Step>
+# Create and switch to a new branch
+git checkout -b feature/your-feature-name
+```
 
-  <Step>
-    2. Start development server [#2-start-development-server]
+### 2\. Start development server
 
-    Start the development server:
+Start the development server:
 
-    ```bash
-    pnpm dev
-    ```
+```
+pnpm dev
+```
 
-    To start the docs server:
+To start the docs server:
 
-    ```bash
-    pnpm -F docs dev
-    ```
-  </Step>
+```
+pnpm -F docs dev
+```
 
-  <Step>
-    3. Make Your Changes [#3-make-your-changes]
+### 3\. Make Your Changes
 
-    * Make your changes to the codebase.
+- Make your changes to the codebase.
+- Write tests if needed. (Read more about [testing](https://better-auth.com/docs/reference/contributing#testing))
+- Update documentation. (Read more about [documenting](https://better-auth.com/docs/reference/contributing#documentation))
 
-    * Write tests if needed. (Read more about <Link href="/docs/reference/contributing#testing">testing</Link>)
+### Issues and Bug Fixes
 
-    * Update documentation. (Read more about <Link href="/docs/reference/contributing#documentation">documenting</Link>)
-  </Step>
-</Steps>
+- Check our [GitHub issues](https://github.com/better-auth/better-auth/issues) for tasks labeled `good first issue`
+- When reporting bugs, include steps to reproduce and expected behavior
+- Comment on issues you'd like to work on to avoid duplicate efforts
 
-Issues and Bug Fixes [#issues-and-bug-fixes]
-
-* Check our [GitHub issues](https://github.com/better-auth/better-auth/issues) for tasks labeled `good first issue`
-* When reporting bugs, include steps to reproduce and expected behavior
-* Comment on issues you'd like to work on to avoid duplicate efforts
-
-Framework Integrations [#framework-integrations]
+### Framework Integrations
 
 We welcome contributions to support more frameworks:
 
-* Focus on framework-agnostic solutions where possible
-* Keep integrations minimal and maintainable
-* All integrations currently live in the main package
+- Focus on framework-agnostic solutions where possible
+- Keep integrations minimal and maintainable
+- All integrations currently live in the main package
 
-Plugin Development [#plugin-development]
+### Plugin Development
 
-* For core plugins: Open an issue first to discuss your idea
-* For community plugins: Feel free to develop independently
-* Follow our plugin architecture guidelines
+- For core plugins: Open an issue first to discuss your idea
+- For community plugins: Feel free to develop independently
+- Follow our plugin architecture guidelines
 
-Documentation [#documentation]
+### Documentation
 
-* Fix typos and errors
-* Add examples and clarify existing content
-* Ensure documentation is up to date with code changes
+- Fix typos and errors
+- Add examples and clarify existing content
+- Ensure documentation is up to date with code changes
 
-Testing [#testing]
+## Testing
 
 We use Vitest for testing. Place test files next to the source files they test:
 
-```ts
+```
 import { describe, it, expect } from "vitest";
 import { getTestInstance } from "./test-utils/test-instance";
 
@@ -163,11 +134,11 @@ describe("Feature", () => {
 });
 ```
 
-Using the Test Instance Helper [#using-the-test-instance-helper]
+### Using the Test Instance Helper
 
 The test instance helper now includes improved async context support for managing user sessions:
 
-```ts
+```
 const { client, runWithUser, signInWithTestUser } = await getTestInstance();
 
 // Run tests with a specific user context
@@ -184,20 +155,20 @@ await runWithDefaultUser(async (headers) => {
 });
 ```
 
-Testing Best Practices [#testing-best-practices]
+### Testing Best Practices
 
-* Write clear commit messages
-* Update documentation to reflect your changes
-* Add tests for new features
-* Follow our coding standards
-* Keep pull requests focused on a single change
+- Write clear commit messages
+- Update documentation to reflect your changes
+- Add tests for new features
+- Follow our coding standards
+- Keep pull requests focused on a single change
 
-Need Help? [#need-help]
+## Need Help?
 
 Don't hesitate to ask for help! You can:
 
-* Open an <Link href="https://github.com/better-auth/better-auth/issues">issue</Link> with questions
-* Join our <Link href="https://discord.gg/better-auth">community discussions</Link>
-* Reach out to project maintainers
+- Open an [issue](https://github.com/better-auth/better-auth/issues) with questions
+- Join our [community discussions](https://discord.gg/better-auth)
+- Reach out to project maintainers
 
 Thank you for contributing to Better Auth!

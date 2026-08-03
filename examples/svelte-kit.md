@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/examples/svelte-kit
 title: "Svelte Kit"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # SvelteKit Example
@@ -17,24 +17,11 @@ This is an example of how to use Better Auth with SvelteKit.
 **Implements the following features:**
 Email & Password . <u>Social Sign-in with Google</u> . Passkeys . Email Verification . Password Reset . Two Factor Authentication . Profile Update . Session Management
 
-<ForkButton url="better-auth/examples/tree/main/svelte-kit-example" />
+[View example on GitHub](https://github.com/better-auth/examples/tree/main/svelte-kit-example)
 
-<iframe
-  src="https://stackblitz.com/github/better-auth/examples/tree/main/svelte-kit-example?codemirror=1&fontsize=14&hidenavigation=1&runonclick=1&hidedevtools=1"
-  style={{
-width: "100%",
-height: "500px",
-border: 0,
-borderRadius: "4px",
-overflow: "hidden"
-}}
-  title="Better Auth SvelteKit Example"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-/>
+[Better Auth SvelteKit Example](https://stackblitz.com/github/better-auth/examples/tree/main/svelte-kit-example?codemirror=1&fontsize=14&hidenavigation=1&runonclick=1&hidedevtools=1)
 
-How to run [#how-to-run]
-
+## How to run
 1. Clone the code sandbox (or the repo) and open it in your code editor
 2. Move .env.example to .env and provide necessary variables
 3. Run the following commands

@@ -2,848 +2,614 @@
 url: https://better-auth.com/llms.txt/docs/guides/workos-migration-guide
 title: "Workos Migration Guide"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Migrating from WorkOS to Better Auth
 
 A step-by-step guide to transitioning from WorkOS to Better Auth.
 
-
-
 In this guide, we’ll walk through how to migrate a project from WorkOS to Better Auth, covering how to move a basic WorkOS setup integrated with a Next.js app and the key considerations to keep in mind.
 
-Before we begin [#before-we-begin]
+## Before we begin
 
 Before getting started, let’s review which WorkOS authentication features are fully or partially supported in Better Auth. If a feature you use in WorkOS is available via a plugin, you’ll need to configure it in the next step.
 
-<Accordions type="multiple">
-  <Accordion title="🟢 Supported">
-    <>
-      | from WorkOS            | to Better Auth                                                                                     |
-      | ---------------------- | -------------------------------------------------------------------------------------------------- |
-      | Single Sign-On         | Use the [SSO Plugin](/docs/plugins/sso).                                                           |
-      | Email + Password       | Built-in support.                                                                                  |
-      | Passkeys               | Use the [Passkey Plugin](/docs/plugins/passkey).                                                   |
-      | Social Login           | Built-in support with even more providers.                                                         |
-      | Multi-Factor Auth      | Use the [Two Factor Plugin](/docs/plugins/2fa).                                                    |
-      | Magic Auth             | Use the [Magic Link Plugin](/docs/plugins/magic-link).                                             |
-      | CLI Auth               | Use the [Device Authorization Plugin](/docs/plugins/device-authorization).                         |
-      | API Keys               | Use the [API Key Plugin](/docs/plugins/api-key).                                                   |
-      | Custom Emails          | Fully customizable.                                                                                |
-      | Directory Provisioning | Use the [SCIM Plugin](/docs/plugins/scim).                                                         |
-      | Domain Verification    | Use the [SSO Plugin](/docs/plugins/sso).                                                           |
-      | Email Verification     | Built-in support.                                                                                  |
-      | Identity Linking       | Built-in support.                                                                                  |
-      | Impersonation          | Use the [Admin Plugin](/docs/plugins/admin).                                                       |
-      | JWT Templates          | Use the [JWT Plugin](/docs/plugins/jwt).                                                           |
-      | Metadata External IDs  | Can be freely added by [extending the core schema](/docs/concepts/database#extending-core-schema). |
-      | Roles and Permissions  | Use the [Organization Plugin](/docs/plugins/organization).                                         |
-    </>
-  </Accordion>
-
-  <Accordion title="🟡 Partially supported">
-    <>
-      | from WorkOS           | to Better Auth                                                                                                                                                   |
-      | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-      | JIT Provisioning      | Partially supported via the [SSO Plugin](/docs/plugins/sso).                                                                                                     |
-      | Invitations           | No ready-to-use dashboard is provided, but can be implemented using the [Admin Plugin](/docs/plugins/admin) + [Organization Plugin](/docs/plugins/organization). |
-      | Organization Policies | Partially supported, but can be fully implemented using [SSO Plugin](/docs/plugins/sso) + [Organization Plugin](/docs/plugins/organization) hooks.               |
-    </>
-  </Accordion>
-</Accordions>
-
-<Steps>
-  <Step>
-    Create Better Auth Instance [#create-better-auth-instance]
-
-    First, set up Better Auth in your project. Follow the [installation guide](/docs/installation) to get started.
-
-    Database [#database]
-
-    Better Auth supports various databases. Set up your preferred database. In this guide, we’ll use PostgreSQL with the default database adapter.
-
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
-    import { Pool } from "pg";
-
-    export const auth = betterAuth({
-      database: new Pool({ // [!code highlight]
-        connectionString: process.env.DATABASE_URL, // [!code highlight]
-      }), // [!code highlight]
-    });
-    ```
-
-    Email & Password [#email--password]
-
-    Enable Email & Password authentication as shown below. Since WorkOS verifies each user’s email by default, this setup is similar to the default behavior. You can adjust it if needed. For more information, see the [email/password authentication documentation](/docs/authentication/email-password).
-
-    ```ts
-    import { betterAuth } from "better-auth";
-    import { Pool } from "pg";
-
-    export const auth = betterAuth({
-      database: new Pool({
-        connectionString: process.env.DATABASE_URL,
-      }),
-      emailAndPassword: { // [!code highlight]
-        enabled: true, // [!code highlight]
-        requireEmailVerification: true, // [!code highlight]
-        minPasswordLength: 10, // [!code highlight]
-        sendResetPassword: async ({ user, url, token }, request) => { // [!code highlight]
-          // Implement your email sending logic // [!code highlight]
-        }, // [!code highlight]
-      }, // [!code highlight]
-      emailVerification: { // [!code highlight]
-        sendVerificationEmail: async ({ user, url, token }, request) => { // [!code highlight]
-          // Implement your email sending logic // [!code highlight]
-        }, // [!code highlight]
-      }, // [!code highlight]
-    });
-    ```
-
-    Social Providers (optional) [#social-providers-optional]
-
-    Set up the social providers you used in WorkOS as follows. Better Auth supports a wider range of providers, so you can add more if needed. Since WorkOS ensures emails are unique, configure `account.accountLinking` in Better Auth to ensure the same behavior.
-
-    ```ts
-    import { betterAuth } from "better-auth";
-    import { Pool } from "pg";
-
-    export const auth = betterAuth({
-      // ... other options
-
-      socialProviders: { // [!code highlight]
-        github: { // [!code highlight]
-          clientId: process.env.GITHUB_CLIENT_ID!, // [!code highlight]
-          clientSecret: process.env.GITHUB_CLIENT_SECRET!, // [!code highlight]
-        }, // [!code highlight]
-        // ... other providers // [!code highlight]
-      }, // [!code highlight]
-      account: { // [!code highlight]
-        accountLinking: { // [!code highlight]
-          enabled: true, // [!code highlight]
-          trustedProviders: ["email-password", "github"], // [!code highlight]
-        }, // [!code highlight]
-      }, // [!code highlight]
-    });
-    ```
-
-    Additional Fields [#additional-fields]
-
-    {/* cspell:disable-next-line */}
-
-    You probably used metadata in WorkOS. To preserve that metadata and the user id from WorkOS (e.g., user\_01KBT4BMFF7ASGRDD0WZ6W63FF), extend the `user` schema as shown below. Better Auth provides a more flexible way to store user data. For more information, see the [extending the core schema documentation](/docs/concepts/database#extending-core-schema).
-
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
-    import { Pool } from "pg";
-
-    export const auth = betterAuth({
-      // ... other options
-      
-      user: { // [!code highlight]
-        additionalFields: { // [!code highlight]
-          metadata: { // [!code highlight]
-            type: "json", // [!code highlight]
-            required: false, // [!code highlight]
-            defaultValue: null, // [!code highlight]
-          }, // [!code highlight]
-        }, // [!code highlight]
-      }, // [!code highlight]
-    });
-    ```
-
-    Plugins [#plugins]
-
-    Refer to the [section](#before-we-begin) mapping WorkOS features to Better Auth. If a feature you used in WorkOS is available as a Better Auth plugin, add it to the plugin options. Better Auth provides a wider range of out-of-the-box features through plugins. For more information, see the [plugin documentation](/docs/concepts/plugins).
-
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
-    import { haveIBeenPwned } from "better-auth/plugins/haveibeenpwned";
-    import { Pool } from "pg";
-
-    export const auth = betterAuth({
-      // ... other options
-      
-      plugins: [ // [!code highlight]
-        haveIBeenPwned() // [!code highlight]
-        // ... other plugins // [!code highlight]
-      ], // [!code highlight]
-    });
-    ```
-
-    <Callout type="info">
-      If you rely on advanced WorkOS features beyond basic email+password and social login, refer to the feature mapping above to configure the appropriate plugins.
-    </Callout>
-  </Step>
-
-  <Step>
-    Generate Schema [#generate-schema]
-
-    Better Auth allows you to control your own database, and you can easily generate the appropriate schema for your auth instance using the CLI. For more information, see the [CLI documentation](/docs/concepts/cli).
-
-    Default database adapter [#default-database-adapter]
-
-    Run the `migrate` command to create the schema for your Better Auth instance in the database.
-
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npx auth migrate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm dlx auth migrate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn dlx auth migrate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun x auth migrate
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-
-    Other database adapters [#other-database-adapters]
-
-    If you’re using a database adapter like Prisma or Drizzle, use the `generate` command to create the schema for your ORM. After that, run the migration with an external tool such as Drizzle Kit.
-
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npx auth generate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm dlx auth generate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn dlx auth generate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun x auth generate
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Step>
-
-  <Step>
-    Migration Script [#migration-script]
-
-    Create Migration Script [#create-migration-script]
-
-    Create a migration script to import your user data from WorkOS into your database.
-
-    ```ts title="scripts/migration.ts"
-    import { auth } from "@/lib/auth"; // Your auth instance path
-    import { WorkOS } from "@workos-inc/node";
-
-    //==============================================================================
-
-    /*
-      Rate limiting configuration
-
-      WorkOS Read APIs: 1,000 requests per 10 seconds
-      Default setting: Use 80% of limit to avoid edge cases
-
-      Reference: https://workos.com/docs/reference/rate-limits
-    */
-    const TIME_WINDOW_MS = 10 * 1000; // Time window in ms (10 seconds)
-    const MAX_REQUESTS_PER_WINDOW = 800; // Maximum API calls per time window
-    const USERS_PER_REQUEST = 100; // How many users to fetch per API call
-
-    //==============================================================================
-
-    if (!process.env.WORKOS_API_KEY || !process.env.WORKOS_CLIENT_ID) {
-      throw new Error(
-        "Missing required environment variables WORKOS_API_KEY and/or WORKOS_CLIENT_ID",
-      );
-    }
-    const workos = new WorkOS(process.env.WORKOS_API_KEY);
-
-    /**
-     * Create a rate limiter to track and control request rate
-     */
-    const createRateLimiter = (maxRequests: number, windowMs: number) => {
-      let requestTimestamps: number[] = [];
-
-      const waitIfNeeded = async (): Promise<void> => {
-        const now = Date.now();
-
-        // Remove timestamps outside the current window
-        requestTimestamps = requestTimestamps.filter(
-          (timestamp) => now - timestamp < windowMs,
-        );
-
-        // If we've hit the limit, calculate wait time
-        if (requestTimestamps.length >= maxRequests) {
-          const oldestTimestamp = requestTimestamps[0]!;
-          const waitTime = windowMs - (now - oldestTimestamp) + 1000; // 1 sec buffer
-
-          console.log(
-            `⏳ Throttling (${requestTimestamps.length}/${maxRequests} calls used). Waiting ${Math.ceil(waitTime / 1000)}s...`,
-          );
-          await new Promise((resolve) => setTimeout(resolve, waitTime));
-
-          // Clean up old timestamps after waiting
-          const newNow = Date.now();
-          requestTimestamps = requestTimestamps.filter(
-            (timestamp) => newNow - timestamp < windowMs,
-          );
-        }
-
-        // Record this request
-        requestTimestamps.push(Date.now());
-      };
-
-      const getStats = (): {
-        current: number;
-        max: number;
-        windowMinutes: number;
-      } => {
-        const now = Date.now();
-        requestTimestamps = requestTimestamps.filter(
-          (timestamp) => now - timestamp < windowMs,
-        );
-
-        return {
-          current: requestTimestamps.length,
-          max: maxRequests,
-          windowMinutes: windowMs / (60 * 1000),
-        };
-      };
-
-      return { waitIfNeeded, getStats };
-    };
-
-    /**
-     * Safely converts various date formats to Date object.
-     * Returns current date if conversion fails (safe for createdAt/updatedAt).
-     */
-    const safeDateConversion = (date?: string | number | Date | null): Date => {
-      if (date == null) return new Date();
-
-      if (date instanceof Date) return new Date(date.getTime());
-
-      if (typeof date === "number") {
-        if (!Number.isFinite(date)) return new Date();
-        return new Date(date);
-      }
-
-      if (typeof date === "string") {
-        const trimmed = date.trim();
-        if (trimmed === "") return new Date();
-        const parsed = new Date(trimmed);
-        if (isNaN(parsed.getTime())) return new Date();
-        return parsed;
-      }
-
-      return new Date();
-    };
-
-    /**
-     * Safely converts firstName and lastName to a full name string.
-     * Returns "Username" if both names are empty.
-     */
-    const safeNameConversion = (
-      firstName?: string | null,
-      lastName?: string | null,
-    ): string => {
-      const trimmedFirstName = firstName?.trim();
-      const trimmedLastName = lastName?.trim();
-
-      if (trimmedFirstName && trimmedLastName) {
-        return `${trimmedFirstName} ${trimmedLastName}`;
-      }
-
-      if (trimmedFirstName) return trimmedFirstName;
-      if (trimmedLastName) return trimmedLastName;
-
-      return "Username";
-    };
-
-    async function migrateFromWorkOS() {
-      const ctx = await auth.$context;
-      const rateLimiter = createRateLimiter(
-        MAX_REQUESTS_PER_WINDOW,
-        TIME_WINDOW_MS,
-      );
-
-      let totalUsers = 0;
-      let migratedUsers = 0;
-      let skippedUsers = 0;
-      let failedUsers = 0;
-
-      let hasMoreUsers = true;
-      let after: string | undefined;
-      let batchCount = 0;
-
-      console.log("");
-      console.log("=".repeat(40));
-      console.log("🚀 Starting migration");
-      console.log("");
-      console.log(`Settings:`);
+## Create Better Auth Instance
+
+First, set up Better Auth in your project. Follow the [installation guide](https://better-auth.com/docs/installation) to get started.
+
+### Database
+
+Better Auth supports various databases. Set up your preferred database. In this guide, we’ll use PostgreSQL with the default database adapter.
+
+```
+import { betterAuth } from "better-auth";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  database: new Pool({ 
+    connectionString: process.env.DATABASE_URL, 
+  }), 
+});
+```
+
+### Email & Password
+
+Enable Email & Password authentication as shown below. Since WorkOS verifies each user’s email by default, this setup is similar to the default behavior. You can adjust it if needed. For more information, see the [email/password authentication documentation](https://better-auth.com/docs/authentication/email-password).
+
+```
+import { betterAuth } from "better-auth";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  database: new Pool({
+    connectionString: process.env.DATABASE_URL,
+  }),
+  emailAndPassword: { 
+    enabled: true, 
+    requireEmailVerification: true, 
+    minPasswordLength: 10, 
+    sendResetPassword: async ({ user, url, token }, request) => { 
+      // Implement your email sending logic
+    }, 
+  }, 
+  emailVerification: { 
+    sendVerificationEmail: async ({ user, url, token }, request) => { 
+      // Implement your email sending logic
+    }, 
+  }, 
+});
+```
+
+### Social Providers (optional)
+
+Set up the social providers you used in WorkOS as follows. Better Auth supports a wider range of providers, so you can add more if needed. Since WorkOS ensures emails are unique, configure `account.accountLinking` in Better Auth to ensure the same behavior.
+
+```
+import { betterAuth } from "better-auth";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  // ... other options
+
+  socialProviders: { 
+    github: { 
+      clientId: process.env.GITHUB_CLIENT_ID!, 
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!, 
+    }, 
+    // ... other providers
+  }, 
+  account: { 
+    accountLinking: { 
+      enabled: true, 
+      trustedProviders: ["email-password", "github"], 
+    }, 
+  }, 
+});
+```
+
+### Additional Fields
+
+You probably used metadata in WorkOS. To preserve that metadata and the user id from WorkOS (e.g., user\_01KBT4BMFF7ASGRDD0WZ6W63FF), extend the `user` schema as shown below. Better Auth provides a more flexible way to store user data. For more information, see the [extending the core schema documentation](https://better-auth.com/docs/concepts/database#extending-core-schema).
+
+```
+import { betterAuth } from "better-auth";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  // ... other options
+  
+  user: { 
+    additionalFields: { 
+      metadata: { 
+        type: "json", 
+        required: false, 
+        defaultValue: null, 
+      }, 
+    }, 
+  }, 
+});
+```
+
+### Plugins
+
+Refer to the [section](#before-we-begin) mapping WorkOS features to Better Auth. If a feature you used in WorkOS is available as a Better Auth plugin, add it to the plugin options. Better Auth provides a wider range of out-of-the-box features through plugins. For more information, see the [plugin documentation](https://better-auth.com/docs/concepts/plugins).
+
+```
+import { betterAuth } from "better-auth";
+import { haveIBeenPwned } from "better-auth/plugins/haveibeenpwned";
+import { Pool } from "pg";
+
+export const auth = betterAuth({
+  // ... other options
+  
+  plugins: [ 
+    haveIBeenPwned() 
+    // ... other plugins
+  ], 
+});
+```
+
+## Generate Schema
+
+Better Auth allows you to control your own database, and you can easily generate the appropriate schema for your auth instance using the CLI. For more information, see the [CLI documentation](https://better-auth.com/docs/concepts/cli).
+
+### Default database adapter
+
+Run the `migrate` command to create the schema for your Better Auth instance in the database.
+
+#### npm
+
+```
+npx auth migrate
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+### Other database adapters
+
+If you’re using a database adapter like Prisma or Drizzle, use the `generate` command to create the schema for your ORM. After that, run the migration with an external tool such as Drizzle Kit.
+
+#### npm
+
+```
+npx auth generate
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+## Migration Script
+
+### Create Migration Script
+
+Create a migration script to import your user data from WorkOS into your database.
+
+```
+import { auth } from "@/lib/auth"; // Your auth instance path
+import { WorkOS } from "@workos-inc/node";
+
+//==============================================================================
+
+/*
+  Rate limiting configuration
+
+  WorkOS Read APIs: 1,000 requests per 10 seconds
+  Default setting: Use 80% of limit to avoid edge cases
+
+  Reference: https://workos.com/docs/reference/rate-limits
+*/
+const TIME_WINDOW_MS = 10 * 1000; // Time window in ms (10 seconds)
+const MAX_REQUESTS_PER_WINDOW = 800; // Maximum API calls per time window
+const USERS_PER_REQUEST = 100; // How many users to fetch per API call
+
+//==============================================================================
+
+if (!process.env.WORKOS_API_KEY || !process.env.WORKOS_CLIENT_ID) {
+  throw new Error(
+    "Missing required environment variables WORKOS_API_KEY and/or WORKOS_CLIENT_ID",
+  );
+}
+const workos = new WorkOS(process.env.WORKOS_API_KEY);
+
+/**
+ * Create a rate limiter to track and control request rate
+ */
+const createRateLimiter = (maxRequests: number, windowMs: number) => {
+  let requestTimestamps: number[] = [];
+
+  const waitIfNeeded = async (): Promise<void> => {
+    const now = Date.now();
+
+    // Remove timestamps outside the current window
+    requestTimestamps = requestTimestamps.filter(
+      (timestamp) => now - timestamp < windowMs,
+    );
+
+    // If we've hit the limit, calculate wait time
+    if (requestTimestamps.length >= maxRequests) {
+      const oldestTimestamp = requestTimestamps[0]!;
+      const waitTime = windowMs - (now - oldestTimestamp) + 1000; // 1 sec buffer
+
       console.log(
-        ` - Max API calls: ${MAX_REQUESTS_PER_WINDOW} per ${TIME_WINDOW_MS / 1000}s`,
+        \`⏳ Throttling (${requestTimestamps.length}/${maxRequests} calls used). Waiting ${Math.ceil(waitTime / 1000)}s...\`,
       );
-      console.log(` - Users per call: ${USERS_PER_REQUEST}`);
-      console.log("=".repeat(40));
-      console.log("");
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
 
-      while (hasMoreUsers) {
-        try {
-          await rateLimiter.waitIfNeeded();
-
-          const workosUserList = await workos.userManagement.listUsers({
-            limit: USERS_PER_REQUEST,
-            after,
-          });
-
-          batchCount++;
-          console.log(
-            `📦 Batch ${batchCount}: Fetched ${workosUserList.data.length} users from WorkOS`,
-          );
-
-          after = workosUserList.listMetadata.after || undefined;
-          hasMoreUsers = !!after;
-          totalUsers += workosUserList.data.length;
-
-          for (const workosUser of workosUserList.data) {
-            try {
-              console.log(`\nProcessing user: ${workosUser.email}`);
-
-              // Check if user already exists by email
-              // WorkOS ensures all user emails are unique via an email verification process
-              const existingUser = await ctx.adapter.findOne<
-                typeof auth.$Infer.Session.user
-              >({
-                model: "user",
-                where: [
-                  {
-                    field: "email",
-                    value: workosUser.email,
-                  },
-                ],
-              });
-
-              if (existingUser) {
-                console.log(
-                  `🟡 User already exists, skipping: ${workosUser.email}`,
-                );
-                skippedUsers++;
-                continue;
-              }
-
-              // Create the user
-              await ctx.adapter.create<typeof auth.$Infer.Session.user>({
-                model: "user",
-                data: {
-                  email: workosUser.email,
-                  emailVerified: workosUser.emailVerified,
-                  image: workosUser.profilePictureUrl,
-                  name: safeNameConversion(
-                    workosUser.firstName,
-                    workosUser.lastName,
-                  ),
-                  createdAt: safeDateConversion(workosUser.createdAt),
-                  updatedAt: safeDateConversion(workosUser.updatedAt),
-                  metadata: {
-                    workosId: workosUser.id,
-                    ...(workosUser.metadata || {}),
-                  },
-                },
-              });
-
-              console.log(`🟢 Migrated user ${workosUser.email}`);
-              migratedUsers++;
-            } catch (error) {
-              console.error(
-                `🔴 Failed to migrate user ${workosUser.email}\n`,
-                error,
-              );
-              failedUsers++;
-            }
-          }
-
-          console.log("");
-        } catch (error) {
-          console.error("🚨 Error fetching batch:", error);
-          throw error;
-        }
-      }
-
-      console.log("");
-      console.log("=".repeat(40));
-      console.log("📝 Migration Summary");
-      console.log(`Total users processed: ${totalUsers}`);
-      console.log("");
-      console.log(`🔴 Failed: ${failedUsers}`);
-      console.log(`🟡 Skipped: ${skippedUsers}`);
-      console.log(`🟢 Successfully migrated: ${migratedUsers}`);
-      console.log("=".repeat(40));
+      // Clean up old timestamps after waiting
+      const newNow = Date.now();
+      requestTimestamps = requestTimestamps.filter(
+        (timestamp) => newNow - timestamp < windowMs,
+      );
     }
 
-    async function main() {
-      try {
-        await migrateFromWorkOS();
-        process.exit(0);
-      } catch (error) {
-        console.error("\nMigration failed:", error);
-        process.exit(1);
-      }
-    }
-    main();
-    ```
+    // Record this request
+    requestTimestamps.push(Date.now());
+  };
 
-    <Callout type="info">
-      **Notes**
+  const getStats = (): {
+    current: number;
+    max: number;
+    windowMinutes: number;
+  } => {
+    const now = Date.now();
+    requestTimestamps = requestTimestamps.filter(
+      (timestamp) => now - timestamp < windowMs,
+    );
 
-      * When retrieving user data from WorkOS, you need to use their API, which is subject to rate limits. The example script includes a basic configuration, so adjust it as needed for your environment.
-      * This migration script covers the common cases of managing users with email+password and social login. For features like SSO or CLI Auth, which are provided as plugins in Better Auth, be sure to update the script based on the examples.
-    </Callout>
-
-    Run Migration Script [#run-migration-script]
-
-    ```bash title="Terminal"
-    bun scripts/migration.ts # or use node, ts-node, etc.
-    ```
-
-    🎉 Now that you’ve migrated your user data into your database, let’s look at how to update your application logic.
-  </Step>
-
-  <Step>
-    Create Client Instance [#create-client-instance]
-
-    This client instance includes a set of functions for interacting with the Better Auth server instance. For more information, see the [client documentation](/docs/concepts/client).
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/react";
-
-    export const authClient = createAuthClient({
-        plugins: [
-            // Add plugins that require a client, if needed
-        ]
-    });
-    ```
-  </Step>
-
-  <Step>
-    Create API Route [#create-api-route]
-
-    In WorkOS, the auth API was provided as a managed service. With Better Auth, the auth API now lives directly within your application.
-
-    ```ts title="/app/api/auth/[...all]/route.ts"
-    import { auth } from "@/lib/auth";
-    import { toNextJsHandler } from "better-auth/next-js";
-
-    export const { POST, GET } = toNextJsHandler(auth)
-    ```
-  </Step>
-
-  <Step>
-    Sign-in/Sign-up Page [#sign-insign-up-page]
-
-    In WorkOS, you probably fetched and used the URL like this.
-
-    ```ts
-    const signInUrl = await getSignInUrl();
-    const signUpUrl = await getSignUpUrl();
-    ```
-
-    In Better Auth, instead of fetching these values via an API, you can create the pages at your desired paths and use them directly.
-  </Step>
-
-  <Step>
-    Protecting Resources [#protecting-resources]
-
-    > Proxy (Middleware) is not intended for slow data fetching. While Proxy can be helpful for optimistic checks such as permission-based redirects, it should not be used as a full session management or authorization solution. - [Next.js docs](https://nextjs.org/docs/app/getting-started/proxy#use-cases)
-
-    Middleware auth [#middleware-auth]
-
-    WorkOS provides Proxy (Middleware) authentication. Better Auth doesn’t recommend protecting resources directly in middleware, so we don't provide dedicated helpers for that.
-
-    ```ts title="proxy.ts / middleware.ts"
-    import { authkitMiddleware } from '@workos-inc/authkit-nextjs';
-
-    export default authkitMiddleware({
-      middlewareAuth: {
-        enabled: true,
-        unauthenticatedPaths: ['/'],
-      },
-    });
-
-    export const config = { matcher: ['/', '/account/:page*'] };
-    ```
-
-    In Better Auth, for convenience rather than resource protection, the proxy (middleware) can be used as follows. This is supported in Next.js 15+ with the Node.js runtime.
-
-    ```ts title="proxy.ts"
-    import { NextRequest, NextResponse } from "next/server";
-    import { headers } from "next/headers";
-    import { auth } from "@/lib/auth";
-
-    export async function proxy(request: NextRequest) {
-        const session = await auth.api.getSession({
-            headers: await headers()
-        })
-
-        // This is the recommended approach to optimistically redirect users
-        // We recommend handling auth checks in each page/route
-        if(!session) {
-            return NextResponse.redirect(new URL("/sign-in", request.url));
-        }
-
-        return NextResponse.next();
-    }
-
-    export const config = {
-      matcher: ["/dashboard"], // Specify the routes the middleware applies to
+    return {
+      current: requestTimestamps.length,
+      max: maxRequests,
+      windowMinutes: windowMs / (60 * 1000),
     };
-    ```
+  };
 
-    Page based auth [#page-based-auth]
+  return { waitIfNeeded, getStats };
+};
 
-    In WorkOS, if resources were protected on each page, you can update the logic in Better Auth as follows.
+/**
+ * Safely converts various date formats to Date object.
+ * Returns current date if conversion fails (safe for createdAt/updatedAt).
+ */
+const safeDateConversion = (date?: string | number | Date | null): Date => {
+  if (date == null) return new Date();
 
-    Server-side [#server-side]
+  if (date instanceof Date) return new Date(date.getTime());
 
-    <Tabs items={["WorkOS", "Better Auth"]}>
-      <Tab value="WorkOS">
-        ```ts title="app/dashboard/page.tsx"
-        import { withAuth } from "@workos-inc/authkit-nextjs";
+  if (typeof date === "number") {
+    if (!Number.isFinite(date)) return new Date();
+    return new Date(date);
+  }
 
-        export default async function DashboardPage() {
-          const { user } = await withAuth({ ensureSignedIn: true });
+  if (typeof date === "string") {
+    const trimmed = date.trim();
+    if (trimmed === "") return new Date();
+    const parsed = new Date(trimmed);
+    if (isNaN(parsed.getTime())) return new Date();
+    return parsed;
+  }
 
-          return (
-            <div>
-              <p>Welcome {user.firstName && `, ${user.lastName}`}</p>
-            </div>
-          );
-        }
-        ```
-      </Tab>
+  return new Date();
+};
 
-      <Tab value="Better Auth">
-        ```ts title="app/dashboard/page.tsx"
-        import { auth } from "@/lib/auth";
-        import { headers } from "next/headers";
-        import { redirect } from "next/navigation";
+/**
+ * Safely converts firstName and lastName to a full name string.
+ * Returns "Username" if both names are empty.
+ */
+const safeNameConversion = (
+  firstName?: string | null,
+  lastName?: string | null,
+): string => {
+  const trimmedFirstName = firstName?.trim();
+  const trimmedLastName = lastName?.trim();
 
-        const DashboardPage = async () => {
-          const session = await auth.api.getSession({
-            headers: await headers(),
+  if (trimmedFirstName && trimmedLastName) {
+    return \`${trimmedFirstName} ${trimmedLastName}\`;
+  }
+
+  if (trimmedFirstName) return trimmedFirstName;
+  if (trimmedLastName) return trimmedLastName;
+
+  return "Username";
+};
+
+async function migrateFromWorkOS() {
+  const ctx = await auth.$context;
+  const rateLimiter = createRateLimiter(
+    MAX_REQUESTS_PER_WINDOW,
+    TIME_WINDOW_MS,
+  );
+
+  let totalUsers = 0;
+  let migratedUsers = 0;
+  let skippedUsers = 0;
+  let failedUsers = 0;
+
+  let hasMoreUsers = true;
+  let after: string | undefined;
+  let batchCount = 0;
+
+  console.log("");
+  console.log("=".repeat(40));
+  console.log("🚀 Starting migration");
+  console.log("");
+  console.log(\`Settings:\`);
+  console.log(
+    \` - Max API calls: ${MAX_REQUESTS_PER_WINDOW} per ${TIME_WINDOW_MS / 1000}s\`,
+  );
+  console.log(\` - Users per call: ${USERS_PER_REQUEST}\`);
+  console.log("=".repeat(40));
+  console.log("");
+
+  while (hasMoreUsers) {
+    try {
+      await rateLimiter.waitIfNeeded();
+
+      const workosUserList = await workos.userManagement.listUsers({
+        limit: USERS_PER_REQUEST,
+        after,
+      });
+
+      batchCount++;
+      console.log(
+        \`📦 Batch ${batchCount}: Fetched ${workosUserList.data.length} users from WorkOS\`,
+      );
+
+      after = workosUserList.listMetadata.after || undefined;
+      hasMoreUsers = !!after;
+      totalUsers += workosUserList.data.length;
+
+      for (const workosUser of workosUserList.data) {
+        try {
+          console.log(\`\nProcessing user: ${workosUser.email}\`);
+
+          // Check if user already exists by email
+          // WorkOS ensures all user emails are unique via an email verification process
+          const existingUser = await ctx.adapter.findOne<
+            typeof auth.$Infer.Session.user
+          >({
+            model: "user",
+            where: [
+              {
+                field: "email",
+                value: workosUser.email,
+              },
+            ],
           });
 
-          if (!session) {
-            redirect("/sign-in");
+          if (existingUser) {
+            console.log(
+              \`🟡 User already exists, skipping: ${workosUser.email}\`,
+            );
+            skippedUsers++;
+            continue;
           }
 
-          return (
-            <div>
-              <p>Welcome {session.user.name}</p>
-            </div>
+          // Create the user
+          await ctx.adapter.create<typeof auth.$Infer.Session.user>({
+            model: "user",
+            data: {
+              email: workosUser.email,
+              emailVerified: workosUser.emailVerified,
+              image: workosUser.profilePictureUrl,
+              name: safeNameConversion(
+                workosUser.firstName,
+                workosUser.lastName,
+              ),
+              createdAt: safeDateConversion(workosUser.createdAt),
+              updatedAt: safeDateConversion(workosUser.updatedAt),
+              metadata: {
+                workosId: workosUser.id,
+                ...(workosUser.metadata || {}),
+              },
+            },
+          });
+
+          console.log(\`🟢 Migrated user ${workosUser.email}\`);
+          migratedUsers++;
+        } catch (error) {
+          console.error(
+            \`🔴 Failed to migrate user ${workosUser.email}\n\`,
+            error,
           );
-        };
-
-        export default DashboardPage;
-        ```
-      </Tab>
-    </Tabs>
-
-    Client-side [#client-side]
-
-    <Tabs items={["WorkOS", "Better Auth"]}>
-      <Tab value="WorkOS">
-        ```ts title="app/dashboard/page.tsx"
-        "use client";
-
-        import { useAuth } from "@workos-inc/authkit-nextjs/components";
-
-        export default function HomePage() {
-          const { user, loading } = useAuth({ ensureSignedIn: true });
-
-          if (loading) {
-            return <div>Loading...</div>;
-          }
-
-          return (
-            <div>
-              <p>Welcome {user.firstName && `, ${user.lastName}`}</p>
-            </div>
-          );
+          failedUsers++;
         }
+      }
 
-        ```
-      </Tab>
+      console.log("");
+    } catch (error) {
+      console.error("🚨 Error fetching batch:", error);
+      throw error;
+    }
+  }
 
-      <Tab value="Better Auth">
-        ```ts title="app/dashboard/page.tsx"
-        "use client";
+  console.log("");
+  console.log("=".repeat(40));
+  console.log("📝 Migration Summary");
+  console.log(\`Total users processed: ${totalUsers}\`);
+  console.log("");
+  console.log(\`🔴 Failed: ${failedUsers}\`);
+  console.log(\`🟡 Skipped: ${skippedUsers}\`);
+  console.log(\`🟢 Successfully migrated: ${migratedUsers}\`);
+  console.log("=".repeat(40));
+}
 
-        import { authClient } from "@/lib/auth-client";
-        import { redirect } from "next/navigation";
+async function main() {
+  try {
+    await migrateFromWorkOS();
+    process.exit(0);
+  } catch (error) {
+    console.error("\nMigration failed:", error);
+    process.exit(1);
+  }
+}
+main();
+```
 
-        const DashboardPage = () => {
-          const { data, error, isPending } = authClient.useSession();
+### Run Migration Script
 
-          if (isPending) {
-            return <div>Pending...</div>;
-          }
-          if (!data || error) {
-            redirect("/sign-in");
-          }
+```
+bun scripts/migration.ts # or use node, ts-node, etc.
+```
 
-          return (
-            <div>
-              <p>Welcome {data.user.name}</p>
-            </div>
-          );
-        };
+🎉 Now that you’ve migrated your user data into your database, let’s look at how to update your application logic.
 
-        export default DashboardPage;
-        ```
-      </Tab>
-    </Tabs>
+## Create Client Instance
 
-    <Callout type="info">
-      If options like `ensureSignedIn` were convenient in WorkOS, you can create a reusable helper like `ensureSession()` in Better Auth.
-    </Callout>
-  </Step>
+This client instance includes a set of functions for interacting with the Better Auth server instance. For more information, see the [client documentation](https://better-auth.com/docs/concepts/client).
 
-  <Step>
-    Remove WorkOS Dependencies [#remove-workos-dependencies]
+```
+import { createAuthClient } from "better-auth/react";
 
-    After verifying everything works, remove WorkOS dependencies:
+export const authClient = createAuthClient({
+    plugins: [
+        // Add plugins that require a client, if needed
+    ]
+});
+```
 
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+## Create API Route
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+In WorkOS, the auth API was provided as a managed service. With Better Auth, the auth API now lives directly within your application.
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+```
+import { auth } from "@/lib/auth";
+import { toNextJsHandler } from "better-auth/next-js";
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+export const { POST, GET } = toNextJsHandler(auth)
+```
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npm uninstall @workos-inc/node @workos-inc/authkit-nextjs
-        ```
-      </CodeBlockTab>
+## Sign-in/Sign-up Page
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm remove @workos-inc/node @workos-inc/authkit-nextjs
-        ```
-      </CodeBlockTab>
+In WorkOS, you probably fetched and used the URL like this.
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn remove @workos-inc/node @workos-inc/authkit-nextjs
-        ```
-      </CodeBlockTab>
+```
+const signInUrl = await getSignInUrl();
+const signUpUrl = await getSignUpUrl();
+```
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun remove @workos-inc/node @workos-inc/authkit-nextjs
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Step>
-</Steps>
+In Better Auth, instead of fetching these values via an API, you can create the pages at your desired paths and use them directly.
 
-Considerations [#considerations]
+## Protecting Resources
 
-<strong className="underline italic">
-  Password hashes
-</strong>
+> Proxy (Middleware) is not intended for slow data fetching. While Proxy can be helpful for optimistic checks such as permission-based redirects, it should not be used as a full session management or authorization solution. - [Next.js docs](https://nextjs.org/docs/app/getting-started/proxy#use-cases)
+
+### Middleware auth
+
+WorkOS provides Proxy (Middleware) authentication. Better Auth doesn’t recommend protecting resources directly in middleware, so we don't provide dedicated helpers for that.
+
+```
+import { authkitMiddleware } from '@workos-inc/authkit-nextjs';
+
+export default authkitMiddleware({
+  middlewareAuth: {
+    enabled: true,
+    unauthenticatedPaths: ['/'],
+  },
+});
+
+export const config = { matcher: ['/', '/account/:page*'] };
+```
+
+In Better Auth, for convenience rather than resource protection, the proxy (middleware) can be used as follows. This is supported in Next.js 15+ with the Node.js runtime.
+
+```
+import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+
+export async function proxy(request: NextRequest) {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
+
+    // This is the recommended approach to optimistically redirect users
+    // We recommend handling auth checks in each page/route
+    if(!session) {
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+
+    return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/dashboard"], // Specify the routes the middleware applies to
+};
+```
+
+### Page based auth
+
+In WorkOS, if resources were protected on each page, you can update the logic in Better Auth as follows.
+
+#### Server-side
+
+#### WorkOS
+
+```
+import { withAuth } from "@workos-inc/authkit-nextjs";
+
+export default async function DashboardPage() {
+  const { user } = await withAuth({ ensureSignedIn: true });
+
+  return (
+    <div>
+      <p>Welcome {user.firstName && \`, ${user.lastName}\`}</p>
+    </div>
+  );
+}
+```
+
+#### Better Auth
+
+#### Client-side
+
+#### WorkOS
+
+```
+"use client";
+
+import { useAuth } from "@workos-inc/authkit-nextjs/components";
+
+export default function HomePage() {
+  const { user, loading } = useAuth({ ensureSignedIn: true });
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <p>Welcome {user.firstName && \`, ${user.lastName}\`}</p>
+    </div>
+  );
+}
+```
+
+#### Better Auth
+
+## Remove WorkOS Dependencies
+
+After verifying everything works, remove WorkOS dependencies:
+
+#### npm
+
+```
+npm uninstall @workos-inc/node @workos-inc/authkit-nextjs
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+## Considerations
+
+**Password hashes**
 
 If you’ve been managing users with an email + password system, WorkOS does not provide an export of password hashes at this time. After migration, users will need to reset their passwords within your authentication system. Make sure to notify them of this change with sufficient lead time both before and after the migration.
 
-<strong className="underline italic">
-  Data syncing
-</strong>
+**Data syncing**
 
 WorkOS is a managed service and keeps your data in sync with your server through APIs or Webhooks. With Better Auth, you fully own your authentication system and can manage data freely through the API. However, if you previously relied on Webhooks for synchronization, additional adjustments will be needed.
 
-<strong className="underline italic">
-  Downtime
-</strong>
+**Downtime**
 
 WorkOS exposes data through its API, but with limitations such as the inability to export password hashes. Because of these constraints, performing a migration with zero downtime is challenging. Plan the migration carefully, allow enough buffer time, and communicate the expected impact to your users.
 
-<strong className="underline italic">
-  Active sessions
-</strong>
+**Active sessions**
 
 Existing active sessions will not be migrated. After the migration, users will need to sign in again, so be sure to notify them in advance.
 
-Wrapping Up [#wrapping-up]
+## Wrapping Up
 
-Congratulations! You've successfully migrated from WorkOS to Better Auth. Better Auth offers greater flexibility and more features, so be sure to explore the [documentation](/docs) to unlock its full potential.
+Congratulations! You've successfully migrated from WorkOS to Better Auth. Better Auth offers greater flexibility and more features, so be sure to explore the [documentation](https://better-auth.com/docs) to unlock its full potential.
 
-If you need help with migration, join our [community](/community) or reach out for [Enterprise support](/enterprise).
+If you need help with migration, join our [community](https://better-auth.com/community) or reach out for [Enterprise support](https://better-auth.com/enterprise).

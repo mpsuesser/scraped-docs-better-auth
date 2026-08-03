@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/dynamic-base-url
 title: "Dynamic Base Url"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Dynamic Base URL
@@ -20,8 +20,7 @@ Use dynamic base URL when your app is served from more than one hostname, such a
 
 The configuration itself lives on the [`baseURL` option](/docs/reference/options#baseurl). This guide focuses on when to use it and how to structure it safely.
 
-Basic Setup [#basic-setup]
-
+## Basic Setup
 Configure `baseURL` as an object with an `allowedHosts` allowlist:
 
 ```ts title="auth.ts"
@@ -40,10 +39,8 @@ export const auth = betterAuth({
 
 When a request comes in, Better Auth extracts the host from `x-forwarded-host`, `host` header, or the request URL (in that order), validates it against `allowedHosts`, and uses the matched value to build the request-specific base URL.
 
-Common Deployment Patterns [#common-deployment-patterns]
-
-Vercel Deployment [#vercel-deployment]
-
+## Common Deployment Patterns
+## Vercel Deployment
 ```ts title="auth.ts"
 export const auth = betterAuth({
 	baseURL: {
@@ -56,8 +53,7 @@ export const auth = betterAuth({
 })
 ```
 
-Development + Production [#development--production]
-
+## Development + Production
 ```ts title="auth.ts"
 export const auth = betterAuth({
 	baseURL: {
@@ -72,8 +68,7 @@ export const auth = betterAuth({
 })
 ```
 
-Multiple Production Domains [#multiple-production-domains]
-
+## Multiple Production Domains
 ```ts title="auth.ts"
 export const auth = betterAuth({
 	baseURL: {
@@ -87,8 +82,7 @@ export const auth = betterAuth({
 })
 ```
 
-Choosing a Fallback [#choosing-a-fallback]
-
+## Choosing a Fallback
 By default, Better Auth throws if the incoming host does not match `allowedHosts`. That is usually the safer default because it exposes proxy or deployment mistakes immediately.
 
 If you need a fallback, set one explicitly:
@@ -104,8 +98,7 @@ export const auth = betterAuth({
 
 Use this only when falling back to a canonical domain is clearly preferable to failing the request.
 
-Cookies Across Subdomains [#cookies-across-subdomains]
-
+## Cookies Across Subdomains
 If you need to share cookies across subdomains, you can enable `crossSubDomainCookies` while still using dynamic base URL. Better Auth will derive the cookie domain from the resolved host unless you set `domain` explicitly.
 
 ```ts title="auth.ts"
@@ -148,8 +141,7 @@ export const auth = betterAuth({
 
 See [Cookies](/docs/concepts/cookies#cross-subdomain-cookies) for the full cookie behavior.
 
-Security Model [#security-model]
-
+## Security Model
 Dynamic base URL uses an allowlist model:
 
 1. Only hosts listed in `allowedHosts` are accepted
@@ -159,6 +151,5 @@ Dynamic base URL uses an allowlist model:
 
 This keeps multi-domain support explicit instead of trusting arbitrary headers or platform-specific behavior.
 
-Reference [#reference]
-
+## Reference
 For the exact option shape and property-level behavior, see [`baseURL` in the options reference](/docs/reference/options#baseurl).

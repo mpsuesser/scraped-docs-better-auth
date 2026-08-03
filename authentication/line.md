@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/line
 title: "Line"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # LINE
@@ -12,45 +12,37 @@ LINE provider setup and usage.
 
 
 
-<Steps>
-  <Step>
-    Get your LINE credentials [#get-your-line-credentials]
 
-    1. Create a channel in the LINE Developers Console.
-    2. Note your Channel ID (client\_id) and Channel secret (client\_secret).
-    3. In the channel settings, add your Redirect URI, e.g. `http://localhost:3000/api/auth/callback/line` for local development.
-    4. Enable required scopes (at least `openid`; add `profile`, `email` if you need name, avatar, email).
+### Get your LINE credentials
+1. Create a channel in the LINE Developers Console.
+2. Note your Channel ID (client\_id) and Channel secret (client\_secret).
+3. In the channel settings, add your Redirect URI, e.g. `http://localhost:3000/api/auth/callback/line` for local development.
+4. Enable required scopes (at least `openid`; add `profile`, `email` if you need name, avatar, email).
 
-    See the [LINE Login v2.1 reference](https://developers.line.biz/en/reference/line-login/#issue-access-token) for details.
-  </Step>
+See the [LINE Login v2.1 reference](https://developers.line.biz/en/reference/line-login/#issue-access-token) for details.
 
-  <Step>
-    Configure the provider [#configure-the-provider]
+### Configure the provider
+Add your LINE credentials to `socialProviders.line` in your auth configuration.
 
-    Add your LINE credentials to `socialProviders.line` in your auth configuration.
+```ts title="auth.ts"
+import { betterAuth } from "better-auth";
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
+export const auth = betterAuth({
+  socialProviders: {
+    line: {
+      clientId: process.env.LINE_CLIENT_ID as string,
+      clientSecret: process.env.LINE_CLIENT_SECRET as string,
+      // redirectURI: "https://your.app/api/auth/callback/line", // uncomment to use a custom redirect URI
+      // scope: ["custom"], // uncomment to add additional scopes
+      // disableDefaultScope: true, // uncomment to replace default scopes [`openid`, `profile`, `email`]
+    },
+  },
+});
+```
 
-    export const auth = betterAuth({
-      socialProviders: {
-        line: {
-          clientId: process.env.LINE_CLIENT_ID as string,
-          clientSecret: process.env.LINE_CLIENT_SECRET as string,
-          // redirectURI: "https://your.app/api/auth/callback/line", // uncomment to use a custom redirect URI
-          // scope: ["custom"], // uncomment to add additional scopes
-          // disableDefaultScope: true, // uncomment to replace default scopes [`openid`, `profile`, `email`]
-        },
-      },
-    });
-    ```
-  </Step>
-</Steps>
 
-Usage [#usage]
-
-Sign In with LINE [#sign-in-with-line]
-
+## Usage
+## Sign In with LINE
 Use the client `signIn.social` with `provider: "line"`.
 
 ```ts title="auth-client.ts"
@@ -62,8 +54,7 @@ async function signInWithLINE() {
 }
 ```
 
-Sign In with LINE using ID Token (optional) [#sign-in-with-line-using-id-token-optional]
-
+## Sign In with LINE using ID Token (optional)
 If you obtain the LINE ID token on the client, you can sign in directly without redirection.
 
 ```ts title="auth-client.ts"
@@ -76,16 +67,14 @@ await authClient.signIn.social({
 });
 ```
 
-Notes [#notes]
-
+## Notes
 * Default scopes include `openid profile email`. Adjust as needed via provider options.
 * Verify redirect URI exactly matches the value configured in LINE Developers Console.
 * LINE ID token verification uses the official endpoint and checks audience and optional nonce per spec.
 
 Designing a login button? Follow LINE's button [guidelines](https://developers.line.biz/en/docs/line-login/login-button/).
 
-Multi-Channel Support [#multi-channel-support]
-
+## Multi-Channel Support
 LINE requires separate OAuth channels for different countries (Japan, Thailand, Taiwan, etc.), each with its own `clientId` and `clientSecret`. The standard `socialProviders.line` configuration only supports a single channel.
 
 To support multiple countries/channels, use the [Generic OAuth plugin](/docs/plugins/generic-oauth) with the `line()` helper function. This allows you to configure multiple LINE providers with different `providerId`s:

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/other-social-providers
 title: "Other Social Providers"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Other Social Providers
@@ -14,63 +14,52 @@ Other social providers setup and usage.
 
 Better Auth provides support for any social provider that implements the OAuth2 protocol or OpenID Connect (OIDC) flows through the [Generic OAuth Plugin](/docs/plugins/generic-oauth). You can use pre-configured helper functions for popular providers like Auth0, Keycloak, Okta, Microsoft Entra ID, and Slack, or manually configure any OAuth provider.
 
-Installation [#installation]
+## Installation
+### Add the plugin to your auth config
+To use the Generic OAuth plugin, add it to your auth config.
 
-<Steps>
-  <Step>
-    Add the plugin to your auth config [#add-the-plugin-to-your-auth-config]
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
+import { genericOAuth } from "better-auth/plugins" // [!code highlight]
 
-    To use the Generic OAuth plugin, add it to your auth config.
+export const auth = betterAuth({
+    // ... other config options
+    plugins: [
+        genericOAuth({ // [!code highlight]
+            config: [ // [!code highlight]
+                { // [!code highlight]
+                    providerId: "provider-id", // [!code highlight]
+                    clientId: "test-client-id", // [!code highlight]
+                    clientSecret: "test-client-secret", // [!code highlight]
+                    discoveryUrl: "https://auth.example.com/.well-known/openid-configuration", // [!code highlight]
+                    // ... other config options // [!code highlight]
+                }, // [!code highlight]
+                // Add more providers as needed // [!code highlight]
+            ] // [!code highlight]
+        }) // [!code highlight]
+    ]
+})
+```
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
-    import { genericOAuth } from "better-auth/plugins" // [!code highlight]
+### Add the client plugin
+Include the Generic OAuth client plugin in your authentication client instance.
 
-    export const auth = betterAuth({
-        // ... other config options
-        plugins: [
-            genericOAuth({ // [!code highlight]
-                config: [ // [!code highlight]
-                    { // [!code highlight]
-                        providerId: "provider-id", // [!code highlight]
-                        clientId: "test-client-id", // [!code highlight]
-                        clientSecret: "test-client-secret", // [!code highlight]
-                        discoveryUrl: "https://auth.example.com/.well-known/openid-configuration", // [!code highlight]
-                        // ... other config options // [!code highlight]
-                    }, // [!code highlight]
-                    // Add more providers as needed // [!code highlight]
-                ] // [!code highlight]
-            }) // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
+```ts title="auth-client.ts"
+import { createAuthClient } from "better-auth/client"
+import { genericOAuthClient } from "better-auth/client/plugins"
 
-  <Step>
-    Add the client plugin [#add-the-client-plugin]
+const authClient = createAuthClient({
+    plugins: [
+        genericOAuthClient()
+    ]
+})
+```
 
-    Include the Generic OAuth client plugin in your authentication client instance.
 
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    import { genericOAuthClient } from "better-auth/client/plugins"
+> Read more about installation and usage of the Generic Oauth plugin
+> [Generic OAuth plugin documentation](/docs/plugins/generic-oauth#usage).
 
-    const authClient = createAuthClient({
-        plugins: [
-            genericOAuthClient()
-        ]
-    })
-    ```
-  </Step>
-</Steps>
-
-<Callout>
-  Read more about installation and usage of the Generic Oauth plugin
-  [Generic OAuth plugin documentation](/docs/plugins/generic-oauth#usage).
-</Callout>
-
-Example Usage [#example-usage]
-
+## Example Usage
 Here's a basic example of configuring a generic OAuth provider:
 
 ```ts title="auth.ts"
@@ -93,8 +82,7 @@ export const auth = betterAuth({
 })
 ```
 
-Using Pre-configured Providers [#using-pre-configured-providers]
-
+## Using Pre-configured Providers
 Better Auth provides pre-configured helper functions for popular OAuth providers. Here's an example using Slack:
 
 ```ts title="auth.ts"
@@ -124,12 +112,10 @@ const response = await authClient.signIn.oauth2({
 
 For more pre-configured providers (Auth0, Keycloak, Okta, Microsoft Entra ID) and their configuration options, see the [Generic OAuth Plugin documentation](/docs/plugins/generic-oauth#pre-configured-provider-helpers).
 
-Manual Configuration Examples [#manual-configuration-examples]
-
+## Manual Configuration Examples
 If you need to configure a provider that doesn't have a pre-configured helper, you can manually configure it:
 
-Instagram Example [#instagram-example]
-
+## Instagram Example
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";
@@ -160,8 +146,7 @@ const response = await authClient.signIn.oauth2({
 });
 ```
 
-Coinbase Example [#coinbase-example]
-
+## Coinbase Example
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 import { genericOAuth } from "better-auth/plugins";

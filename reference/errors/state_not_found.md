@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/state_not_found
 title: "State_not_found"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # state_not_found
@@ -12,8 +12,7 @@ The state parameter was not found in the request.
 
 
 
-What is it? [#what-is-it]
-
+## What is it?
 During the OAuth callback, Better Auth expects a `state` value to be present on the incoming request.
 This `state` is originally generated when the OAuth flow starts and is sent to the provider. When the
 provider redirects back to your app, it should include the same `state` value in the callback request.
@@ -23,8 +22,7 @@ we cannot validate the flow and the request is rejected.
 This check prevents CSRF and replay attacks by ensuring the callback belongs to the same browser session
 that initiated the flow.
 
-Common Causes [#common-causes]
-
+## Common Causes
 * You navigated directly to `/api/auth/callback` without starting an OAuth flow first.
 * A reverse proxy, CDN, or rewrite stripped query or body parameters from the callback request.
 * The OAuth provider was not given a `state` on the authorize request (custom/manual flow overriding parameters).
@@ -34,28 +32,23 @@ Common Causes [#common-causes]
   handler is not reading the query or body you think it is.
 * Mobile/WebView or deep-link handoff opened a new context that lost the original query string.
 
-How to resolve [#how-to-resolve]
-
-Start the flow via Better Auth APIs [#start-the-flow-via-better-auth-apis]
-
+## How to resolve
+## Start the flow via Better Auth APIs
 Always initiate OAuth through Better Auth so we can generate and send `state` correctly. Avoid manually hitting
 callback endpoints or constructing authorize URLs unless you fully mirror Better Auth's parameters.
 
-Verify the callback URL and method [#verify-the-callback-url-and-method]
-
+## Verify the callback URL and method
 * Ensure the provider's configured callback URL exactly matches your app's `/api/auth/callback` route (including
   protocol and domain).
 * Most providers redirect via GET with query parameters. If you have custom handlers or methods, confirm the
   handler reads the query/body consistent with your provider's redirect.
 
-Check proxies, rewrites, and middleware [#check-proxies-rewrites-and-middleware]
-
+## Check proxies, rewrites, and middleware
 * Confirm that any reverse proxies (Vercel, Cloudflare, Nginx) and app-level rewrites preserve the full query
   string (including `state`).
 * If you have middleware that redirects or rewrites the callback path, ensure it forwards query & body parameters intact.
 
-Debug locally [#debug-locally]
-
+## Debug locally
 Use your browser DevTools → Network to inspect the callback request:
 
 * Confirm the callback URL includes `?state=...` (or that the request body contains `state` if you expect one).
@@ -64,7 +57,6 @@ Use your browser DevTools → Network to inspect the callback request:
 * Log request query/body fields in your callback handler during local debugging to confirm what is actually
   received by the server.
 
-Edge cases to consider [#edge-cases-to-consider]
-
+## Edge cases to consider
 * Preview vs production domains can behave differently if extra redirects or rewrites occur.
 * Mobile/WebView environments and deep links can drop or alter query parameters during handoff.

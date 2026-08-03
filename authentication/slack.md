@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/slack
 title: "Slack"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Slack
@@ -12,49 +12,39 @@ Slack provider setup and usage.
 
 
 
-<Steps>
-  <Step>
-    Get your Slack credentials [#get-your-slack-credentials]
 
-    To use Slack as a social provider, you need to create a Slack app and get your credentials.
+### Get your Slack credentials
+To use Slack as a social provider, you need to create a Slack app and get your credentials.
 
-    1. Go to [Your Apps on Slack API](https://api.slack.com/apps) and click "Create New App"
-    2. Choose "From scratch" and give your app a name and select a development workspace
-    3. In your app settings, navigate to "OAuth & Permissions"
-    4. Under "Redirect URLs", add your redirect URL:
-       * For local development: `http://localhost:3000/api/auth/callback/slack`
-       * For production: `https://yourdomain.com/api/auth/callback/slack`
-    5. Copy your Client ID and Client Secret from the "Basic Information" page
+1. Go to [Your Apps on Slack API](https://api.slack.com/apps) and click "Create New App"
+2. Choose "From scratch" and give your app a name and select a development workspace
+3. In your app settings, navigate to "OAuth & Permissions"
+4. Under "Redirect URLs", add your redirect URL:
+   * For local development: `http://localhost:3000/api/auth/callback/slack`
+   * For production: `https://yourdomain.com/api/auth/callback/slack`
+5. Copy your Client ID and Client Secret from the "Basic Information" page
 
-    <Callout>
-      Slack requires HTTPS for redirect URLs in production. For local development, you can use tools like [ngrok](https://ngrok.com/) to create a secure tunnel.
-    </Callout>
-  </Step>
+> Slack requires HTTPS for redirect URLs in production. For local development, you can use tools like [ngrok](https://ngrok.com/) to create a secure tunnel.
 
-  <Step>
-    Configure the provider [#configure-the-provider]
+### Configure the provider
+To configure the provider, you need to pass the `clientId` and `clientSecret` to `socialProviders.slack` in your auth configuration.
 
-    To configure the provider, you need to pass the `clientId` and `clientSecret` to `socialProviders.slack` in your auth configuration.
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
+export const auth = betterAuth({
+    socialProviders: {
+        slack: { // [!code highlight]
+            clientId: process.env.SLACK_CLIENT_ID as string, // [!code highlight]
+            clientSecret: process.env.SLACK_CLIENT_SECRET as string, // [!code highlight]
+        }, // [!code highlight]
+    },
+})
+```
 
-    export const auth = betterAuth({
-        socialProviders: {
-            slack: { // [!code highlight]
-                clientId: process.env.SLACK_CLIENT_ID as string, // [!code highlight]
-                clientSecret: process.env.SLACK_CLIENT_SECRET as string, // [!code highlight]
-            }, // [!code highlight]
-        },
-    })
-    ```
-  </Step>
-</Steps>
 
-Usage [#usage]
-
-Sign In with Slack [#sign-in-with-slack]
-
+## Usage
+## Sign In with Slack
 To sign in with Slack, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `slack`.
@@ -68,8 +58,7 @@ const signIn = async () => {
 };
 ```
 
-Requesting Additional Scopes [#requesting-additional-scopes]
-
+## Requesting Additional Scopes
 By default, Slack uses OpenID Connect scopes: `openid`, `profile`, and `email`. You can request additional Slack scopes during sign-in:
 
 ```ts title="auth-client.ts"
@@ -81,8 +70,7 @@ const signInWithSlack = async () => {
 };
 ```
 
-Workspace-Specific Sign In [#workspace-specific-sign-in]
-
+## Workspace-Specific Sign In
 If you want to restrict sign-in to a specific Slack workspace, you can pass the `team` parameter:
 
 ```ts title="auth.ts"
@@ -95,8 +83,7 @@ socialProviders: {
 }
 ```
 
-Using Slack API After Sign In [#using-slack-api-after-sign-in]
-
+## Using Slack API After Sign In
 After successful authentication, you can access the user's Slack information through the session. The access token can be used to make requests to the Slack API:
 
 ```ts
@@ -108,8 +95,6 @@ if (session?.user) {
 }
 ```
 
-<Callout>
-  The Slack provider uses OpenID Connect by default, which provides basic user
-  information. If you need to access other Slack APIs, make sure to request the
-  appropriate scopes during sign-in.
-</Callout>
+> The Slack provider uses OpenID Connect by default, which provides basic user
+> information. If you need to access other Slack APIs, make sure to request the
+> appropriate scopes during sign-in.

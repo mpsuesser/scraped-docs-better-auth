@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/getting-started
 title: "Getting Started"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Getting Started
@@ -12,88 +12,59 @@ This guide will help you integrate Better Auth Infrastructure into your applicat
 
 
 
-<Steps>
-  <Step>
-    Prerequisites [#prerequisites]
 
-    Before you begin, make sure you have:
+### Prerequisites
+Before you begin, make sure you have:
 
-    1. A working [Better Auth](/docs/installation) installation
-    2. An account & API Key from the [Better Auth Infrastructure](/dashboard) dashboard
-  </Step>
+1. A working [Better Auth](/docs/installation) installation
+2. An account & API Key from the [Better Auth Infrastructure](/dashboard) dashboard
 
-  <Step>
-    Installation [#installation]
+### Installation
+Install the `@better-auth/infra` package:
 
-    Install the `@better-auth/infra` package:
 
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+#### npm
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+```bash
+npm install @better-auth/infra
+```
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install @better-auth/infra
-        ```
-      </CodeBlockTab>
+#### pnpm
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add @better-auth/infra
-        ```
-      </CodeBlockTab>
+```bash
+pnpm add @better-auth/infra
+```
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add @better-auth/infra
-        ```
-      </CodeBlockTab>
+#### yarn
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add @better-auth/infra
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Step>
+```bash
+yarn add @better-auth/infra
+```
 
-  <Step>
-    Environment Variables [#environment-variables]
+#### bun
 
-    Once you've gotten the API Key from the infrastructure dashboard,
-    go ahead and add the `BETTER_AUTH_API_KEY` environment variable in your production environment variables.
+```bash
+bun add @better-auth/infra
+```
 
-    ```dotenv
-    # Required: Your Better Auth Infrastructure API key
-    BETTER_AUTH_API_KEY=your_api_key_here
-    ```
 
-    <Callout>
-      You can get your API key by signing-up and creating a new project in the
-      [Better Auth Infrastructure dashboard](/dashboard).
-    </Callout>
-  </Step>
-</Steps>
+### Environment Variables
+Once you've gotten the API Key from the infrastructure dashboard,
+go ahead and add the `BETTER_AUTH_API_KEY` environment variable in your production environment variables.
 
-Server Setup [#server-setup]
+```dotenv
+# Required: Your Better Auth Infrastructure API key
+BETTER_AUTH_API_KEY=your_api_key_here
+```
 
-Basic Configuration [#basic-configuration]
+> You can get your API key by signing-up and creating a new project in the
+> [Better Auth Infrastructure dashboard](/dashboard).
 
+
+## Server Setup
+## Basic Configuration
 Add the `dash()` plugin to your Better Auth configuration:
 
 ```ts
@@ -126,10 +97,8 @@ export const auth = betterAuth({
 });
 ```
 
-Client Setup [#client-setup]
-
-Basic Client Configuration [#basic-client-configuration]
-
+## Client Setup
+## Basic Client Configuration
 Add the client plugins to your auth client:
 
 ```ts
@@ -146,8 +115,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-Expo and React Native [#expo-and-react-native]
-
+## Expo and React Native
 For **Expo** or **React Native** clients, import from `@better-auth/infra/native` instead of `@better-auth/infra/client`. The native entry provides `dashClient` (same audit log APIs as the web client) and `sentinelNativeClient`.
 
 ```ts
@@ -167,15 +135,13 @@ export const authClient = createAuthClient({
 
 See [Sentinel — Expo and React Native](/docs/infrastructure/plugins/sentinel#expo-and-react-native) for more details.
 
-Plugin Overview [#plugin-overview]
-
+## Plugin Overview
 * **`dash()`** - Enables analytics tracking, audit logging, dashboard admin APIs, and more
 * **`sentinel()`** - Enables security checks and abuse protection
 
 You can use either plugin independently, but using both together provides the full Better Auth Infrastructure experience.
 
-Next Steps [#next-steps]
-
+## Next Steps
 Now that you have the basic setup, explore these topics:
 
 * [Dashboard](/docs/infrastructure/plugins/dashboard) - Analytics, activity tracking, and admin APIs

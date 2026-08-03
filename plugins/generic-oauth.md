@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/generic-oauth
 title: "Generic Oauth"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Generic OAuth
@@ -14,62 +14,52 @@ Authenticate users with any OAuth provider
 
 The Generic OAuth plugin provides a flexible way to integrate authentication with any OAuth provider. It supports both OAuth 2.0 and OpenID Connect (OIDC) flows, allowing you to easily add social login or custom OAuth authentication to your application.
 
-Installation [#installation]
+## Installation
+### Add the plugin to your auth config
+To use the Generic OAuth plugin, add it to your auth config.
 
-<Steps>
-  <Step>
-    Add the plugin to your auth config [#add-the-plugin-to-your-auth-config]
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
+import { genericOAuth } from "better-auth/plugins" // [!code highlight]
 
-    To use the Generic OAuth plugin, add it to your auth config.
+export const auth = betterAuth({
+    // ... other config options
+    plugins: [
+        genericOAuth({ // [!code highlight]
+            config: [ // [!code highlight]
+                { // [!code highlight]
+                    providerId: "provider-id", // [!code highlight]
+                    clientId: "test-client-id", // [!code highlight]
+                    clientSecret: "test-client-secret", // [!code highlight]
+                    discoveryUrl: "https://auth.example.com/.well-known/openid-configuration", // [!code highlight]
+                    // ... other config options // [!code highlight]
+                }, // [!code highlight]
+                // Add more providers as needed // [!code highlight]
+            ] // [!code highlight]
+        }) // [!code highlight]
+    ]
+})
+```
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
-    import { genericOAuth } from "better-auth/plugins" // [!code highlight]
+### Add the client plugin
+Include the Generic OAuth client plugin in your authentication client instance.
 
-    export const auth = betterAuth({
-        // ... other config options
-        plugins: [
-            genericOAuth({ // [!code highlight]
-                config: [ // [!code highlight]
-                    { // [!code highlight]
-                        providerId: "provider-id", // [!code highlight]
-                        clientId: "test-client-id", // [!code highlight]
-                        clientSecret: "test-client-secret", // [!code highlight]
-                        discoveryUrl: "https://auth.example.com/.well-known/openid-configuration", // [!code highlight]
-                        // ... other config options // [!code highlight]
-                    }, // [!code highlight]
-                    // Add more providers as needed // [!code highlight]
-                ] // [!code highlight]
-            }) // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
+```ts title="auth-client.ts"
+import { createAuthClient } from "better-auth/client"
+import { genericOAuthClient } from "better-auth/client/plugins" // [!code highlight]
 
-  <Step>
-    Add the client plugin [#add-the-client-plugin]
+export const authClient = createAuthClient({
+    plugins: [
+        genericOAuthClient() // [!code highlight]
+    ]
+})
+```
 
-    Include the Generic OAuth client plugin in your authentication client instance.
 
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    import { genericOAuthClient } from "better-auth/client/plugins" // [!code highlight]
-
-    export const authClient = createAuthClient({
-        plugins: [
-            genericOAuthClient() // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
-</Steps>
-
-Usage [#usage]
-
+## Usage
 The Generic OAuth plugin provides endpoints for initiating the OAuth flow and handling the callback. Here's how to use them:
 
-Initiate OAuth Sign-In [#initiate-oauth-sign-in]
-
+## Initiate OAuth Sign-In
 To start the OAuth sign-in process:
 
 
@@ -140,8 +130,7 @@ type signInWithOAuth2 = {
 ```
 
 
-Linking OAuth Accounts [#linking-oauth-accounts]
-
+## Linking OAuth Accounts
 To link an OAuth account to an existing user:
 
 
@@ -184,18 +173,15 @@ type oAuth2LinkAccount = {
 ```
 
 
-Handle OAuth Callback [#handle-oauth-callback]
-
+## Handle OAuth Callback
 The plugin mounts a route to handle the OAuth callback `/oauth2/callback/:providerId`. This means by default `${baseURL}/api/auth/oauth2/callback/:providerId` will be used as the callback URL. Make sure your OAuth provider is configured to use this URL.
 
 Unlike built-in providers, the `:providerId` parameter is required and must match your configured provider ID.
 
-Pre-configured Provider Helpers [#pre-configured-provider-helpers]
-
+## Pre-configured Provider Helpers
 Better Auth provides pre-configured helper functions for popular OAuth providers. These helpers handle the provider-specific configuration, including discovery URLs and user info endpoints.
 
-Supported Providers [#supported-providers]
-
+## Supported Providers
 * **Auth0** - `auth0(options)`
 * **HubSpot** - `hubspot(options)`
 * **Keycloak** - `keycloak(options)`
@@ -206,8 +192,7 @@ Supported Providers [#supported-providers]
 * **Patreon** - `patreon(options)`
 * **Yandex** - `yandex(options)`
 
-Example: Using Pre-configured Providers [#example-using-pre-configured-providers]
-
+## Example: Using Pre-configured Providers
 ```ts title="auth.ts"
 import { betterAuth } from 'better-auth';
 import {
@@ -309,12 +294,10 @@ All providers support the same optional fields:
 * `disableSignUp?: boolean` - Disable sign-up entirely
 * `overrideUserInfo?: boolean` - Override user info on sign in
 
-Configuration [#configuration]
-
+## Configuration
 When adding the plugin to your auth config, you can configure multiple OAuth providers. You can either use the pre-configured provider helpers (shown above) or create custom configurations manually.
 
-Manual Configuration [#manual-configuration]
-
+## Manual Configuration
 Each provider configuration object supports the following options:
 
 ```ts
@@ -339,8 +322,7 @@ interface GenericOAuthConfig {
 }
 ```
 
-Other Provider Configurations [#other-provider-configurations]
-
+## Other Provider Configurations
 **providerId**: A unique string to identify the OAuth provider configuration.
 
 **discoveryUrl**: (Optional) URL to fetch the provider's OAuth 2.0/OIDC configuration. If provided, endpoints like `authorizationUrl`, `tokenUrl`, and `userInfoUrl` can be auto-discovered.
@@ -397,16 +379,13 @@ Other Provider Configurations [#other-provider-configurations]
 
 **overrideUserInfo**: (Optional) If true, the user's info in your database will be updated with the provider's info every time they sign in. Defaults to `false`.
 
-Security: Issuer Validation [#security-issuer-validation]
-
+## Security: Issuer Validation
 Better Auth validates the OAuth provider's issuer to protect against mix-up attacks ([RFC 9207](https://datatracker.ietf.org/doc/html/rfc9207)). A mix-up attack occurs when a malicious authorization server tricks your application into sending an authorization code to the wrong token endpoint.
 
-How It Works [#how-it-works]
-
+## How It Works
 When an OAuth provider supports RFC 9207, it includes an `iss` (issuer) parameter in the authorization response. Better Auth validates this parameter against the expected issuer to ensure the response came from the intended provider.
 
-Configuration Examples [#configuration-examples]
-
+## Configuration Examples
 **Auto-discovery (recommended for OIDC providers):**
 
 ```ts
@@ -450,8 +429,7 @@ genericOAuth({
 })
 ```
 
-Validation Behavior [#validation-behavior]
-
+## Validation Behavior
 | Scenario               | `requireIssuerValidation` | Result                        |
 | ---------------------- | ------------------------- | ----------------------------- |
 | `iss` matches expected | -                         | Success                       |
@@ -459,14 +437,10 @@ Validation Behavior [#validation-behavior]
 | `iss` missing          | `false` (default)         | Success (backward compatible) |
 | `iss` missing          | `true`                    | `issuer_missing` error        |
 
-<Callout>
-  For maximum security with modern OAuth/OIDC providers (Google, Auth0, Okta, etc.), we recommend enabling `requireIssuerValidation: true`.
-</Callout>
+> For maximum security with modern OAuth/OIDC providers (Google, Auth0, Okta, etc.), we recommend enabling `requireIssuerValidation: true`.
 
-Advanced Usage [#advanced-usage]
-
-Custom Token Exchange [#custom-token-exchange]
-
+## Advanced Usage
+## Custom Token Exchange
 For providers with non-standard token endpoints that use GET requests or custom parameters, you can provide a custom `getToken` function:
 
 ```ts
@@ -526,8 +500,7 @@ genericOAuth({
 });
 ```
 
-Custom User Info Fetching [#custom-user-info-fetching]
-
+## Custom User Info Fetching
 You can provide a custom `getUserInfo` function to handle specific provider requirements:
 
 ```ts
@@ -551,8 +524,7 @@ genericOAuth({
 })
 ```
 
-Map User Info Fields [#map-user-info-fields]
-
+## Map User Info Fields
 If the user info returned by the provider does not match the expected format, or you need to map additional fields, you can use the `mapProfileToUser`:
 
 ```ts
@@ -572,8 +544,7 @@ genericOAuth({
 })
 ```
 
-Accessing Raw Token Data [#accessing-raw-token-data]
-
+## Accessing Raw Token Data
 The `tokens` parameter includes a `raw` field that preserves the original token response from the provider. This is useful for accessing provider-specific fields:
 
 ```ts
@@ -590,6 +561,5 @@ getUserInfo: async (tokens) => {
 }
 ```
 
-Error Handling [#error-handling]
-
+## Error Handling
 The plugin includes built-in error handling for common OAuth issues. Errors are typically redirected to your application's error page with an appropriate error message in the URL parameters. If the callback URL is not provided, the user will be redirected to Better Auth's default error page.

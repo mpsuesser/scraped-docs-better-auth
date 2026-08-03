@@ -2,132 +2,58 @@
 url: https://better-auth.com/llms.txt/docs/concepts/client
 title: "Client"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Client
 
 Learn how to set up the Better Auth client for React, Vue, Svelte, and other frameworks, use hooks, configure fetch options, handle errors, and extend with client plugins.
 
-
-
 Better Auth offers a client library compatible with popular frontend frameworks like React, Vue, Svelte, and more. This client library includes a set of functions for interacting with the Better Auth server. Each framework's client library is built on top of a core client library that is framework-agnostic, so that all methods and hooks are consistently available across all client libraries.
 
-Installation [#installation]
+## Installation
 
 If you haven't already, install better-auth.
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
+#### npm
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
+```
+npm i better-auth
+```
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
+#### pnpm
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### yarn
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm i better-auth
-    ```
-  </CodeBlockTab>
+#### bun
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm add better-auth
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn add better-auth
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="bun">
-    ```bash
-    bun add better-auth
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-Create Client Instance [#create-client-instance]
+## Create Client Instance
 
 Import `createAuthClient` from the package for your framework (e.g., "better-auth/react" for React). Call the function to create your client. Pass the base URL of your auth server. If the auth server is running on the same domain as your client, you can skip this step.
 
-<Callout type="info">
-  If your auth server uses a different base path other than `/api/auth`, you can either pass the full URL including the path (e.g., `http://localhost:3000/custom-path/auth`), or use the `basePath` option separately.
-</Callout>
+#### react
 
-<Tabs
-  items={["react", "vue", "svelte", "solid", 
-"vanilla"]}
-  defaultValue="react"
->
-  <Tab value="vanilla">
-    ```ts title="lib/auth-client.ts" 
-    import { createAuthClient } from "better-auth/client" // [!code highlight]
-    export const authClient = createAuthClient({
-        baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
-    })
-    ```
-  </Tab>
+#### vue
 
-  <Tab value="react" title="lib/auth-client.ts">
-    ```ts title="lib/auth-client.ts"  
-    import { createAuthClient } from "better-auth/react" // [!code highlight]
-    export const authClient = createAuthClient({
-        baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
-    })
-    ```
-  </Tab>
+```
+import { createAuthClient } from "better-auth/react"
+export const authClient = createAuthClient({
+    baseURL: "http://localhost:3000" // The base URL of your auth server
+})
+```
 
-  <Tab value="vue" title="lib/auth-client.ts">
-    ```ts title="lib/auth-client.ts" 
-    import { createAuthClient } from "better-auth/vue" // [!code highlight]
-    export const authClient = createAuthClient({
-        baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
-    })
-    ```
-  </Tab>
+#### svelte
 
-  <Tab value="svelte" title="lib/auth-client.ts">
-    ```ts title="lib/auth-client.ts" 
-    import { createAuthClient } from "better-auth/svelte" // [!code highlight]
-    export const authClient = createAuthClient({
-        baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
-    })
-    ```
-  </Tab>
+#### solid
 
-  <Tab value="solid" title="lib/auth-client.ts">
-    ```ts title="lib/auth-client.ts" 
-    import { createAuthClient } from "better-auth/solid" // [!code highlight]
-    export const authClient = createAuthClient({
-        baseURL: "http://localhost:3000" // The base URL of your auth server // [!code highlight]
-    })
-    ```
-  </Tab>
-</Tabs>
+#### vanilla
 
-Usage [#usage]
+## Usage
 
 Once you've created your client instance, you can use the client to interact with the Better Auth server. The client provides a set of functions by default and they can be extended with plugins.
 
 **Example: Sign In**
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
 
@@ -137,129 +63,47 @@ await authClient.signIn.email({
 })
 ```
 
-Hooks [#hooks]
+### Hooks
 
 In addition to the standard methods, the client provides hooks to easily access different reactive data. Every hook is available in the root object of the client and they all start with `use`.
 
 **Example: useSession**
 
-<Tabs items={["React", "Vue","Svelte", "Solid"]} defaultValue="react">
-  <Tab value="React">
-    ```tsx title="user.tsx"
-    //make sure you're using the react client
-    import { createAuthClient } from "better-auth/react"
-    const { useSession } = createAuthClient() // [!code highlight]
+#### React
 
-    export function User() {
-        const {
-            data: session,
-            isPending, //loading state
-            error, //error object 
-            refetch //refetch the session
-        } = useSession()
-        return (
-            //...
-        )
-    }
-    ```
-  </Tab>
+```
+//make sure you're using the react client
+import { createAuthClient } from "better-auth/react"
+const { useSession } = createAuthClient() 
 
-  <Tab value="Vue">
-    ```vue title="user.vue"
-    <script lang="ts" setup>
-    import { authClient } from '@/lib/auth-client'
-    const session = authClient.useSession()
-    </script>
-    <template>
-        <div>
-            <button v-if="!session.data" @click="() => authClient.signIn.social({
-                provider: 'github'
-            })">
-                Continue with GitHub
-            </button>
-            <div>
-                <pre>{{ session.data }}</pre>
-                <button v-if="session.data" @click="authClient.signOut()">
-                    Sign out
-                </button>
-            </div>
-        </div>
-    </template>
-    ```
-  </Tab>
+export function User() {
+    const {
+        data: session,
+        isPending, //loading state
+        error, //error object 
+        refetch //refetch the session
+    } = useSession()
+    return (
+        //...
+    )
+}
+```
 
-  <Tab value="Svelte">
-    ```svelte title="user.svelte"
-    <script lang="ts">
-    import { authClient } from "$lib/auth-client";
-    const session = authClient.useSession();
-    </script>
+#### Vue
 
-    <div
-        style="display: flex; flex-direction: column; gap: 10px; border-radius: 10px; border: 1px solid #4B453F; padding: 20px; margin-top: 10px;"
-    >
-        <div>
-        {#if $session.data}
-            <div>
-            <p>
-                {$session.data.user.name}
-            </p>
-            <p>
-                {$session.data.user.email}
-            </p>
-            <button
-                onclick={async () => {
-                await authClient.signOut();
-                }}
-            >
-                Signout
-            </button>
-            </div>
-        {:else}
-            <button
-            onclick={async () => {
-                await authClient.signIn.social({
-                provider: "github",
-                });
-            }}
-            >
-            Continue with GitHub
-            </button>
-        {/if}
-        </div>
-    </div>
-    ```
-  </Tab>
+#### Svelte
 
-  <Tab value="Solid">
-    ```tsx title="user.tsx"
-    import { authClient } from "~/lib/auth-client";
-    import { Show } from 'solid-js';
+#### Solid
 
-    export default function Home() {
-        const session = authClient.useSession()
-        return (
-            <Show
-                when={session()}
-                fallback={<button onClick={toggle}>Log in</button>}
-            >
-                <button onClick={toggle}>Log out</button>
-            </Show>
-        ); 
-    }
-    ```
-  </Tab>
-</Tabs>
+### Fetch Options
 
-Fetch Options [#fetch-options]
-
-The client uses a library called [better fetch](https://better-fetch.vercel.app) to make requests to the server.
+The client uses a library called [better fetch](https://better-fetch.vercel.app/) to make requests to the server.
 
 Better fetch is a wrapper around the native fetch API that provides a more convenient way to make requests. It's created by the same team behind Better Auth and is designed to work seamlessly with it.
 
 You can pass any default fetch options to the client by passing `fetchOptions` object to the `createAuthClient`.
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client"
 
 const authClient = createAuthClient({
@@ -269,11 +113,11 @@ const authClient = createAuthClient({
 })
 ```
 
-Disabling Default Fetch Plugins [#disabling-default-fetch-plugins]
+### Disabling Default Fetch Plugins
 
 The auth client includes default fetch plugins that handle browser-specific behaviors like automatic redirects. For non-browser environments (e.g., React Native/Expo), you can disable these by setting `disableDefaultFetchPlugins` to `true`:
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client"
 
 const authClient = createAuthClient({
@@ -283,7 +127,7 @@ const authClient = createAuthClient({
 
 You can also pass fetch options to most of the client functions. Either as the second argument or as a property in the object.
 
-```ts
+```
 import { authClient } from "@/lib/auth-client"
 
 await authClient.signIn.email({
@@ -308,11 +152,11 @@ await authClient.signIn.email({
 })
 ```
 
-Session Options [#session-options]
+### Session Options
 
 You can configure how the client handles session fetching and revalidation using the `sessionOptions` option.
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client"
 
 const authClient = createAuthClient({
@@ -324,31 +168,13 @@ const authClient = createAuthClient({
 })
 ```
 
-export const clientSessionOptionsType = {
-  refetchInterval: {
-    description: "Polling interval in seconds. Set to 0 to disable",
-    type: "number",
-    default: "0",
-  },
-  refetchOnWindowFocus: {
-    description: "Automatically refetch session when the user switches back to the window/tab",
-    type: "boolean",
-    default: "true",
-  },
-  refetchWhenOffline: {
-    description: "Whether to refetch when the device has no internet access",
-    type: "boolean",
-    default: "false",
-  },
-}
+Prop
 
-<TypeTable type={clientSessionOptionsType} />
-
-Disable Default Fetch Plugins [#disable-default-fetch-plugins]
+### Disable Default Fetch Plugins
 
 The client includes a default redirect plugin that handles authentication redirects. If you need to disable this behavior, you can set `disableDefaultFetchPlugins` to `true`.
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client"
 
 const authClient = createAuthClient({
@@ -356,17 +182,15 @@ const authClient = createAuthClient({
 })
 ```
 
-Disabling Hook Rerenders [#disabling-hook-rerenders]
+### Disabling Hook Rerenders
 
-Certain endpoints, upon successful response, will trigger atom signals and cause hooks like `useSession` to rerender.
-This is useful for keeping your UI in sync with authentication state changes.
+Certain endpoints, upon successful response, will trigger atom signals and cause hooks like `useSession` to rerender. This is useful for keeping your UI in sync with authentication state changes.
 
-However, there are cases where you might want to make an endpoint call without triggering hook rerenders.
-For example, when updating user preferences that don't affect the session, or when you want to manually control when hooks update.
+However, there are cases where you might want to make an endpoint call without triggering hook rerenders. For example, when updating user preferences that don't affect the session, or when you want to manually control when hooks update.
 
 You can disable hook rerenders for a specific endpoint call by setting `disableSignal: true` in the fetch options:
 
-```ts
+```
 import { authClient } from "@/lib/auth-client"
 
 // As the second argument
@@ -385,10 +209,9 @@ await authClient.updateUser({
 })
 ```
 
-When `disableSignal` is set to `true`, the endpoint call will complete successfully,
-but hooks like `useSession` won't automatically rerender. You can manually trigger a refetch if needed:
+When `disableSignal` is set to `true`, the endpoint call will complete successfully, but hooks like `useSession` won't automatically rerender. You can manually trigger a refetch if needed:
 
-```ts
+```
 import { authClient } from "@/lib/auth-client"
 
 const { refetch } = authClient.useSession()
@@ -404,20 +227,20 @@ await authClient.updateUser({
 })
 ```
 
-Handling Errors [#handling-errors]
+### Handling Errors
 
 Most of the client functions return a response object with the following properties:
 
-* `data`: The response data.
-* `error`: The error object if there was an error.
+- `data`: The response data.
+- `error`: The error object if there was an error.
 
 The error object contains the following properties:
 
-* `message`: The error message. (e.g., "Invalid email or password")
-* `status`: The HTTP status code.
-* `statusText`: The HTTP status text.
+- `message`: The error message. (e.g., "Invalid email or password")
+- `status`: The HTTP status code.
+- `statusText`: The HTTP status text.
 
-```ts
+```
 import { authClient } from "@/lib/auth-client"
 
 const { data, error } = await authClient.signIn.email({
@@ -431,7 +254,7 @@ if (error) {
 
 If the action accepts a `fetchOptions` option, you can pass an `onError` callback to handle errors.
 
-```ts
+```
 import { authClient } from "@/lib/auth-client"
 
 await authClient.signIn.email({
@@ -457,7 +280,7 @@ await authClient.signIn.email({
 
 Hooks like `useSession` also return an error object if there was an error fetching the session. On top of that, they also return an `isPending` property to indicate if the request is still pending.
 
-```ts
+```
 import { useSession } from "@/lib/auth-client"
 
 const { data, error, isPending } = useSession()
@@ -466,55 +289,54 @@ if (error) {
 }
 ```
 
-Error Codes [#error-codes]
+#### Error Codes
 
 The client instance contains $ERROR\_CODES object that contains all the error codes returned by the server. You can use this to handle error translations or custom error messages.
 
-```ts title="auth-client.ts"
+```
 const authClient = createAuthClient();
 
 type ErrorTypes = Partial<
-	Record<
-		keyof typeof authClient.$ERROR_CODES,
-		{
-			en: string;
-			es: string;
-		}
-	>
+    Record<
+        keyof typeof authClient.$ERROR_CODES,
+        {
+            en: string;
+            es: string;
+        }
+    >
 >;
 
 const errorCodes = {
-	USER_ALREADY_EXISTS: {
-		en: "user already registered",
-		es: "usuario ya registrado",
-	},
+    USER_ALREADY_EXISTS: {
+        en: "user already registered",
+        es: "usuario ya registrado",
+    },
 } satisfies ErrorTypes;
 
 const getErrorMessage = (code: string, lang: "en" | "es") => {
-	if (code in errorCodes) {
-		return errorCodes[code as keyof typeof errorCodes][lang];
-	}
-	return "";
+    if (code in errorCodes) {
+        return errorCodes[code as keyof typeof errorCodes][lang];
+    }
+    return "";
 };
 
-
 const { error } = await authClient.signUp.email({
-	email: "user@email.com",
-	password: "password",
-	name: "User",
+    email: "user@email.com",
+    password: "password",
+    name: "User",
 });
 if(error?.code){
     alert(getErrorMessage(error.code, "en"));
 }
 ```
 
-Plugins [#plugins]
+### Plugins
 
 You can extend the client with plugins to add more functionality. Plugins can add new functions to the client or modify existing ones.
 
 **Example: Magic Link Plugin**
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client"
 import { magicLinkClient } from "better-auth/client/plugins"
 
@@ -527,7 +349,7 @@ const authClient = createAuthClient({
 
 once you've added the plugin, you can use the new functions provided by the plugin.
 
-```ts
+```
 import { authClient } from "@/lib/auth-client"
 
 await authClient.signIn.magicLink({

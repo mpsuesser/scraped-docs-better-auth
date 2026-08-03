@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/next
 title: "Next"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Next.js integration
@@ -14,8 +14,7 @@ Integrate Better Auth with Next.js.
 
 Better Auth can be easily integrated with Next.js. Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
-Create API Route [#create-api-route]
-
+## Create API Route
 We need to mount the handler to an API route. Create a route file inside `/api/auth/[...all]` directory. And add the following code:
 
 ```ts title="api/auth/[...all]/route.ts"
@@ -25,9 +24,7 @@ import { toNextJsHandler } from "better-auth/next-js";
 export const { GET, POST } = toNextJsHandler(auth);
 ```
 
-<Callout type="info">
-  You can change the path on your better-auth configuration but it's recommended to keep it as `/api/auth/[...all]`
-</Callout>
+> You can change the path on your better-auth configuration but it's recommended to keep it as `/api/auth/[...all]`
 
 For `pages` route, you need to use `toNodeHandler` instead of `toNextJsHandler` and set `bodyParser` to `false` in the `config` object. Here is an example:
 
@@ -41,8 +38,7 @@ export const config = { api: { bodyParser: false } }
 export default toNodeHandler(auth.handler)
 ```
 
-Create a client [#create-a-client]
-
+## Create a client
 Create a client instance. You can name the file anything you want. Here we are creating `auth-client.ts` file inside the `lib/` directory.
 
 ```ts title="auth-client.ts"
@@ -58,8 +54,7 @@ Some of the actions are reactive. The client uses [nano-store](https://github.co
 
 The client also uses [better-fetch](https://github.com/bekacru/better-fetch) to make the requests. You can pass the fetch configuration to the client.
 
-RSC and Server actions [#rsc-and-server-actions]
-
+## RSC and Server actions
 The `api` object exported from the auth instance contains all the actions that you can perform on the server. Every endpoint made inside Better Auth is invocable as a function. Including plugins endpoints.
 
 **Example: Getting Session on a server action**
@@ -97,16 +92,13 @@ export async function ServerComponent() {
 }
 ```
 
-<Callout type="warn">
-  As RSCs cannot set cookies, the 
+> As RSCs cannot set cookies, the 
+> 
+> [cookie cache](/docs/concepts/session-management#cookie-cache)
+> 
+>  will not be refreshed until the server is interacted with from the client via Server Actions or Route Handlers.
 
-  [cookie cache](/docs/concepts/session-management#cookie-cache)
-
-   will not be refreshed until the server is interacted with from the client via Server Actions or Route Handlers.
-</Callout>
-
-Server Action Cookies [#server-action-cookies]
-
+## Server Action Cookies
 When you call a function that needs to set cookies, like `signInEmail` or `signUpEmail` in a server action, cookies won’t be set. This is because server actions need to use the `cookies` helper from Next.js to set cookies.
 
 To simplify this, you can use the `nextCookies` plugin, which will automatically set cookies for you whenever a `Set-Cookie` header is present in the response.
@@ -137,12 +129,10 @@ const signIn = async () => {
 }
 ```
 
-Auth Protection [#auth-protection]
-
+## Auth Protection
 In Next.js proxy/middleware, it's recommended to only check for the existence of a session cookie to handle redirection to avoid blocking requests by making API or database calls.
 
-Next.js 16+ (Proxy) [#nextjs-16-proxy]
-
+## Next.js 16+ (Proxy)
 Next.js 16 replaces "middleware" with "proxy". You can use the Node.js runtime for full session validation with database checks:
 
 ```ts title="proxy.ts"
@@ -191,12 +181,9 @@ export const config = {
 };
 ```
 
-<Callout type="info">
-  **Migration from middleware:** Rename `middleware.ts` → `proxy.ts` and `middleware` → `proxy` function. All Better Auth methods work identically.
-</Callout>
+> **Migration from middleware:** Rename `middleware.ts` → `proxy.ts` and `middleware` → `proxy` function. All Better Auth methods work identically.
 
-Next.js 15.2.0+ (Node.js Runtime Middleware) [#nextjs-1520-nodejs-runtime-middleware]
-
+## Next.js 15.2.0+ (Node.js Runtime Middleware)
 From Next.js 15.2.0, you can use the Node.js runtime in middleware for full session validation with database checks:
 
 ```ts title="middleware.ts"
@@ -222,25 +209,17 @@ export const config = {
 };
 ```
 
-<Callout type="warn">
-  Node.js runtime in middleware is experimental in Next.js versions before 16. Consider upgrading to Next.js 16+ for stable proxy support.
-</Callout>
+> Node.js runtime in middleware is experimental in Next.js versions before 16. Consider upgrading to Next.js 16+ for stable proxy support.
 
-Next.js 13-15.1.x (Edge Runtime Middleware) [#nextjs-13-151x-edge-runtime-middleware]
-
+## Next.js 13-15.1.x (Edge Runtime Middleware)
 In older Next.js versions, middleware runs on the Edge Runtime and cannot make database calls. Use cookie-based checks for optimistic redirects:
 
-<Callout type="warn">
-  The <code>getSessionCookie()</code> function does not automatically reference the auth config specified in <code>auth.ts</code>. Therefore, if you customized the cookie name or prefix, you need to ensure that the configuration in <code>getSessionCookie()</code> matches the config defined in your <code>auth.ts</code>.
-</Callout>
+> The <code>getSessionCookie()</code> function does not automatically reference the auth config specified in <code>auth.ts</code>. Therefore, if you customized the cookie name or prefix, you need to ensure that the configuration in <code>getSessionCookie()</code> matches the config defined in your <code>auth.ts</code>.
 
-For Next.js release 15.1.7 and below [#for-nextjs-release-1517-and-below]
-
+## For Next.js release 15.1.7 and below
 If you need the full session object, you'll have to fetch it from the `/api/auth/get-session` API route. Since Next.js middleware doesn't support running Node.js APIs directly, you must make an HTTP request.
 
-<Callout>
-  The example uses [better-fetch](https://better-fetch.vercel.app), but you can use any fetch library.
-</Callout>
+> The example uses [better-fetch](https://better-fetch.vercel.app), but you can use any fetch library.
 
 ```ts title="middleware.ts"
 import { betterFetch } from "@better-fetch/fetch";
@@ -269,14 +248,11 @@ export const config = {
 };
 ```
 
-For Next.js release 15.2.0 and above [#for-nextjs-release-1520-and-above]
-
+## For Next.js release 15.2.0 and above
 From Next.js 15.2.0, you can use the Node.js runtime in middleware for full session validation with database checks:
 
-<Callout type="warn">
-  You may refer to the [Next.js documentation](https://nextjs.org/docs/app/building-your-application/routing/middleware#runtime) for more information about runtime configuration, and how to enable it.
-  Be careful when using the new runtime. It's an experimental feature and it may be subject to breaking changes.
-</Callout>
+> You may refer to the [Next.js documentation](https://nextjs.org/docs/app/building-your-application/routing/middleware#runtime) for more information about runtime configuration, and how to enable it.
+> Be careful when using the new runtime. It's an experimental feature and it may be subject to breaking changes.
 
 ```ts title="middleware.ts"
 import { NextRequest, NextResponse } from "next/server";
@@ -301,8 +277,7 @@ export const config = {
 };
 ```
 
-Cookie-based checks (recommended for all versions) [#cookie-based-checks-recommended-for-all-versions]
-
+## Cookie-based checks (recommended for all versions)
 ```ts title="middleware.ts"
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
@@ -325,24 +300,20 @@ export const config = {
 };
 ```
 
-<Callout type="warn">
-  **Security Warning:** The `getSessionCookie` function only checks for the
-  existence of a session cookie; it does **not** validate it. Relying solely
-  on this check for security is dangerous, as anyone can manually create a
-  cookie to bypass it. You must always validate the session on your server for
-  any protected actions or pages.
-</Callout>
+> **Security Warning:** The `getSessionCookie` function only checks for the
+> existence of a session cookie; it does **not** validate it. Relying solely
+> on this check for security is dangerous, as anyone can manually create a
+> cookie to bypass it. You must always validate the session on your server for
+> any protected actions or pages.
 
-<Callout type="info">
-  If you have a custom cookie name or prefix, you can pass it to the `getSessionCookie` function.
-
-  ```ts
-  const sessionCookie = getSessionCookie(request, {
-      cookieName: "my_session_cookie",
-      cookiePrefix: "my_prefix"
-  });
-  ```
-</Callout>
+> If you have a custom cookie name or prefix, you can pass it to the `getSessionCookie` function.
+> 
+> ```ts
+> const sessionCookie = getSessionCookie(request, {
+>     cookieName: "my_session_cookie",
+>     cookiePrefix: "my_prefix"
+> });
+> ```
 
 Alternatively, you can use the `getCookieCache` helper to get the session object from the cookie cache.
 
@@ -358,8 +329,7 @@ export async function middleware(request: NextRequest) {
 }
 ```
 
-How to handle auth checks in each page/route [#how-to-handle-auth-checks-in-each-pageroute]
-
+## How to handle auth checks in each page/route
 In this example, we are using the `auth.api.getSession` function within a server component to get the session object,
 then we are checking if the session is valid. If it's not, we are redirecting the user to the sign-in page.
 
@@ -381,12 +351,10 @@ export default async function DashboardPage() {
 }
 ```
 
-Next.js 16 Compatibility [#nextjs-16-compatibility]
-
+## Next.js 16 Compatibility
 Better Auth is fully compatible with Next.js 16. The main change is that "middleware" is now called "proxy". See the [Auth Protection](#auth-protection) section above for Next.js 16+ proxy examples.
 
-Migration Guide [#migration-guide]
-
+## Migration Guide
 Use Next.js codemod for automatic migration:
 
 ```bash

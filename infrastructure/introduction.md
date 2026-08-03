@@ -2,34 +2,35 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/introduction
 title: "Introduction"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Better Auth Infrastructure
 
 Enterprise-grade dashboard, security, and managed services for Better Auth.
 
+Better Auth Infrastructure is a paid service that extends your authentication system with a management dashboard, abuse protection, transactional messaging, and enterprise features - all without managing additional infrastructure.
 
+## Key Features
 
-Better Auth Infrastructure is a paid service that extends your authentication system with a management dashboard,
-abuse protection, transactional messaging, and enterprise features - all without managing additional infrastructure.
+### Dashboard
 
-Key Features [#key-features]
+Manage users, organizations, sessions, and view analytics from a single interface.
 
-<Cards>
-  <Card title="Dashboard" description="Manage users, organizations, sessions, and view analytics from a single interface." />
+### Security
 
-  <Card title="Security" description="Protect against credential stuffing, bots, disposable emails, and impossible travel." />
+Protect against credential stuffing, bots, disposable emails, and impossible travel.
 
-  <Card title="Email & SMS" description="Send verification emails, password resets, and OTP codes with pre-built templates." />
+### Email & SMS
 
-  <Card title="Enterprise" description="SSO/SAML, directory sync (SCIM), log drains, and role-based dashboard access." />
-</Cards>
+Send verification emails, password resets, and OTP codes with pre-built templates.
+
+### Enterprise
+
+SSO/SAML, directory sync (SCIM), log drains, and role-based dashboard access.
 
 You're one plugin away from getting started:
 
-```ts
+```
 import { betterAuth } from "better-auth";
 import { dash } from "@better-auth/infra";
 import { sentinel } from "@better-auth/infra";
@@ -39,16 +40,4 @@ export const auth = betterAuth({
 });
 ```
 
-Check out our [Getting Started](/docs/infrastructure/getting-started) guide for more details.
-
-Next Steps [#next-steps]
-
-<Cards>
-  <Card href="/docs/infrastructure/getting-started" title="Getting Started" description="Install and configure the infrastructure package." />
-
-  <Card href="/docs/infrastructure/plugins/dashboard" title="Dashboard" description="Set up analytics, activity tracking, and admin APIs." />
-
-  <Card href="/docs/infrastructure/plugins/audit-logs" title="Audit Logs" description="Track and query authentication events." />
-
-  <Card href="/docs/infrastructure/plugins/sentinel" title="Sentinel" description="Enable abuse protection and security checks." />
-</Cards>
+Check out our [Getting Started](https://better-auth.com/docs/infrastructure/getting-started) guide for more details.

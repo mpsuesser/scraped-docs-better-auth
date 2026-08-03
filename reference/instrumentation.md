@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/instrumentation
 title: "Instrumentation"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Instrumentation (Experimental)
@@ -12,27 +12,22 @@ Distributed tracing for Better Auth
 
 
 
-<Callout type="warning">
-  OpenTelemetry instrumentation is experimental and may change in future releases. The API and span structure are subject to change.
-</Callout>
+> OpenTelemetry instrumentation is experimental and may change in future releases. The API and span structure are subject to change.
 
 Better Auth is instrumented through [OpenTelemetry](https://opentelemetry.io/) for distributed tracing. Spans are emitted for endpoints, hooks, database operations and the plugin lifecycle.
 The goal of this instrumentation is to provide better insights into the behavior of your Better Auth instance, helping you debug issues and optimize performance.
 
-Setup [#setup]
-
+## Setup
 Better Auth uses the OpenTelemetry API to create spans. For traces to be collected and exported, at minimum, you must configure a **TracerProvider** and a **SpanExporter** in your application.
 
 For setup instructions, see the official OpenTelemetry documentation:
 
 * **[Node.js getting started](https://opentelemetry.io/docs/languages/js/getting-started/nodejs/)** – Core setup for Node.js apps
 
-Supported Spans [#supported-spans]
-
+## Supported Spans
 The following spans are supported by Better Auth:
 
-Endpoint Spans [#endpoint-spans]
-
+## Endpoint Spans
 | Span Name          | Description                                | When Emitted                                  |
 | ------------------ | ------------------------------------------ | --------------------------------------------- |
 | `{METHOD} {route}` | Parent span for an auth endpoint           | Every auth API call (e.g. `GET /get-session`) |
@@ -71,8 +66,7 @@ Middlewares are also supported:
 * `http.route` - The **route template** (low cardinality) on middleware spans only
 * `http.response.status_code` - The HTTP response status code (onResponse only)
 
-Database Spans [#database-spans]
-
+## Database Spans
 | Span Name                | Description                   | When Emitted                                   |
 | ------------------------ | ----------------------------- | ---------------------------------------------- |
 | `db {operation} {model}` | Span for a database operation | All adapter operations (create, findOne, etc.) |

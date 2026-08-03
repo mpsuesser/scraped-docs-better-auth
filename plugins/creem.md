@@ -2,118 +2,61 @@
 url: https://better-auth.com/llms.txt/docs/plugins/creem
 title: "Creem"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Creem
 
 Better Auth Plugin for Payment and Subscriptions using Creem
 
+[Creem](https://creem.io/) is a financial OS that enables teams and individuals selling software globally to split revenue and collaborate on financial workflows without any tax compliance headaches. This plugin integrates Creem with Better Auth, bringing payment processing and subscription management directly into your authentication layer.
 
+### [Get support on Creem Discord or in our in-app live-chat](https://discord.gg/q3GKZs92Av)
 
-[Creem](https://creem.io) is a financial OS that enables teams and individuals selling software globally to split revenue and collaborate on financial workflows without any tax compliance headaches. This plugin integrates Creem with Better Auth, bringing payment processing and subscription management directly into your authentication layer.
+## Features
 
-<Callout>
-  This plugin is maintained by the Creem team. For bugs, issues or feature requests,
-  please visit the [Creem GitHub repo](https://github.com/armitage-labs/creem-betterauth).
-</Callout>
+- **Database Persistence** - Automatically synchronize customer and subscription data with your database
+- **Access Management** - Automatically grant or revoke access to users based on their subscription status
+- **Customer Synchronization** - Synchronize Creem customer IDs with your database users
+- **Checkout Integration** - Create checkout sessions either automatically for authenticated users or manually for unauthenticated users
+- **Customer Portal** - Enable users to manage subscriptions, view invoices, and update payment methods
+- **Subscription Management** - Cancel, retrieve, and track subscription details for authenticated users or manually for unauthenticated users
+- **Transaction History** - Search and filter transaction records for authenticated users or manually for unauthenticated users
+- **Webhook Processing** - Handle Creem webhooks securely with signature verification
+- **Flexible Architecture** - Use Better Auth endpoints or direct server-side functions
+- **Trial Abuse Prevention** - Users can only get one trial per account across all plans (when using database mode)
 
-<Card href="https://discord.gg/q3GKZs92Av" title="Get support on Creem Discord or in our in-app live-chat">
-  Need help? Reach out to our team anytime on Discord.
-</Card>
+## Installation
 
-Features [#features]
+### Install the plugin
 
-* **Database Persistence** - Automatically synchronize customer and subscription data with your database
-* **Access Management** - Automatically grant or revoke access to users based on their subscription status
-* **Customer Synchronization** - Synchronize Creem customer IDs with your database users
-* **Checkout Integration** - Create checkout sessions either automatically for authenticated users or manually for unauthenticated users
-* **Customer Portal** - Enable users to manage subscriptions, view invoices, and update payment methods
-* **Subscription Management** - Cancel, retrieve, and track subscription details for authenticated users or manually for unauthenticated users
-* **Transaction History** - Search and filter transaction records for authenticated users or manually for unauthenticated users
-* **Webhook Processing** - Handle Creem webhooks securely with signature verification
-* **Flexible Architecture** - Use Better Auth endpoints or direct server-side functions
-* **Trial Abuse Prevention** - Users can only get one trial per account across all plans (when using database mode)
+#### npm
 
-Installation [#installation]
+```
+npm install @creem_io/better-auth
+```
 
-<Steps>
-  <Step>
-    Install the plugin [#install-the-plugin]
+#### pnpm
 
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+#### yarn
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+#### bun
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+### Get your API Key
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+Get your Creem API Key from the [Creem dashboard](https://creem.io/dashboard/developers), under the 'Developers' menu and add it to your environment variables:
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install @creem_io/better-auth
-        ```
-      </CodeBlockTab>
+```
+# .env
+CREEM_API_KEY=your_api_key_here
+```
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add @creem_io/better-auth
-        ```
-      </CodeBlockTab>
+## Configuration
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add @creem_io/better-auth
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add @creem_io/better-auth
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-
-    <Callout>
-      If you're using a separate client and server setup, make sure to install the plugin in both parts of your project.
-    </Callout>
-  </Step>
-
-  <Step>
-    Get your API Key [#get-your-api-key]
-
-    Get your Creem API Key from the [Creem dashboard](https://creem.io/dashboard/developers), under the 'Developers' menu and add it to your environment variables:
-
-    ```bash
-    # .env
-    CREEM_API_KEY=your_api_key_here
-    ```
-
-    <Callout type="warn">
-      Test Mode and Production have different API keys. Make sure you're using the correct one for your environment.
-    </Callout>
-  </Step>
-</Steps>
-
-Configuration [#configuration]
-
-Server Configuration [#server-configuration]
+### Server Configuration
 
 Configure Better Auth with the Creem plugin:
 
-```typescript
+```
 // lib/auth.ts
 import { betterAuth } from "better-auth";
 import { creem } from "@creem_io/better-auth";
@@ -134,11 +77,11 @@ export const auth = betterAuth({
 });
 ```
 
-Client Configuration [#client-configuration]
+### Client Configuration
 
-Standard Setup [#standard-setup]
+### Standard Setup
 
-```typescript
+```
 // lib/auth-client.ts
 import { createAuthClient } from "better-auth/react";
 import { creemClient } from "@creem_io/better-auth/client";
@@ -149,11 +92,11 @@ export const authClient = createAuthClient({
 });
 ```
 
-Enhanced TypeScript Support (React-Only) [#enhanced-typescript-support-react-only]
+### Enhanced TypeScript Support (React-Only)
 
 For improved TypeScript IntelliSense and autocomplete:
 
-```typescript
+```
 // lib/auth-client.ts
 import { createCreemAuthClient } from "@creem_io/better-auth/create-creem-auth-client";
 import { creemClient } from "@creem_io/better-auth/client";
@@ -164,198 +107,100 @@ export const authClient = createCreemAuthClient({
 });
 ```
 
-<Callout>
-  The `createCreemAuthClient` wrapper provides enhanced TypeScript support and cleaner parameter types. It's optimized for use with the Creem plugin.
-</Callout>
-
-Database Migration [#database-migration]
+### Database Migration
 
 If you're using database persistence (`persistSubscriptions: true`), generate and run the database schema:
 
-<Tabs items={["migrate", "generate"]}>
-  <Tab value="migrate">
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+#### migrate
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+#### npm
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+#### generate
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+```
+npx auth migrate
+```
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npx auth migrate
-        ```
-      </CodeBlockTab>
+#### pnpm
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm dlx auth migrate
-        ```
-      </CodeBlockTab>
+#### yarn
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn dlx auth migrate
-        ```
-      </CodeBlockTab>
+#### bun
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun x auth migrate
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Tab>
+### Webhook Setup
 
-  <Tab value="generate">
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+### Create Webhook Endpoint
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+In your [Creem dashboard](https://creem.io/dashboard/developers/webhooks), create a webhook endpoint pointing to your local or production server pointing to:
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+```
+https://your-domain.com/api/auth/creem/webhook
+```
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+(`/api/auth` is the default Better Auth server path)
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npx auth generate
-        ```
-      </CodeBlockTab>
+### Configure Webhook Secret
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm dlx auth generate
-        ```
-      </CodeBlockTab>
+Copy the webhook signing secret from Creem and add it to your environment:
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn dlx auth generate
-        ```
-      </CodeBlockTab>
+```
+CREEM_WEBHOOK_SECRET=your_webhook_secret_here
+```
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun x auth generate
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Tab>
-</Tabs>
+Update your server configuration:
 
-<Callout type="info">
-  Depending on your database adapter, additional setup steps may be required. Refer to the [Better Auth adapter documentation](https://www.better-auth.com/docs/adapters/mysql) for details.
-</Callout>
+```
+creem({
+  apiKey: process.env.CREEM_API_KEY!,
+  webhookSecret: process.env.CREEM_WEBHOOK_SECRET,
+  testMode: true,
+})
+```
 
-Webhook Setup [#webhook-setup]
+### Local Development (Optional)
 
-<Steps>
-  <Step>
-    Create Webhook Endpoint [#create-webhook-endpoint]
+For local testing, use a tool like [ngrok](https://ngrok.com/) to expose your local server:
 
-    In your [Creem dashboard](https://creem.io/dashboard/developers/webhooks), create a webhook endpoint pointing to your local or production server pointing to:
+```
+ngrok http 3000
+```
 
-    ```text
-    https://your-domain.com/api/auth/creem/webhook
-    ```
+Add the ngrok URL to your Creem webhook settings.
 
-    (`/api/auth` is the default Better Auth server path)
-
-    <Callout type="info">
-      Check step 3 if local development.
-    </Callout>
-  </Step>
-
-  <Step>
-    Configure Webhook Secret [#configure-webhook-secret]
-
-    Copy the webhook signing secret from Creem and add it to your environment:
-
-    ```bash
-    CREEM_WEBHOOK_SECRET=your_webhook_secret_here
-    ```
-
-    Update your server configuration:
-
-    ```typescript
-    creem({
-      apiKey: process.env.CREEM_API_KEY!,
-      webhookSecret: process.env.CREEM_WEBHOOK_SECRET,
-      testMode: true,
-    })
-    ```
-  </Step>
-
-  <Step>
-    Local Development (Optional) [#local-development-optional]
-
-    For local testing, use a tool like [ngrok](https://ngrok.com) to expose your local server:
-
-    ```bash
-    ngrok http 3000
-    ```
-
-    Add the ngrok URL to your Creem webhook settings.
-  </Step>
-</Steps>
-
-Database Schema [#database-schema]
+## Database Schema
 
 When `persistSubscriptions: true`, the plugin creates the following schema:
 
-Creem Subscription Table [#creem-subscription-table]
+### Creem Subscription Table
 
 Table Name: `creem_subscription`
 
-| Field                 | Type    | Description                      |
-| --------------------- | ------- | -------------------------------- |
-| `id`                  | string  | Primary key                      |
-| `productId`           | string  | Creem product ID                 |
-| `referenceId`         | string  | Your user/organization ID        |
-| `creemCustomerId`     | string  | Creem customer ID                |
-| `creemSubscriptionId` | string  | Creem subscription ID            |
-| `creemOrderId`        | string  | Creem order ID                   |
-| `status`              | string  | Subscription status              |
-| `periodStart`         | date    | Billing period start date        |
-| `periodEnd`           | date    | Billing period end date          |
-| `cancelAtPeriodEnd`   | boolean | Whether subscription will cancel |
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | string | Primary key |
+| `productId` | string | Creem product ID |
+| `referenceId` | string | Your user/organization ID |
+| `creemCustomerId` | string | Creem customer ID |
+| `creemSubscriptionId` | string | Creem subscription ID |
+| `creemOrderId` | string | Creem order ID |
+| `status` | string | Subscription status |
+| `periodStart` | date | Billing period start date |
+| `periodEnd` | date | Billing period end date |
+| `cancelAtPeriodEnd` | boolean | Whether subscription will cancel |
 
-User Table Extension [#user-table-extension]
+### User Table Extension
 
-| Field             | Type   | Description                  |
-| ----------------- | ------ | ---------------------------- |
+| Field | Type | Description |
+| --- | --- | --- |
 | `creemCustomerId` | string | Links user to Creem customer |
 
-Usage [#usage]
+## Usage
 
-Checkout [#checkout]
+### Checkout
 
 Create a checkout session to process payments:
 
-```typescript
+```
 "use client";
 
 import { authClient } from "@/lib/auth-client";
@@ -378,34 +223,34 @@ export function SubscribeButton({ productId }: { productId: string }) {
 }
 ```
 
-Checkout Options [#checkout-options]
+#### Checkout Options
 
-* `productId` (required) - The Creem product ID
-* `units` - Number of units (default: 1)
-* `successUrl` - Redirect URL after successful payment
-* `discountCode` - Discount code to apply
-* `customer` - Customer information (auto-populated from session)
-* `metadata` - Additional metadata (auto-includes user ID as `referenceId`)
-* `requestId` - Idempotency key for duplicate prevention
+- `productId` (required) - The Creem product ID
+- `units` - Number of units (default: 1)
+- `successUrl` - Redirect URL after successful payment
+- `discountCode` - Discount code to apply
+- `customer` - Customer information (auto-populated from session)
+- `metadata` - Additional metadata (auto-includes user ID as `referenceId`)
+- `requestId` - Idempotency key for duplicate prevention
 
-Customer Portal [#customer-portal]
+### Customer Portal
 
 Redirect users to manage their subscriptions:
 
-```typescript
+```
 const handlePortal = async () => {
   // No need to redirect, the portal will be opened in the same tab
   const { data, error } = await authClient.creem.createPortal();
 };
 ```
 
-Subscription Management [#subscription-management]
+### Subscription Management
 
-Cancel Subscription [#cancel-subscription]
+### Cancel Subscription
 
 When database persistence is enabled, the subscription is found automatically for the authenticated user:
 
-```typescript
+```
 const handleCancel = async () => {
   const { data, error } = await authClient.creem.cancelSubscription();
 
@@ -417,50 +262,46 @@ const handleCancel = async () => {
 
 If database persistence is disabled, provide the subscription ID:
 
-```typescript
+```
 const { data } = await authClient.creem.cancelSubscription({
   id: "sub_123456",
 });
 ```
 
-Retrieve Subscription [#retrieve-subscription]
+### Retrieve Subscription
 
 Get subscription details for the authenticated user:
 
-```typescript
+```
 const getSubscription = async () => {
   const { data } = await authClient.creem.retrieveSubscription();
 
   if (data) {
-    console.log(`Status: ${data.status}`);
-    console.log(`Product: ${data.product.name}`);
-    console.log(`Price: ${data.product.price} ${data.product.currency}`);
+    console.log(\`Status: ${data.status}\`);
+    console.log(\`Product: ${data.product.name}\`);
+    console.log(\`Price: ${data.product.price} ${data.product.currency}\`);
   }
 };
 ```
 
-Check Access [#check-access]
+### Check Access
 
 Verify if the user has an active subscription (requires database mode):
 
-```typescript
+```
 const { data } = await authClient.creem.hasAccessGranted();
 
 if (data?.hasAccess) {
   // User has active subscription access
-  console.log(`Expires: ${data.expiresAt}`);
+  console.log(\`Expires: ${data.expiresAt}\`);
 }
 ```
 
-<Callout type="info">
-  This function checks if the user has access for the current billing period. For example, if a user purchases a yearly plan and cancels after one month, they still have access until the year ends.
-</Callout>
-
-Transaction History [#transaction-history]
+### Transaction History
 
 Search transaction records for the authenticated user:
 
-```typescript
+```
 const { data } = await authClient.creem.searchTransactions({
   productId: "prod_xyz789", // Optional filter
   pageNumber: 1,
@@ -469,35 +310,35 @@ const { data } = await authClient.creem.searchTransactions({
 
 if (data?.transactions) {
   data.transactions.forEach((tx) => {
-    console.log(`${tx.type}: ${tx.amount} ${tx.currency}`);
+    console.log(\`${tx.type}: ${tx.amount} ${tx.currency}\`);
   });
 }
 ```
 
-Webhook Handling [#webhook-handling]
+## Webhook Handling
 
 The plugin provides flexible webhook handling with both granular event handlers and high-level access control handlers.
 
-High-Level Access Control Handlers (Recommended) [#high-level-access-control-handlers-recommended]
+### High-Level Access Control Handlers (Recommended)
 
 These handlers provide the simplest and most powerful way to manage user access. They automatically handle all payment scenarios and subscription states, so you don't need to manage individual subscription events.
 
-<strong> Database Persistence Required:</strong> These handlers require the database persistence option to be enabled in your plugin configuration.
+**Database Persistence Required:** These handlers require the database persistence option to be enabled in your plugin configuration.
 
-| Handler Name         | Data Parameter Type       | Description                                                                                                                                                                                    |
-| -------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`onGrantAccess`**  | **`GrantAccessContext`**  | **Called when a user should be granted access.** Handles successful payments, active subscriptions, and trial periods. Use this to enable features, add user to groups, or update permissions. |
-| **`onRevokeAccess`** | **`RevokeAccessContext`** | **Called when a user's access should be revoked.** Handles cancellations, expirations, refunds, and failed payments. Use this to disable features, remove from groups, or revoke permissions.  |
+| Handler Name | Data Parameter Type | Description |
+| --- | --- | --- |
+| **`onGrantAccess`** | **`GrantAccessContext`** | **Called when a user should be granted access.** Handles successful payments, active subscriptions, and trial periods. Use this to enable features, add user to groups, or update permissions. |
+| **`onRevokeAccess`** | **`RevokeAccessContext`** | **Called when a user's access should be revoked.** Handles cancellations, expirations, refunds, and failed payments. Use this to disable features, remove from groups, or revoke permissions. |
 
 **Why use these handlers?**
 
-* Single source of truth for access control
-* Handles all payment scenarios automatically
-* Reduces code complexity and potential bugs
-* Works for both one-time purchases and subscriptions
-* Takes current billing period and access expiration dates into consideration
+- Single source of truth for access control
+- Handles all payment scenarios automatically
+- Reduces code complexity and potential bugs
+- Works for both one-time purchases and subscriptions
+- Takes current billing period and access expiration dates into consideration
 
-```typescript
+```
 // lib/auth.ts
 import { betterAuth } from "better-auth";
 import { creem } from "@creem_io/better-auth";
@@ -524,7 +365,7 @@ export const auth = betterAuth({
           },
         });
 
-        console.log(`Granted ${reason} access to ${customer.email}`);
+        console.log(\`Granted ${reason} access to ${customer.email}\`);
       },
 
       onRevokeAccess: async ({ reason, product, customer, metadata }) => {
@@ -539,51 +380,51 @@ export const auth = betterAuth({
           },
         });
 
-        console.log(`Revoked access (${reason}) from ${customer.email}`);
+        console.log(\`Revoked access (${reason}) from ${customer.email}\`);
       },
     }),
   ],
 })
 ```
 
-Grant Access Reasons [#grant-access-reasons]
+### Grant Access Reasons
 
-* `subscription_active` - Subscription is active
-* `subscription_trialing` - Subscription is in trial period
-* `subscription_paid` - Subscription payment received
+- `subscription_active` - Subscription is active
+- `subscription_trialing` - Subscription is in trial period
+- `subscription_paid` - Subscription payment received
 
-Revoke Access Reasons [#revoke-access-reasons]
+### Revoke Access Reasons
 
-* `subscription_paused` - Subscription paused by user or admin
-* `subscription_expired` - Subscription expired without renewal
-* `subscription_period_end` - Current subscription period ended without renewal
+- `subscription_paused` - Subscription paused by user or admin
+- `subscription_expired` - Subscription expired without renewal
+- `subscription_period_end` - Current subscription period ended without renewal
 
-***
+---
 
-Granular Event Handlers [#granular-event-handlers]
+### Granular Event Handlers
 
 For advanced use cases where you need fine-grained control over specific events, use these handlers:
 
-| Handler Name             | Data Parameter Type     | Description                                           |
-| ------------------------ | ----------------------- | ----------------------------------------------------- |
-| `onCheckoutCompleted`    | `FlatCheckoutCompleted` | Called when a checkout is completed successfully.     |
-| `onRefundCreated`        | `FlatRefundCreated`     | Triggered when a refund is issued for a payment.      |
-| `onDisputeCreated`       | `FlatDisputeCreated`    | Invoked when a payment dispute/chargeback is created. |
-| `onSubscriptionActive`   | `FlatSubscriptionEvent` | Fired when a subscription becomes active.             |
-| `onSubscriptionTrialing` | `FlatSubscriptionEvent` | Subscription enters a trial period.                   |
-| `onSubscriptionCanceled` | `FlatSubscriptionEvent` | Called when a subscription is canceled.               |
-| `onSubscriptionPaid`     | `FlatSubscriptionEvent` | Subscription payment is received.                     |
-| `onSubscriptionExpired`  | `FlatSubscriptionEvent` | Subscription has expired (no renewal/payment).        |
-| `onSubscriptionUnpaid`   | `FlatSubscriptionEvent` | Payment for a subscription failed or remains unpaid.  |
-| `onSubscriptionUpdate`   | `FlatSubscriptionEvent` | Subscription settings/details updated.                |
-| `onSubscriptionPastDue`  | `FlatSubscriptionEvent` | Subscription payment is late or overdue.              |
-| `onSubscriptionPaused`   | `FlatSubscriptionEvent` | Subscription has been paused (by user or admin).      |
+| Handler Name | Data Parameter Type | Description |
+| --- | --- | --- |
+| `onCheckoutCompleted` | `FlatCheckoutCompleted` | Called when a checkout is completed successfully. |
+| `onRefundCreated` | `FlatRefundCreated` | Triggered when a refund is issued for a payment. |
+| `onDisputeCreated` | `FlatDisputeCreated` | Invoked when a payment dispute/chargeback is created. |
+| `onSubscriptionActive` | `FlatSubscriptionEvent` | Fired when a subscription becomes active. |
+| `onSubscriptionTrialing` | `FlatSubscriptionEvent` | Subscription enters a trial period. |
+| `onSubscriptionCanceled` | `FlatSubscriptionEvent` | Called when a subscription is canceled. |
+| `onSubscriptionPaid` | `FlatSubscriptionEvent` | Subscription payment is received. |
+| `onSubscriptionExpired` | `FlatSubscriptionEvent` | Subscription has expired (no renewal/payment). |
+| `onSubscriptionUnpaid` | `FlatSubscriptionEvent` | Payment for a subscription failed or remains unpaid. |
+| `onSubscriptionUpdate` | `FlatSubscriptionEvent` | Subscription settings/details updated. |
+| `onSubscriptionPastDue` | `FlatSubscriptionEvent` | Subscription payment is late or overdue. |
+| `onSubscriptionPaused` | `FlatSubscriptionEvent` | Subscription has been paused (by user or admin). |
 
-How to use a Webhook Handler [#how-to-use-a-webhook-handler]
+### How to use a Webhook Handler
 
 Handle individual webhook events with all properties flattened for easy access:
 
-```typescript
+```
 // lib/auth.ts
 import { betterAuth } from "better-auth";
 import { creem } from "@creem_io/better-auth";
@@ -599,7 +440,7 @@ export const auth = betterAuth({
 
       onCheckoutCompleted: async (data) => {
         const { customer, product, order, webhookEventType } = data;
-        console.log(`${customer.email} purchased ${product.name}`);
+        console.log(\`${customer.email} purchased ${product.name}\`);
         
         // Perfect for one-time payments
         await sendThankYouEmail(customer.email);
@@ -634,11 +475,11 @@ export const auth = betterAuth({
 });
 ```
 
-Custom Webhook Handler [#custom-webhook-handler]
+### Custom Webhook Handler
 
 Create your own webhook endpoint with signature verification:
 
-```typescript
+```
 // app/api/webhooks/custom/route.ts
 import { validateWebhookSignature } from "@creem_io/better-auth/server";
 
@@ -663,13 +504,13 @@ export async function POST(req: Request) {
 }
 ```
 
-Server-Side Functions [#server-side-functions]
+## Server-Side Functions
 
 Use these utilities directly in Server Components, Server Actions, or API routes without going through Better Auth endpoints.
 
-Import Server Utilities [#import-server-utilities]
+### Import Server Utilities
 
-```typescript
+```
 import {
   createCheckout,
   createPortal,
@@ -684,9 +525,9 @@ import {
 } from "@creem_io/better-auth/server";
 ```
 
-Server Component Example [#server-component-example]
+### Server Component Example
 
-```typescript
+```
 import { checkSubscriptionAccess } from "@creem_io/better-auth/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -726,9 +567,9 @@ export default async function DashboardPage() {
 }
 ```
 
-Server Action Example [#server-action-example]
+### Server Action Example
 
-```typescript
+```
 "use server";
 
 import { createCheckout } from "@creem_io/better-auth/server";
@@ -760,11 +601,11 @@ export async function startCheckout(productId: string) {
 }
 ```
 
-Middleware Example [#middleware-example]
+### Middleware Example
 
 Protect routes based on subscription status:
 
-```typescript
+```
 import { checkSubscriptionAccess } from "@creem_io/better-auth/server";
 import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -801,9 +642,9 @@ export const config = {
 };
 ```
 
-Utility Functions [#utility-functions]
+### Utility Functions
 
-```typescript
+```
 import {
   isActiveSubscription,
   formatCreemDate,
@@ -821,97 +662,93 @@ console.log(renewalDate.toLocaleDateString());
 
 // Calculate days until renewal
 const days = getDaysUntilRenewal(subscription.current_period_end_date);
-console.log(`Renews in ${days} days`);
+console.log(\`Renews in ${days} days\`);
 ```
 
-Database Mode vs API Mode [#database-mode-vs-api-mode]
+### Database Mode vs API Mode
 
 The plugin supports two operational modes:
 
-Database Mode (Recommended) [#database-mode-recommended]
+### Database Mode (Recommended)
 
 When `persistSubscriptions: true` (default), subscription data is stored in your database.
 
 **Benefits:**
 
-* Fast access checks without API calls
-* Offline access to subscription data
-* Query subscriptions with SQL
-* Automatic synchronization via webhooks
-* Trial abuse prevention
+- Fast access checks without API calls
+- Offline access to subscription data
+- Query subscriptions with SQL
+- Automatic synchronization via webhooks
+- Trial abuse prevention
 
 **Usage:**
 
-```typescript
+```
 creem({
   apiKey: process.env.CREEM_API_KEY!,
   persistSubscriptions: true, // Default
 })
 ```
 
-API Mode [#api-mode]
+### API Mode
 
 When `persistSubscriptions: false`, all data comes directly from the Creem API.
 
 **Benefits:**
 
-* No database schema required
-* Simpler initial setup
+- No database schema required
+- Simpler initial setup
 
 **Limitations:**
 
-* Requires API call for each access check
-* Some features require custom implementation
-* No built-in trial abuse prevention
+- Requires API call for each access check
+- Some features require custom implementation
+- No built-in trial abuse prevention
 
 **Usage:**
 
-```typescript
+```
 creem({
   apiKey: process.env.CREEM_API_KEY!,
   persistSubscriptions: false,
 })
 ```
 
-<Callout type="warn">
-  In API mode, functions like `checkSubscriptionAccess` and `hasAccessGranted` have limited functionality and may require custom implementation using the Creem SDK directly.
-</Callout>
+## Type Exports
 
-Type Exports [#type-exports]
+### Server-Side Types
 
-Server-Side Types [#server-side-types]
+| Type Name | Description | Typical Usage |
+| --- | --- | --- |
+| `CreemOptions` | Configuration options for the Creem plugin, such as API keys and persistence settings. | Used to configure the plugin on the server. |
+| `GrantAccessContext` | Context passed to custom access control hooks when granting access to a user. | Used in custom access logic. |
+| `RevokeAccessContext` | Context passed to hooks when revoking user access due to subscription status changes. | Used in custom access logic. |
+| `GrantAccessReason` | Enum or type describing reasons for granting access (e.g., payment received, trial activated). | Returned in access-related hooks and events. |
+| `RevokeAccessReason` | Enum or type describing reasons for revoking access (e.g., canceled, payment failed). | Returned in access-related hooks and events. |
+| `FlatCheckoutCompleted` | Event object type for webhook payload when a checkout completes successfully. | Used in webhook handlers and event listeners. |
+| `FlatRefundCreated` | Event object type for webhook payload when a refund is created. | Used in webhook handlers and event listeners. |
+| `FlatDisputeCreated` | Event object type for webhook payload when a dispute is created. | Used in webhook handlers and event listeners. |
+| `FlatSubscriptionEvent` | Event object type for generic subscription events (created, updated, canceled, etc). | Used in webhook handlers and event listeners. |
 
-| Type Name               | Description                                                                                    | Typical Usage                                 |
-| ----------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| `CreemOptions`          | Configuration options for the Creem plugin, such as API keys and persistence settings.         | Used to configure the plugin on the server.   |
-| `GrantAccessContext`    | Context passed to custom access control hooks when granting access to a user.                  | Used in custom access logic.                  |
-| `RevokeAccessContext`   | Context passed to hooks when revoking user access due to subscription status changes.          | Used in custom access logic.                  |
-| `GrantAccessReason`     | Enum or type describing reasons for granting access (e.g., payment received, trial activated). | Returned in access-related hooks and events.  |
-| `RevokeAccessReason`    | Enum or type describing reasons for revoking access (e.g., canceled, payment failed).          | Returned in access-related hooks and events.  |
-| `FlatCheckoutCompleted` | Event object type for webhook payload when a checkout completes successfully.                  | Used in webhook handlers and event listeners. |
-| `FlatRefundCreated`     | Event object type for webhook payload when a refund is created.                                | Used in webhook handlers and event listeners. |
-| `FlatDisputeCreated`    | Event object type for webhook payload when a dispute is created.                               | Used in webhook handlers and event listeners. |
-| `FlatSubscriptionEvent` | Event object type for generic subscription events (created, updated, canceled, etc).           | Used in webhook handlers and event listeners. |
+### Client-Side Types
 
-Client-Side Types [#client-side-types]
+| Type Name | Description |
+| --- | --- |
+| `CreateCheckoutInput` | Input parameters for creating a checkout session. |
+| `CreateCheckoutResponse` | Response shape for a checkout session creation request. |
+| `CheckoutCustomer` | Customer information type used in a checkout session. |
+| `CreatePortalInput` | Input parameters for creating a customer portal session. |
+| `CreatePortalResponse` | Response data for a request to create a customer portal. |
+| `CancelSubscriptionInput` | Input parameters when cancelling a subscription. |
+| `CancelSubscriptionResponse` | Response data for a subscription cancellation request. |
+| `RetrieveSubscriptionInput` | Input for retrieving a specific subscription's details. |
+| `SubscriptionData` | Subscription information structure as returned by the API. |
+| `SearchTransactionsInput` | Filters and parameters for searching transactions. |
+| `SearchTransactionsResponse` | Response structure for a transaction search query. |
+| `TransactionData` | Data relating to individual transactions (e.g., payment, refund, etc). |
+| `HasAccessGrantedResponse` | The shape of the response indicating whether a user has access based on subscription status/rules. |
 
-| Type Name                    | Description                                                                                        |
-| ---------------------------- | -------------------------------------------------------------------------------------------------- |
-| `CreateCheckoutInput`        | Input parameters for creating a checkout session.                                                  |
-| `CreateCheckoutResponse`     | Response shape for a checkout session creation request.                                            |
-| `CheckoutCustomer`           | Customer information type used in a checkout session.                                              |
-| `CreatePortalInput`          | Input parameters for creating a customer portal session.                                           |
-| `CreatePortalResponse`       | Response data for a request to create a customer portal.                                           |
-| `CancelSubscriptionInput`    | Input parameters when cancelling a subscription.                                                   |
-| `CancelSubscriptionResponse` | Response data for a subscription cancellation request.                                             |
-| `RetrieveSubscriptionInput`  | Input for retrieving a specific subscription's details.                                            |
-| `SubscriptionData`           | Subscription information structure as returned by the API.                                         |
-| `SearchTransactionsInput`    | Filters and parameters for searching transactions.                                                 |
-| `SearchTransactionsResponse` | Response structure for a transaction search query.                                                 |
-| `TransactionData`            | Data relating to individual transactions (e.g., payment, refund, etc).                             |
-| `HasAccessGrantedResponse`   | The shape of the response indicating whether a user has access based on subscription status/rules. |
-
-Trial Abuse Prevention [#trial-abuse-prevention]
+## Trial Abuse Prevention
 
 When using database mode (`persistSubscriptions: true`), the plugin automatically prevents trial abuse. Users can only receive one trial across all subscription plans.
 
@@ -924,9 +761,9 @@ When using database mode (`persistSubscriptions: true`), the plugin automaticall
 
 This protection is automatic and requires no configuration. Trial eligibility is determined when the subscription is created and cannot be overridden.
 
-Troubleshooting [#troubleshooting]
+## Troubleshooting
 
-Webhook Issues [#webhook-issues]
+### Webhook Issues
 
 If webhooks aren't being processed correctly:
 
@@ -936,7 +773,7 @@ If webhooks aren't being processed correctly:
 4. Review server logs for webhook processing errors
 5. Test webhook delivery using Creem's webhook testing tool
 
-Subscription Status Issues [#subscription-status-issues]
+### Subscription Status Issues
 
 If subscription statuses aren't updating:
 
@@ -945,7 +782,7 @@ If subscription statuses aren't updating:
 3. Check that reference IDs match between your application and Creem
 4. Review webhook handler logs for errors
 
-Database Mode Not Working [#database-mode-not-working]
+### Database Mode Not Working
 
 If database persistence isn't functioning:
 
@@ -955,29 +792,29 @@ If database persistence isn't functioning:
 4. Check that schema tables were created successfully
 5. Review database adapter configuration
 
-API Mode Limitations [#api-mode-limitations]
+### API Mode Limitations
 
 Some functionalities are only available in database mode or require extra parameters to be passed:
 
-* `checkSubscriptionAccess` requires passing the `userId` parameter
-* `getActiveSubscriptions` requires passing the `userId` parameter
-* No automatic trial abuse prevention
-* No access to `hasAccessGranted` client method
+- `checkSubscriptionAccess` requires passing the `userId` parameter
+- `getActiveSubscriptions` requires passing the `userId` parameter
+- No automatic trial abuse prevention
+- No access to `hasAccessGranted` client method
 
 To use these features, either enable database mode or implement custom logic using the Creem SDK directly.
 
-Additional Resources [#additional-resources]
+## Additional Resources
 
-* [Creem Documentation](https://docs.creem.io)
-* [Creem Dashboard](https://creem.io/dashboard)
-* [Better Auth Documentation](https://better-auth.com)
-* [Plugin GitHub Repository Additional Documentation](https://github.com/armitage-labs/creem-betterauth)
+- [Creem Documentation](https://docs.creem.io/)
+- [Creem Dashboard](https://creem.io/dashboard)
+- [Better Auth Documentation](https://better-auth.com/)
+- [Plugin GitHub Repository Additional Documentation](https://github.com/armitage-labs/creem-betterauth)
 
-Support [#support]
+## Support
 
 For issues or questions:
 
-* Open an issue on [GitHub](https://github.com/armitage-labs/creem-betterauth/issues)
-* Contact Creem support at [support@creem.io](mailto:support@creem.io)
-* Join our [Discord community](https://discord.gg/q3GKZs92Av) for real-time support and discussion.
-* Chat with us directly using the in-app live chat on the [Creem dashboard](https://creem.io/dashboard).
+- Open an issue on [GitHub](https://github.com/armitage-labs/creem-betterauth/issues)
+- Contact Creem support at [support@creem.io](mailto:support@creem.io)
+- Join our [Discord community](https://discord.gg/q3GKZs92Av) for real-time support and discussion.
+- Chat with us directly using the in-app live chat on the [Creem dashboard](https://creem.io/dashboard).

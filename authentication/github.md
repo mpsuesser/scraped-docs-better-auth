@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/github
 title: "Github"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # GitHub
@@ -12,60 +12,49 @@ GitHub provider setup and usage.
 
 
 
-<Steps>
-  <Step>
-    Get your GitHub credentials [#get-your-github-credentials]
 
-    To use GitHub sign in, you need a client ID and client secret. You can get them from the [GitHub Developer Portal](https://github.com/settings/developers).
+### Get your GitHub credentials
+To use GitHub sign in, you need a client ID and client secret. You can get them from the [GitHub Developer Portal](https://github.com/settings/developers).
 
-    Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/github` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
+Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/github` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-    Important: You MUST include the user:email scope in your GitHub app. See details below.
-  </Step>
+Important: You MUST include the user:email scope in your GitHub app. See details below.
 
-  <Step>
-    Configure the provider [#configure-the-provider]
+### Configure the provider
+To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
+export const auth = betterAuth({
+    socialProviders: {
+        github: { // [!code highlight]
+            clientId: process.env.GITHUB_CLIENT_ID as string, // [!code highlight]
+            clientSecret: process.env.GITHUB_CLIENT_SECRET as string, // [!code highlight]
+        }, // [!code highlight]
+    },
+})
+```
 
-    export const auth = betterAuth({
-        socialProviders: {
-            github: { // [!code highlight]
-                clientId: process.env.GITHUB_CLIENT_ID as string, // [!code highlight]
-                clientSecret: process.env.GITHUB_CLIENT_SECRET as string, // [!code highlight]
-            }, // [!code highlight]
-        },
+### Sign In with GitHub
+To sign in with GitHub, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
+
+* `provider`: The provider to use. It should be set to `github`.
+
+```ts title="auth-client.ts"  
+import { createAuthClient } from "better-auth/client"
+const authClient =  createAuthClient()
+
+const signIn = async () => {
+    const data = await authClient.signIn.social({
+        provider: "github"
     })
-    ```
-  </Step>
+}
+```
 
-  <Step>
-    Sign In with GitHub [#sign-in-with-github]
 
-    To sign in with GitHub, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
-
-    * `provider`: The provider to use. It should be set to `github`.
-
-    ```ts title="auth-client.ts"  
-    import { createAuthClient } from "better-auth/client"
-    const authClient =  createAuthClient()
-
-    const signIn = async () => {
-        const data = await authClient.signIn.social({
-            provider: "github"
-        })
-    }
-    ```
-  </Step>
-</Steps>
-
-Usage [#usage]
-
-Setting up your Github app [#setting-up-your-github-app]
-
+## Usage
+## Setting up your Github app
 Github has two types of apps: Github apps and OAuth apps.
 
 For OAuth apps, you don't have to do anything special (just follow the steps above). For Github apps, you DO have to add one more thing, which is enable it to read the user's email:
@@ -76,12 +65,9 @@ For OAuth apps, you don't have to do anything special (just follow the steps abo
 
 That's all! Now you can copy the Client ID and Client Secret of your app!
 
-<Callout>
-  If you get an `email_not_found` error, it is most often because either (a) you created a GitHub App and did not grant the "Email addresses: Read-only" permission, or (b) the user has set their primary email to private, in which case `GET /user` returns `email: null`. See [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email) for the recommended `mapProfileToUser` fallback; the user's private addresses are also available via [`/user/emails`](https://docs.github.com/en/rest/users/emails).
-</Callout>
+> If you get an `email_not_found` error, it is most often because either (a) you created a GitHub App and did not grant the "Email addresses: Read-only" permission, or (b) the user has set their primary email to private, in which case `GET /user` returns `email: null`. See [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email) for the recommended `mapProfileToUser` fallback; the user's private addresses are also available via [`/user/emails`](https://docs.github.com/en/rest/users/emails).
 
-Why don't I have a refresh token? [#why-dont-i-have-a-refresh-token]
-
+## Why don't I have a refresh token?
 Github doesn't issue refresh tokens for OAuth apps. For regular OAuth apps,
 GitHub issues access tokens that remain valid indefinitely unless the user revokes them,
 the app revokes them, or they go unused for a year.

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/fastify
 title: "Fastify"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Better Auth Fastify Integration Guide
@@ -14,12 +14,9 @@ Learn how to seamlessly integrate Better Auth with your Fastify application.
 
 This guide provides step-by-step instructions for configuring both essential handlers and CORS settings.
 
-<Callout type="important">
-  A configured Better Auth instance is required before proceeding. If you haven't set this up yet, please consult our [Installation Guide](/docs/installation).
-</Callout>
+> A configured Better Auth instance is required before proceeding. If you haven't set this up yet, please consult our [Installation Guide](/docs/installation).
 
-Prerequisites [#prerequisites]
-
+## Prerequisites
 Verify the following requirements before integration:
 
 * **Node.js Environment**: v16 or later installed
@@ -27,64 +24,45 @@ Verify the following requirements before integration:
   * `package.json`: `{ "type": "module" }`
   * TypeScript `tsconfig.json`: `{ "module": "ESNext" }`
 * **Fastify Dependencies**:
-  <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-    <CodeBlockTabsList>
-      <CodeBlockTabsTrigger value="npm">
-        npm
-      </CodeBlockTabsTrigger>
 
-      <CodeBlockTabsTrigger value="pnpm">
-        pnpm
-      </CodeBlockTabsTrigger>
 
-      <CodeBlockTabsTrigger value="yarn">
-        yarn
-      </CodeBlockTabsTrigger>
 
-      <CodeBlockTabsTrigger value="bun">
-        bun
-      </CodeBlockTabsTrigger>
-    </CodeBlockTabsList>
+#### npm
 
-    <CodeBlockTab value="npm">
-      ```bash
-      npm install fastify @fastify/cors
-      ```
-    </CodeBlockTab>
+```bash
+npm install fastify @fastify/cors
+```
 
-    <CodeBlockTab value="pnpm">
-      ```bash
-      pnpm add fastify @fastify/cors
-      ```
-    </CodeBlockTab>
+#### pnpm
 
-    <CodeBlockTab value="yarn">
-      ```bash
-      yarn add fastify @fastify/cors
-      ```
-    </CodeBlockTab>
+```bash
+pnpm add fastify @fastify/cors
+```
 
-    <CodeBlockTab value="bun">
-      ```bash
-      bun add fastify @fastify/cors
-      ```
-    </CodeBlockTab>
-  </CodeBlockTabs>
+#### yarn
 
-<Callout type="tip">
-   For TypeScript: Ensure your 
+```bash
+yarn add fastify @fastify/cors
+```
 
-  `tsconfig.json`
+#### bun
 
-   includes 
+```bash
+bun add fastify @fastify/cors
+```
 
-  `"esModuleInterop": true`
 
-   for optimal compatibility. 
-</Callout>
+>  For TypeScript: Ensure your 
+> 
+> `tsconfig.json`
+> 
+>  includes 
+> 
+> `"esModuleInterop": true`
+> 
+>  for optimal compatibility. 
 
-Authentication Handler Setup [#authentication-handler-setup]
-
+## Authentication Handler Setup
 Configure Better Auth to process authentication requests by creating a catch-all route:
 
 ```ts title="server.ts"
@@ -140,8 +118,7 @@ fastify.listen({ port: 4000 }, (err) => {
 });
 ```
 
-Trusted origins [#trusted-origins]
-
+## Trusted origins
 When a request is made from a different origin, the request will be blocked by default. You can add trusted origins to the `auth` instance.
 
 ```ts
@@ -150,8 +127,7 @@ export const auth = betterAuth({
 });
 ```
 
-Configuring CORS [#configuring-cors]
-
+## Configuring CORS
 Secure your API endpoints with proper CORS configuration:
 
 ```ts
@@ -174,12 +150,9 @@ fastify.register(fastifyCors, {
 // (Use previous handler configuration here)
 ```
 
-<Callout type="warning">
-   Always restrict CORS origins in production environments. Use environment variables for dynamic configuration. 
-</Callout>
+> Always restrict CORS origins in production environments. Use environment variables for dynamic configuration. 
 
-Getting the User Session [#getting-the-user-session]
-
+## Getting the User Session
 To retrieve the user's session in your Fastify routes, use the `auth.api.getSession` method. Better Auth provides a `fromNodeHeaders` helper function that converts Node.js request headers to the format expected by Better Auth.
 
 ```ts title="server.ts"

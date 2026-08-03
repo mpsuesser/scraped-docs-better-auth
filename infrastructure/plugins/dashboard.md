@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/dashboard
 title: "Dashboard"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Dashboard
@@ -14,8 +14,7 @@ The `dash()` plugin connects your Better Auth instance to Better Auth Infrastruc
 
 The Dashboard plugin is the core connection between your Better Auth instance and Better Auth Infrastructure. It powers the web dashboard with real-time data, tracks user activity, and enables admin APIs.
 
-Installation [#installation]
-
+## Installation
 ```ts
 import { betterAuth } from "better-auth";
 import { dash } from "@better-auth/infra";
@@ -27,8 +26,7 @@ export const auth = betterAuth({
 });
 ```
 
-Configuration Options [#configuration-options]
-
+## Configuration Options
 | Option             | Type     | Description                                                           |
 | ------------------ | -------- | --------------------------------------------------------------------- |
 | `apiUrl`           | `string` | Better Auth Infrastructure API URL                                    |
@@ -38,8 +36,7 @@ Configuration Options [#configuration-options]
 | `kvTimeout`        | `number` | Timeout in ms for KV HTTP requests (`kvUrl`). Default: `1000`         |
 | `activityTracking` | `object` | Activity tracking configuration                                       |
 
-Activity Tracking [#activity-tracking]
-
+## Activity Tracking
 Track when users were last active in your application. When enabled, a `lastActiveAt` field is automatically updated on user activity.
 
 ```ts
@@ -52,8 +49,7 @@ dash({
 }),
 ```
 
-Schema Changes [#schema-changes]
-
+## Schema Changes
 When activity tracking is enabled, the plugin adds a field to your user schema:
 
 ```ts
@@ -68,8 +64,7 @@ user: {
 
 Make sure to run database migrations after enabling activity tracking.
 
-Client Setup [#client-setup]
-
+## Client Setup
 ```ts
 import { createAuthClient } from "better-auth/client";
 import { dashClient } from "@better-auth/infra/client";
@@ -79,8 +74,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-Client Configuration [#client-configuration]
-
+## Client Configuration
 ```ts
 dashClient({
   resolveUserId: ({ userId, user, session }) => {
@@ -89,8 +83,7 @@ dashClient({
 }),
 ```
 
-What the Dashboard Plugin Enables [#what-the-dashboard-plugin-enables]
-
+## What the Dashboard Plugin Enables
 Once `dash()` is active, the Better Auth Infrastructure dashboard gives you:
 
 * **User management** — view, search, ban, and delete users
@@ -99,8 +92,7 @@ Once `dash()` is active, the Better Auth Infrastructure dashboard gives you:
 * **Analytics** — track sign-ups, sign-ins, and active users over time
 * **Audit logs** — query event history ([learn more](/docs/infrastructure/plugins/audit-logs))
 
-Best Practices [#best-practices]
-
+## Best Practices
 1. **Always set an API key** — without it, the plugin cannot communicate with the infrastructure API.
 
 2. **Use activity tracking wisely** — the update interval affects database writes. For high-traffic apps, consider a longer interval.

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/bearer
 title: "Bearer"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Bearer Token Authentication
@@ -14,12 +14,9 @@ Authenticate API requests using Bearer tokens instead of browser cookies
 
 The Bearer plugin enables authentication using Bearer tokens as an alternative to browser cookies. It intercepts requests, adding the Bearer token to the Authorization header before forwarding them to your API.
 
-<Callout type="warn">
-  Use this cautiously; it is intended only for APIs that don't support cookies or require Bearer tokens for authentication. Improper implementation could easily lead to security vulnerabilities.
-</Callout>
+> Use this cautiously; it is intended only for APIs that don't support cookies or require Bearer tokens for authentication. Improper implementation could easily lead to security vulnerabilities.
 
-Installing the Bearer Plugin [#installing-the-bearer-plugin]
-
+## Installing the Bearer Plugin
 Add the Bearer plugin to your authentication setup:
 
 ```ts title="auth.ts"
@@ -31,10 +28,8 @@ export const auth = betterAuth({
 });
 ```
 
-How to Use Bearer Tokens [#how-to-use-bearer-tokens]
-
-1. Obtain the Bearer Token [#1-obtain-the-bearer-token]
-
+## How to Use Bearer Tokens
+## 1. Obtain the Bearer Token
 After a successful sign-in, you'll receive a session token in the response headers. Store this token securely (e.g., in `localStorage`):
 
 ```ts
@@ -72,8 +67,7 @@ export const authClient = createAuthClient({
 
 You may want to clear the token based on the response status code or other conditions:
 
-2. Configure the Auth Client [#2-configure-the-auth-client]
-
+## 2. Configure the Auth Client
 Set up your auth client to include the Bearer token in all requests:
 
 ```ts title="auth-client.ts"
@@ -89,8 +83,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-3. Make Authenticated Requests [#3-make-authenticated-requests]
-
+## 3. Make Authenticated Requests
 Now you can make authenticated API calls:
 
 ```ts
@@ -100,8 +93,7 @@ import { authClient } from "@/lib/auth-client"
 const { data } = await authClient.listSessions();
 ```
 
-4. Per-Request Token (Optional) [#4-per-request-token-optional]
-
+## 4. Per-Request Token (Optional)
 You can also provide the token for individual requests:
 
 ```ts
@@ -116,8 +108,7 @@ const { data } = await authClient.listSessions({
 });
 ```
 
-5. Using Bearer Tokens Outside the Auth Client [#5-using-bearer-tokens-outside-the-auth-client]
-
+## 5. Using Bearer Tokens Outside the Auth Client
 The Bearer token can be used to authenticate any request to your API, even when not using the auth client:
 
 ```ts title="api-call.ts"
@@ -153,6 +144,5 @@ export async function handler(req, res) {
 }
 ```
 
-Options [#options]
-
+## Options
 **requireSignature** (boolean): Require the token to be signed. Default: `false`.

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/nitro
 title: "Nitro"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Nitro Integration
@@ -16,8 +16,7 @@ Better Auth can be integrated with your [Nitro Application](https://nitro.build/
 
 This guide aims to help you integrate Better Auth with your Nitro application in a few simple steps.
 
-Create a new Nitro Application [#create-a-new-nitro-application]
-
+## Create a new Nitro Application
 Start by scaffolding a new Nitro application using the following command:
 
 ```bash title="Terminal"
@@ -26,105 +25,70 @@ npx giget@latest nitro nitro-app --install
 
 This will create the `nitro-app` directory and install all the dependencies. You can now open the `nitro-app` directory in your code editor.
 
-Prisma Adapter Setup [#prisma-adapter-setup]
-
-<Callout>
-  This guide assumes that you have a basic understanding of Prisma. If you are new to Prisma, you can check out the [Prisma documentation](https://www.prisma.io/docs/getting-started).
-
-  The `sqlite` database used in this guide will not work in a production environment. You should replace it with a production-ready database like `PostgreSQL`.
-</Callout>
+## Prisma Adapter Setup
+> This guide assumes that you have a basic understanding of Prisma. If you are new to Prisma, you can check out the [Prisma documentation](https://www.prisma.io/docs/getting-started).
+> 
+> The `sqlite` database used in this guide will not work in a production environment. You should replace it with a production-ready database like `PostgreSQL`.
 
 For this guide, we will be using the Prisma adapter. You can install prisma client by running the following command:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### npm
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm install @prisma/client
-    ```
-  </CodeBlockTab>
+```bash
+npm install @prisma/client
+```
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm add @prisma/client
-    ```
-  </CodeBlockTab>
+#### pnpm
 
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn add @prisma/client
-    ```
-  </CodeBlockTab>
+```bash
+pnpm add @prisma/client
+```
 
-  <CodeBlockTab value="bun">
-    ```bash
-    bun add @prisma/client
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
+#### yarn
+
+```bash
+yarn add @prisma/client
+```
+
+#### bun
+
+```bash
+bun add @prisma/client
+```
+
 
 `prisma` can be installed as a dev dependency using the following command:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### npm
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm install -D prisma
-    ```
-  </CodeBlockTab>
+```bash
+npm install -D prisma
+```
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm add -D prisma
-    ```
-  </CodeBlockTab>
+#### pnpm
 
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn add --dev prisma
-    ```
-  </CodeBlockTab>
+```bash
+pnpm add -D prisma
+```
 
-  <CodeBlockTab value="bun">
-    ```bash
-    bun add --dev prisma
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
+#### yarn
+
+```bash
+yarn add --dev prisma
+```
+
+#### bun
+
+```bash
+bun add --dev prisma
+```
+
 
 Generate a `schema.prisma` file in the `prisma` directory by running the following command:
 
@@ -163,8 +127,7 @@ Run the following command to generate the Prisma client & sync the database:
 npx prisma db push
 ```
 
-Install & Configure Better Auth [#install--configure-better-auth]
-
+## Install & Configure Better Auth
 Follow steps 1 & 2 from the [installation guide](/docs/installation) to install Better Auth in your Nitro application & set up the environment variables.
 
 Once that is done, create your Better Auth instance within the `server/utils/auth.ts` file.
@@ -181,24 +144,20 @@ export const auth = betterAuth({
 });
 ```
 
-Update Prisma Schema [#update-prisma-schema]
-
+## Update Prisma Schema
 Use the Better Auth CLI to update your Prisma schema with the required models by running the following command:
 
 ```bash title="Terminal"
 npx auth generate --config server/utils/auth.ts
 ```
 
-<Callout>
-  The `--config` flag is used to specify the path to the file where you have created your Better Auth instance.
-</Callout>
+> The `--config` flag is used to specify the path to the file where you have created your Better Auth instance.
 
 Head over to the `prisma/schema.prisma` file & save the file to trigger the format on save.
 
 After saving the file, you can run the `npx prisma db push` command to update the database schema.
 
-Mount The Handler [#mount-the-handler]
-
+## Mount The Handler
 You can now mount the Better Auth handler in your Nitro application. You can do this by adding the following code to your `server/routes/api/auth/[...all].ts` file:
 
 ```ts title="server/routes/api/auth/[...all].ts"
@@ -207,59 +166,40 @@ export default defineEventHandler((event) => {
 });
 ```
 
-<Callout>
-  This is a [catch-all](https://nitro.build/guide/routing#catch-all-route) route that will handle all requests to `/api/auth/*`.
-</Callout>
+> This is a [catch-all](https://nitro.build/guide/routing#catch-all-route) route that will handle all requests to `/api/auth/*`.
 
-CORS [#cors]
-
+## CORS
 You can configure CORS for your Nitro app by creating a plugin.
 
 Start by installing the cors package:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### npm
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm install cors
-    ```
-  </CodeBlockTab>
+```bash
+npm install cors
+```
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm add cors
-    ```
-  </CodeBlockTab>
+#### pnpm
 
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn add cors
-    ```
-  </CodeBlockTab>
+```bash
+pnpm add cors
+```
 
-  <CodeBlockTab value="bun">
-    ```bash
-    bun add cors
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
+#### yarn
+
+```bash
+yarn add cors
+```
+
+#### bun
+
+```bash
+bun add cors
+```
+
 
 You can now create a new file `server/plugins/cors.ts` and add the following code:
 
@@ -276,12 +216,9 @@ export default defineNitroPlugin((plugin) => {
 });
 ```
 
-<Callout>
-  This will enable CORS for all routes. You can customize the `origin` property to allow requests from specific domains. Ensure that the config is in sync with your frontend application.
-</Callout>
+> This will enable CORS for all routes. You can customize the `origin` property to allow requests from specific domains. Ensure that the config is in sync with your frontend application.
 
-Auth Guard/Middleware [#auth-guardmiddleware]
-
+## Auth Guard/Middleware
 You can add an auth guard to your Nitro application to protect routes that require authentication. You can do this by creating a new file `server/utils/require-auth.ts` and adding the following code:
 
 ```ts title="server/utils/require-auth.ts"
@@ -323,6 +260,5 @@ export default defineEventHandler({
 });
 ```
 
-Example [#example]
-
+## Example
 See an [example Nitro application integrated with Better Auth & Prisma](https://github.com/BayBreezy/nitrojs-better-auth-prisma).

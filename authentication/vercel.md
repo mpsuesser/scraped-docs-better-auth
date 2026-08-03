@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/vercel
 title: "Vercel"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Vercel
@@ -12,43 +12,33 @@ Vercel provider setup and usage.
 
 
 
-<Steps>
-  <Step>
-    Get your Vercel credentials [#get-your-vercel-credentials]
 
-    To use Sign in with Vercel, you need a client ID and client secret. You can get them from the [Vercel Dashboard](https://vercel.com/dashboard) by [creating a Vercel App](https://vercel.com/docs/sign-in-with-vercel/manage-from-dashboard).
+### Get your Vercel credentials
+To use Sign in with Vercel, you need a client ID and client secret. You can get them from the [Vercel Dashboard](https://vercel.com/dashboard) by [creating a Vercel App](https://vercel.com/docs/sign-in-with-vercel/manage-from-dashboard).
 
-    Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/vercel` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
+Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/vercel` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-    <Callout type="info">
-      Vercel requires PKCE (Proof Key for Code Exchange) for enhanced security. This is automatically handled by Better Auth.
-    </Callout>
-  </Step>
+> Vercel requires PKCE (Proof Key for Code Exchange) for enhanced security. This is automatically handled by Better Auth.
 
-  <Step>
-    Configure the provider [#configure-the-provider]
+### Configure the provider
+To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
+```ts title="auth.ts" 
+import { betterAuth } from "better-auth"
 
-    ```ts title="auth.ts" 
-    import { betterAuth } from "better-auth"
+export const auth = betterAuth({ 
+    socialProviders: {
+        vercel: { // [!code highlight]
+            clientId: process.env.VERCEL_CLIENT_ID as string, // [!code highlight]
+            clientSecret: process.env.VERCEL_CLIENT_SECRET as string, // [!code highlight]
+        }, // [!code highlight]
+    },
+})
+```
 
-    export const auth = betterAuth({ 
-        socialProviders: {
-            vercel: { // [!code highlight]
-                clientId: process.env.VERCEL_CLIENT_ID as string, // [!code highlight]
-                clientSecret: process.env.VERCEL_CLIENT_SECRET as string, // [!code highlight]
-            }, // [!code highlight]
-        },
-    })
-    ```
-  </Step>
-</Steps>
 
-Usage [#usage]
-
-Sign in with Vercel [#sign-in-with-vercel]
-
+## Usage
+## Sign in with Vercel
 To sign in with Vercel, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `vercel`.
@@ -64,12 +54,10 @@ const signIn = async () => {
 }
 ```
 
-Options [#options]
-
+## Options
 For the full list of options supported by all social providers, check the [Provider Options](/docs/concepts/oauth#provider-options).
 
-Available Scopes [#available-scopes]
-
+## Available Scopes
 Vercel supports the following OpenID Connect scopes:
 
 * `openid` (default): Returns the user's unique identifier in the ID token
@@ -95,6 +83,4 @@ export const auth = betterAuth({
 })
 ```
 
-<Callout type="info">
-  For more information about Vercel's scopes and API capabilities, refer to the [official Vercel documentation](https://vercel.com/docs/sign-in-with-vercel).
-</Callout>
+> For more information about Vercel's scopes and API capabilities, refer to the [official Vercel documentation](https://vercel.com/docs/sign-in-with-vercel).

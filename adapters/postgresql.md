@@ -2,25 +2,19 @@
 url: https://better-auth.com/llms.txt/docs/adapters/postgresql
 title: "Postgresql"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# PostgreSQL
 
 Integrate Better Auth with PostgreSQL.
 
+PostgreSQL is a powerful, open-source relational database management system known for its advanced features, extensibility, and support for complex queries and large datasets. Read more about [PostgreSQL](https://www.postgresql.org/).
 
+## Example Usage
 
-PostgreSQL is a powerful, open-source relational database management system known for its advanced features, extensibility, and support for complex queries and large datasets.
-Read more about [PostgreSQL](https://www.postgresql.org/).
+Make sure you have PostgreSQL installed and configured. Then, you can connect it straight into Better Auth.
 
-Example Usage [#example-usage]
-
-Make sure you have PostgreSQL installed and configured.
-Then, you can connect it straight into Better Auth.
-
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { Pool } from "pg";
 
@@ -31,150 +25,37 @@ export const auth = betterAuth({
 });
 ```
 
-<Callout>
-  For more information, read Kysely's documentation to the
-  [PostgresDialect](https://kysely-org.github.io/kysely-apidoc/classes/PostgresDialect.html).
-</Callout>
+## Schema generation & migration
 
-Schema generation & migration [#schema-generation--migration]
+The [Better Auth CLI](https://better-auth.com/docs/concepts/cli) allows you to generate or migrate your database schema based on your Better Auth configuration and plugins.
 
-The [Better Auth CLI](/docs/concepts/cli) allows you to generate or migrate
-your database schema based on your Better Auth configuration and plugins.
+| PostgreSQL Schema Generation | PostgreSQL Schema Migration |
+| --- | --- |
+| ✅ Supported | ✅ Supported |
 
-<table>
-  <thead>
-    <tr className="border-b">
-      <th>
-        <p className="font-bold text-[16px] mb-1">
-          PostgreSQL Schema Generation
-        </p>
-      </th>
+#### migrate
 
-      <th>
-        <p className="font-bold text-[16px] mb-1">
-          PostgreSQL Schema Migration
-        </p>
-      </th>
-    </tr>
-  </thead>
+#### npm
 
-  <tbody>
-    <tr className="h-10">
-      <td>
-        ✅ Supported
-      </td>
+#### generate
 
-      <td>
-        ✅ Supported
-      </td>
-    </tr>
-  </tbody>
-</table>
+```
+npx auth@latest migrate
+```
 
-<Tabs items={["migrate", "generate"]}>
-  <Tab value="migrate">
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+#### pnpm
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+#### yarn
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+#### bun
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+## Joins (Experimental)
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npx auth@latest migrate
-        ```
-      </CodeBlockTab>
+Database joins is useful when Better-Auth needs to fetch related data from multiple tables in a single query. Endpoints like `/get-session`, `/get-full-organization` and many others benefit greatly from this feature, seeing upwards of 2x to 3x performance improvements depending on database latency.
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm dlx auth@latest migrate
-        ```
-      </CodeBlockTab>
+The Kysely PostgreSQL dialect supports joins out of the box since version `1.4.0`. To enable this feature, you need to set the `experimental.joins` option to `true` in your auth configuration.
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn dlx auth@latest migrate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun x auth@latest migrate
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Tab>
-
-  <Tab value="generate">
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npx auth@latest generate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm dlx auth@latest generate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn dlx auth@latest generate
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun x auth@latest generate
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Tab>
-</Tabs>
-
-Joins (Experimental) [#joins-experimental]
-
-Database joins is useful when Better-Auth needs to fetch related data from multiple tables in a single query.
-Endpoints like `/get-session`, `/get-full-organization` and many others benefit greatly from this feature,
-seeing upwards of 2x to 3x performance improvements depending on database latency.
-
-The Kysely PostgreSQL dialect supports joins out of the box since version `1.4.0`.
-To enable this feature, you need to set the `experimental.joins` option to `true` in your auth configuration.
-
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -182,20 +63,15 @@ export const auth = betterAuth({
 });
 ```
 
-<Callout type="warn">
-  It's possible that you may need to run migrations after enabling this feature.
-</Callout>
+## Use a non-default schema
 
-Use a non-default schema [#use-a-non-default-schema]
+In most cases, the default schema is `public`. To have Better Auth use a non-default schema (e.g., `auth`) for its tables, you have several options:
 
-In most cases, the default schema is `public`. To have Better Auth use a
-non-default schema (e.g., `auth`) for its tables, you have several options:
-
-Option 1: Set search_path in connection string (Recommended) [#option-1-set-search_path-in-connection-string-recommended]
+### Option 1: Set search\_path in connection string (Recommended)
 
 Append the `options` parameter to your connection URI:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { Pool } from "pg";
 
@@ -208,9 +84,9 @@ export const auth = betterAuth({
 
 URL-encode if needed: `?options=-c%20search_path%3Dauth`.
 
-Option 2: Set search_path using Pool options [#option-2-set-search_path-using-pool-options]
+### Option 2: Set search\_path using Pool options
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { Pool } from "pg";
 
@@ -226,62 +102,43 @@ export const auth = betterAuth({
 });
 ```
 
-Option 3: Set default schema for database user [#option-3-set-default-schema-for-database-user]
+### Option 3: Set default schema for database user
 
 Set the PostgreSQL user's default schema:
 
-```sql
+```
 ALTER USER your_user SET search_path TO auth;
 ```
 
 After setting this, reconnect to apply the changes.
 
-Prerequisites [#prerequisites]
+### Prerequisites
 
 Before using a non-default schema, ensure:
 
 1. **The schema exists:**
-   ```sql
-   CREATE SCHEMA IF NOT EXISTS auth;
-   ```
-
+	```
+	CREATE SCHEMA IF NOT EXISTS auth;
+	```
 2. **The user has appropriate permissions:**
-   ```sql
-   GRANT ALL PRIVILEGES ON SCHEMA auth TO your_user;
-   GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA auth TO your_user;
-   ALTER DEFAULT PRIVILEGES IN SCHEMA auth GRANT ALL ON TABLES TO your_user;
-   ```
+	```
+	GRANT ALL PRIVILEGES ON SCHEMA auth TO your_user;
+	GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA auth TO your_user;
+	ALTER DEFAULT PRIVILEGES IN SCHEMA auth GRANT ALL ON TABLES TO your_user;
+	```
 
-How it works [#how-it-works]
+### How it works
 
 The Better Auth CLI migration system automatically detects your configured `search_path`:
 
-* When running `npx auth migrate`, it inspects only the tables in your configured schema
-* Tables in other schemas (e.g., `public`) are ignored, preventing conflicts
-* All new tables are created in your specified schema
+- When running `npx auth migrate`, it inspects only the tables in your configured schema
+- Tables in other schemas (e.g., `public`) are ignored, preventing conflicts
+- All new tables are created in your specified schema
 
-Troubleshooting [#troubleshooting]
+### Troubleshooting
 
-<Callout type="warning">
-  **Issue:** "relation does not exist" error during migration
+## Additional Information
 
-  **Solution:** This usually means the schema doesn't exist or the user lacks permissions. Create the schema and grant permissions as shown above.
-</Callout>
+PostgreSQL is supported under the hood via the [Kysely](https://kysely.dev/) adapter, any database supported by Kysely would also be supported. ([Read more here](https://better-auth.com/docs/adapters/other-relational-databases))
 
-<Callout type="info">
-  **Verifying your schema configuration:**
-
-  You can verify which schema Better Auth will use by checking the `search_path`:
-
-  ```sql
-  SHOW search_path;
-  ```
-
-  This should return your custom schema (e.g., `auth`) as the first value.
-</Callout>
-
-Additional Information [#additional-information]
-
-PostgreSQL is supported under the hood via the [Kysely](https://kysely.dev/) adapter, any database supported by Kysely would also be supported. (<Link href="/docs/adapters/other-relational-databases">Read more here</Link>)
-
-If you're looking for performance improvements or tips, take a look at our guide to <Link href="/docs/guides/optimizing-for-performance">performance optimizations</Link>.
+If you're looking for performance improvements or tips, take a look at our guide to [performance optimizations](https://better-auth.com/docs/guides/optimizing-for-performance).

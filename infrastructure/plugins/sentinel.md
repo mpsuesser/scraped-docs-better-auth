@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/sentinel
 title: "Sentinel"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Security Plugin (sentinel)
@@ -12,8 +12,7 @@ The `sentinel()` plugin provides comprehensive security and abuse protection for
 
 
 
-Installation [#installation]
-
+## Installation
 ```tsx
 import { betterAuth } from "better-auth";
 import { sentinel } from "@better-auth/infra";
@@ -29,10 +28,8 @@ export const auth = betterAuth({
 });
 ```
 
-Configuration Options [#configuration-options]
-
-SentinelOptions [#sentineloptions]
-
+## Configuration Options
+## SentinelOptions
 | Option       | Type              | Description                                                           |
 | ------------ | ----------------- | --------------------------------------------------------------------- |
 | `apiUrl`     | `string`          | Better Auth Infrastructure API URL                                    |
@@ -42,8 +39,7 @@ SentinelOptions [#sentineloptions]
 | `kvTimeout`  | `number`          | Timeout in ms for KV HTTP requests (`kvUrl`). Default: `1000`         |
 | `security`   | `SecurityOptions` | Security feature configuration                                        |
 
-SecurityOptions [#securityoptions]
-
+## SecurityOptions
 ```ts
 interface SecurityOptions {
   unknownDeviceNotification?: boolean;
@@ -64,10 +60,8 @@ interface SecurityOptions {
 type SecurityAction = "log" | "challenge" | "block";
 ```
 
-Security Features [#security-features]
-
-Credential Stuffing Protection [#credential-stuffing-protection]
-
+## Security Features
+## Credential Stuffing Protection
 Detects and blocks credential stuffing attacks by tracking failed login attempts per visitor.
 
 ```ts
@@ -94,8 +88,7 @@ sentinel({
 3. After reaching the block threshold, blocks the visitor entirely
 4. Automatically clears failed attempts on successful login
 
-Impossible Travel Detection [#impossible-travel-detection]
-
+## Impossible Travel Detection
 Detects logins from geographically distant locations in impossibly short timeframes.
 
 ```ts
@@ -113,8 +106,7 @@ sentinel({
 
 **Example:** If a user logs in from New York and then 30 minutes later from Tokyo, this would be flagged as impossible travel (would require traveling faster than 1000 km/h).
 
-Free Trial Abuse Prevention [#free-trial-abuse-prevention]
-
+## Free Trial Abuse Prevention
 Prevents users from creating multiple accounts to abuse free trials using device fingerprinting.
 
 ```ts
@@ -140,8 +132,7 @@ sentinel({
 2. When threshold is exceeded, blocks new account creation
 3. Useful for preventing free tier abuse
 
-Compromised Password Detection [#compromised-password-detection]
-
+## Compromised Password Detection
 Checks passwords against the HaveIBeenPwned database to detect compromised credentials.
 
 ```ts
@@ -159,8 +150,7 @@ sentinel({
 
 **Privacy:** Uses k-anonymity - only the first 5 characters of the password hash are sent to the API, never the full password.
 
-Stale Account Monitoring [#stale-account-monitoring]
-
+## Stale Account Monitoring
 Detects when dormant accounts suddenly become active, which could indicate account takeover.
 
 ```ts
@@ -185,8 +175,7 @@ sentinel({
 * Days since last activity
 * Device information
 
-Geo-Blocking [#geo-blocking]
-
+## Geo-Blocking
 Block or challenge users from specific countries.
 
 ```ts
@@ -205,8 +194,7 @@ sentinel({
 
 Use ISO 3166-1 alpha-2 country codes.
 
-Bot Blocking [#bot-blocking]
-
+## Bot Blocking
 Detect and block automated bot traffic.
 
 ```ts
@@ -222,8 +210,7 @@ sentinel({
 }),
 ```
 
-Suspicious IP Detection [#suspicious-ip-detection]
-
+## Suspicious IP Detection
 Block requests from known malicious IP addresses.
 
 ```ts
@@ -239,8 +226,7 @@ sentinel({
 }),
 ```
 
-Velocity / Rate Limiting [#velocity--rate-limiting]
-
+## Velocity / Rate Limiting
 Limit the rate of various operations.
 
 ```ts
@@ -263,8 +249,7 @@ sentinel({
 }),
 ```
 
-Email Validation [#email-validation]
-
+## Email Validation
 Block disposable email addresses and validate email domains.
 
 ```ts
@@ -286,8 +271,7 @@ sentinel({
 * `medium` - Also check for valid MX records
 * `high` - Additional heuristic checks
 
-Email normalization [#email-normalization]
-
+## Email normalization
 Sentinel can normalize email addresses before sign-up and sign-in so aliases and provider quirks do not create duplicate accounts or mismatched logins. Normalization includes lowercasing, stripping plus-address tags on common providers (for example `user+tag@gmail.com` → `user@gmail.com`), removing dots in Gmail-style addresses, and mapping `googlemail.com` to `gmail.com`.
 
 Use `security.emailNormalization` when you want to control this separately from disposable-domain validation (`emailValidation`):
@@ -306,19 +290,16 @@ sentinel({
 }),
 ```
 
-Proof-of-Work Challenges [#proof-of-work-challenges]
-
+## Proof-of-Work Challenges
 When a security check results in a "challenge" action, Sentinel issues a Proof-of-Work (PoW) challenge that must be solved by the client.
 
-How PoW Works [#how-pow-works]
-
+## How PoW Works
 1. Server issues a cryptographic challenge
 2. Client must find a solution that satisfies difficulty requirements
 3. Solution is computationally expensive but verification is fast
 4. Prevents automated attacks while allowing legitimate users through
 
-Challenge Difficulty [#challenge-difficulty]
-
+## Challenge Difficulty
 ```ts
 sentinel({
   apiKey: process.env.BETTER_AUTH_API_KEY,
@@ -330,10 +311,8 @@ sentinel({
 
 Higher difficulty = more computation required = slower for attackers.
 
-Client Integration [#client-integration]
-
-sentinelClient() [#sentinelclient]
-
+## Client Integration
+## sentinelClient()
 The client plugin handles device fingerprinting and automatic PoW challenge solving.
 
 ```ts
@@ -349,79 +328,58 @@ export const authClient = createAuthClient({
 });
 ```
 
-Configuration [#configuration]
-
+## Configuration
 | Option               | Type      | Default | Description                                             |
 | -------------------- | --------- | ------- | ------------------------------------------------------- |
 | `autoSolveChallenge` | `boolean` | `true`  | Automatically solve PoW challenges                      |
 | `kvTimeout`          | `number`  | `1000`  | Timeout in ms for KV identify and related HTTP requests |
 
-Browser Fingerprinting [#browser-fingerprinting]
-
+## Browser Fingerprinting
 The client automatically includes a visitor ID in requests via the `X-Visitor-Id` header. This fingerprint is used for:
 
 * Credential stuffing detection
 * Free trial abuse prevention
 * Device tracking
 
-PoW Solution Header [#pow-solution-header]
-
+## PoW Solution Header
 When auto-solving is enabled, solved challenges are sent via the `X-PoW-Solution` header.
 
-Expo and React Native [#expo-and-react-native]
-
+## Expo and React Native
 For **Expo** and **React Native** apps, use `sentinelNativeClient` from `@better-auth/infra/native` instead of using `@better-auth/infra/client`.
 
 For **React Native** apps, install the following peer dependencies:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### npm
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm install @react-native-async-storage/async-storage react-native-get-random-values
-    ```
-  </CodeBlockTab>
+```bash
+npm install @react-native-async-storage/async-storage react-native-get-random-values
+```
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm add @react-native-async-storage/async-storage react-native-get-random-values
-    ```
-  </CodeBlockTab>
+#### pnpm
 
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn add @react-native-async-storage/async-storage react-native-get-random-values
-    ```
-  </CodeBlockTab>
+```bash
+pnpm add @react-native-async-storage/async-storage react-native-get-random-values
+```
 
-  <CodeBlockTab value="bun">
-    ```bash
-    bun add @react-native-async-storage/async-storage react-native-get-random-values
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
+#### yarn
+
+```bash
+yarn add @react-native-async-storage/async-storage react-native-get-random-values
+```
+
+#### bun
+
+```bash
+bun add @react-native-async-storage/async-storage react-native-get-random-values
+```
+
 
 `@react-native-async-storage/async-storage` is optional. If it is not installed, the client uses a session-only in-memory visitor ID. For production, install it or pass a custom `storage` (for example a secure store).
 
-Example [#example]
-
+## Example
 ```ts
 import { createAuthClient } from "better-auth/client";
 import { dashClient, sentinelNativeClient } from "@better-auth/infra/native";
@@ -439,56 +397,37 @@ export const authClient = createAuthClient({
 
 For **Expo** apps, install the packages below for richer native identity payloads.
 
-<Callout type="info">
-  **Expo:** Follow the [Expo integration](/docs/integrations/expo) before adding infrastructure plugins.
-</Callout>
+> **Expo:** Follow the [Expo integration](/docs/integrations/expo) before adding infrastructure plugins.
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### npm
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm install expo-constants expo-device expo-crypto
-    ```
-  </CodeBlockTab>
+```bash
+npm install expo-constants expo-device expo-crypto
+```
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm add expo-constants expo-device expo-crypto
-    ```
-  </CodeBlockTab>
+#### pnpm
 
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn add expo-constants expo-device expo-crypto
-    ```
-  </CodeBlockTab>
+```bash
+pnpm add expo-constants expo-device expo-crypto
+```
 
-  <CodeBlockTab value="bun">
-    ```bash
-    bun add expo-constants expo-device expo-crypto
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
+#### yarn
 
-Example [#example-1]
+```bash
+yarn add expo-constants expo-device expo-crypto
+```
 
+#### bun
+
+```bash
+bun add expo-constants expo-device expo-crypto
+```
+
+
+## Example
 ```ts
 import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
@@ -511,8 +450,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-sentinelNativeClient options [#sentinelnativeclient-options]
-
+## sentinelNativeClient options
 | Option                | Type                            | Default                                                 | Description                                                                 |
 | --------------------- | ------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `identifyUrl`         | `string`                        | `BETTER_AUTH_KV_URL`, then `https://kv.better-auth.com` | KV identify endpoint base URL                                               |
@@ -523,8 +461,7 @@ sentinelNativeClient options [#sentinelnativeclient-options]
 | `onChallengeFailed`   | `(error: Error) => void`        | —                                                       | Called if solving fails                                                     |
 | `storage`             | `{ getItem, setItem }`          | Async Storage when installed                            | Persistent async storage for a stable per-install visitor ID                |
 
-Security Events [#security-events]
-
+## Security Events
 Sentinel tracks the following security event types:
 
 | Event Type                      | Description                         |
@@ -543,8 +480,7 @@ Sentinel tracks the following security event types:
 
 These events are visible in the Security dashboard and included in audit logs.
 
-Complete Example [#complete-example]
-
+## Complete Example
 ```ts
 import { betterAuth } from "better-auth";
 import { sentinel } from "@better-auth/infra";
@@ -609,8 +545,7 @@ export const auth = betterAuth({
 });
 ```
 
-Best Practices [#best-practices]
-
+## Best Practices
 1. **Start with logging** - Set actions to "log" initially to understand your traffic patterns before blocking.
 
 2. **Tune thresholds** - Every application is different. Monitor false positives and adjust thresholds accordingly.
@@ -623,26 +558,22 @@ Best Practices [#best-practices]
 
 6. **Set up admin notifications** - Enable `notifyAdmin` for critical events like stale account reactivations.
 
-Troubleshooting [#troubleshooting]
-
-Missing API Key Warning [#missing-api-key-warning]
-
+## Troubleshooting
+## Missing API Key Warning
 ```
 [Sentinel] Missing BETTER_AUTH_API_KEY. Security checks may fall back to allow mode.
 ```
 
 Make sure your API key environment variable is set correctly.
 
-Challenges Not Working [#challenges-not-working]
-
+## Challenges Not Working
 If PoW challenges aren't being solved:
 
 1. Verify the correct client plugin: `sentinelClient()` for web (`@better-auth/infra/client`), or `sentinelNativeClient()` for Expo / React Native (`@better-auth/infra/native`)
 2. Check that `autoSolveChallenge` is `true`
 3. Ensure the client can reach the server
 
-High False Positive Rate [#high-false-positive-rate]
-
+## High False Positive Rate
 If legitimate users are being blocked:
 
 1. Increase thresholds

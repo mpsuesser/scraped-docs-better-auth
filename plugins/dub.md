@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/dub
 title: "Dub"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Dub
@@ -16,134 +16,89 @@ Better Auth Plugin for Lead Tracking using Dub links and OAuth Linking
 
 This plugins allows you to track leads when a user signs up using a Dub link. It also adds OAuth linking support to allow you to build integrations extending Dub's linking management infrastructure.
 
-Installation [#installation]
+## Installation
+### Install the plugin
+First, install the plugin:
 
-<Steps>
-  <Step>
-    Install the plugin [#install-the-plugin]
 
-    First, install the plugin:
 
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+#### npm
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+```bash
+npm install @dub/better-auth
+```
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+#### pnpm
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install @dub/better-auth
-        ```
-      </CodeBlockTab>
+```bash
+pnpm add @dub/better-auth
+```
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add @dub/better-auth
-        ```
-      </CodeBlockTab>
+#### yarn
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add @dub/better-auth
-        ```
-      </CodeBlockTab>
+```bash
+yarn add @dub/better-auth
+```
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add @dub/better-auth
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Step>
+#### bun
 
-  <Step>
-    Install the Dub SDK [#install-the-dub-sdk]
+```bash
+bun add @dub/better-auth
+```
 
-    Next, install the Dub SDK on your server:
 
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+### Install the Dub SDK
+Next, install the Dub SDK on your server:
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install dub
-        ```
-      </CodeBlockTab>
+#### npm
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add dub
-        ```
-      </CodeBlockTab>
+```bash
+npm install dub
+```
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add dub
-        ```
-      </CodeBlockTab>
+#### pnpm
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add dub
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Step>
+```bash
+pnpm add dub
+```
 
-  <Step>
-    Configure the plugin [#configure-the-plugin]
+#### yarn
 
-    Add the plugin to your auth config:
+```bash
+yarn add dub
+```
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
-    import { dubAnalytics } from "@dub/better-auth"
-    import { dub } from "dub"
+#### bun
 
-    export const auth = betterAuth({
-        plugins: [
-            dubAnalytics({
-                dubClient: new Dub()
-            })
-        ]
-    })
-    ```
-  </Step>
-</Steps>
+```bash
+bun add dub
+```
 
-Usage [#usage]
 
-Lead Tracking [#lead-tracking]
+### Configure the plugin
+Add the plugin to your auth config:
 
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
+import { dubAnalytics } from "@dub/better-auth"
+import { dub } from "dub"
+
+export const auth = betterAuth({
+    plugins: [
+        dubAnalytics({
+            dubClient: new Dub()
+        })
+    ]
+})
+```
+
+
+## Usage
+## Lead Tracking
 By default, the plugin will track sign up events as leads. You can disable this by setting `disableLeadTracking` to `true`.
 
 ```ts
@@ -163,8 +118,7 @@ const betterAuth = betterAuth({
 });
 ```
 
-OAuth Linking [#oauth-linking]
-
+## OAuth Linking
 The plugin supports OAuth for account linking.
 
 First, you need to setup OAuth app in Dub. Dub supports OAuth 2.0 authentication, which is recommended if you build integrations extending Dub’s functionality [Learn more about OAuth](https://dub.co/docs/integrations/quickstart#integrating-via-oauth-2-0-recommended).
@@ -229,38 +183,29 @@ type dubLink = {
 ```
 
 
-Options [#options]
-
+## Options
 You can pass the following options to the plugin:
 
-dubClient [#dubclient]
-
+## dubClient
 The Dub client instance.
 
-disableLeadTracking [#disableleadtracking]
-
+## disableLeadTracking
 Disable lead tracking for sign up events.
 
-leadEventName [#leadeventname]
-
+## leadEventName
 Event name for sign up leads.
 
-customLeadTrack [#customleadtrack]
-
+## customLeadTrack
 Custom lead track function.
 
-oauth [#oauth]
-
+## oauth
 Dub OAuth configuration.
 
-oauth.clientId [#oauthclientid]
-
+## oauth.clientId
 Client ID for Dub OAuth.
 
-oauth.clientSecret [#oauthclientsecret]
-
+## oauth.clientSecret
 Client secret for Dub OAuth.
 
-oauth.pkce [#oauthpkce]
-
+## oauth.pkce
 Enable PKCE for Dub OAuth.

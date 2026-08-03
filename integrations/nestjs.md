@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/nestjs
 title: "Nestjs"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # NestJS Integration
@@ -16,66 +16,43 @@ This guide will show you how to integrate Better Auth with [NestJS](https://nest
 
 Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
-<Callout type="info">
-  The NestJS integration is **community maintained**. If you encounter any issues, please open them at [nestjs-better-auth](https://github.com/ThallesP/nestjs-better-auth).
-</Callout>
+> The NestJS integration is **community maintained**. If you encounter any issues, please open them at [nestjs-better-auth](https://github.com/ThallesP/nestjs-better-auth).
 
-Installation [#installation]
-
+## Installation
 Install the NestJS integration library:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### npm
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm install @thallesp/nestjs-better-auth
-    ```
-  </CodeBlockTab>
+```bash
+npm install @thallesp/nestjs-better-auth
+```
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm add @thallesp/nestjs-better-auth
-    ```
-  </CodeBlockTab>
+#### pnpm
 
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn add @thallesp/nestjs-better-auth
-    ```
-  </CodeBlockTab>
+```bash
+pnpm add @thallesp/nestjs-better-auth
+```
 
-  <CodeBlockTab value="bun">
-    ```bash
-    bun add @thallesp/nestjs-better-auth
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
+#### yarn
 
-Basic Setup [#basic-setup]
+```bash
+yarn add @thallesp/nestjs-better-auth
+```
 
-<Callout type="warn">
-  Currently the library has beta support for Fastify, if you experience any issues with it, please open an issue at [nestjs-better-auth](https://github.com/ThallesP/nestjs-better-auth).
-</Callout>
+#### bun
 
-1. Disable Body Parser [#1-disable-body-parser]
+```bash
+bun add @thallesp/nestjs-better-auth
+```
 
+
+## Basic Setup
+> Currently the library has beta support for Fastify, if you experience any issues with it, please open an issue at [nestjs-better-auth](https://github.com/ThallesP/nestjs-better-auth).
+
+## 1. Disable Body Parser
 Disable NestJS's built-in body parser to allow Better Auth to handle the raw request body:
 
 ```ts title="main.ts"
@@ -91,8 +68,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-2. Import AuthModule [#2-import-authmodule]
-
+## 2. Import AuthModule
 Import the `AuthModule` in your root module:
 
 ```ts title="app.module.ts"
@@ -108,8 +84,7 @@ import { auth } from "./auth"; // Your Better Auth instance
 export class AppModule {}
 ```
 
-3. Route Protection [#3-route-protection]
-
+## 3. Route Protection
 **Global by default**: An `AuthGuard` is registered globally by this module. All routes are protected unless you explicitly allow access.
 
 Use the `Session` decorator to access the user session:
@@ -139,6 +114,5 @@ export class UserController {
 }
 ```
 
-Full Documentation [#full-documentation]
-
+## Full Documentation
 For comprehensive documentation including decorators, hooks, global guards, and advanced configuration, visit the [NestJS Better Auth repository](https://github.com/thallesp/nestjs-better-auth).

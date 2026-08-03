@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/one-tap
 title: "One Tap"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # One Tap
@@ -15,62 +15,52 @@ One Tap plugin for Better Auth
 The One Tap plugin allows users to log in with a single tap using Google's One Tap API. The plugin
 provides a simple way to integrate One Tap into your application, handling the client-side and server-side logic for you.
 
-Installation [#installation]
+## Installation
+### Add the Server Plugin
+Add the One Tap plugin to your auth configuration:
 
-<Steps>
-  <Step>
-    Add the Server Plugin [#add-the-server-plugin]
+```ts title="auth.ts"
+import { betterAuth } from "better-auth";
+import { oneTap } from "better-auth/plugins"; // [!code highlight]
 
-    Add the One Tap plugin to your auth configuration:
+export const auth = betterAuth({
+    plugins: [
+        oneTap(), // Add the One Tap server plugin  // [!code highlight]
+    ]
+});
+```
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
-    import { oneTap } from "better-auth/plugins"; // [!code highlight]
+### Add the Client Plugin
+Add the client plugin and specify where the user should be redirected after sign-in or if additional verification (like 2FA) is needed.
 
-    export const auth = betterAuth({
-        plugins: [
-            oneTap(), // Add the One Tap server plugin  // [!code highlight]
-        ]
-    });
-    ```
-  </Step>
+```ts
+import { createAuthClient } from "better-auth/client";
+import { oneTapClient } from "better-auth/client/plugins"; // [!code highlight]
 
-  <Step>
-    Add the Client Plugin [#add-the-client-plugin]
+export const authClient = createAuthClient({
+  plugins: [
+    oneTapClient({
+      clientId: "YOUR_CLIENT_ID",
+      // Optional client configuration:
+      autoSelect: false,
+      cancelOnTapOutside: true,
+      context: "signin",
+      additionalOptions: {
+        // Any extra options for the Google initialize method
+      },
+      // Configure prompt behavior and exponential backoff:
+      promptOptions: {
+        baseDelay: 1000,   // Base delay in ms (default: 1000)
+        maxAttempts: 5     // Maximum number of attempts before triggering onPromptNotification (default: 5)
+      }
+    })
+  ]
+});
+```
 
-    Add the client plugin and specify where the user should be redirected after sign-in or if additional verification (like 2FA) is needed.
 
-    ```ts
-    import { createAuthClient } from "better-auth/client";
-    import { oneTapClient } from "better-auth/client/plugins"; // [!code highlight]
-
-    export const authClient = createAuthClient({
-      plugins: [
-        oneTapClient({
-          clientId: "YOUR_CLIENT_ID",
-          // Optional client configuration:
-          autoSelect: false,
-          cancelOnTapOutside: true,
-          context: "signin",
-          additionalOptions: {
-            // Any extra options for the Google initialize method
-          },
-          // Configure prompt behavior and exponential backoff:
-          promptOptions: {
-            baseDelay: 1000,   // Base delay in ms (default: 1000)
-            maxAttempts: 5     // Maximum number of attempts before triggering onPromptNotification (default: 5)
-          }
-        })
-      ]
-    });
-    ```
-  </Step>
-</Steps>
-
-Usage [#usage]
-
-Prompt Mode (Default) [#prompt-mode-default]
-
+## Usage
+## Prompt Mode (Default)
 To display the One Tap popup, simply call the oneTap method on your auth client:
 
 ```ts
@@ -79,64 +69,61 @@ import { authClient } from "@/lib/auth-client";
 await authClient.oneTap(); // [!code highlight]
 ```
 
-Button Mode [#button-mode]
-
+## Button Mode
 To render a "Sign In with Google" button instead of showing the automatic prompt, use the `button` option:
 
-<Tabs items={["Vanilla JS", "React Ref"]}>
-  <Tab value="Vanilla JS">
-    ```tsx
-    // In your component
-    <div id="google-signin-button"></div>
 
-    // Call oneTap with button configuration
-    await authClient.oneTap({
-      button: {
-        container: "#google-signin-button", // CSS selector or HTMLElement
-        config: {
-          theme: "outline",
-          size: "large",
-          type: "standard",
-          text: "signin_with"
-        }
-      }
-    });
-    ```
-  </Tab>
+#### Vanilla JS
 
-  <Tab value="React Ref">
-    ```tsx
-    import { useEffect, useRef } from "react";
+```tsx
+// In your component
+<div id="google-signin-button"></div>
 
-    function SignInButton() {
-      const buttonRef = useRef<HTMLDivElement>(null);
-
-      useEffect(() => {
-        if (buttonRef.current) {
-          authClient.oneTap({
-            button: {
-              container: buttonRef.current,
-              config: {
-                theme: "filled_blue",
-                size: "large"
-              }
-            }
-          });
-        }
-      }, []);
-
-      return <div ref={buttonRef}></div>;
+// Call oneTap with button configuration
+await authClient.oneTap({
+  button: {
+    container: "#google-signin-button", // CSS selector or HTMLElement
+    config: {
+      theme: "outline",
+      size: "large",
+      type: "standard",
+      text: "signin_with"
     }
-    ```
-  </Tab>
-</Tabs>
+  }
+});
+```
 
-Customizing Redirect Behavior [#customizing-redirect-behavior]
+#### React Ref
 
+```tsx
+import { useEffect, useRef } from "react";
+
+function SignInButton() {
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (buttonRef.current) {
+      authClient.oneTap({
+        button: {
+          container: buttonRef.current,
+          config: {
+            theme: "filled_blue",
+            size: "large"
+          }
+        }
+      });
+    }
+  }, []);
+
+  return <div ref={buttonRef}></div>;
+}
+```
+
+
+## Customizing Redirect Behavior
 By default, after a successful login the plugin will hard redirect the user to `/`. You can customize this behavior as follows:
 
-Avoiding a Hard Redirect [#avoiding-a-hard-redirect]
-
+## Avoiding a Hard Redirect
 Pass fetchOptions with an onSuccess callback to handle the login response without a page reload:
 
 ```ts
@@ -152,8 +139,7 @@ await authClient.oneTap({
 });
 ```
 
-Specifying a Custom Callback URL [#specifying-a-custom-callback-url]
-
+## Specifying a Custom Callback URL
 To perform a hard redirect to a different page after login, use the callbackURL option:
 
 ```ts
@@ -164,8 +150,7 @@ await authClient.oneTap({
 });
 ```
 
-Handling Prompt Dismissals with Exponential Backoff [#handling-prompt-dismissals-with-exponential-backoff]
-
+## Handling Prompt Dismissals with Exponential Backoff
 If the user dismisses or skips the prompt, the plugin will retry showing the One Tap prompt using exponential backoff based on your configured promptOptions.
 
 If the maximum number of attempts is reached without a successful sign-in, you can use the onPromptNotification callback to be notified—allowing you to render an alternative UI (e.g., a traditional Google Sign-In button) so users can restart the process manually:
@@ -181,8 +166,7 @@ await authClient.oneTap({
 });
 ```
 
-Client Options [#client-options]
-
+## Client Options
 * `clientId`: The client ID for your Google One Tap API.
 * `autoSelect`: Automatically select the account if the user is already signed in. Default is false.
 * `cancelOnTapOutside`: Cancel the One Tap popup when the user taps outside it. Note that this option may not have an effect when FedCM is active, as the browser manages the dismiss behavior. Default is true.
@@ -194,8 +178,7 @@ Client Options [#client-options]
   * `maxAttempts`: Maximum number of prompt attempts before invoking the `onPromptNotification` callback. Default is 5.
   * `fedCM`: When enabled, calls [`navigator.credentials.preventSilentAccess()`](https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/preventSilentAccess) on sign-out to clear the browser's FedCM credential state. FedCM itself is managed by the Google Identity Services library and cannot be disabled. Default is true.
 
-Button Mode Options [#button-mode-options]
-
+## Button Mode Options
 When using button mode, pass a `button` object to the `oneTap` action with the following properties:
 
 * `container`: The HTML element or CSS selector where the button should be rendered (required)
@@ -209,27 +192,23 @@ When using button mode, pass a `button` object to the `oneTap` action with the f
   * `width`: Minimum button width in pixels (max 400)
   * `locale`: Display button using specified language code (e.g., `"zh_CN"`)
 
-Server Options [#server-options]
-
+## Server Options
 * `disableSignUp`: Disable the sign-up option, allowing only existing users to sign in. Default is false.
 * `clientId`: Optionally, pass a client ID here if it is not provided in your social provider configuration.
 
-<Callout type="info">
-  **Restricting to a Google Workspace domain (`hd`)**
+> **Restricting to a Google Workspace domain (`hd`)**
+> 
+> The One Tap callback applies the hosted-domain restriction from
+> `socialProviders.google.hd`, matching the standard Google sign-in flow:
+> when `hd` is set to a domain, a token whose `hd` claim is missing or does
+> not match is rejected. Set `hd: "*"` to allow any Google Workspace hosted
+> domain while still rejecting tokens with no `hd` claim.
+> 
+> This value is read from `socialProviders.google`, so the restriction only
+> applies when you configure the Google provider. If you set up One Tap with
+> only `oneTap({ clientId })` and no `socialProviders.google`, no
+> hosted-domain restriction is applied. To restrict One Tap sign-in to a
+> Workspace domain, configure `socialProviders.google` with `hd`.
 
-  The One Tap callback applies the hosted-domain restriction from
-  `socialProviders.google.hd`, matching the standard Google sign-in flow:
-  when `hd` is set to a domain, a token whose `hd` claim is missing or does
-  not match is rejected. Set `hd: "*"` to allow any Google Workspace hosted
-  domain while still rejecting tokens with no `hd` claim.
-
-  This value is read from `socialProviders.google`, so the restriction only
-  applies when you configure the Google provider. If you set up One Tap with
-  only `oneTap({ clientId })` and no `socialProviders.google`, no
-  hosted-domain restriction is applied. To restrict One Tap sign-in to a
-  Workspace domain, configure `socialProviders.google` with `hd`.
-</Callout>
-
-Authorized JavaScript origins [#authorized-javascript-origins]
-
+## Authorized JavaScript origins
 Ensure you have configured the Authorized JavaScript origins (e.g., [http://localhost:3000](http://localhost:3000), [https://example.com](https://example.com)) for your Client ID in the Google Cloud Console. This is a required step for the Google One Tap API, and it will not function correctly unless your origins are correctly set.

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/state_invalid
 title: "State_invalid"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # state_invalid
@@ -12,8 +12,7 @@ Failed to decrypt or parse the OAuth state during the callback.
 
 
 
-What is it? [#what-is-it]
-
+## What is it?
 When using the **cookie** state storage strategy (`account.storeStateStrategy: "cookie"`), Better Auth encrypts
 all OAuth state data into a cookie. During the callback, this cookie is decrypted and parsed. The `state_invalid`
 error means the cookie exists but could not be decrypted, or the decrypted content could not be parsed as valid JSON.
@@ -21,8 +20,7 @@ error means the cookie exists but could not be decrypted, or the decrypted conte
 This error is specific to the cookie strategy. On the default database strategy, state failures surface as other
 codes (for example `state_mismatch`), depending on what failed.
 
-Common Causes [#common-causes]
-
+## Common Causes
 * **Secret rotation mid-flow.** The `BETTER_AUTH_SECRET` was changed between the start and the callback of the OAuth
   flow, so the decryption key no longer matches the one that encrypted the cookie.
 * **Cookie value corrupted in transit.** A proxy, CDN, or middleware modified or truncated the cookie value during
@@ -30,25 +28,20 @@ Common Causes [#common-causes]
 * **Malformed cookie.** The cookie was manually altered, or a different cookie with a conflicting name was read
   instead.
 
-How to resolve [#how-to-resolve]
-
-Avoid rotating secrets during active flows [#avoid-rotating-secrets-during-active-flows]
-
+## How to resolve
+## Avoid rotating secrets during active flows
 Deploy secret changes during low-traffic windows. If you need to rotate secrets, consider running both the old and new
 secrets simultaneously during a transition period so in-progress flows can complete.
 
-Check proxies and middleware [#check-proxies-and-middleware]
-
+## Check proxies and middleware
 Verify that any reverse proxies, CDNs, or middleware in front of your application preserve the full, unmodified
 cookie value. Look for cookie rewriting, truncation, or URL-encoding issues.
 
-Verify cookie names and values [#verify-cookie-names-and-values]
-
+## Verify cookie names and values
 Use your browser's DevTools (Application, then Cookies) to confirm that the `better-auth.oauth_state` cookie is set
 before the redirect and still exists (unmodified) when the callback arrives.
 
-Switch to the database strategy [#switch-to-the-database-strategy]
-
+## Switch to the database strategy
 If cookie issues persist, switch to the default database strategy, which does not depend on a state cookie for
 decryption:
 

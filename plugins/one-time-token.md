@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/one-time-token
 title: "One Time Token"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # One-Time Token Plugin
@@ -14,49 +14,39 @@ Generate and verify single-use token
 
 The One-Time Token (OTT) plugin provides functionality to generate and verify secure, single-use session tokens. These are commonly used for across domains authentication.
 
-Installation [#installation]
+## Installation
+### Add the plugin to your auth config
+To use the One-Time Token plugin, add it to your auth config.
 
-<Steps>
-  <Step>
-    Add the plugin to your auth config [#add-the-plugin-to-your-auth-config]
+```ts title="auth.ts"
+import { betterAuth } from "better-auth";
+import { oneTimeToken } from "better-auth/plugins/one-time-token"; // [!code highlight]
 
-    To use the One-Time Token plugin, add it to your auth config.
+export const auth = betterAuth({
+    plugins: [
+      oneTimeToken() // [!code highlight]
+    ]
+    // ... other auth config
+});
+```
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
-    import { oneTimeToken } from "better-auth/plugins/one-time-token"; // [!code highlight]
+### Add the client plugin
+Next, include the one-time-token client plugin in your authentication client instance.
 
-    export const auth = betterAuth({
-        plugins: [
-          oneTimeToken() // [!code highlight]
-        ]
-        // ... other auth config
-    });
-    ```
-  </Step>
+```ts title="auth-client.ts"
+import { createAuthClient } from "better-auth/client"
+import { oneTimeTokenClient } from "better-auth/client/plugins" // [!code highlight]
 
-  <Step>
-    Add the client plugin [#add-the-client-plugin]
+export const authClient = createAuthClient({
+    plugins: [
+        oneTimeTokenClient() // [!code highlight]
+    ]
+})
+```
 
-    Next, include the one-time-token client plugin in your authentication client instance.
 
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    import { oneTimeTokenClient } from "better-auth/client/plugins" // [!code highlight]
-
-    export const authClient = createAuthClient({
-        plugins: [
-            oneTimeTokenClient() // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
-</Steps>
-
-Usage [#usage]
-
-1. Generate a Token [#1-generate-a-token]
-
+## Usage
+## 1. Generate a Token
 Generate a token using `auth.api.generateOneTimeToken` or `authClient.oneTimeToken.generate`
 
 
@@ -87,8 +77,7 @@ type generateOneTimeToken = {
 
 This will return a `token` that is attached to the current session which can be used to verify the one-time token. By default, the token will expire in 3 minutes.
 
-2. Verify the Token [#2-verify-the-token]
-
+## 2. Verify the Token
 When the user clicks the link or submits the token, use the `auth.api.verifyOneTimeToken` or `authClient.oneTimeToken.verify` method in another API route to validate it.
 
 
@@ -125,8 +114,7 @@ type verifyOneTimeToken = {
 
 This will return the session that was attached to the token.
 
-Options [#options]
-
+## Options
 These options can be configured when adding the `oneTimeToken` plugin:
 
 * **`disableClientRequest`** (boolean): Optional. If `true`, the token will only be generated on the server side. Default: `false`.
@@ -146,9 +134,7 @@ oneTimeToken({
   * **`hashed`**: The token is hashed using the default hasher.
   * **`custom-hasher`**: A custom hasher function that takes a token and returns a hashed token.
 
-<Callout type="info">
-  Note: It will not affect the token that's sent, it will only affect the token stored in your database.
-</Callout>
+> Note: It will not affect the token that's sent, it will only affect the token stored in your database.
 
 Examples:
 

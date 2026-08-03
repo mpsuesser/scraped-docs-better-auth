@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/audit-logs
 title: "Audit Logs"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Audit Logs
@@ -14,8 +14,7 @@ Track and query authentication events across your application with automatic aud
 
 Better Auth Infrastructure automatically collects audit logs for authentication events in your application. Once you've added the `dash()` plugin, events are tracked without any additional configuration.
 
-How Audit Logs Are Collected [#how-audit-logs-are-collected]
-
+## How Audit Logs Are Collected
 The `dash()` plugin hooks into your Better Auth instance and automatically records events as they happen. No manual instrumentation is needed — sign-ups, sign-ins, password changes, and more are all captured.
 
 ```ts
@@ -31,93 +30,89 @@ export const auth = betterAuth({
 
 That's it. Once `dash()` is active, audit logs are collected automatically.
 
-Tracked Events [#tracked-events]
+## Tracked Events
+#### User
 
-<Tabs items={["User", "Session", "Account", "Verification", "Organization", "Security"]}>
-  <Tab value="User">
-    | Event                        | Trigger                      |
-    | ---------------------------- | ---------------------------- |
-    | `user_signed_up`             | New user registration        |
-    | `user_profile_updated`       | User updates their profile   |
-    | `user_profile_image_updated` | User changes their avatar    |
-    | `user_email_verified`        | Email verification completed |
-    | `user_banned`                | User is banned               |
-    | `user_unbanned`              | User is unbanned             |
-    | `user_deleted`               | User account deleted         |
-  </Tab>
+| Event                        | Trigger                      |
+| ---------------------------- | ---------------------------- |
+| `user_signed_up`             | New user registration        |
+| `user_profile_updated`       | User updates their profile   |
+| `user_profile_image_updated` | User changes their avatar    |
+| `user_email_verified`        | Email verification completed |
+| `user_banned`                | User is banned               |
+| `user_unbanned`              | User is unbanned             |
+| `user_deleted`               | User account deleted         |
 
-  <Tab value="Session">
-    | Event                        | Trigger                         |
-    | ---------------------------- | ------------------------------- |
-    | `user_signed_in`             | Successful sign-in              |
-    | `user_signed_out`            | User signs out                  |
-    | `session_created`            | New session created             |
-    | `session_revoked`            | Single session revoked          |
-    | `sessions_revoked_all`       | All sessions revoked            |
-    | `user_impersonated`          | Admin starts impersonating user |
-    | `user_impersonation_stopped` | Admin stops impersonating       |
-  </Tab>
+#### Session
 
-  <Tab value="Account">
-    | Event              | Trigger                 |
-    | ------------------ | ----------------------- |
-    | `account_linked`   | Social account linked   |
-    | `account_unlinked` | Social account unlinked |
-    | `password_changed` | Password updated        |
-  </Tab>
+| Event                        | Trigger                         |
+| ---------------------------- | ------------------------------- |
+| `user_signed_in`             | Successful sign-in              |
+| `user_signed_out`            | User signs out                  |
+| `session_created`            | New session created             |
+| `session_revoked`            | Single session revoked          |
+| `sessions_revoked_all`       | All sessions revoked            |
+| `user_impersonated`          | Admin starts impersonating user |
+| `user_impersonation_stopped` | Admin stops impersonating       |
 
-  <Tab value="Verification">
-    | Event                      | Trigger                  |
-    | -------------------------- | ------------------------ |
-    | `password_reset_requested` | Password reset initiated |
-    | `password_reset_completed` | Password reset finished  |
-    | `email_verification_sent`  | Verification email sent  |
-  </Tab>
+#### Account
 
-  <Tab value="Organization">
-    Tracked when using the [organization plugin](/docs/plugins/organization).
+| Event              | Trigger                 |
+| ------------------ | ----------------------- |
+| `account_linked`   | Social account linked   |
+| `account_unlinked` | Social account unlinked |
+| `password_changed` | Password updated        |
 
-    | Event                  | Trigger                          |
-    | ---------------------- | -------------------------------- |
-    | `organization_created` | New organization created         |
-    | `organization_updated` | Organization settings changed    |
-    | `member_added`         | Member added to organization     |
-    | `member_removed`       | Member removed from organization |
-    | `member_role_updated`  | Member role changed              |
-    | `member_invited`       | Invitation sent                  |
-    | `invite_accepted`      | Invitation accepted              |
-    | `invite_rejected`      | Invitation rejected              |
-    | `invite_cancelled`     | Invitation cancelled             |
-    | `team_created`         | Team created                     |
-    | `team_updated`         | Team updated                     |
-    | `team_deleted`         | Team deleted                     |
-    | `team_member_added`    | Member added to team             |
-    | `team_member_removed`  | Member removed from team         |
-  </Tab>
+#### Verification
 
-  <Tab value="Security">
-    Tracked when using the [Sentinel](/docs/infrastructure/plugins/sentinel) plugin.
+| Event                      | Trigger                  |
+| -------------------------- | ------------------------ |
+| `password_reset_requested` | Password reset initiated |
+| `password_reset_completed` | Password reset finished  |
+| `email_verification_sent`  | Verification email sent  |
 
-    | Event                           | Trigger                             |
-    | ------------------------------- | ----------------------------------- |
-    | `security_blocked`              | Request was blocked                 |
-    | `security_allowed`              | Request was allowed after challenge |
-    | `security_credential_stuffing`  | Credential stuffing detected        |
-    | `security_impossible_travel`    | Impossible travel detected          |
-    | `security_geo_blocked`          | Geo-blocking triggered              |
-    | `security_bot_blocked`          | Bot detected and blocked            |
-    | `security_suspicious_ip`        | Suspicious IP detected              |
-    | `security_velocity_exceeded`    | Rate limit exceeded                 |
-    | `security_free_trial_abuse`     | Free trial abuse detected           |
-    | `security_compromised_password` | Compromised password detected       |
-    | `security_stale_account`        | Stale account reactivation          |
-  </Tab>
-</Tabs>
+#### Organization
 
-Fetching Audit Logs [#fetching-audit-logs]
+Tracked when using the [organization plugin](/docs/plugins/organization).
 
-Client setup [#client-setup]
+| Event                  | Trigger                          |
+| ---------------------- | -------------------------------- |
+| `organization_created` | New organization created         |
+| `organization_updated` | Organization settings changed    |
+| `member_added`         | Member added to organization     |
+| `member_removed`       | Member removed from organization |
+| `member_role_updated`  | Member role changed              |
+| `member_invited`       | Invitation sent                  |
+| `invite_accepted`      | Invitation accepted              |
+| `invite_rejected`      | Invitation rejected              |
+| `invite_cancelled`     | Invitation cancelled             |
+| `team_created`         | Team created                     |
+| `team_updated`         | Team updated                     |
+| `team_deleted`         | Team deleted                     |
+| `team_member_added`    | Member added to team             |
+| `team_member_removed`  | Member removed from team         |
 
+#### Security
+
+Tracked when using the [Sentinel](/docs/infrastructure/plugins/sentinel) plugin.
+
+| Event                           | Trigger                             |
+| ------------------------------- | ----------------------------------- |
+| `security_blocked`              | Request was blocked                 |
+| `security_allowed`              | Request was allowed after challenge |
+| `security_credential_stuffing`  | Credential stuffing detected        |
+| `security_impossible_travel`    | Impossible travel detected          |
+| `security_geo_blocked`          | Geo-blocking triggered              |
+| `security_bot_blocked`          | Bot detected and blocked            |
+| `security_suspicious_ip`        | Suspicious IP detected              |
+| `security_velocity_exceeded`    | Rate limit exceeded                 |
+| `security_free_trial_abuse`     | Free trial abuse detected           |
+| `security_compromised_password` | Compromised password detected       |
+| `security_stale_account`        | Stale account reactivation          |
+
+
+## Fetching Audit Logs
+## Client setup
 Add `dashClient()` to your auth client:
 
 ```ts
@@ -129,12 +124,10 @@ export const authClient = createAuthClient({
 });
 ```
 
-Get current user's audit logs [#get-current-users-audit-logs]
-
+## Get current user's audit logs
 Returns audit events for the **current user**. Use this for end-user activity and org views where the caller is a normal member.
 
-Query parameters [#query-parameters]
-
+## Query parameters
 | Parameter        | Type     | Description                            |
 | ---------------- | -------- | -------------------------------------- |
 | `limit`          | `number` | Results per page (max 100, default 50) |
@@ -146,8 +139,7 @@ Query parameters [#query-parameters]
 | `user`           | `object` | User object with ID                    |
 | `session`        | `object` | Session object with user               |
 
-Basic query [#basic-query]
-
+## Basic query
 ```ts
 const session = await authClient.getSession();
 
@@ -163,8 +155,7 @@ logs.data?.limit;   // Page size
 logs.data?.offset;  // Current offset
 ```
 
-Filter by event type [#filter-by-event-type]
-
+## Filter by event type
 Returns the current user's signed-in audit logs.
 
 ```ts
@@ -174,8 +165,7 @@ const signIns = await authClient.dash.getAuditLogs({
 });
 ```
 
-Filter by organization [#filter-by-organization]
-
+## Filter by organization
 Returns the current user's audit logs restricted to the given organization.
 
 ```ts
@@ -185,8 +175,7 @@ const orgLogs = await authClient.dash.getAuditLogs({
 });
 ```
 
-Combined filters [#combined-filters]
-
+## Combined filters
 You can combine filters to get more specific results (e.g. all current user's signed-in events for a specific organization).
 
 ```ts
@@ -209,8 +198,7 @@ const orgSignIns = await authClient.dash.getAuditLogs({
 
 > **Note**: An identifier is a unique value for an event. For example, an email address, username, etc.
 
-Pagination [#pagination]
-
+## Pagination
 Results are paginated. If you need to consume more than one page, you can use the `limit` and `offset` parameters to paginate the results:
 
 ```ts
@@ -237,13 +225,11 @@ async function fetchAllUserAuditLogEvents(session: unknown) {
 }
 ```
 
-Get all audit logs [#get-all-audit-logs]
-
+## Get all audit logs
 Returns all audit events for organizations the current user has **admin** or **owner** access to. Use it for admin-style dashboards that need activity across organizations you manage.
 You must use the [organization plugin](/docs/plugins/organization) so membership roles can be evaluated.
 
-Query parameters [#query-parameters-1]
-
+## Query parameters
 | Parameter        | Type     | Description                                                                        |
 | ---------------- | -------- | ---------------------------------------------------------------------------------- |
 | `limit`          | `number` | Results per page (max `100`, default `50`)                                         |
@@ -254,8 +240,7 @@ Query parameters [#query-parameters-1]
 | `identifier`     | `string` | Match `eventData.identifier` (organization-scoped actor identity)                  |
 | `session`        | `object` | Session object with user                                                           |
 
-Basic query [#basic-query-1]
-
+## Basic query
 ```ts
 const session = await authClient.getSession();
 
@@ -271,8 +256,7 @@ activity.data?.limit;
 activity.data?.offset;
 ```
 
-Filter by organization [#filter-by-organization-1]
-
+## Filter by organization
 Returns all audit events for the given organization:
 
 ```ts
@@ -282,8 +266,7 @@ const orgActivity = await authClient.dash.getAllAuditLogs({
 });
 ```
 
-Filter by user [#filter-by-user]
-
+## Filter by user
 Returns all audit events for the given user across organizations:
 
 ```ts
@@ -293,8 +276,7 @@ const userActivity = await authClient.dash.getAllAuditLogs({
 });
 ```
 
-Filter by event type [#filter-by-event-type-1]
-
+## Filter by event type
 Returns all audit events across organizations for the given event type:
 
 ```ts
@@ -304,8 +286,7 @@ const events = await authClient.dash.getAllAuditLogs({
 });
 ```
 
-Combined filters [#combined-filters-1]
-
+## Combined filters
 You can combine filters to get more specific results (e.g. all audit events for a specific organization and event type).
 
 ```ts
@@ -316,8 +297,7 @@ const orgEvents = await authClient.dash.getAllAuditLogs({
 });
 ```
 
-Pagination [#pagination-1]
-
+## Pagination
 Results are paginated. If you need to consume more than one page, you can use the `limit` and `offset` parameters to paginate the results:
 
 ```ts

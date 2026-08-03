@@ -2,298 +2,127 @@
 url: https://better-auth.com/llms.txt/docs/plugins/sso
 title: "Sso"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
-# Single Sign-On (SSO)
-
 Integrate Single Sign-On (SSO) with your application.
-
-
 
 `OIDC` `OAuth2` `SSO` `SAML`
 
 Single Sign-On (SSO) allows users to authenticate with multiple applications using a single set of credentials. This plugin supports OpenID Connect (OIDC), OAuth2 providers, and SAML 2.0.
 
-<Callout>
-  Need self-service SSO where your customers can configure their own SSO connections? [Contact us for enterprise](/enterprise).
-</Callout>
+## Installation
 
-Installation [#installation]
+### Install the plugin
 
-<Steps>
-  <Step>
-    Install the plugin [#install-the-plugin]
+#### npm
 
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+```
+npm install @better-auth/sso
+```
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+#### pnpm
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+#### yarn
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+#### bun
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install @better-auth/sso
-        ```
-      </CodeBlockTab>
+### Add Plugin to the server
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add @better-auth/sso
-        ```
-      </CodeBlockTab>
+```
+import { betterAuth } from "better-auth"
+import { sso } from "@better-auth/sso"; 
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add @better-auth/sso
-        ```
-      </CodeBlockTab>
+const auth = betterAuth({
+    plugins: [
+        sso() 
+    ]
+})
+```
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add @better-auth/sso
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Step>
+### Migrate the database
 
-  <Step>
-    Add Plugin to the server [#add-plugin-to-the-server]
+Run the migration or generate the schema to add the necessary fields and tables to the database.
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
-    import { sso } from "@better-auth/sso"; // [!code highlight]
+#### migrate
 
-    const auth = betterAuth({
-        plugins: [
-            sso() // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
+#### npm
 
-  <Step>
-    Migrate the database [#migrate-the-database]
+#### generate
 
-    Run the migration or generate the schema to add the necessary fields and tables to the database.
+```
+npx auth migrate
+```
 
-    <Tabs items={["migrate", "generate"]}>
-      <Tab value="migrate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
+#### pnpm
 
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
+#### yarn
 
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
+#### bun
 
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
+See the [Schema](#schema) section to add the fields manually.
 
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth migrate
-            ```
-          </CodeBlockTab>
+### Add the client plugin
 
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth migrate
-            ```
-          </CodeBlockTab>
+```
+import { createAuthClient } from "better-auth/client"
+import { ssoClient } from "@better-auth/sso/client"
 
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth migrate
-            ```
-          </CodeBlockTab>
+const authClient = createAuthClient({
+    plugins: [
+        ssoClient() 
+    ]
+})
+```
 
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth migrate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
+## Usage
 
-      <Tab value="generate">
-        <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-          <CodeBlockTabsList>
-            <CodeBlockTabsTrigger value="npm">
-              npm
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="pnpm">
-              pnpm
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="yarn">
-              yarn
-            </CodeBlockTabsTrigger>
-
-            <CodeBlockTabsTrigger value="bun">
-              bun
-            </CodeBlockTabsTrigger>
-          </CodeBlockTabsList>
-
-          <CodeBlockTab value="npm">
-            ```bash
-            npx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="pnpm">
-            ```bash
-            pnpm dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="yarn">
-            ```bash
-            yarn dlx auth generate
-            ```
-          </CodeBlockTab>
-
-          <CodeBlockTab value="bun">
-            ```bash
-            bun x auth generate
-            ```
-          </CodeBlockTab>
-        </CodeBlockTabs>
-      </Tab>
-    </Tabs>
-
-    See the [Schema](#schema) section to add the fields manually.
-  </Step>
-
-  <Step>
-    Add the client plugin [#add-the-client-plugin]
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    import { ssoClient } from "@better-auth/sso/client" // [!code highlight]
-
-    const authClient = createAuthClient({
-        plugins: [
-            ssoClient() // [!code highlight]
-        ]
-    })
-    ```
-  </Step>
-</Steps>
-
-Usage [#usage]
-
-Register an OIDC Provider [#register-an-oidc-provider]
+### Register an OIDC Provider
 
 To register an OIDC provider, use the `registerSSOProvider` endpoint and provide the necessary configuration details for the provider.
 
 A redirect URL will be automatically generated using the provider ID. For instance, if the provider ID is `hydra`, the redirect URL would be `{baseURL}/api/auth/sso/callback/hydra`. Note that `/api/auth` may vary depending on your base path configuration.
 
-<Callout type="info">
-  If you need all providers to share a single callback URL (e.g., when migrating from another auth provider), see [Shared Redirect URI](#shared-redirect-uri).
-</Callout>
+#### Example
 
-<Callout type="info">
-  When you register an OIDC provider, Better Auth automatically fetches and validates the IdP's [OIDC discovery document](#oidc-discovery). Most endpoint fields are optional — see [OIDC Discovery](#oidc-discovery) for details on auto-discovered fields and possible registration errors.
-</Callout>
+#### client
 
-Example [#example]
+```
+import { authClient } from "@/lib/auth-client";
 
-<Tabs items={["client", "server"]}>
-  <Tab value="client">
-    ```ts title="register-oidc-provider.ts"
-    import { authClient } from "@/lib/auth-client";
-
-    // Register with OIDC configuration
-    await authClient.sso.register({
-        providerId: "example-provider",
-        issuer: "https://idp.example.com",
-        domain: "example.com",
-        oidcConfig: {
-            clientId: "client-id",
-            clientSecret: "client-secret",
-            authorizationEndpoint: "https://idp.example.com/authorize",
-            tokenEndpoint: "https://idp.example.com/token",
-            jwksEndpoint: "https://idp.example.com/jwks",
-            discoveryEndpoint: "https://idp.example.com/.well-known/openid-configuration",
-            scopes: ["openid", "email", "profile"],
-            pkce: true,
-            mapping: {
-                id: "sub",
-                email: "email",
-                emailVerified: "email_verified",
-                name: "name",
-                image: "picture",
-                extraFields: {
-                    department: "department",
-                    role: "role"
-                }
+// Register with OIDC configuration
+await authClient.sso.register({
+    providerId: "example-provider",
+    issuer: "https://idp.example.com",
+    domain: "example.com",
+    oidcConfig: {
+        clientId: "client-id",
+        clientSecret: "client-secret",
+        authorizationEndpoint: "https://idp.example.com/authorize",
+        tokenEndpoint: "https://idp.example.com/token",
+        jwksEndpoint: "https://idp.example.com/jwks",
+        discoveryEndpoint: "https://idp.example.com/.well-known/openid-configuration",
+        scopes: ["openid", "email", "profile"],
+        pkce: true,
+        mapping: {
+            id: "sub",
+            email: "email",
+            emailVerified: "email_verified",
+            name: "name",
+            image: "picture",
+            extraFields: {
+                department: "department",
+                role: "role"
             }
         }
-    });
-    ```
-  </Tab>
+    }
+});
+```
 
-  <Tab value="server">
-    ```ts title="register-oidc-provider.ts"
-    const { headers } = await signInWithTestUser();
-    await auth.api.registerSSOProvider({
-        body: {
-            providerId: "example-provider",
-            issuer: "https://idp.example.com",
-            domain: "example.com",
-            oidcConfig: {
-                clientId: "your-client-id",
-                clientSecret: "your-client-secret",
-                authorizationEndpoint: "https://idp.example.com/authorize",
-                tokenEndpoint: "https://idp.example.com/token",
-                jwksEndpoint: "https://idp.example.com/jwks",
-                discoveryEndpoint: "https://idp.example.com/.well-known/openid-configuration",
-                scopes: ["openid", "email", "profile"],
-                pkce: true,
-                mapping: {
-                    id: "sub",
-                    email: "email",
-                    emailVerified: "email_verified",
-                    name: "name",
-                    image: "picture",
-                    extraFields: {
-                        department: "department",
-                        role: "role"
-                    }
-                }
-            }
-        },
-        headers,
-    });
-    ```
-  </Tab>
-</Tabs>
+#### server
 
-OIDC Discovery [#oidc-discovery]
+### OIDC Discovery
 
 Better Auth automatically fetches and validates the provider's [OpenID Connect Discovery Document](https://openid.net/specs/openid-connect-discovery-1_0.html) from:
 
@@ -303,83 +132,80 @@ Better Auth automatically fetches and validates the provider's [OpenID Connect D
 
 This allows most endpoint-related fields in `oidcConfig` to be **optional** — they will be hydrated automatically from the Identity Provider (IdP).
 
+POST/sso/register
 
-### Client Side
+Notes
 
-```ts
+Minimal OIDC configuration — endpoints are discovered automatically from the issuer.
+
+```
 const { data, error } = await authClient.sso.register({
-    providerId: okta,
-});
-```
-
-### Server Side
-
-```ts
-const data = await auth.api.registerSSOProvider({
-    body: {
-        providerId: okta,
+    providerId: "okta", // required
+    issuer: "https://your-org.okta.com", // required
+    domain: "yourcompany.com", // required
+    oidcConfig: { // required
+        clientId: "your-client-id", // required
+        clientSecret: "your-client-secret", // required
     },
-    // This endpoint requires session cookies.
-    headers: await headers()
 });
 ```
 
-### Type Definition
+Parameters
 
-```ts
-type registerSSOProvider = {
-      /**
-       * Unique identifier for the provider.
-       *
-       * Must not collide with a configured social provider, an
-       * `accountLinking.trustedProviders` entry, or a reserved built-in id
-       * (e.g. `credential`). Registration is rejected (422) otherwise, since
-       * SSO provider ids share the account-linking provider namespace and a
-       * collision could otherwise inherit trust meant for that provider.
-       */
-      providerId: string = "okta"
-      /**
-       * The OIDC issuer URL. Discovery document is fetched from `{issuer
-}
-```
+`providerId` stringrequired
 
+Unique identifier for the provider. Must not collide with a configured social provider, an `accountLinking.trustedProviders` entry, or a reserved built-in id (e.g. `credential`). Registration is rejected (422) otherwise, since SSO provider ids share the account-linking provider namespace and a collision could otherwise inherit trust meant for that provider.
 
-Fields Automatically Discovered [#fields-automatically-discovered]
+`issuer` stringrequired
+
+The OIDC issuer URL. Discovery document is fetched from `{issuer}/.well-known/openid-configuration`
+
+`domain` stringrequired
+
+Bare email domain, or comma-separated bare email domains, for this provider
+
+`oidcConfig` Objectrequired
+
+OIDC configuration (most fields are auto-discovered)
+
+`clientId` stringrequired
+
+OAuth client ID from your IdP
+
+`clientSecret` stringrequired
+
+OAuth client secret from your IdP
+
+#### Fields Automatically Discovered
 
 Better Auth fills in the following fields by reading the IdP's discovery document (if not explicitly provided):
 
-* `authorizationEndpoint`
-* `tokenEndpoint`
-* `jwksEndpoint`
-* `userInfoEndpoint`
-* `discoveryEndpoint`
-* `tokenEndpointAuthentication` (method for token endpoint client authentication)
+- `authorizationEndpoint`
+- `tokenEndpoint`
+- `jwksEndpoint`
+- `userInfoEndpoint`
+- `discoveryEndpoint`
+- `tokenEndpointAuthentication` (method for token endpoint client authentication)
 
 Following the spec, our discovery process expects all URLs to be valid and to be absolute urls. Relative paths are also supported and resolved relative to the issuer's base URL preserving the path when available.
 
 Example of relative endpoint and issuer without base path:
 
-* `issuer`: `"https://your-org.okta.com"`
-* `token_endpoint`: `"/v1/tokens"`
-* normalized `token_endpoint`: `"https://your-org.okta.com/v1/tokens"`
+- `issuer`: `"https://your-org.okta.com"`
+- `token_endpoint`: `"/v1/tokens"`
+- normalized `token_endpoint`: `"https://your-org.okta.com/v1/tokens"`
 
 Example of relative endpoint and issuer with base path:
 
-* `issuer`: `"https://your-org.okta.com/v1"`
-* `token_endpoint`: `"/tokens"`
-* normalized `token_endpoint`: `"https://your-org.okta.com/v1/tokens"`
+- `issuer`: `"https://your-org.okta.com/v1"`
+- `token_endpoint`: `"/tokens"`
+- normalized `token_endpoint`: `"https://your-org.okta.com/v1/tokens"`
 
-<Callout type="info">
-  If you explicitly set these fields in `oidcConfig`, your values override the discovered ones.
-  This is useful when you need to override the IdP's advertised metadata or when using incomplete mock servers.
-</Callout>
+#### Trusted origins
 
-Trusted origins [#trusted-origins]
+Both the discovery endpoint as well as any URL resolved through the discovery process are subject to your app's [`trustedOrigins`](https://better-auth.com/docs/reference/security#trusted-origins) configuration. Discovery will fail with the `discovery_untrusted_origin` code unless you explicitly update your `trustedOrigins` configuration:
 
-Both the discovery endpoint as well as any URL resolved through the discovery process are subject to your app's [`trustedOrigins`](/docs/reference/security#trusted-origins) configuration.
-Discovery will fail with the `discovery_untrusted_origin` code unless you explicitly update your `trustedOrigins` configuration:
-
-```ts
+```
 trustedOrigins: ["https://your-org.okta.com"],
 ```
 
@@ -387,7 +213,7 @@ If your use-case requires to support multiple arbitrary but known IDPs (e.g Okta
 
 1. Register a list of well known IDPs ahead of time
 
-```ts
+```
 trustedOrigins: [
     "https://your-org.okta.com",
     "https://accounts.google.com",
@@ -399,7 +225,7 @@ trustedOrigins: [
 
 2. Or dynamically compute the `trustedOrigins` by specifying a callback function:
 
-```ts
+```
 trustedOrigins: async (request) => {
     // request is undefined during initialization and auth.api calls
     if (!request) {
@@ -417,199 +243,125 @@ trustedOrigins: async (request) => {
 }
 ```
 
-See the [`trustedOrigins`](/docs/reference/security#trusted-origins) docs for more information.
+See the [`trustedOrigins`](https://better-auth.com/docs/reference/security#trusted-origins) docs for more information.
 
-Why Discovery Can Fail [#why-discovery-can-fail]
+#### Why Discovery Can Fail
 
 Better Auth validates that the IdP's metadata is correct and complete **before** allowing registration. This prevents subtle runtime failures during sign-in or token validation.
 
-<Callout type="info">
-  Better Auth does **not** support implicit-only OIDC flows.
-  For this reason, `token_endpoint` and `jwks_uri` are required even though the OIDC spec allows implicit-only providers to omit `token_endpoint`.
-</Callout>
-
-Discovery Errors [#discovery-errors]
+#### Discovery Errors
 
 If the Identity Provider is misconfigured or unreachable, registration will fail with a structured error.
 
-| Error Code                      | Meaning                                                                                                                             |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `issuer_mismatch`               | The IdP's discovery document reports a different `issuer` than the one you configured                                               |
-| `discovery_incomplete`          | Required fields (`authorization_endpoint`, `token_endpoint`, `jwks_uri`) are missing                                                |
-| `discovery_not_found`           | The discovery document endpoint returned 404                                                                                        |
-| `discovery_timeout`             | The IdP did not respond within the timeout window (default: 10 seconds)                                                             |
-| `discovery_invalid_url`         | The discovery URL is malformed or uses an unsupported protocol                                                                      |
-| `discovery_untrusted_origin`    | The discovery URL or one of the URLs discovered as part of this process was not trusted by your app's trusted origins configuration |
-| `discovery_invalid_json`        | The discovery response is empty or not valid JSON                                                                                   |
-| `unsupported_token_auth_method` | The IdP only supports token auth methods that Better Auth doesn't support                                                           |
+| Error Code | Meaning |
+| --- | --- |
+| `issuer_mismatch` | The IdP's discovery document reports a different `issuer` than the one you configured |
+| `discovery_incomplete` | Required fields (`authorization_endpoint`, `token_endpoint`, `jwks_uri`) are missing |
+| `discovery_not_found` | The discovery document endpoint returned 404 |
+| `discovery_timeout` | The IdP did not respond within the timeout window (default: 10 seconds) |
+| `discovery_invalid_url` | The discovery URL is malformed or uses an unsupported protocol |
+| `discovery_untrusted_origin` | The discovery URL or one of the URLs discovered as part of this process was not trusted by your app's trusted origins configuration |
+| `discovery_invalid_json` | The discovery response is empty or not valid JSON |
+| `unsupported_token_auth_method` | The IdP only supports token auth methods that Better Auth doesn't support |
 
 **Supported token auth methods:**
 
-* `client_secret_basic`
-* `client_secret_post`
+- `client_secret_basic`
+- `client_secret_post`
 
-<Callout type="warning">
-  If your IdP advertises only unsupported methods (e.g., `private_key_jwt`, `tls_client_auth`, or `"none"` for public clients), you can explicitly override the method:
+#### Summary
 
-  ```ts
-  oidcConfig: {
-      clientId: "your-client-id",
-      clientSecret: "your-client-secret",
-      tokenEndpointAuthentication: "client_secret_basic", // Override discovery
-  }
-  ```
+- Better Auth automatically performs OIDC discovery at registration time
+- Most endpoint settings in `oidcConfig` become optional
+- Explicit user configuration always overrides discovery
+- Registration fails fast if the IdP is misconfigured
+- Discovery errors are structured and well-defined
+- Public-client IdPs or mock servers may require overriding `tokenEndpointAuthentication`
 
-  This is especially common with mock OIDC servers or development IdPs that only advertise `"none"` as the supported method.
-</Callout>
-
-Summary [#summary]
-
-* Better Auth automatically performs OIDC discovery at registration time
-* Most endpoint settings in `oidcConfig` become optional
-* Explicit user configuration always overrides discovery
-* Registration fails fast if the IdP is misconfigured
-* Discovery errors are structured and well-defined
-* Public-client IdPs or mock servers may require overriding `tokenEndpointAuthentication`
-
-Register a SAML Provider [#register-a-saml-provider]
+### Register a SAML Provider
 
 To register a SAML provider, use the `registerSSOProvider` endpoint with SAML configuration details. The provider will act as a Service Provider (SP) and integrate with your Identity Provider (IdP).
 
-<Tabs items={["client", "server"]}>
-  <Tab value="client">
-    ```ts title="register-saml-provider.ts"
-    import { authClient } from "@/lib/auth-client";
+#### client
 
-    await authClient.sso.register({
-        providerId: "saml-provider",
-        issuer: "https://idp.example.com",
-        domain: "example.com",
-        samlConfig: {
-            entryPoint: "https://idp.example.com/sso",
-            cert: "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----",
-            callbackUrl: "https://yourapp.com/api/auth/sso/saml2/sp/acs/saml-provider",
-            audience: "https://yourapp.com",
-            wantAssertionsSigned: true,
-            signatureAlgorithm: "sha256",
-            digestAlgorithm: "sha256",
-            identifierFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-            idpMetadata: {
-                metadata: "<!-- IdP Metadata XML -->",
-                privateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
-                privateKeyPass: "your-private-key-password",
-                isAssertionEncrypted: true,
-                encPrivateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
-                encPrivateKeyPass: "your-encryption-key-password"
-            },
-            spMetadata: {
-                metadata: "<!-- SP Metadata XML -->",
-                binding: "post",
-                privateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
-                privateKeyPass: "your-sp-private-key-password",
-                isAssertionEncrypted: true,
-                encPrivateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
-                encPrivateKeyPass: "your-sp-encryption-key-password"
-            },
-            mapping: {
-                id: "nameID",
-                email: "email",
-                name: "displayName",
-                firstName: "givenName",
-                lastName: "surname",
-                emailVerified: "email_verified",
-                extraFields: {
-                    department: "department",
-                    role: "role"
-                }
+```
+import { authClient } from "@/lib/auth-client";
+
+await authClient.sso.register({
+    providerId: "saml-provider",
+    issuer: "https://idp.example.com",
+    domain: "example.com",
+    samlConfig: {
+        entryPoint: "https://idp.example.com/sso",
+        cert: "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----",
+        callbackUrl: "https://yourapp.com/api/auth/sso/saml2/sp/acs/saml-provider",
+        audience: "https://yourapp.com",
+        wantAssertionsSigned: true,
+        signatureAlgorithm: "sha256",
+        digestAlgorithm: "sha256",
+        identifierFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+        idpMetadata: {
+            metadata: "<!-- IdP Metadata XML -->",
+            privateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
+            privateKeyPass: "your-private-key-password",
+            isAssertionEncrypted: true,
+            encPrivateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
+            encPrivateKeyPass: "your-encryption-key-password"
+        },
+        spMetadata: {
+            metadata: "<!-- SP Metadata XML -->",
+            binding: "post",
+            privateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
+            privateKeyPass: "your-sp-private-key-password",
+            isAssertionEncrypted: true,
+            encPrivateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
+            encPrivateKeyPass: "your-sp-encryption-key-password"
+        },
+        mapping: {
+            id: "nameID",
+            email: "email",
+            name: "displayName",
+            firstName: "givenName",
+            lastName: "surname",
+            emailVerified: "email_verified",
+            extraFields: {
+                department: "department",
+                role: "role"
             }
         }
-    });
-    ```
-  </Tab>
+    }
+});
+```
 
-  <Tab value="server">
-    ```ts title="register-saml-provider.ts"
-    const { headers } = await signInWithTestUser();
-    await auth.api.registerSSOProvider({
-        body: {
-            providerId: "saml-provider",
-            issuer: "https://idp.example.com",
-            domain: "example.com",
-            samlConfig: {
-                entryPoint: "https://idp.example.com/sso",
-                cert: "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----",
-                callbackUrl: "https://yourapp.com/api/auth/sso/saml2/sp/acs/saml-provider",
-                audience: "https://yourapp.com",
-                wantAssertionsSigned: true,
-                signatureAlgorithm: "sha256",
-                digestAlgorithm: "sha256",
-                identifierFormat: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-                idpMetadata: {
-                    metadata: "<!-- IdP Metadata XML -->",
-                    privateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
-                    privateKeyPass: "your-private-key-password",
-                    isAssertionEncrypted: true,
-                    encPrivateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
-                    encPrivateKeyPass: "your-encryption-key-password"
-                },
-                spMetadata: {
-                    metadata: "<!-- SP Metadata XML -->",
-                    binding: "post",
-                    privateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
-                    privateKeyPass: "your-sp-private-key-password",
-                    isAssertionEncrypted: true,
-                    encPrivateKey: "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----",
-                    encPrivateKeyPass: "your-sp-encryption-key-password"
-                },
-                mapping: {
-                    id: "nameID",
-                    email: "email",
-                    name: "displayName",
-                    firstName: "givenName",
-                    lastName: "surname",
-                    emailVerified: "email_verified",
-                    extraFields: {
-                        department: "department",
-                        role: "role"
-                    }
-                }
-            }
-        },
-        headers,
-    });
-    ```
-  </Tab>
-</Tabs>
+#### server
 
-IdP-Initiated SSO [#idp-initiated-sso]
+### IdP-Initiated SSO
 
 For IdP-initiated flows (e.g., via Okta dashboard), your framework may require an explicit route handler to manage the redirect if the default handler doesn't support the `GET` request following the SAML POST.
 
-<Tabs items={["next-js-app-router"]}>
-  <Tab value="next-js-app-router">
-    Create this file to prevent 404 errors:
+#### next-js-app-router
 
-    ```ts title="app/api/auth/sso/saml2/callback/[providerId]/route.ts"
-    import { auth } from "@/lib/auth";
-    import { NextResponse } from "next/server";
+Create this file to prevent 404 errors:
 
-    export async function POST(req: Request) {
-        return auth.handler(req);
-    }
+```
+import { auth } from "@/lib/auth";
+import { NextResponse } from "next/server";
 
-    export async function GET(req: Request) {
-        // Required: IdP-initiated flows redirect to this URL after POST
-        return NextResponse.redirect(new URL("/", req.url));
-    }
-    ```
-  </Tab>
-</Tabs>
+export async function POST(req: Request) {
+    return auth.handler(req);
+}
 
-Get Service Provider Metadata [#get-service-provider-metadata]
+export async function GET(req: Request) {
+    // Required: IdP-initiated flows redirect to this URL after POST
+    return NextResponse.redirect(new URL("/", req.url));
+}
+```
+
+### Get Service Provider Metadata
 
 For SAML providers, you can retrieve the Service Provider metadata XML that needs to be configured in your Identity Provider:
 
-```ts title="get-sp-metadata.ts"
+```
 const response = await auth.api.spMetadata({
     query: {
         providerId: "saml-provider",
@@ -621,13 +373,13 @@ const metadataXML = await response.text();
 console.log(metadataXML);
 ```
 
-Sign In with SSO [#sign-in-with-sso]
+### Sign In with SSO
 
 To sign in with an SSO provider, you can call `signIn.sso`
 
 You can sign in using the email with domain matching:
 
-```ts title="sign-in.ts"
+```
 import { authClient } from "@/lib/auth-client"
 
 const res = await authClient.signIn.sso({
@@ -638,7 +390,7 @@ const res = await authClient.signIn.sso({
 
 or you can specify the domain:
 
-```ts title="sign-in-domain.ts"
+```
 import { authClient } from "@/lib/auth-client"
 
 const res = await authClient.signIn.sso({
@@ -649,7 +401,7 @@ const res = await authClient.signIn.sso({
 
 You can also sign in using the organization slug if a provider is associated with an organization:
 
-```ts title="sign-in-org.ts"
+```
 import { authClient } from "@/lib/auth-client"
 
 const res = await authClient.signIn.sso({
@@ -660,7 +412,7 @@ const res = await authClient.signIn.sso({
 
 Alternatively, you can sign in using the provider's ID:
 
-```ts title="sign-in-provider-id.ts"
+```
 import { authClient } from "@/lib/auth-client"
 
 const res = await authClient.signIn.sso({
@@ -671,7 +423,7 @@ const res = await authClient.signIn.sso({
 
 Optionally, you can pass a login hint (for example, an email address or another identifier) to prefill or direct the identity provider:
 
-```ts title="sign-in-with-login-hint.ts"
+```
 import { authClient } from "@/lib/auth-client"
 
 const res = await authClient.signIn.sso({
@@ -683,7 +435,7 @@ const res = await authClient.signIn.sso({
 
 To use the server API you can use `signInSSO`
 
-```ts title="sign-in-org.ts"
+```
 import { authClient } from "@/lib/auth-client"
 
 const res = await auth.api.signInSSO({
@@ -694,99 +446,60 @@ const res = await auth.api.signInSSO({
 });
 ```
 
-Full method [#full-method]
+#### Full method
 
+POST/sign-in/sso
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.signIn.sso({
-    email: john@example.com, // optional
-    organizationSlug: example-org, // optional
-    providerId: example-provider, // optional
-    domain: example.com, // optional
-    callbackURL: https://example.com/callback,
-    errorCallbackURL: https://example.com/callback, // optional
-    newUserCallbackURL: https://example.com/new-user, // optional
-    scopes, // optional
-    loginHint: user@example.com, // optional
-    requestSignUp, // optional
+    email: "john@example.com",
+    organizationSlug: "example-org",
+    providerId: "example-provider",
+    domain: "example.com",
+    callbackURL: "https://example.com/callback", // required
+    errorCallbackURL: "https://example.com/callback",
+    newUserCallbackURL: "https://example.com/new-user",
+    scopes: ["openid", "email", "profile", "offline_access"],
+    loginHint: "user@example.com",
+    requestSignUp: true,
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.signInSSO({
-    body: {
-        email: john@example.com, // optional
-        organizationSlug: example-org, // optional
-        providerId: example-provider, // optional
-        domain: example.com, // optional
-        callbackURL: https://example.com/callback,
-        errorCallbackURL: https://example.com/callback, // optional
-        newUserCallbackURL: https://example.com/new-user, // optional
-        scopes, // optional
-        loginHint: user@example.com, // optional
-        requestSignUp, // optional
-    }
-});
-```
+`email` string
 
-### Type Definition
+The email address to sign in with. This is used to identify the issuer to sign in with. It's optional if the issuer is provided.
 
-```ts
-type signInSSO = {
-      /**
-       * The email address to sign in with. This is used to identify the issuer to sign in with. It's optional if the issuer is provided. 
-       */
-      email?: string = "john@example.com"
-      /**
-       * The slug of the organization to sign in with. 
-       */
-      organizationSlug?: string = "example-org"
-      /**
-       * The ID of the provider to sign in with. This can be provided instead of email or issuer. 
-       */
-      providerId?: string = "example-provider"
-      /**
-       * The domain of the provider. 
-       */
-      domain?: string = "example.com"
-      /**
-       * The URL to redirect to after login. 
-       */
-      callbackURL: string = "https://example.com/callback"
-      /**
-       * The URL to redirect to after login. 
-       */
-      errorCallbackURL?: string = "https://example.com/callback"
-      /**
-       * The URL to redirect to after login if the user is new. 
-       */
-      newUserCallbackURL?: string = "https://example.com/new-user"
-      /**
-       * Scopes to request from the provider. 
-       */
-      scopes?: string[] = ["openid", "email", "profile", "offline_access"]
-      /**
-       * Login hint to send to the identity provider (e.g., email or identifier). 
-       */
-      loginHint?: string = "user@example.com"
-      /**
-       * Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider. 
-       */
-      requestSignUp?: boolean = true
-  
-}
-```
+`providerId` string
 
+The ID of the provider to sign in with. This can be provided instead of email or issuer.
+
+`domain` string
+
+The domain of the provider.
+
+`newUserCallbackURL` string
+
+The URL to redirect to after login if the user is new.
+
+`scopes` string\[\]
+
+Scopes to request from the provider.
+
+`loginHint` string
+
+Login hint to send to the identity provider (e.g., email or identifier).
+
+`requestSignUp` boolean
+
+Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider.
 
 Note: If email is provided and loginHint is not specified, email will be sent as the login\_hint to OIDC providers automatically. SAML flows do not support login\_hint.
 
 When a user is authenticated, if the user does not exist, the user will be provisioned using the `provisionUser` function. By default, `provisionUser` only runs when a new user is registered. If you want to run it on every login (e.g. to sync upstream identity provider profile changes), set `provisionUserOnEveryLogin` to `true`. If the organization provisioning is enabled and a provider is associated with an organization, the user will be added to the organization.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
 
@@ -809,21 +522,21 @@ const auth = betterAuth({
 });
 ```
 
-Provisioning [#provisioning]
+## Provisioning
 
 The SSO plugin provides powerful provisioning capabilities to automatically set up users and manage their organization memberships when they sign in through SSO providers.
 
-User Provisioning [#user-provisioning]
+### User Provisioning
 
 User provisioning allows you to run custom logic when a user signs in through an SSO provider. By default, `provisionUser` only runs for new users (on registration). To run it on every login, set `provisionUserOnEveryLogin` to `true`. This is useful for:
 
-* Setting up user profiles with additional data from the SSO provider
-* Synchronizing user attributes with external systems
-* Creating user-specific resources
-* Logging SSO sign-ins
-* Updating user information from the SSO provider
+- Setting up user profiles with additional data from the SSO provider
+- Synchronizing user attributes with external systems
+- Creating user-specific resources
+- Logging SSO sign-ins
+- Updating user information from the SSO provider
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
 
@@ -863,22 +576,22 @@ const auth = betterAuth({
 
 The `provisionUser` function receives:
 
-* **user**: The user object from the database
-* **userInfo**: User information from the SSO provider (includes attributes, email, name, etc.)
-* **token**: OAuth2 tokens (for OIDC providers) - may be undefined for SAML
-* **provider**: The SSO provider configuration
+- **user**: The user object from the database
+- **userInfo**: User information from the SSO provider (includes attributes, email, name, etc.)
+- **token**: OAuth2 tokens (for OIDC providers) - may be undefined for SAML
+- **provider**: The SSO provider configuration
 
-Organization Provisioning [#organization-provisioning]
+### Organization Provisioning
 
 Organization provisioning automatically manages user memberships in organizations when SSO providers are linked to specific organizations. This is particularly useful for:
 
-* Enterprise SSO where each company/domain maps to an organization
-* Automatic role assignment based on SSO attributes
-* Managing team memberships through SSO
+- Enterprise SSO where each company/domain maps to an organization
+- Automatic role assignment based on SSO attributes
+- Managing team memberships through SSO
 
-Basic Organization Provisioning [#basic-organization-provisioning]
+#### Basic Organization Provisioning
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
 
@@ -894,9 +607,9 @@ const auth = betterAuth({
 });
 ```
 
-Advanced Organization Provisioning with Custom Roles [#advanced-organization-provisioning-with-custom-roles]
+#### Advanced Organization Provisioning with Custom Roles
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
 
@@ -932,15 +645,11 @@ const auth = betterAuth({
 });
 ```
 
-Linking SSO Providers to Organizations [#linking-sso-providers-to-organizations]
+#### Linking SSO Providers to Organizations
 
 When registering an SSO provider, you can link it to a specific organization:
 
-<Callout type="info">
-  When the `organization` plugin is enabled and `organizationId` is supplied, the caller must be an organization `owner` or `admin`. Regular members receive a `403 FORBIDDEN`. SSO deployments without the `organization` plugin keep the prior behavior (membership lookup only).
-</Callout>
-
-```ts title="register-org-provider.ts"
+```
 import { auth } from "@/lib/auth"
 
 await auth.api.registerSSOProvider({
@@ -959,7 +668,7 @@ await auth.api.registerSSOProvider({
 
 Now when users from `acmecorp.com` sign in through this provider, they'll automatically be added to the "Acme Corp" organization with the appropriate role.
 
-Self-Service SSO Dashboard [#self-service-sso-dashboard]
+#### Self-Service SSO Dashboard
 
 If you're using [Better Auth Infrastructure](https://dash.better-auth.com/sign-in), you get access to a self-service SSO dashboard that simplifies onboarding enterprise customers. Instead of manually exchanging SAML metadata and certificates, organization admins can generate a shareable onboarding link that guides enterprise IT teams through configuring their identity provider.
 
@@ -971,17 +680,17 @@ https://dash.better-auth.com/[project]/organization/[orgId]/enterprise
 
 From the dashboard you can:
 
-* **Generate onboarding links** for enterprise customers to self-configure their SAML provider
-* **Monitor SSO connection status** for each organization
-* **Manage provider configurations** without writing code
+- **Generate onboarding links** for enterprise customers to self-configure their SAML provider
+- **Monitor SSO connection status** for each organization
+- **Manage provider configurations** without writing code
 
 This eliminates the back-and-forth typically required when setting up enterprise SSO, reducing onboarding time from days to minutes.
 
-Multiple Organizations Example [#multiple-organizations-example]
+#### Multiple Organizations Example
 
 You can set up multiple SSO providers for different organizations:
 
-```ts title="multi-org-setup.ts"
+```
 import { auth } from "@/lib/auth"
 
 // Acme Corp SAML provider
@@ -1009,7 +718,7 @@ await auth.api.registerSSOProvider({
 });
 ```
 
-Organization Provisioning Flow [#organization-provisioning-flow]
+#### Organization Provisioning Flow
 
 1. **User signs in** through an SSO provider linked to an organization
 2. **User is authenticated** and either found or created in the database
@@ -1018,13 +727,13 @@ Organization Provisioning Flow [#organization-provisioning-flow]
 5. **User is added** to the organization with the determined role
 6. **User provisioning runs** (if configured) for additional setup
 
-Provisioning Best Practices [#provisioning-best-practices]
+### Provisioning Best Practices
 
-1. Idempotent Operations [#1-idempotent-operations]
+#### 1\. Idempotent Operations
 
 If you enable `provisionUserOnEveryLogin`, make sure your provisioning functions can be safely run multiple times:
 
-```ts
+```
 provisionUser: async ({ user, userInfo }) => {
     // Check if already provisioned
     const existingProfile = await getUserProfile(user.id);
@@ -1038,11 +747,11 @@ provisionUser: async ({ user, userInfo }) => {
 },
 ```
 
-2. Error Handling [#2-error-handling]
+#### 2\. Error Handling
 
 Handle errors gracefully to avoid blocking user sign-in:
 
-```ts
+```
 provisionUser: async ({ user, userInfo }) => {
     try {
         await syncWithExternalSystem(user, userInfo);
@@ -1054,11 +763,11 @@ provisionUser: async ({ user, userInfo }) => {
 },
 ```
 
-3. Conditional Provisioning [#3-conditional-provisioning]
+#### 3\. Conditional Provisioning
 
 Only run certain provisioning steps when needed:
 
-```ts
+```
 organizationProvisioning: {
     disabled: false,
     getRole: async ({ user, userInfo, provider }) => {
@@ -1071,11 +780,11 @@ organizationProvisioning: {
 },
 ```
 
-SAML Configuration [#saml-configuration]
+## SAML Configuration
 
-Default SSO Provider [#default-sso-provider]
+### Default SSO Provider
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
 
@@ -1109,23 +818,23 @@ The defaultSSO provider will be used when:
 
 This allows you to test SAML authentication without setting up providers in the database. The defaultSSO provider supports all the same configuration options as regular SAML providers.
 
-Service Provider Configuration [#service-provider-configuration]
+### Service Provider Configuration
 
 When registering a SAML provider, you need to provide Service Provider (SP) metadata configuration:
 
-* **metadata**: XML metadata for the Service Provider
-* **binding**: The binding method, typically "post" or "redirect"
-* **privateKey**: Private key for signing AuthnRequests
-* **privateKeyPass**: Password for the private key
-* **isAssertionEncrypted**: Whether assertions should be encrypted
-* **encPrivateKey**: Private key for decryption (if encryption is enabled)
-* **encPrivateKeyPass**: Password for the encryption private key
+- **metadata**: XML metadata for the Service Provider
+- **binding**: The binding method, typically "post" or "redirect"
+- **privateKey**: Private key for signing AuthnRequests
+- **privateKeyPass**: Password for the private key
+- **isAssertionEncrypted**: Whether assertions should be encrypted
+- **encPrivateKey**: Private key for decryption (if encryption is enabled)
+- **encPrivateKeyPass**: Password for the encryption private key
 
-Signed AuthnRequests [#signed-authnrequests]
+### Signed AuthnRequests
 
 Some enterprise IdPs (Okta, Azure AD, ADFS) require signed AuthnRequests. Enable this with:
 
-```ts
+```
 samlConfig: {
     // ... other config
     authnRequestsSigned: true,
@@ -1137,22 +846,22 @@ samlConfig: {
 
 The SP metadata endpoint will automatically include `AuthnRequestsSigned="true"` when enabled.
 
-Identity Provider Configuration [#identity-provider-configuration]
+### Identity Provider Configuration
 
 You also need to provide Identity Provider (IdP) configuration:
 
-* **metadata**: XML metadata from your Identity Provider
-* **privateKey**: Private key for the IdP communication (optional)
-* **privateKeyPass**: Password for the IdP private key (if encrypted)
-* **isAssertionEncrypted**: Whether assertions from IdP are encrypted
-* **encPrivateKey**: Private key for IdP assertion decryption
-* **encPrivateKeyPass**: Password for the IdP decryption key
+- **metadata**: XML metadata from your Identity Provider
+- **privateKey**: Private key for the IdP communication (optional)
+- **privateKeyPass**: Password for the IdP private key (if encrypted)
+- **isAssertionEncrypted**: Whether assertions from IdP are encrypted
+- **encPrivateKey**: Private key for IdP assertion decryption
+- **encPrivateKeyPass**: Password for the IdP decryption key
 
-SAML Attribute Mapping [#saml-attribute-mapping]
+### SAML Attribute Mapping
 
 Configure how SAML attributes map to user fields:
 
-```ts
+```
 mapping: {
     id: "nameID",           // Default: "nameID"
     email: "email",         // Default: "email" or "nameID"
@@ -1167,27 +876,23 @@ mapping: {
 }
 ```
 
-SAML Security [#saml-security]
+## SAML Security
 
 The SSO plugin includes optional security features to protect against common SAML vulnerabilities.
 
-AuthnRequest / InResponseTo Validation [#authnrequest--inresponseto-validation]
+### AuthnRequest / InResponseTo Validation
 
 You can enable InResponseTo validation for SP-initiated SAML flows. When enabled, the plugin tracks AuthnRequest IDs and validates the `InResponseTo` attribute in SAML responses. This prevents:
 
-* **Unsolicited responses**: Responses not triggered by a legitimate login request
-* **Replay attacks**: Reusing old SAML responses
-* **Cross-provider injection**: Responses meant for a different provider
+- **Unsolicited responses**: Responses not triggered by a legitimate login request
+- **Replay attacks**: Reusing old SAML responses
+- **Cross-provider injection**: Responses meant for a different provider
 
-<Callout type="info">
-  This feature is **opt-in** to ensure backward compatibility. Enable it explicitly for enhanced security.
-</Callout>
-
-Enabling Validation (Single Instance) [#enabling-validation-single-instance]
+#### Enabling Validation (Single Instance)
 
 For single-instance deployments, enable validation with the built-in in-memory store:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
 
@@ -1207,31 +912,27 @@ const auth = betterAuth({
 });
 ```
 
-Options [#options]
+#### Options
 
-| Option                         | Type      | Default          | Description                                                                                                                              |
-| ------------------------------ | --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `enableInResponseToValidation` | `boolean` | `true`           | Enable InResponseTo validation for SP-initiated flows.                                                                                   |
-| `allowIdpInitiated`            | `boolean` | `true`           | Allow IdP-initiated SSO (responses without InResponseTo). Set to `false` for stricter security. Only applies when validation is enabled. |
-| `requestTTL`                   | `number`  | `300000` (5 min) | Time-to-live for AuthnRequest records in milliseconds. Requests older than this will be rejected.                                        |
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `enableInResponseToValidation` | `boolean` | `true` | Enable InResponseTo validation for SP-initiated flows. |
+| `allowIdpInitiated` | `boolean` | `true` | Allow IdP-initiated SSO (responses without InResponseTo). Set to `false` for stricter security. Only applies when validation is enabled. |
+| `requestTTL` | `number` | `300000` (5 min) | Time-to-live for AuthnRequest records in milliseconds. Requests older than this will be rejected. |
 
-Error Handling [#error-handling]
+#### Error Handling
 
 When InResponseTo validation fails, users are redirected with an error query parameter:
 
-* `?error=invalid_saml_response&error_description=Unknown+or+expired+request+ID` — The request ID was not found or has expired
-* `?error=invalid_saml_response&error_description=Provider+mismatch` — The response was meant for a different provider
-* `?error=unsolicited_response&error_description=IdP-initiated+SSO+not+allowed` — IdP-initiated SSO is disabled
+- `?error=invalid_saml_response&error_description=Unknown+or+expired+request+ID` — The request ID was not found or has expired
+- `?error=invalid_saml_response&error_description=Provider+mismatch` — The response was meant for a different provider
+- `?error=unsolicited_response&error_description=IdP-initiated+SSO+not+allowed` — IdP-initiated SSO is disabled
 
-Assertion Replay Protection [#assertion-replay-protection]
+### Assertion Replay Protection
 
 The SSO plugin includes assertion replay protection to prevent attackers from capturing and resubmitting valid SAML responses. Each SAML Assertion ID is tracked and rejected if reused.
 
-<Callout type="info">
-  Replay protection is **always enabled**. This is a critical security feature that prevents attackers from reusing intercepted SAML responses.
-</Callout>
-
-How It Works [#how-it-works]
+#### How It Works
 
 1. When a SAML response is received, the Assertion ID is extracted from the XML
 2. The system checks if this Assertion ID has been seen before
@@ -1240,24 +941,20 @@ How It Works [#how-it-works]
 
 **Both SAML endpoints are protected:**
 
-* `/sso/saml2/callback/:providerId`
-* `/sso/saml2/sp/acs/:providerId`
+- `/sso/saml2/callback/:providerId`
+- `/sso/saml2/sp/acs/:providerId`
 
-<Callout type="info">
-  Replay protection uses the database verification table, so it works correctly in multi-instance deployments without additional configuration.
-</Callout>
-
-Error Handling [#error-handling-1]
+#### Error Handling
 
 When a replay attack is detected, users are redirected with an error:
 
-* `?error=replay_detected&error_description=SAML+assertion+has+already+been+used` — The assertion ID was already used
+- `?error=replay_detected&error_description=SAML+assertion+has+already+been+used` — The assertion ID was already used
 
-Timestamp Validation [#timestamp-validation]
+### Timestamp Validation
 
 The SSO plugin validates SAML assertion timestamps (`NotBefore` and `NotOnOrAfter`) to prevent acceptance of expired or future-dated assertions. This validation includes a configurable clock skew tolerance to account for time differences between servers.
 
-SAML Specification Background [#saml-specification-background]
+#### SAML Specification Background
 
 According to the **SAML 2.0 Core specification**, `NotBefore` and `NotOnOrAfter` attributes are **optional**. However, the widely-adopted **SAML2Int** (SAML V2.0 Implementation Profile for Federation Interoperability) specification **requires** these timestamps:
 
@@ -1265,19 +962,19 @@ According to the **SAML 2.0 Core specification**, `NotBefore` and `NotOnOrAfter`
 
 Better Auth provides flexibility to support both:
 
-* **Default behavior**: Accepts assertions without timestamps (SAML 2.0 Core compliant) but logs a warning
-* **Strict mode**: Rejects assertions without timestamps (SAML2Int compliant)
+- **Default behavior**: Accepts assertions without timestamps (SAML 2.0 Core compliant) but logs a warning
+- **Strict mode**: Rejects assertions without timestamps (SAML2Int compliant)
 
-How It Works [#how-it-works-1]
+#### How It Works
 
 For each SAML assertion:
 
-* **NotBefore**: The assertion is rejected if current time is before `NotBefore - clockSkew`
-* **NotOnOrAfter**: The assertion is rejected if current time is after `NotOnOrAfter + clockSkew`
+- **NotBefore**: The assertion is rejected if current time is before `NotBefore - clockSkew`
+- **NotOnOrAfter**: The assertion is rejected if current time is after `NotOnOrAfter + clockSkew`
 
-Configuration [#configuration]
+#### Configuration
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
 
@@ -1295,37 +992,33 @@ const auth = betterAuth({
 });
 ```
 
-Options [#options-1]
+#### Options
 
-| Option              | Type      | Default          | Description                                                                                                                                  |
-| ------------------- | --------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `clockSkew`         | `number`  | `300000` (5 min) | Clock skew tolerance in milliseconds. Allows for time differences between IdP and SP servers.                                                |
-| `requireTimestamps` | `boolean` | `false`          | When `true`, assertions without `NotBefore`/`NotOnOrAfter` conditions are rejected. When `false`, they are accepted but a warning is logged. |
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clockSkew` | `number` | `300000` (5 min) | Clock skew tolerance in milliseconds. Allows for time differences between IdP and SP servers. |
+| `requireTimestamps` | `boolean` | `false` | When `true`, assertions without `NotBefore` / `NotOnOrAfter` conditions are rejected. When `false`, they are accepted but a warning is logged. |
 
-When to Enable requireTimestamps [#when-to-enable-requiretimestamps]
-
-<Callout type="info">
-  **Recommendation**: Enable `requireTimestamps: true` for enterprise and high-security deployments.
-</Callout>
+#### When to Enable requireTimestamps
 
 Enable `requireTimestamps: true` when:
 
-* Your IdP follows **SAML2Int** (most enterprise IdPs like Okta, Azure AD, OneLogin)
-* You need **SOC 2**, **ISO 27001**, or similar compliance
-* You want to prevent acceptance of malformed or test assertions
-* You're in a **production environment** with proper IdP configuration
+- Your IdP follows **SAML2Int** (most enterprise IdPs like Okta, Azure AD, OneLogin)
+- You need **SOC 2**, **ISO 27001**, or similar compliance
+- You want to prevent acceptance of malformed or test assertions
+- You're in a **production environment** with proper IdP configuration
 
 Keep `requireTimestamps: false` (default) when:
 
-* Integrating with **legacy IdPs** that may not include timestamps
-* During **development/testing** with mock IdPs
-* You need **maximum compatibility** with various IdP implementations
+- Integrating with **legacy IdPs** that may not include timestamps
+- During **development/testing** with mock IdPs
+- You need **maximum compatibility** with various IdP implementations
 
-Stricter Security (Enterprise/Production) [#stricter-security-enterpriseproduction]
+#### Stricter Security (Enterprise/Production)
 
 For enterprise environments following SAML2Int, configure stricter validation:
 
-```ts title="auth.ts"
+```
 sso({
     saml: {
         clockSkew: 60 * 1000,      // 1 minute tolerance
@@ -1334,17 +1027,17 @@ sso({
 })
 ```
 
-Error Messages [#error-messages]
+#### Error Messages
 
-* **"SAML assertion is not yet valid"** — Current time is before the `NotBefore` timestamp (minus clock skew)
-* **"SAML assertion has expired"** — Current time is after the `NotOnOrAfter` timestamp (plus clock skew)
-* **"SAML assertion missing required timestamp conditions"** — Assertion has no timestamps and `requireTimestamps` is enabled
+- **"SAML assertion is not yet valid"** — Current time is before the `NotBefore` timestamp (minus clock skew)
+- **"SAML assertion has expired"** — Current time is after the `NotOnOrAfter` timestamp (plus clock skew)
+- **"SAML assertion missing required timestamp conditions"** — Assertion has no timestamps and `requireTimestamps` is enabled
 
-Algorithm Validation [#algorithm-validation]
+### Algorithm Validation
 
 Better Auth validates SAML cryptographic algorithms and warns about deprecated ones (SHA-1, RSA 1.5, 3DES) by default.
 
-```ts title="auth.ts"
+```
 sso({
     saml: {
         algorithms: {
@@ -1355,15 +1048,15 @@ sso({
 })
 ```
 
-| Value      | Behavior                                    |
-| ---------- | ------------------------------------------- |
-| `"warn"`   | Log warning, allow authentication (default) |
-| `"reject"` | Throw error, block authentication           |
-| `"allow"`  | Silent, no validation                       |
+| Value | Behavior |
+| --- | --- |
+| `"warn"` | Log warning, allow authentication (default) |
+| `"reject"` | Throw error, block authentication |
+| `"allow"` | Silent, no validation |
 
 For strict security (production):
 
-```ts title="auth.ts"
+```
 sso({
     saml: {
         algorithms: {
@@ -1373,36 +1066,36 @@ sso({
 })
 ```
 
-Supported Algorithms [#supported-algorithms]
+#### Supported Algorithms
 
 **Signature algorithms:**
 
-* `RSA-SHA256`, `RSA-SHA384`, `RSA-SHA512`
-* `ECDSA-SHA256`, `ECDSA-SHA384`, `ECDSA-SHA512`
+- `RSA-SHA256`, `RSA-SHA384`, `RSA-SHA512`
+- `ECDSA-SHA256`, `ECDSA-SHA384`, `ECDSA-SHA512`
 
 **Digest algorithms:**
 
-* `SHA256`, `SHA384`, `SHA512`
+- `SHA256`, `SHA384`, `SHA512`
 
 **Deprecated (triggers warning/rejection):**
 
-* `RSA-SHA1` (signature)
-* `SHA1` (digest)
-* `RSA 1.5` (key encryption)
-* `3DES` (data encryption)
+- `RSA-SHA1` (signature)
+- `SHA1` (digest)
+- `RSA 1.5` (key encryption)
+- `3DES` (data encryption)
 
-Size Limits [#size-limits]
+### Size Limits
 
 Better Auth enforces size limits on SAML payloads to protect against denial-of-service attacks via oversized XML.
 
-| Option            | Default | Description                         |
-| ----------------- | ------- | ----------------------------------- |
-| `maxResponseSize` | 256KB   | Maximum SAML response size in bytes |
-| `maxMetadataSize` | 100KB   | Maximum IdP metadata size in bytes  |
+| Option | Default | Description |
+| --- | --- | --- |
+| `maxResponseSize` | 256KB | Maximum SAML response size in bytes |
+| `maxMetadataSize` | 100KB | Maximum IdP metadata size in bytes |
 
-Customizing Limits [#customizing-limits]
+#### Customizing Limits
 
-```ts title="auth.ts"
+```
 sso({
     saml: {
         maxResponseSize: 512 * 1024, // 512KB for enterprise IdPs with large group claims
@@ -1411,22 +1104,18 @@ sso({
 })
 ```
 
-<Callout type="info">
-  For true early rejection of oversized payloads (before they reach your application), configure size limits at your infrastructure level (nginx `client_max_body_size`, CDN settings, load balancer).
-</Callout>
-
-Shared Redirect URI [#shared-redirect-uri]
+## Shared Redirect URI
 
 By default, each OIDC provider gets its own callback URL (`/sso/callback/:providerId`). You can configure all providers to share a single redirect URI instead:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { sso } from "@better-auth/sso";
 
 const auth = betterAuth({
     plugins: [
         sso({
-            redirectURI: "/sso/callback" // [!code highlight]
+            redirectURI: "/sso/callback"
         })
     ]
 });
@@ -1434,7 +1123,7 @@ const auth = betterAuth({
 
 The value can be a relative path or a full URL:
 
-```ts
+```
 // Relative path (appended to your baseURL)
 sso({ redirectURI: "/sso/callback" })
 
@@ -1444,206 +1133,116 @@ sso({ redirectURI: "https://login.example.com/callback" })
 
 The provider ID is stored in the OAuth state so the callback can identify which provider initiated the flow.
 
-<Callout type="info">
-  When using a full URL, make sure it routes to your Better Auth instance.
-</Callout>
+## Domain verification
 
-<Callout type="info">
-  This option only affects OIDC providers. SAML providers use a separate ACS endpoint that is configured automatically.
-</Callout>
-
-<Callout type="info">
-  Both the shared endpoint (`/sso/callback`) and the per-provider endpoints (`/sso/callback/:providerId`) are always registered for backward compatibility, so existing integrations continue to work regardless of this setting.
-</Callout>
-
-Domain verification [#domain-verification]
-
-Domain verification allows your application to automatically trust a new SSO provider
-by automatically validating ownership via the associated domain.
+Domain verification allows your application to automatically trust a new SSO provider by automatically validating ownership via the associated domain.
 
 When a provider's domain is verified, it is also trusted for **automatic account linking**. This means that if a user signs in with an SSO provider (OIDC or SAML) and an existing account with the same email exists, the accounts will be linked automatically — as long as the user's email domain matches the provider's verified domain.
 
-<Tabs items={["client", "server"]}>
-  <Tab value="client">
-    ```ts title="auth-client.ts"
-    const authClient = createAuthClient({
-        plugins: [
-            ssoClient({ // [!code highlight]
-                domainVerification: { // [!code highlight]
-                    enabled: true // [!code highlight]
-                } // [!code highlight]
-            }) // [!code highlight]
-        ]
-    })
-    ```
-  </Tab>
+#### client
 
-  <Tab value="server">
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth";
-    import { sso } from "@better-auth/sso";
+```
+const authClient = createAuthClient({
+    plugins: [
+        ssoClient({ 
+            domainVerification: { 
+                enabled: true
+            } 
+        }) 
+    ]
+})
+```
 
-    const auth = betterAuth({
-        plugins: [
-            sso({ // [!code highlight]
-                domainVerification: { // [!code highlight]
-                    enabled: true // [!code highlight]
-                } // [!code highlight]
-            }) // [!code highlight]
-        ]
-    });
-    ```
-  </Tab>
-</Tabs>
+#### server
 
 Once enabled, make sure you migrate the database schema (again).
 
-<Tabs items={["migrate", "generate"]}>
-  <Tab value="migrate">
-    ```bash
-    npx auth migrate
-    ```
-  </Tab>
+#### migrate
 
-  <Tab value="generate">
-    ```bash
-    npx auth generate
-    ```
-  </Tab>
-</Tabs>
+```
+npx auth migrate
+```
+
+#### generate
 
 See the [Schema](#if-you-have-enabled-domain-verification) section to add the fields manually.
 
-Verify your domain [#verify-your-domain]
+### Verify your domain
 
-When domain verification is enabled, every new SSO provider will be untrusted at first.
-This means that new sign-ups or sign-ins will not be allowed until domain ownership has been verified.
+When domain verification is enabled, every new SSO provider will be untrusted at first. This means that new sign-ups or sign-ins will not be allowed until domain ownership has been verified.
 
 To verify your ownership over a domain, follow these steps:
 
-<Steps>
-  <Step>
-    Acquire verification token [#acquire-verification-token]
+#### Acquire verification token
 
-    When an SSO provider is registered, a **verification token** will be issued to the provider (it will be returned as part of the response).
-    You can use this token to prove ownership over the domain.
-  </Step>
+When an SSO provider is registered, a **verification token** will be issued to the provider (it will be returned as part of the response). You can use this token to prove ownership over the domain.
 
-  <Step>
-    Create TXT DNS record [#create-txt-dns-record]
+#### Create TXT DNS record
 
-    To do this, you'll need to add a `TXT` record to your domain's DNS settings:
+To do this, you'll need to add a `TXT` record to your domain's DNS settings:
 
-    * **Host:** `_better-auth-token-{your-provider-id}` (**Note:** An underscore is automatically prepended to follow DNS infrastructure subdomain conventions. The `better-auth-token` part can be customized through the `domainVerification.tokenPrefix` option)
-    * **Value:** The verification token you were given.
+- **Host:** `_better-auth-token-{your-provider-id}` (**Note:** An underscore is automatically prepended to follow DNS infrastructure subdomain conventions. The `better-auth-token` part can be customized through the `domainVerification.tokenPrefix` option)
+- **Value:** The verification token you were given.
 
-    If the SSO provider lists multiple comma-separated domains, add this `TXT` record under every listed domain. For example, a provider with `domain: "company.com,subsidiary.com"` must publish the record for both `company.com` and `subsidiary.com`.
+If the SSO provider lists multiple comma-separated domains, add this `TXT` record under every listed domain. For example, a provider with `domain: "company.com,subsidiary.com"` must publish the record for both `company.com` and `subsidiary.com`.
 
-    **Save the record and wait for it to propagate.** This can take up to 48 hours, but it's usually much faster.
-  </Step>
+**Save the record and wait for it to propagate.** This can take up to 48 hours, but it's usually much faster.
 
-  <Step>
-    Submit a validation request [#submit-a-validation-request]
+#### Submit a validation request
 
-    **Once the DNS record has propagated**, you can submit a validation request (See below)
-  </Step>
-</Steps>
+**Once the DNS record has propagated**, you can submit a validation request (See below)
 
-Domain validation request [#domain-validation-request]
+### Domain validation request
 
-Once you have configured your domain, you can use your `auth` instance to submit a validation request.
-This request will either result in a rejection (could not prove your ownership over the domain)
-or if the verification is successful, your SSO provider domain will be marked as verified.
+Once you have configured your domain, you can use your `auth` instance to submit a validation request. This request will either result in a rejection (could not prove your ownership over the domain) or if the verification is successful, your SSO provider domain will be marked as verified.
 
+POST/sso/verify-domain
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.sso.verifyDomain({
-    providerId: acme-corp,
+    providerId: "acme-corp", // required
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.verifyDomain({
-    body: {
-        providerId: acme-corp,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
+`providerId` stringrequired
+
+The provider id
+
+### Creating a new verification token
+
+Every domain verification token will have a default expiry of 1 week since the moment it was issued or the moment when the SSO provider was registered.
+
+After that time, the token will expire and cannot longer be used. When that happens, you can create a new verification token:
+
+POST/sso/request-domain-verification
+
 ```
-
-### Type Definition
-
-```ts
-type verifyDomain = {
-    /**
-    * The provider id
-    */
-    providerId: string = "acme-corp"
-  
-}
-```
-
-
-Creating a new verification token [#creating-a-new-verification-token]
-
-Every domain verification token will have a default expiry of 1 week since the moment it was issued
-or the moment when the SSO provider was registered.
-
-After that time, the token will expire and cannot longer be used. When that happens,
-you can create a new verification token:
-
-
-### Client Side
-
-```ts
 const { data, error } = await authClient.sso.requestDomainVerification({
-    providerId: acme-corp,
+    providerId: "acme-corp", // required
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.requestDomainVerification({
-    body: {
-        providerId: acme-corp,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
-```
+`providerId` stringrequired
 
-### Type Definition
+The provider id
 
-```ts
-type requestDomainVerification = {
-    /**
-    * The provider id
-    */
-    providerId: string = "acme-corp"
-  
-}
-```
-
-
-SAML Endpoints [#saml-endpoints]
+### SAML Endpoints
 
 The plugin automatically creates the following SAML endpoints:
 
-* **SP Metadata**: `/api/auth/sso/saml2/sp/metadata?providerId={providerId}`
-* **SAML Callback**: `/api/auth/sso/saml2/callback/{providerId}` (supports both GET and POST)
+- **SP Metadata**: `/api/auth/sso/saml2/sp/metadata?providerId={providerId}`
+- **SAML Callback**: `/api/auth/sso/saml2/callback/{providerId}` (supports both GET and POST)
 
-SAML Callback URL Configuration [#saml-callback-url-configuration]
+### SAML Callback URL Configuration
 
 The SAML callback endpoint (`/api/auth/sso/saml2/callback/{providerId}`) handles both **SP-initiated** and **IdP-initiated** SSO flows:
 
-* **SP-initiated**: User clicks "Sign in with SSO" in your app → redirects to IdP → IdP POSTs SAMLResponse to callback
-* **IdP-initiated**: User clicks app icon in IdP dashboard (Okta, Azure AD, etc.) → IdP POSTs SAMLResponse to callback
+- **SP-initiated**: User clicks "Sign in with SSO" in your app → redirects to IdP → IdP POSTs SAMLResponse to callback
+- **IdP-initiated**: User clicks app icon in IdP dashboard (Okta, Azure AD, etc.) → IdP POSTs SAMLResponse to callback
 
 **Important**: `callbackUrl` in your SAML configuration is used as the Assertion Consumer Service (ACS) URL. Set it to the SAML callback route for your provider (e.g., `https://yourapp.com/api/auth/sso/saml2/sp/acs/my-provider`). If omitted, Better Auth derives it automatically from your `baseURL` and `providerId`.
 
@@ -1651,7 +1250,7 @@ Your IdP must include an `AudienceRestriction` for this SP. The accepted audienc
 
 The post-login redirect destination is controlled by the `callbackURL` parameter in the client-side `signIn.sso()` call:
 
-```ts
+```
 await authClient.signIn.sso({
   providerId: "my-provider",
   callbackURL: "/dashboard", // Where the user lands after SSO
@@ -1662,78 +1261,107 @@ For unsolicited **IdP-initiated** flows where `signIn.sso()` is not used (and th
 
 The callback route supports both GET and POST methods automatically, so you don't need to create any additional route handlers in your framework.
 
-Schema [#schema]
+## Schema
 
 The plugin requires additional fields in the `ssoProvider` table to store the provider's configuration.
 
-export const ssoProviderTableFields = [
-	{
-		name: "id",
-		type: "string",
-		description: "A database identifier",
-		isPrimaryKey: true,
-	},
-	{
-		name: "issuer",
-		type: "string",
-		description: "The issuer identifier",
-	},
-	{
-		name: "domain",
-		type: "string",
-		description: "The domain of the provider",
-	},
-	{
-		name: "oidcConfig",
-		type: "string",
-		description: "The OIDC configuration (JSON string)",
-		isOptional: true,
-	},
-	{
-		name: "samlConfig",
-		type: "string",
-		description: "The SAML configuration (JSON string)",
-		isOptional: true,
-	},
-	{
-		name: "userId",
-		type: "string",
-		description: "The user ID",
-		isForeignKey: true,
-		references: { model: "user", field: "id" },
-	},
-	{
-		name: "providerId",
-		type: "string",
-		description: "The provider ID. Used to identify a provider and to generate a redirect URL.",
-		isUnique: true,
-	},
-	{
-		name: "organizationId",
-		type: "string",
-		description: "The organization Id. If provider is linked to an organization.",
-		isOptional: true,
-	},
-];
+Table
 
-<DatabaseTable name="ssoProvider" fields={ssoProviderTableFields} />
+Field
 
-If you have enabled domain verification: [#if-you-have-enabled-domain-verification]
+Type
+
+Key
+
+Description
+
+id
+
+string
+
+PK
+
+A database identifier
+
+issuer
+
+string
+
+\-
+
+The issuer identifier
+
+domain
+
+string
+
+\-
+
+The domain of the provider
+
+oidcConfig?
+
+string
+
+\-
+
+The OIDC configuration (JSON string)
+
+samlConfig?
+
+string
+
+\-
+
+The SAML configuration (JSON string)
+
+userId
+
+string
+
+FK
+
+The user ID
+
+providerId
+
+string
+
+\-
+
+The provider ID. Used to identify a provider and to generate a redirect URL.
+
+organizationId?
+
+string
+
+\-
+
+The organization Id. If provider is linked to an organization.
+
+### If you have enabled domain verification:
 
 The `ssoProvider` schema is extended as follows:
 
-export const ssoProviderDomainVerificationFields = [
-	{
-		name: "domainVerified",
-		type: "boolean",
-		description: "A flag indicating whether the provider domain has been verified.",
-		isOptional: true,
-	},
-];
+Table
 
-<DatabaseTable name="ssoProvider" fields={ssoProviderDomainVerificationFields} />
+Field
 
-IdP-Initiated SAML SSO [#idp-initiated-saml-sso]
+Type
+
+Key
+
+Description
+
+domainVerified?
+
+boolean
+
+\-
+
+A flag indicating whether the provider domain has been verified.
+
+### IdP-Initiated SAML SSO
 
 Better Auth supports **IdP-initiated SSO flows**, where users access your application directly from their Identity Provider dashboard (e.g., Okta, Azure AD, OneLogin). This is common in enterprise environments where IT admins prefer centralized app access.
 
@@ -1746,23 +1374,11 @@ Better Auth supports **IdP-initiated SSO flows**, where users access your applic
 
 No additional route handler is required. The callback route automatically handles both GET and POST requests.
 
-<Callout type="warn">
-  IdP-initiated flows do not carry a Better Auth-generated RelayState containing a client-side callback URL, so the redirect falls back to the Better Auth base URL. In split-origin setups (where the app frontend is on a different origin than the Better Auth server), this lands on the auth server origin and can result in a 404. Configure `idpInitiatedCallbackUrl` globally under the `saml` plugin options or per provider under `samlConfig` (e.g., `https://app.example.com/dashboard`) to return successful sign-ins and validation errors to the frontend.
-</Callout>
+For a detailed guide on setting up SAML SSO with examples for Okta and testing with DummyIDP, see our [SAML SSO with Okta](https://better-auth.com/docs/guides/saml-sso-with-okta).
 
-<Callout type="info">
-  If you previously created a manual GET handler for the SAML callback route as a workaround, you can remove it after upgrading. Better Auth now handles GET requests automatically.
-</Callout>
+## Options
 
-<Callout type="info">
-  **Security:** Better Auth validates all redirect URLs to prevent open redirect attacks. Only relative paths (e.g., `/dashboard`) and URLs matching your configured `trustedOrigins` are allowed. Malicious URLs like `https://evil.com` or protocol-relative URLs (`//evil.com`) are automatically blocked.
-</Callout>
-
-For a detailed guide on setting up SAML SSO with examples for Okta and testing with DummyIDP, see our [SAML SSO with Okta](/docs/guides/saml-sso-with-okta).
-
-Options [#options-2]
-
-Server [#server]
+### Server
 
 **provisionUser**: A custom function to provision a user when they sign in with an SSO provider.
 
@@ -1776,198 +1392,4 @@ Server [#server]
 
 If you want to allow account linking for specific trusted providers, enable the `accountLinking` option in your auth config and specify those providers in the `trustedProviders` list.
 
-export const ssoOptionsType = {
-	provisionUser: {
-		description: "A custom function to provision a user when they sign in with an SSO provider.",
-		type: "function",
-	},
-	provisionUserOnEveryLogin: {
-		description: "If true, the provisionUser callback will be called on every login, not just when a new user is registered.",
-		type: "boolean",
-		default: false,
-	},
-	organizationProvisioning: {
-		description: "Options for provisioning users to an organization.",
-		type: "object",
-		properties: {
-			disabled: {
-				description: "Disable organization provisioning.",
-				type: "boolean",
-				default: false,
-			},
-			defaultRole: {
-				description: "The default role for new users.",
-				type: "string",
-				enum: ["member", "admin"],
-				default: "member",
-			},
-			getRole: {
-				description: "A custom function to determine the role for new users.",
-				type: "function",
-			},
-		},
-	},
-	defaultOverrideUserInfo: {
-		description: "Override user info with the provider info by default.",
-		type: "boolean",
-		default: false,
-	},
-	disableImplicitSignUp: {
-		description: "Disable implicit sign up for new users. When set to true, sign-in needs to be called with requestSignUp as true to create new users.",
-		type: "boolean",
-		default: false,
-	},
-	providersLimit: {
-		description: "Configure the maximum number of SSO providers a user can register. Set to 0 to disable SSO provider registration.",
-		type: "number | function",
-		default: 10,
-	},
-	redirectURI: {
-		description: "Custom redirect URI for OIDC SSO callbacks. When set, all OIDC providers share this single callback URL instead of per-provider URLs. The provider ID is stored in the OAuth state. Can be a relative path (e.g., '/sso/callback') or a full URL.",
-		type: "string",
-		required: false,
-	},
-	domainVerification: {
-		description: "Configure the domain verification feature",
-		type: "object",
-		properties: {
-			enabled: {
-				description: "Enables or disables the domain verification feature",
-				type: "boolean",
-				required: false,
-			},
-			tokenPrefix: {
-				description: "Prefix used to generate the domain verification identifier. An underscore is automatically prepended.",
-				type: "string",
-				required: false,
-				default: "better-auth-token",
-			},
-		},
-	},
-	defaultSSO: {
-		description: "Configure a default SSO provider for testing and development. This provider will be used when no matching provider is found in the database.",
-		type: "array",
-		items: {
-			type: "object",
-			properties: {
-				domain: {
-					description: "The bare email domain, or comma-separated bare email domains, to match for this default provider.",
-					type: "string",
-					required: true,
-				},
-				providerId: {
-					description: "The provider ID to use for the default provider.",
-					type: "string",
-					required: true,
-				},
-				samlConfig: {
-					description: "SAML configuration for the default provider.",
-					type: "SAMLConfig",
-					required: false,
-				},
-				oidcConfig: {
-					description: "OIDC configuration for the default provider.",
-					type: "OIDCConfig",
-					required: false,
-				},
-			},
-		},
-	},
-	saml: {
-		description: "SAML security options for AuthnRequest/InResponseTo validation, replay protection, and timestamp handling.",
-		type: "object",
-		properties: {
-			enableInResponseToValidation: {
-				description: "Enable InResponseTo validation for SP-initiated SAML flows.",
-				type: "boolean",
-				default: true,
-			},
-			allowIdpInitiated: {
-				description: "Allow IdP-initiated SSO (unsolicited SAML responses). Set to false for stricter security. Only applies when validation is enabled.",
-				type: "boolean",
-				default: true,
-			},
-			requestTTL: {
-				description: "TTL for AuthnRequest records in milliseconds. Only applies when validation is enabled.",
-				type: "number",
-				default: 300000,
-			},
-			clockSkew: {
-				description: "Clock skew tolerance for SAML assertion timestamp validation (NotBefore/NotOnOrAfter) in milliseconds. Allows for minor time differences between IdP and SP servers.",
-				type: "number",
-				default: 300000,
-			},
-			requireTimestamps: {
-				description: "Require timestamp conditions (NotBefore/NotOnOrAfter) in SAML assertions. When enabled, assertions without timestamps are rejected. When disabled, they are accepted with a warning logged.",
-				type: "boolean",
-				default: false,
-			},
-			algorithms: {
-				description: "Algorithm validation options.",
-				type: "object",
-				properties: {
-					onDeprecated: {
-						description: "Behavior for deprecated algorithms (SHA-1, RSA 1.5, 3DES).",
-						type: "string",
-						enum: ["reject", "warn", "allow"],
-						default: "warn",
-					},
-				},
-			},
-			maxResponseSize: {
-				description: "Maximum allowed size for SAML responses in bytes.",
-				type: "number",
-				default: 262144,
-			},
-			maxMetadataSize: {
-				description: "Maximum allowed size for IdP metadata XML in bytes.",
-				type: "number",
-				default: 102400,
-			},
-		},
-	},
-	modelName: {
-		description: "The model name for the SSO provider table",
-		type: "string",
-		default: "ssoProvider",
-	},
-	fields: {
-		issuer: {
-			description: "Custom name for the issuer column",
-			type: "string",
-			default: "issuer",
-		},
-		oidcConfig: {
-			description: "Custom name for the oidcConfig column",
-			type: "string",
-			default: "oidcConfig",
-		},
-		samlConfig: {
-			description: "Custom name for the samlConfig column",
-			type: "string",
-			default: "samlConfig",
-		},
-		userId: {
-			description: "Custom name for the userId column",
-			type: "string",
-			default: "userId",
-		},
-		providerId: {
-			description: "Custom name for the providerId column",
-			type: "string",
-			default: "providerId",
-		},
-		organizationId: {
-			description: "Custom name for the organizationId column",
-			type: "string",
-			default: "organizationId",
-		},
-		domain: {
-			description: "Custom name for the domain column",
-			type: "string",
-			default: "domain",
-		},
-	},
-};
-
-<TypeTable type={ssoOptionsType} />
+Prop

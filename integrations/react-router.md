@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/react-router
 title: "React Router"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # React Router v7 Integration
@@ -14,16 +14,13 @@ Integrate Better Auth with React Router v7 (formerly Remix).
 
 Better Auth can be easily integrated with React Router v7. This guide will show you how to integrate Better Auth with React Router v7.
 
-<Callout type="info">
-  React Router v7 is the successor to Remix. If you're using Remix v2, the main difference is changing your imports from `@remix-run/*` to `react-router`. The APIs remain the same.
-</Callout>
+> React Router v7 is the successor to Remix. If you're using Remix v2, the main difference is changing your imports from `@remix-run/*` to `react-router`. The APIs remain the same.
 
 You can follow the steps from [installation](/docs/installation) to get started or you can follow this guide to make it the React Router way.
 
 If you have followed the installation steps, you can skip the first step.
 
-Create auth instance [#create-auth-instance]
-
+## Create auth instance
 Create a file named `auth.server.ts` in one of these locations:
 
 * Project root
@@ -34,9 +31,7 @@ You can also nest any of these folders under `app/` folder. (e.g. `app/lib/auth.
 
 And in this file, import Better Auth and create your instance.
 
-<Callout type="warn">
-  Make sure to export the auth instance with the variable name `auth` or as a `default` export.
-</Callout>
+> Make sure to export the auth instance with the variable name `auth` or as a `default` export.
 
 ```ts title="app/lib/auth.server.ts"
 import { betterAuth } from "better-auth"
@@ -49,12 +44,10 @@ export const auth = betterAuth({
 })
 ```
 
-Create API Route [#create-api-route]
-
+## Create API Route
 We need to mount the handler to a API route. Create a resource route file `api.auth.$.ts` inside `app/routes/` directory. And add the following code:
 
-React Router v7 [#react-router-v7]
-
+## React Router v7
 ```ts title="app/routes/api.auth.$.ts"
 import { auth } from '~/lib/auth.server' // Adjust the path as necessary
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router"
@@ -68,8 +61,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 ```
 
-Remix v2 (Legacy) [#remix-v2-legacy]
-
+## Remix v2 (Legacy)
 If you're still using Remix v2, the only difference is the import:
 
 ```ts title="app/routes/api.auth.$.ts"
@@ -85,12 +77,9 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 ```
 
-<Callout type="info">
-  You can change the path on your better-auth configuration but it's recommended to keep it as `routes/api.auth.$.ts`
-</Callout>
+> You can change the path on your better-auth configuration but it's recommended to keep it as `routes/api.auth.$.ts`
 
-Create a client [#create-a-client]
-
+## Create a client
 Create a client instance. Here we are creating `auth-client.ts` file inside the `lib/` directory.
 
 ```ts title="app/lib/auth-client.ts"
@@ -103,12 +92,9 @@ export const authClient = createAuthClient({
 
 Once you have created the client, you can use it to sign up, sign in, and perform other actions.
 
-Example usage [#example-usage]
-
-Sign Up [#sign-up]
-
-React Router v7 [#react-router-v7-1]
-
+## Example usage
+## Sign Up
+## React Router v7
 ```ts title="app/routes/signup.tsx"
 import { Form } from "react-router"
 import { useState } from "react"
@@ -177,8 +163,7 @@ export default function SignUp() {
 }
 ```
 
-Remix v2 (Legacy) [#remix-v2-legacy-1]
-
+## Remix v2 (Legacy)
 ```ts title="app/routes/signup.tsx"
 import { Form } from "@remix-run/react"
 import { useState } from "react"
@@ -247,10 +232,8 @@ export default function SignUp() {
 }
 ```
 
-Sign In [#sign-in]
-
-React Router v7 [#react-router-v7-2]
-
+## Sign In
+## React Router v7
 ```ts title="app/routes/signin.tsx"
 import { Form } from "react-router"
 import { useState } from "react"
@@ -318,8 +301,7 @@ export default function SignIn() {
 }
 ```
 
-Remix v2 (Legacy) [#remix-v2-legacy-2]
-
+## Remix v2 (Legacy)
 ```ts title="app/routes/signin.tsx"
 import { Form } from "@remix-run/react"
 import { useState } from "react"

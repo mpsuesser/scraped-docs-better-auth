@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unable_to_create_user
 title: "Unable_to_create_user"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # unable_to_create_user
@@ -12,12 +12,10 @@ The user could not be created during authentication.
 
 
 
-What is it? [#what-is-it]
-
+## What is it?
 This error occurs when Better Auth fails to create a new user during the authentication process. It typically happens during OAuth or SSO-based signup flows when a new user record is expected to be created but the operation fails.
 
-Common Causes [#common-causes]
-
+## Common Causes
 * Database write failure due to connection issues, timeouts, or transaction errors.
 * Missing or invalid required fields in the user schema.
 * Unique constraint violations (e.g., email already exists).
@@ -25,26 +23,20 @@ Common Causes [#common-causes]
 * Errors thrown inside custom database hooks (e.g., `user.create`).
 * Misconfigured adapters or database clients.
 
-How to resolve [#how-to-resolve]
-
-Verify database connectivity [#verify-database-connectivity]
-
+## How to resolve
+## Verify database connectivity
 * Ensure your database is reachable and properly configured.
 * Check for connection pool issues, timeouts, or failed queries.
 
-Validate schema and constraints [#validate-schema-and-constraints]
-
+## Validate schema and constraints
 * Make sure all required user fields are present and correctly typed.
 * Check for unique constraints (e.g., email conflicts).
 
-Run migrations [#run-migrations]
-
+## Run migrations
 * Ensure your database schema is up to date with the current Better Auth version.
 
-Review custom hooks [#review-custom-hooks]
-
+## Review custom hooks
 * If you are using `databaseHooks.user.create`, ensure it is not throwing errors or returning invalid data.
 
-Inspect logs [#inspect-logs]
-
+## Inspect logs
 * Check server logs for detailed error messages during user creation.

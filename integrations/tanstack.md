@@ -2,88 +2,42 @@
 url: https://better-auth.com/llms.txt/docs/integrations/tanstack
 title: "Tanstack"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# TanStack Start Integration
 
 Integrate Better Auth with TanStack Start.
 
-
-
 This integration guide is assuming you are using TanStack Start.
 
-Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
+Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](https://better-auth.com/docs/installation).
 
-Quick Start [#quick-start]
+## Quick Start
 
 You can create a new TanStack Start project with Better Auth integrated using the following command. This CLI sets up a project with an auth instance configured with the plugin and mounted handlers.
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
+#### npm
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
+```
+npm create @tanstack/start
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
+◇  What add-ons would you like for your project?
+│  Better Auth
+```
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### pnpm
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm create @tanstack/start
+#### yarn
 
-    ◇  What add-ons would you like for your project?
-    │  Better Auth
-    ```
-  </CodeBlockTab>
+#### bun
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm create @tanstack/start
+## Usage
 
-    ◇  What add-ons would you like for your project?
-    │  Better Auth
-    ```
-  </CodeBlockTab>
+### Mount the handler
 
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn create @tanstack/start
+We need to mount the handler to a TanStack API endpoint/Server Route. Create a new file: `/src/routes/api/auth/$.ts`
 
-    ◇  What add-ons would you like for your project?
-    │  Better Auth
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="bun">
-    ```bash
-    bunx @tanstack/create-start
-
-    ◇  What add-ons would you like for your project?
-    │  Better Auth
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-Usage [#usage]
-
-Mount the handler [#mount-the-handler]
-
-We need to mount the handler to a TanStack API endpoint/Server Route.
-Create a new file: `/src/routes/api/auth/$.ts`
-
-```ts title="src/routes/api/auth/$.ts"
+```
 import { auth } from '@/lib/auth'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -101,14 +55,14 @@ export const Route = createFileRoute('/api/auth/$')({
 })
 ```
 
-Usage tips [#usage-tips]
+### Usage tips
 
-* We recommend using the client SDK or `authClient` to handle authentication, rather than server actions with `auth.api`.
-* When you call functions that need to set cookies (like `signInEmail` or `signUpEmail`), you'll need to handle cookie setting for TanStack Start. Better Auth provides a `tanstackStartCookies` plugin to automatically handle this for you.
+- We recommend using the client SDK or `authClient` to handle authentication, rather than server actions with `auth.api`.
+- When you call functions that need to set cookies (like `signInEmail` or `signUpEmail`), you'll need to handle cookie setting for TanStack Start. Better Auth provides a `tanstackStartCookies` plugin to automatically handle this for you.
 
 For React (TanStack Start with React):
 
-```ts title="src/lib/auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
@@ -120,7 +74,7 @@ export const auth = betterAuth({
 
 For Solid.js (TanStack Start with Solid):
 
-```ts title="src/lib/auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { tanstackStartCookies } from "better-auth/tanstack-start/solid";
 
@@ -132,7 +86,7 @@ export const auth = betterAuth({
 
 Now, when you call functions that set cookies, they will be automatically set using TanStack Start's cookie handling system.
 
-```ts
+```
 import { auth } from "@/lib/auth"
 
 const signIn = async () => {
@@ -145,13 +99,13 @@ const signIn = async () => {
 }
 ```
 
-Protecting Resources [#protecting-resources]
+### Protecting Resources
 
 To protect resources that require authentication, use `beforeLoad` with a server function. This ensures authentication is checked on every navigation, including client-side navigation via `<Link>` components.
 
 First, create server-side helpers to check the session:
 
-```ts title="src/lib/auth.functions.ts"
+```
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { auth } from "@/lib/auth";
@@ -175,11 +129,11 @@ export const ensureSession = createServerFn({ method: "GET" }).handler(async () 
 });
 ```
 
-Protecting Routes [#protecting-routes]
+#### Protecting Routes
 
 Use `beforeLoad` in your route definitions:
 
-```tsx title="src/routes/dashboard.tsx"
+```
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { getSession } from '@/lib/auth.functions'
 
@@ -203,11 +157,11 @@ function Dashboard() {
 }
 ```
 
-Protecting Multiple Routes (Layout) [#protecting-multiple-routes-layout]
+#### Protecting Multiple Routes (Layout)
 
 For protecting multiple routes, use a pathless layout route:
 
-```tsx title="src/routes/_protected.tsx"
+```
 import { createFileRoute, redirect, Outlet } from '@tanstack/react-router'
 import { getSession } from '@/lib/auth.functions'
 
@@ -230,27 +184,19 @@ export const Route = createFileRoute('/_protected')({
 
 Then nest protected routes under `_protected`:
 
-<Files>
-  <Folder name="src" defaultOpen>
-    <Folder name="routes" defaultOpen>
-      <Folder name="_protected" defaultOpen>
-        <File name="dashboard.tsx" />
+dashboard.tsx
 
-        <File name="settings.tsx" />
-      </Folder>
+settings.tsx
 
-      <File name="_protected.tsx" />
+\_protected.tsx
 
-      <File name="login.tsx" />
-    </Folder>
-  </Folder>
-</Files>
+login.tsx
 
-Protecting Server Functions [#protecting-server-functions]
+#### Protecting Server Functions
 
 Use `ensureSession` helper to protect server functions:
 
-```ts title="src/lib/posts.functions.ts"
+```
 import { createServerFn } from "@tanstack/react-start";
 import { ensureSession } from "./auth.functions";
 

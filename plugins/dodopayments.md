@@ -2,130 +2,103 @@
 url: https://better-auth.com/llms.txt/docs/plugins/dodopayments
 title: "Dodopayments"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Dodo Payments
 
 Better Auth Plugin for Dodo Payments
 
+[Dodo Payments](https://dodopayments.com/) is a global Merchant-of-Record platform that lets AI, SaaS and digital businesses sell in 150+ countries without touching tax, fraud, or compliance. A single, developer-friendly API powers checkout, billing, and payouts so you can launch worldwide in minutes.
 
+### [Get support on Dodo Payments' Discord](https://discord.gg/bYqAp4ayYh)
 
-[Dodo Payments](https://dodopayments.com) is a global Merchant-of-Record platform that lets AI, SaaS and digital businesses sell in 150+ countries without touching tax, fraud, or compliance. A single, developer-friendly API powers checkout, billing, and payouts so you can launch worldwide in minutes.
+## Features
 
-<Callout>
-  This plugin is maintained by the Dodo Payments team. For bugs, issues or feature requests,
-  please visit the [Dodo Payments GitHub repo](https://github.com/dodopayments/dodo-adapters).
-</Callout>
+- Automatic customer creation on sign-up
+- Type-safe checkout flows with product slug mapping
+- Self-service customer portal
+- Real-time webhook event processing with signature verification
 
-<Card href="https://discord.gg/bYqAp4ayYh" title="Get support on Dodo Payments' Discord">
-  Have questions? Our team is available on Discord to assist you anytime.
-</Card>
+### [Get started with Dodo Payments](https://app.dodopayments.com/)
 
-Features [#features]
+## Installation
 
-* Automatic customer creation on sign-up
-* Type-safe checkout flows with product slug mapping
-* Self-service customer portal
-* Real-time webhook event processing with signature verification
+Run the following command in your project root:
 
-<Card href="https://app.dodopayments.com" title="Get started with Dodo Payments">
-  You need a Dodo Payments account and API keys to use this integration.
-</Card>
+```
+npm install @dodopayments/better-auth dodopayments better-auth zod
+```
 
-Installation [#installation]
+Add these to your `.env` file:
 
-<Steps>
-  <Step title="Install dependencies">
-    Run the following command in your project root:
+```
+DODO_PAYMENTS_API_KEY=your_api_key_here
+DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here
+```
 
-    ```bash
-    npm install @dodopayments/better-auth dodopayments better-auth zod
-    ```
-  </Step>
+Create or update `src/lib/auth.ts`:
 
-  <Step title="Configure environment variables">
-    Add these to your `.env` file:
+```
+import { betterAuth } from "better-auth";
+import {
+  dodopayments,
+  checkout,
+  portal,
+  webhooks,
+} from "@dodopayments/better-auth";
+import DodoPayments from "dodopayments";
 
-    ```txt
-    DODO_PAYMENTS_API_KEY=your_api_key_here
-    DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here
-    ```
-  </Step>
+export const dodoPayments = new DodoPayments({
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+  environment: "test_mode"
+});
 
-  <Step title="Set up server-side integration">
-    Create or update `src/lib/auth.ts`:
-
-    ```typescript
-    import { betterAuth } from "better-auth";
-    import {
-      dodopayments,
-      checkout,
-      portal,
-      webhooks,
-    } from "@dodopayments/better-auth";
-    import DodoPayments from "dodopayments";
-
-    export const dodoPayments = new DodoPayments({
-      bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-      environment: "test_mode"
-    });
-
-    export const auth = betterAuth({
-      plugins: [
-        dodopayments({
-          client: dodoPayments,
-          createCustomerOnSignUp: true,
-          use: [
-            checkout({
-              products: [
-                {
-                  productId: "pdt_xxxxxxxxxxxxxxxxxxxxx",
-                  slug: "premium-plan",
-                },
-              ],
-              successUrl: "/dashboard/success",
-              authenticatedUsersOnly: true,
-            }),
-            portal(),
-            webhooks({
-              webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
-              onPayload: async (payload) => {
-                console.log("Received webhook:", payload.event_type);
-              },
-            }),
+export const auth = betterAuth({
+  plugins: [
+    dodopayments({
+      client: dodoPayments,
+      createCustomerOnSignUp: true,
+      use: [
+        checkout({
+          products: [
+            {
+              productId: "pdt_xxxxxxxxxxxxxxxxxxxxx",
+              slug: "premium-plan",
+            },
           ],
+          successUrl: "/dashboard/success",
+          authenticatedUsersOnly: true,
+        }),
+        portal(),
+        webhooks({
+          webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
+          onPayload: async (payload) => {
+            console.log("Received webhook:", payload.event_type);
+          },
         }),
       ],
-    });
-    ```
+    }),
+  ],
+});
+```
 
-    <Card>
-      Set `environment` to `live_mode` for production.
-    </Card>
-  </Step>
+Create or update `src/lib/auth-client.ts`:
 
-  <Step title="Set up client-side integration">
-    Create or update `src/lib/auth-client.ts`:
+```
+import { createAuthClient } from "better-auth/react";
+import { dodopaymentsClient } from "@dodopayments/better-auth";
 
-    ```typescript
-    import { createAuthClient } from "better-auth/react";
-    import { dodopaymentsClient } from "@dodopayments/better-auth";
+export const authClient = createAuthClient({
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  plugins: [dodopaymentsClient()],
+});
+```
 
-    export const authClient = createAuthClient({
-      baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
-      plugins: [dodopaymentsClient()],
-    });
-    ```
-  </Step>
-</Steps>
+## Usage
 
-Usage [#usage]
+### Creating a Checkout Session
 
-Creating a Checkout Session [#creating-a-checkout-session]
-
-```typescript
+```
 const { data: checkoutSession, error } =
   await authClient.dodopayments.checkoutSession({
   slug: "premium-plan",
@@ -136,23 +109,18 @@ if (checkoutSession) {
 }
 ```
 
-<Callout type="warn">
-  `authClient.dodopayments.checkout()` is deprecated. Use
-  `authClient.dodopayments.checkoutSession()` for new integrations.
-</Callout>
+### Accessing the Customer Portal
 
-Accessing the Customer Portal [#accessing-the-customer-portal]
-
-```typescript
+```
 const { data: customerPortal, error } = await authClient.dodopayments.customer.portal();
 if (customerPortal && customerPortal.redirect) {
   window.location.href = customerPortal.url;
 }
 ```
 
-Listing Customer Data [#listing-customer-data]
+### Listing Customer Data
 
-```typescript
+```
 // Get subscriptions
 const { data: subscriptions, error } =
   await authClient.dodopayments.customer.subscriptions.list({
@@ -173,47 +141,37 @@ const { data: payments, error } = await authClient.dodopayments.customer.payment
 });
 ```
 
-Webhooks [#webhooks]
+### Webhooks
 
-<Card>
-  The webhooks plugin processes real-time payment events from Dodo Payments with secure signature verification. The default endpoint is `/api/auth/dodopayments/webhooks`.
-</Card>
+Generate a webhook secret for your endpoint URL (e.g., `https://your-domain.com/api/auth/dodopayments/webhooks`) in the Dodo Payments Dashboard and set it in your.env file:
 
-<Steps>
-  <Step title="Generate and set webhook secret">
-    Generate a webhook secret for your endpoint URL (e.g., `https://your-domain.com/api/auth/dodopayments/webhooks`) in the Dodo Payments Dashboard and set it in your .env file:
+```
+DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here
+```
 
-    ```txt
-    DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here
-    ```
-  </Step>
+Example handler:
 
-  <Step title="Handle webhook events">
-    Example handler:
+```
+webhooks({
+  webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
+  onPayload: async (payload) => {
+    console.log("Received webhook:", payload.event_type);
+  },
+});
+```
 
-    ```typescript
-    webhooks({
-      webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_SECRET!,
-      onPayload: async (payload) => {
-        console.log("Received webhook:", payload.event_type);
-      },
-    });
-    ```
-  </Step>
-</Steps>
+## Configuration Reference
 
-Configuration Reference [#configuration-reference]
+### Plugin Options
 
-Plugin Options [#plugin-options]
+- **client** (required): DodoPayments client instance
+- **createCustomerOnSignUp** (optional): Auto-create customers on user signup
+- **use** (required): Array of plugins to enable (checkout, portal, webhooks)
 
-* **client** (required): DodoPayments client instance
-* **createCustomerOnSignUp** (optional): Auto-create customers on user signup
-* **use** (required): Array of plugins to enable (checkout, portal, webhooks)
+### Checkout Plugin Options
 
-Checkout Plugin Options [#checkout-plugin-options]
+- **products**: Array of products or async function returning products
+- **successUrl**: URL to redirect after successful payment
+- **authenticatedUsersOnly**: Require user authentication (default: false)
 
-* **products**: Array of products or async function returning products
-* **successUrl**: URL to redirect after successful payment
-* **authenticatedUsersOnly**: Require user authentication (default: false)
-
-If you encounter any issues, please refer to the [Dodo Payments documentation](https://docs.dodopayments.com) for troubleshooting steps.
+If you encounter any issues, please refer to the [Dodo Payments documentation](https://docs.dodopayments.com/) for troubleshooting steps.

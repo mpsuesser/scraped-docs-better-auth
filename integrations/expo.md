@@ -2,525 +2,282 @@
 url: https://better-auth.com/llms.txt/docs/integrations/expo
 title: "Expo"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Expo Integration
 
 Integrate Better Auth with Expo.
 
-
-
 Expo is a popular framework for building cross-platform apps with React Native. Better Auth supports both Expo native and web apps.
 
-<Callout type="info">
-  This guide is written for **Expo SDK 55** (React Native 0.83, React 19.2). SDK 55 requires the [New Architecture](https://docs.expo.dev/guides/new-architecture/) — the Legacy Architecture is no longer supported. If you're upgrading from an older SDK, see the [Expo SDK 55 upgrade guide](https://expo.dev/blog/upgrading-to-sdk-55).
-</Callout>
-
-Installation [#installation]
-
-<Steps>
-  <Step>
-    Configure A Better Auth Backend [#configure-a-better-auth-backend]
-
-    Before using Better Auth with Expo, make sure you have a Better Auth backend set up. You can either use a separate server or leverage Expo's new [API Routes](https://docs.expo.dev/router/reference/api-routes) feature to host your Better Auth instance.
-
-    To get started, check out our [installation](/docs/installation) guide for setting up Better Auth on your server. If you prefer, check out the [full example](https://github.com/better-auth/examples/tree/main/expo-example).
-
-    To use the new API routes feature in Expo to host your Better Auth instance you can create a new API route in your Expo app and mount the Better Auth handler.
-
-    ```ts title="app/api/auth/[...auth]+api.ts"
-    import { auth } from "@/lib/auth"; // import Better Auth handler
-
-    const handler = auth.handler;
-    export { handler as GET, handler as POST }; // export handler for both GET and POST requests
-    ```
-  </Step>
-
-  <Step>
-    Install Server Dependencies [#install-server-dependencies]
-
-    Install both the Better Auth package and Expo plugin into your server application.
-
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install better-auth @better-auth/expo
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add better-auth @better-auth/expo
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add better-auth @better-auth/expo
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add better-auth @better-auth/expo
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-
-    <Callout type="info">
-      If you're using Expo's API Routes, you can follow the step below instead.
-    </Callout>
-  </Step>
-
-  <Step>
-    Install Client Dependencies [#install-client-dependencies]
-
-    * You also need to install both the Better Auth package and Expo plugin into your Expo application.
-
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install better-auth @better-auth/expo
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add better-auth @better-auth/expo
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add better-auth @better-auth/expo
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add better-auth @better-auth/expo
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-
-    * And you need to install `expo-network` for network state detection.
-
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install expo-network
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add expo-network
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add expo-network
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add expo-network
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-
-    * <small className="text-xs">(Optional)</small> If you're using the default Expo template, these dependencies are already included, so you can skip this step. Otherwise, if you plan to use our social providers (e.g. Google, Apple), your Expo app requires a few additional dependencies.
-
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install expo-linking expo-web-browser expo-constants
-
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add expo-linking expo-web-browser expo-constants
-
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add expo-linking expo-web-browser expo-constants
-
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add expo-linking expo-web-browser expo-constants
-
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Step>
-
-  <Step>
-    Add the Expo Plugin on Your Server [#add-the-expo-plugin-on-your-server]
-
-    Add the Expo plugin to your Better Auth server.
-
-    ```ts title="lib/auth.ts"
-    import { betterAuth } from "better-auth";
-    import { expo } from "@better-auth/expo";
-
-    export const auth = betterAuth({
-        plugins: [expo()],
-        emailAndPassword: { 
-            enabled: true, // Enable authentication using email and password.
-          }, 
-    });
-    ```
-  </Step>
-
-  <Step>
-    Initialize Better Auth Client [#initialize-better-auth-client]
-
-    To initialize Better Auth in your Expo app, you need to call `createAuthClient` with the base URL of your Better Auth backend. Make sure to import the client from `/react`.
-
-    Make sure you install the `expo-secure-store` package into your Expo app. This is used to store the session data and cookies securely.
-
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npm install expo-secure-store
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm add expo-secure-store
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn add expo-secure-store
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun add expo-secure-store
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-
-    You need to also import client plugin from `@better-auth/expo/client` and pass it to the `plugins` array when initializing the auth client.
-
-    This is important because:
-
-    * **Social Authentication Support:** enables social auth flows by handling authorization URLs and callbacks within the Expo web browser.
-    * **Secure Cookie Management:** stores cookies securely and automatically adds them to the headers of your auth requests.
-
-    ```ts title="lib/auth-client.ts"
-    import { createAuthClient } from "better-auth/react";
-    import { expoClient } from "@better-auth/expo/client";
-    import * as SecureStore from "expo-secure-store";
-
-    export const authClient = createAuthClient({
-        baseURL: "http://localhost:8081", // Base URL of your Better Auth backend.
-        plugins: [
-            expoClient({
-                scheme: "myapp",
-                storagePrefix: "myapp",
-                storage: SecureStore,
-            })
-        ]
-    });
-    ```
-
-    <Callout>
-      Be sure to include the full URL, including the path, if you've changed the default path from `/api/auth`.
-    </Callout>
-  </Step>
-
-  <Step>
-    Scheme and Trusted Origins [#scheme-and-trusted-origins]
-
-    Better Auth uses deep links to redirect users back to your app after authentication. To enable this, you need to add your app's scheme to the `trustedOrigins` list in your Better Auth config.
-
-    First, make sure you have a scheme defined in your `app.json` file.
-
-    ```json title="app.json"
-    {
-        "expo": {
-            "scheme": "myapp"
-        }
+## Installation
+
+## Configure A Better Auth Backend
+
+Before using Better Auth with Expo, make sure you have a Better Auth backend set up. You can either use a separate server or leverage Expo's new [API Routes](https://docs.expo.dev/router/reference/api-routes) feature to host your Better Auth instance.
+
+To get started, check out our [installation](https://better-auth.com/docs/installation) guide for setting up Better Auth on your server. If you prefer, check out the [full example](https://github.com/better-auth/examples/tree/main/expo-example).
+
+To use the new API routes feature in Expo to host your Better Auth instance you can create a new API route in your Expo app and mount the Better Auth handler.
+
+```
+import { auth } from "@/lib/auth"; // import Better Auth handler
+
+const handler = auth.handler;
+export { handler as GET, handler as POST }; // export handler for both GET and POST requests
+```
+
+## Install Server Dependencies
+
+Install both the Better Auth package and Expo plugin into your server application.
+
+#### npm
+
+```
+npm install better-auth @better-auth/expo
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+## Install Client Dependencies
+
+- You also need to install both the Better Auth package and Expo plugin into your Expo application.
+
+#### npm
+
+```
+npm install better-auth @better-auth/expo
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+- And you need to install `expo-network` for network state detection.
+
+#### npm
+
+```
+npm install expo-network
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+- (Optional) If you're using the default Expo template, these dependencies are already included, so you can skip this step. Otherwise, if you plan to use our social providers (e.g. Google, Apple), your Expo app requires a few additional dependencies.
+
+#### npm
+
+```
+npm install expo-linking expo-web-browser expo-constants
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+## Add the Expo Plugin on Your Server
+
+Add the Expo plugin to your Better Auth server.
+
+```
+import { betterAuth } from "better-auth";
+import { expo } from "@better-auth/expo";
+
+export const auth = betterAuth({
+    plugins: [expo()],
+    emailAndPassword: { 
+        enabled: true, // Enable authentication using email and password.
+      }, 
+});
+```
+
+## Initialize Better Auth Client
+
+To initialize Better Auth in your Expo app, you need to call `createAuthClient` with the base URL of your Better Auth backend. Make sure to import the client from `/react`.
+
+Make sure you install the `expo-secure-store` package into your Expo app. This is used to store the session data and cookies securely.
+
+#### npm
+
+```
+npm install expo-secure-store
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+You need to also import client plugin from `@better-auth/expo/client` and pass it to the `plugins` array when initializing the auth client.
+
+This is important because:
+
+- **Social Authentication Support:** enables social auth flows by handling authorization URLs and callbacks within the Expo web browser.
+- **Secure Cookie Management:** stores cookies securely and automatically adds them to the headers of your auth requests.
+
+```
+import { createAuthClient } from "better-auth/react";
+import { expoClient } from "@better-auth/expo/client";
+import * as SecureStore from "expo-secure-store";
+
+export const authClient = createAuthClient({
+    baseURL: "http://localhost:8081", // Base URL of your Better Auth backend.
+    plugins: [
+        expoClient({
+            scheme: "myapp",
+            storagePrefix: "myapp",
+            storage: SecureStore,
+        })
+    ]
+});
+```
+
+## Scheme and Trusted Origins
+
+Better Auth uses deep links to redirect users back to your app after authentication. To enable this, you need to add your app's scheme to the `trustedOrigins` list in your Better Auth config.
+
+First, make sure you have a scheme defined in your `app.json` file.
+
+```
+{
+    "expo": {
+        "scheme": "myapp"
     }
-    ```
+}
+```
 
-    Then, update your Better Auth config to include the scheme in the `trustedOrigins` list.
+Then, update your Better Auth config to include the scheme in the `trustedOrigins` list.
 
-    ```ts title="auth.ts"
-    export const auth = betterAuth({
-        trustedOrigins: ["myapp://"]
-    })
-    ```
+```
+export const auth = betterAuth({
+    trustedOrigins: ["myapp://"]
+})
+```
 
-    If you have multiple schemes or need to support deep linking with various paths, you can use specific patterns or wildcards:
+If you have multiple schemes or need to support deep linking with various paths, you can use specific patterns or wildcards:
 
-    ```ts title="auth.ts"
-    export const auth = betterAuth({
-        trustedOrigins: [
-            // Basic scheme
-            "myapp://", 
-            
-            // Production & staging schemes
-            "myapp-prod://",
-            "myapp-staging://",
-            
-            // Wildcard support for all paths following the scheme
-            "myapp://*"
-        ]
-    })
-    ```
+```
+export const auth = betterAuth({
+    trustedOrigins: [
+        // Basic scheme
+        "myapp://", 
+        
+        // Production & staging schemes
+        "myapp-prod://",
+        "myapp-staging://",
+        
+        // Wildcard support for all paths following the scheme
+        "myapp://*"
+    ]
+})
+```
 
-    Development Mode [#development-mode]
+### Development Mode
 
-    During development, Expo uses the `exp://` scheme with your device's local IP address. To support this, you can use wildcards to match common local IP ranges:
+During development, Expo uses the `exp://` scheme with your device's local IP address. To support this, you can use wildcards to match common local IP ranges:
 
-    ```ts title="auth.ts"
-    export const auth = betterAuth({
-        trustedOrigins: [
-            "myapp://",
-            
-            // Development mode - Expo's exp:// scheme with local IP ranges
-            ...(process.env.NODE_ENV === "development" ? [
-                "exp://",                      // Trust all Expo URLs (prefix matching)
-                "exp://**",                    // Trust all Expo URLs (wildcard matching)
-                "exp://192.168.*.*:*/**",      // Trust 192.168.x.x IP range with any port and path
-            ] : [])
-        ]
-    })
-    ```
+```
+export const auth = betterAuth({
+    trustedOrigins: [
+        "myapp://",
+        
+        // Development mode - Expo's exp:// scheme with local IP ranges
+        ...(process.env.NODE_ENV === "development" ? [
+            "exp://",                      // Trust all Expo URLs (prefix matching)
+            "exp://**",                    // Trust all Expo URLs (wildcard matching)
+            "exp://192.168.*.*:*/**",      // Trust 192.168.x.x IP range with any port and path
+        ] : [])
+    ]
+})
+```
 
-    For more information about trusted origins, see the [trusted origins documentation](/docs/reference/options#trustedorigins).
+For more information about trusted origins, see the [trusted origins documentation](https://better-auth.com/docs/reference/options#trustedorigins).
 
-    <Callout type="warn">
-      The wildcard patterns for `exp://` should only be used in development. In production, use your app's specific scheme (e.g., `myapp://`).
-    </Callout>
-  </Step>
+## Configure Metro Bundler
 
-  <Step>
-    Configure Metro Bundler [#configure-metro-bundler]
+Better Auth relies on `package.json` exports to resolve its modules. Starting with **Expo SDK 53+** (including SDK 55), package exports support is enabled by default in Metro, so **no extra Metro configuration is needed**.
 
-    Better Auth relies on `package.json` exports to resolve its modules. Starting with **Expo SDK 53+** (including SDK 55), package exports support is enabled by default in Metro, so **no extra Metro configuration is needed**.
+If you have a custom `metro.config.js`, make sure you're not disabling package exports:
 
-    If you have a custom `metro.config.js`, make sure you're not disabling package exports:
+```
+const { getDefaultConfig } = require("expo/metro-config");
 
-    ```js title="metro.config.js"
-    const { getDefaultConfig } = require("expo/metro-config");
+const config = getDefaultConfig(__dirname);
 
-    const config = getDefaultConfig(__dirname);
+// Do NOT set this to false — Better Auth requires package exports
+// config.resolver.unstable_enablePackageExports = false;
 
-    // Do NOT set this to false — Better Auth requires package exports
-    // config.resolver.unstable_enablePackageExports = false;
+module.exports = config;
+```
 
-    module.exports = config;
-    ```
+Don't forget to clear the cache after making changes to your Metro config.
 
-    Don't forget to clear the cache after making changes to your Metro config.
+```
+npx expo start --clear
+```
 
-    ```bash
-    npx expo start --clear
-    ```
-  </Step>
-</Steps>
+## Usage
 
-Usage [#usage]
-
-Authenticating Users [#authenticating-users]
+### Authenticating Users
 
 With Better Auth initialized, you can now use the `authClient` to authenticate users in your Expo app.
 
-<Tabs items={["sign-in", "sign-up"]}>
-  <Tab value="sign-in">
-    ```tsx title="app/sign-in.tsx"
-    import { useState } from "react"; 
-    import { View, TextInput, Button } from "react-native";
-    import { authClient } from "@/lib/auth-client";
+#### sign-in
 
-    export default function SignIn() {
-        const [email, setEmail] = useState("");
-        const [password, setPassword] = useState("");
+```
+import { useState } from "react"; 
+import { View, TextInput, Button } from "react-native";
+import { authClient } from "@/lib/auth-client";
 
-        const handleLogin = async () => {
-            await authClient.signIn.email({
-                email,
-                password,
-            })
-        };
+export default function SignIn() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-        return (
-            <View>
-                <TextInput
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                />
-                <TextInput
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                />
-                <Button title="Login" onPress={handleLogin} />
-            </View>
-        );
-    }
-    ```
-  </Tab>
+    const handleLogin = async () => {
+        await authClient.signIn.email({
+            email,
+            password,
+        })
+    };
 
-  <Tab value="sign-up">
-    ```tsx title="app/sign-up.tsx"
-    import { useState } from "react";
-    import { View, TextInput, Button } from "react-native";
-    import { authClient } from "@/lib/auth-client";
+    return (
+        <View>
+            <TextInput
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+            />
+            <TextInput
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+            />
+            <Button title="Login" onPress={handleLogin} />
+        </View>
+    );
+}
+```
 
-    export default function SignUp() {
-        const [email, setEmail] = useState("");
-        const [name, setName] = useState("");
-        const [password, setPassword] = useState("");
+#### sign-up
 
-        const handleLogin = async () => {
-            await authClient.signUp.email({
-                    email,
-                    password,
-                    name
-            })
-        };
-
-        return (
-            <View>
-                <TextInput
-                    placeholder="Name"
-                    value={name}
-                    onChangeText={setName}
-                />
-                <TextInput
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                />
-                <TextInput
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                />
-                <Button title="Login" onPress={handleLogin} />
-            </View>
-        );
-    }
-    ```
-  </Tab>
-</Tabs>
-
-Social Sign-In [#social-sign-in]
+#### Social Sign-In
 
 For social sign-in, you can use the `authClient.signIn.social` method with the provider name and a callback URL. When you pass a relative path like "/dashboard", the Expo plugin automatically converts it to a deep link using `Linking.createURL`.
 
-```tsx title="app/social-sign-in.tsx"
+```
 import { Button } from "react-native";
 import { router } from "expo-router";
 import { authClient } from "@/lib/auth-client";
@@ -529,27 +286,23 @@ export default function SocialSignIn() {
     const handleLogin = async () => {
         const { error } = await authClient.signIn.social({
             provider: "google",
-            callbackURL: "/dashboard" // [!code highlight]
+            callbackURL: "/dashboard"
         })
         if (error) {
             // handle error
             return;
         }
-        router.replace("/dashboard"); // [!code highlight]
+        router.replace("/dashboard"); 
     };
     return <Button title="Login with Google" onPress={handleLogin} />;
 }
 ```
 
-<Callout type="info">
-  On native (iOS/Android), `signIn.social` does not navigate automatically. Handle navigation yourself after it resolves. Note that the [underlying browser behavior differs by platform](https://docs.expo.dev/versions/latest/sdk/webbrowser/#webbrowseropenauthsessionasyncurl-redirecturl-options).
-</Callout>
-
-IdToken Sign-In [#idtoken-sign-in]
+#### IdToken Sign-In
 
 If you want to make provider request on the mobile device and then verify the ID token on the server, you can use the `authClient.signIn.social` method with the `idToken` option.
 
-```tsx title="app/social-sign-in.tsx"
+```
 import { Button } from "react-native";
 
 export default function SocialSignIn() {
@@ -560,65 +313,18 @@ export default function SocialSignIn() {
                 token: "...", // ID token from provider
                 nonce: "...", // nonce from provider (optional)
             }
-            callbackURL: "/dashboard" // this will be converted to a deep link (eg. `myapp://dashboard`) on native
+            callbackURL: "/dashboard" // this will be converted to a deep link (eg. \`myapp://dashboard\`) on native
         })
     };
     return <Button title="Login with Google" onPress={handleLogin} />;
 }
 ```
 
-<Accordions>
-  <Accordion title="Example: Google Sign-In with `@react-native-google-signin/google-signin`">
-    This example shows how to implement Google Sign-In using an idToken. No additional configuration is needed in Better Auth. However, since this approach uses native code, you'll need to configure Expo to obtain the idToken.
-
-    Follow the [Expo Google authentication guide](https://docs.expo.dev/guides/google-authentication/) to set up `@react-native-google-signin/google-signin`, then pass the idToken to Better Auth:
-
-    ```tsx title="app/sign-in.tsx"
-    import {
-      GoogleSignin,
-      GoogleSigninButton,
-      isSuccessResponse,
-    } from "@react-native-google-signin/google-signin";
-    import { View } from "react-native";
-    import { router } from "expo-router";
-    import { authClient } from "@/lib/auth-client";
-
-    GoogleSignin.configure({
-      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-    });
-
-    export default function GoogleSignIn() {
-      const handleGoogle = async () => {
-        await GoogleSignin.hasPlayServices();
-        const response = await GoogleSignin.signIn();
-
-        if (isSuccessResponse(response) && response.data.idToken) {
-          const { error } = await authClient.signIn.social({
-            provider: "google",
-            idToken: { token: response.data.idToken },
-          });
-          if (!error) {
-            router.replace("/dashboard");
-          }
-        }
-      };
-
-      return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <GoogleSigninButton onPress={handleGoogle} />
-        </View>
-      );
-    }
-    ```
-  </Accordion>
-</Accordions>
-
-Session [#session]
+### Session
 
 Better Auth provides a `useSession` hook to access the current user's session in your app.
 
-```tsx title="app/index.tsx"
+```
 import { Text } from "react-native";
 import { authClient } from "@/lib/auth-client";
 
@@ -631,22 +337,22 @@ export default function Index() {
 
 On native, the session data will be cached in SecureStore. This will allow you to remove the need for a loading spinner when the app is reloaded. You can disable this behavior by passing the `disableCache` option to the client.
 
-Making Authenticated Requests to Your Server [#making-authenticated-requests-to-your-server]
+### Making Authenticated Requests to Your Server
 
 To make authenticated requests to your server that require the user's session, you have to retrieve the session cookie from `SecureStore` and manually add it to your request headers.
 
-```tsx
+```
 import { authClient } from "@/lib/auth-client";
 
 const makeAuthenticatedRequest = async () => {
-  const cookies = authClient.getCookie(); // [!code highlight]
+  const cookies = authClient.getCookie(); 
   const headers = {
-    "Cookie": cookies, // [!code highlight]
+    "Cookie": cookies, 
   };
   const response = await fetch("http://localhost:8081/api/secure-endpoint", { 
     headers,
     // 'include' can interfere with the cookies we just set manually in the headers
-    credentials: "omit" // [!code highlight]
+    credentials: "omit"
   });
   const data = await response.json();
   return data;
@@ -655,9 +361,9 @@ const makeAuthenticatedRequest = async () => {
 
 **Example: Usage With TRPC**
 
-```tsx title="lib/trpc-provider.tsx"
+```
 //...other imports
-import { authClient } from "@/lib/auth-client"; // [!code highlight]
+import { authClient } from "@/lib/auth-client"; 
 
 export const api = createTRPCReact<AppRouter>();
 
@@ -669,12 +375,12 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
         httpBatchLink({
           //...your other options
           headers() {
-            const headers = new Map<string, string>(); // [!code highlight]
-            const cookies = authClient.getCookie(); // [!code highlight]
-            if (cookies) { // [!code highlight]
-              headers.set("Cookie", cookies); // [!code highlight]
-            } // [!code highlight]
-            return Object.fromEntries(headers); // [!code highlight]
+            const headers = new Map<string, string>(); 
+            const cookies = authClient.getCookie(); 
+            if (cookies) { 
+              headers.set("Cookie", cookies); 
+            } 
+            return Object.fromEntries(headers); 
           },
         }),
       ],
@@ -691,13 +397,13 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
 }
 ```
 
-Options [#options]
+## Options
 
-Expo Client [#expo-client]
+### Expo Client
 
 **storage**: the storage mechanism used to cache the session data and cookies.
 
-```ts title="lib/auth-client.ts"
+```
 import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
 import SecureStorage from "expo-secure-store";
@@ -715,7 +421,7 @@ const authClient = createAuthClient({
 
 **scheme**: scheme is used to deep link back to your app after a user has authenticated using oAuth providers. By default, Better Auth tries to read the scheme from the `app.json` file. If you need to override this, you can pass the scheme option to the client.
 
-```ts title="lib/auth-client.ts"
+```
 import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
 
@@ -732,7 +438,7 @@ const authClient = createAuthClient({
 
 **disableCache**: By default, the client will cache the session data in SecureStore. You can disable this behavior by passing the `disableCache` option to the client.
 
-```ts title="lib/auth-client.ts"
+```
 import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
 
@@ -749,7 +455,7 @@ const authClient = createAuthClient({
 
 **cookiePrefix**: Prefix(es) for server cookie names to identify which cookies belong to better-auth. This prevents infinite refetching when third-party cookies are set. Can be a single string or an array of strings to match multiple prefixes. Defaults to `"better-auth"`.
 
-```ts title="lib/auth-client.ts"
+```
 import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
 import * as SecureStore from "expo-secure-store";
@@ -768,7 +474,7 @@ const authClient = createAuthClient({
 
 You can also provide multiple prefixes to match cookies from different authentication systems:
 
-```ts title="lib/auth-client.ts"
+```
 const authClient = createAuthClient({
     baseURL: "http://localhost:8081",
     plugins: [
@@ -781,11 +487,7 @@ const authClient = createAuthClient({
 });
 ```
 
-<Callout type="info">
-  **Important:** If you're using plugins like passkey with a custom `webAuthnChallengeCookie` option, make sure to include the cookie prefix in the `cookiePrefix` array. For example, if you set `webAuthnChallengeCookie: "my-app-passkey"`, include `"my-app"` in your `cookiePrefix`. See the [Passkey plugin documentation](/docs/plugins/passkey#expo-integration) for more details.
-</Callout>
-
-Expo Servers [#expo-servers]
+### Expo Servers
 
 Server plugin options:
 

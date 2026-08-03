@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/no_code
 title: "No_code"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # no_code
@@ -12,15 +12,13 @@ The code was not found in the request.
 
 
 
-What is it? [#what-is-it]
-
+## What is it?
 This error occurs during the OAuth callback when the authorization code is missing from the request.
 In the Authorization Code flow, the provider redirects back to your `/api/auth/callback` route with a
 `code` parameter (and typically `state`). Without the `code`, Better Auth cannot exchange it for tokens,
 so the request is rejected.
 
-Common Causes [#common-causes]
-
+## Common Causes
 * The OAuth flow was not started correctly (wrong response type or custom URL missing required params).
 * The provider returned an error instead of a code (e.g., user canceled consent), so only `error`/`error_description` are present.
 * Query parameters were stripped by a reverse proxy, CDN, or framework rewrite.
@@ -28,20 +26,16 @@ Common Causes [#common-causes]
 * Mobile/WebView or deep-link handoff opened a new context that lost the query string.
 * Using a response mode your handler does not read (e.g., form\_post body vs query parameters).
 
-How to resolve [#how-to-resolve]
-
-Use the standard Authorization Code flow [#use-the-standard-authorization-code-flow]
-
+## How to resolve
+## Use the standard Authorization Code flow
 * Start the flow through Better Auth so the provider receives the correct parameters and the app expects a `code`.
 * In the provider settings, ensure your app is configured for Authorization Code (with PKCE where applicable).
 
-Verify callback URL and parameter delivery [#verify-callback-url-and-parameter-delivery]
-
+## Verify callback URL and parameter delivery
 * Confirm the provider's configured redirect URI exactly matches your `/api/auth/callback` route (protocol, host, path).
 * Ensure infrastructure (proxies, rewrites, middleware) preserves the full query string and does not redirect in ways that drop parameters.
 
-Debug locally [#debug-locally]
-
+## Debug locally
 * In DevTools → Network, inspect the callback request and verify whether `code` or `error` parameters are present.
 * Log the raw query/body received by the callback handler during development to see exactly what arrived.
 * Compare dev/staging/prod credentials and redirect URIs to ensure they are consistent across environments.

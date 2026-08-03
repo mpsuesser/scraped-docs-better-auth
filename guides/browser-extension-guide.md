@@ -2,220 +2,172 @@
 url: https://better-auth.com/llms.txt/docs/guides/browser-extension-guide
 title: "Browser Extension Guide"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Browser Extension Guide
 
 A step-by-step guide to creating a browser extension with Better Auth.
 
+In this guide, we'll walk you through the steps of creating a browser extension using [Plasmo](https://docs.plasmo.com/) with Better Auth for authentication.
 
+If you would like to view a completed example, you can check out the [browser extension example](https://github.com/better-auth/examples/tree/main/browser-extension-example).
 
-In this guide, we'll walk you through the steps of creating a browser extension using <Link href="https://docs.plasmo.com/">Plasmo</Link> with Better Auth for authentication.
+## Setup & Installations
 
-If you would like to view a completed example, you can check out the <Link href="https://github.com/better-auth/examples/tree/main/browser-extension-example">browser extension example</Link>.
+Initialize a new Plasmo project with TailwindCSS and a src directory.
 
-<Callout type="warn">
-  The Plasmo framework does not provide a backend for the browser extension.
-  This guide assumes you have{" "}
-  <Link href="/docs/integrations/hono">a backend setup</Link> of Better Auth and
-  are ready to create a browser extension to connect to it.
-</Callout>
+```
+pnpm create plasmo --with-tailwindcss --with-src
+```
 
-<Steps>
-  <Step>
-    Setup & Installations [#setup--installations]
+Then, install the Better Auth package.
 
-    Initialize a new Plasmo project with TailwindCSS and a src directory.
+```
+pnpm add better-auth
+```
 
-    ```bash
-    pnpm create plasmo --with-tailwindcss --with-src
-    ```
+To start the Plasmo development server, run the following command.
 
-    Then, install the Better Auth package.
+```
+pnpm dev
+```
 
-    ```bash
-    pnpm add better-auth
-    ```
+## Configure tsconfig
 
-    To start the Plasmo development server, run the following command.
+Configure the `tsconfig.json` file to include `strict` mode.
 
-    ```bash
-    pnpm dev
-    ```
-  </Step>
+For this demo, we have also changed the import alias from `~` to `@` and set it to the `src` directory.
 
-  <Step>
-    Configure tsconfig [#configure-tsconfig]
-
-    Configure the `tsconfig.json` file to include `strict` mode.
-
-    For this demo, we have also changed the import alias from `~` to `@` and set it to the `src` directory.
-
-    ```json title="tsconfig.json"
-    {
-        "compilerOptions": {
-            "paths": {
-                "@/_": [
-                    "./src/_"
-                ]
-            },
-            "strict": true,
-            "baseUrl": "."
-        }
-    }
-    ```
-  </Step>
-
-  <Step>
-    Create the client auth instance [#create-the-client-auth-instance]
-
-    Create a new file at `src/auth/auth-client.ts` and add the following code.
-
-    <Files>
-      <Folder name="src" defaultOpen>
-        <Folder name="auth" defaultOpen>
-          <File name="auth-client.ts" />
-        </Folder>
-      </Folder>
-    </Files>
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/react"
-
-    export const authClient = createAuthClient({
-        baseURL: "http://localhost:3000" /* Base URL of your Better Auth backend. */,
-        plugins: [],
-    });
-    ```
-  </Step>
-
-  <Step>
-    Configure the manifest [#configure-the-manifest]
-
-    We must ensure the extension knows the URL to the Better Auth backend.
-
-    Head to your package.json file, and add the following code.
-
-    ```json title="package.json"
-    {
-        //...
-        "manifest": {
-            "host_permissions": [
-                "https://URL_TO_YOUR_BACKEND" // localhost works too (e.g. http://localhost:3000)
+```
+{
+    "compilerOptions": {
+        "paths": {
+            "@/_": [
+                "./src/_"
             ]
-        }
+        },
+        "strict": true,
+        "baseUrl": "."
     }
-    ```
-  </Step>
+}
+```
 
-  <Step>
-    You're now ready! [#youre-now-ready]
+## Create the client auth instance
 
-    You have now set up Better Auth for your browser extension.
+Create a new file at `src/auth/auth-client.ts` and add the following code.
 
-    Add your desired UI and create your dream extension!
+```
+import { createAuthClient } from "better-auth/react"
 
-    To learn more about the client Better Auth API, check out the <Link href="/docs/concepts/client">client documentation</Link>.
+export const authClient = createAuthClient({
+    baseURL: "http://localhost:3000" /* Base URL of your Better Auth backend. */,
+    plugins: [],
+});
+```
 
-    Here's a quick example 😎
+## Configure the manifest
 
-    ```tsx title="src/popup.tsx"
-    import { authClient } from "./auth/auth-client"
+We must ensure the extension knows the URL to the Better Auth backend.
 
+Head to your package.json file, and add the following code.
 
-    function IndexPopup() {
-        const {data, isPending, error} = authClient.useSession();
-        if(isPending){
-            return <>Loading...</>
-        }
-        if(error){
-            return <>Error: {error.message}</>
-        }
-        if(data){
-            return <>Signed in as {data.user.name}</>
-        }
+```
+{
+    //...
+    "manifest": {
+        "host_permissions": [
+            "https://URL_TO_YOUR_BACKEND" // localhost works too (e.g. http://localhost:3000)
+        ]
     }
+}
+```
 
-    export default IndexPopup;
-    ```
-  </Step>
+## You're now ready!
 
-  <Step>
-    Bundle your extension [#bundle-your-extension]
+You have now set up Better Auth for your browser extension.
 
-    To get a production build, run the following command.
+Add your desired UI and create your dream extension!
 
-    ```bash
-    pnpm build
-    ```
+To learn more about the client Better Auth API, check out the [client documentation](https://better-auth.com/docs/concepts/client).
 
-    Head over to <Link href="chrome://extensions" target="_blank">chrome://extensions</Link> and enable developer mode.
+Here's a quick example 😎
 
-    <img src="https://docs.plasmo.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdeveloper_mode.76f090f7.png&w=1920&q=75" />
+```
+import { authClient } from "./auth/auth-client"
 
-    Click on "Load Unpacked" and navigate to your extension's `build/chrome-mv3-dev` (or `build/chrome-mv3-prod`) directory.
+function IndexPopup() {
+    const {data, isPending, error} = authClient.useSession();
+    if(isPending){
+        return <>Loading...</>
+    }
+    if(error){
+        return <>Error: {error.message}</>
+    }
+    if(data){
+        return <>Signed in as {data.user.name}</>
+    }
+}
 
-    To see your popup, click on the puzzle piece icon on the Chrome toolbar, and click on your extension.
+export default IndexPopup;
+```
 
-    Learn more about <Link href="https://docs.plasmo.com/framework#loading-the-extension-in-chrome">bundling your extension here.</Link>
-  </Step>
+## Bundle your extension
 
-  <Step>
-    Configure the server auth instance [#configure-the-server-auth-instance]
+To get a production build, run the following command.
 
-    First, we will need your extension URL.
+```
+pnpm build
+```
 
-    An extension URL formed like this: `chrome-extension://YOUR_EXTENSION_ID`.
+![](https://docs.plasmo.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fdeveloper_mode.76f090f7.png&w=1920&q=75)
 
-    You can find your extension ID at <Link href="chrome://extensions" target="_blank">chrome://extensions</Link>.
+Click on "Load Unpacked" and navigate to your extension's `build/chrome-mv3-dev` (or `build/chrome-mv3-prod`) directory.
 
-    <img src="/extension-id.png" width={500} />
+To see your popup, click on the puzzle piece icon on the Chrome toolbar, and click on your extension.
 
-    Head to your server's auth file, and make sure that your extension's URL is added to the `trustedOrigins` list.
+Learn more about [bundling your extension here.](https://docs.plasmo.com/framework#loading-the-extension-in-chrome)
 
-    ```ts title="server.ts"
-    import { betterAuth } from "better-auth"
-    import { auth } from "@/auth/auth"
+## Configure the server auth instance
 
-    export const auth = betterAuth({
-        trustedOrigins: ["chrome-extension://YOUR_EXTENSION_ID"],
-    })
-    ```
+First, we will need your extension URL.
 
-    If you're developing multiple extensions or need to support different browser extensions with different IDs, you can use wildcard patterns:
+An extension URL formed like this: `chrome-extension://YOUR_EXTENSION_ID`.
 
-    ```ts title="server.ts"
-    export const auth = betterAuth({
-        trustedOrigins: [
-            // Support a specific extension ID
-            "chrome-extension://YOUR_EXTENSION_ID",
-            
-            // Or support multiple extensions with wildcard (less secure)
-            "chrome-extension://*"
-        ],
-    })
-    ```
+![](https://better-auth.com/extension-id.png)
 
-    <Callout type="warn">
-      Using wildcards for extension origins (`chrome-extension://*`) reduces security by trusting all extensions.
-      It's safer to explicitly list each extension ID you trust. Only use wildcards for development and testing.
-    </Callout>
-  </Step>
+Head to your server's auth file, and make sure that your extension's URL is added to the `trustedOrigins` list.
 
-  <Step>
-    That's it! [#thats-it]
+```
+import { betterAuth } from "better-auth"
+import { auth } from "@/auth/auth"
 
-    Everything is set up! You can now start developing your extension. 🎉
-  </Step>
-</Steps>
+export const auth = betterAuth({
+    trustedOrigins: ["chrome-extension://YOUR_EXTENSION_ID"],
+})
+```
 
-Wrapping Up [#wrapping-up]
+If you're developing multiple extensions or need to support different browser extensions with different IDs, you can use wildcard patterns:
 
-Congratulations! You've successfully created a browser extension using Better Auth and Plasmo.
-We highly recommend you visit the <Link href="https://docs.plasmo.com/">Plasmo documentation</Link> to learn more about the framework.
+```
+export const auth = betterAuth({
+    trustedOrigins: [
+        // Support a specific extension ID
+        "chrome-extension://YOUR_EXTENSION_ID",
+        
+        // Or support multiple extensions with wildcard (less secure)
+        "chrome-extension://*"
+    ],
+})
+```
 
-If you would like to view a completed example, you can check out the <Link href="https://github.com/better-auth/examples/tree/main/browser-extension-example">browser extension example</Link>.
+## That's it!
 
-If you have any questions, feel free to open an issue on our <Link href="https://github.com/better-auth/better-auth/issues">GitHub repo</Link>, or join our <Link href="https://discord.gg/better-auth">Discord server</Link> for support.
+Everything is set up! You can now start developing your extension. 🎉
+
+## Wrapping Up
+
+Congratulations! You've successfully created a browser extension using Better Auth and Plasmo. We highly recommend you visit the [Plasmo documentation](https://docs.plasmo.com/) to learn more about the framework.
+
+If you would like to view a completed example, you can check out the [browser extension example](https://github.com/better-auth/examples/tree/main/browser-extension-example).
+
+If you have any questions, feel free to open an issue on our [GitHub repo](https://github.com/better-auth/better-auth/issues), or join our [Discord server](https://discord.gg/better-auth) for support.

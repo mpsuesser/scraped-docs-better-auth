@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/express
 title: "Express"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Express Integration
@@ -16,17 +16,12 @@ This guide will show you how to integrate Better Auth with [express.js](https://
 
 Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
-<Callout>
-  Note that CommonJS (cjs) isn't supported. Use ECMAScript Modules (ESM) by setting `"type": "module"` in your `package.json` or configuring your `tsconfig.json` to use ES modules.
-</Callout>
+> Note that CommonJS (cjs) isn't supported. Use ECMAScript Modules (ESM) by setting `"type": "module"` in your `package.json` or configuring your `tsconfig.json` to use ES modules.
 
-Mount the handler [#mount-the-handler]
-
+## Mount the handler
 To enable Better Auth to handle requests, we need to mount the handler to an API route. Create a catch-all route to manage all requests to `/api/auth/*` in case of ExpressJS v4 or `/api/auth/*splat` in case of ExpressJS v5 (or any other path specified in your Better Auth options).
 
-<Callout type="warn">
-  Don’t use `express.json()` before the Better Auth handler. Use it only for other routes, or the client API will get stuck on "pending".
-</Callout>
+> Don’t use `express.json()` before the Better Auth handler. Use it only for other routes, or the client API will get stuck on "pending".
 
 ```ts title="server.ts"
 import express from "express";
@@ -50,8 +45,7 @@ app.listen(port, () => {
 
 After completing the setup, start your server. Better Auth will be ready to use. You can send a `GET` request to the `/ok` endpoint (`/api/auth/ok`) to verify that the server is running.
 
-Cors Configuration [#cors-configuration]
-
+## Cors Configuration
 To add CORS (Cross-Origin Resource Sharing) support to your Express server when integrating Better Auth, you can use the `cors` middleware. Below is an updated example showing how to configure CORS for your server:
 
 ```ts
@@ -73,8 +67,7 @@ app.use(
 );
 ```
 
-Getting the User Session [#getting-the-user-session]
-
+## Getting the User Session
 To retrieve the user's session, you can use the `getSession` method provided by the `auth` object. This method requires the request headers to be passed in a specific format. To simplify this process, Better Auth provides a `fromNodeHeaders` helper function that converts Node.js request headers to the format expected by Better Auth (a `Headers` object).
 
 Here's an example of how to use `getSession` in an Express route:

@@ -2,182 +2,107 @@
 url: https://better-auth.com/llms.txt/docs/plugins/api-key/reference
 title: "Reference"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
-
-# Reference
 
 API Key plugin options, permissions, and schema reference.
 
+## API Key plugin options
 
-
-API Key plugin options [#api-key-plugin-options]
-
-`configId` <span className="opacity-70">`string`</span>
+`configId` `string`
 
 A unique identifier for this configuration. Required when using multiple configurations. Default is `"default"`.
 
-`references` <span className="opacity-70">`"user" | "organization"`</span>
+`references` `"user" | "organization"`
 
 What the API key references. This determines ownership over the API key. Default is `"user"`.
 
-* `"user"`: API keys are owned by users (requires `userId` on creation)
-* `"organization"`: API keys are owned by organizations (requires `organizationId` on creation)
+- `"user"`: API keys are owned by users (requires `userId` on creation)
+- `"organization"`: API keys are owned by organizations (requires `organizationId` on creation)
 
-`apiKeyHeaders` <span className="opacity-70">`string | string[];`</span>
+`apiKeyHeaders` `string | string[];`
 
 The header name to check for API key. Default is `x-api-key`.
 
-`customAPIKeyGetter` <span className="opacity-70">`(ctx: GenericEndpointContext) => string | null`</span>
+`customAPIKeyGetter` `(ctx: GenericEndpointContext) => string | null`
 
 A custom function to get the API key from the context.
 
-`customAPIKeyValidator` <span className="opacity-70">`(options: { ctx: GenericEndpointContext; key: string; }) => boolean | Promise<boolean>`</span>
+`customAPIKeyValidator` `(options: { ctx: GenericEndpointContext; key: string; }) => boolean | Promise<boolean>`
 
 A custom function to validate the API key.
 
-`customKeyGenerator` <span className="opacity-70">`(options: { length: number; prefix: string | undefined; }) => string | Promise<string>`</span>
+`customKeyGenerator` `(options: { length: number; prefix: string | undefined; }) => string | Promise<string>`
 
 A custom function to generate the API key.
 
-`startingCharactersConfig` <span className="opacity-70">`{ shouldStore?: boolean; charactersLength?: number; }`</span>
+`startingCharactersConfig` `{ shouldStore?: boolean; charactersLength?: number; }`
 
 Customize the starting characters configuration.
 
-<Accordions>
-  <Accordion title="startingCharactersConfig Options">
-    `shouldStore` <span className="opacity-70">`boolean`</span>
-
-    Whether to store the starting characters in the database.
-    If false, we will set `start` to `null`.
-    Default is `true`.
-
-    `charactersLength` <span className="opacity-70">`number`</span>
-
-    The length of the starting characters to store in the database.
-    This includes the prefix length.
-    Default is `6`.
-  </Accordion>
-</Accordions>
-
-`defaultKeyLength` <span className="opacity-70">`number`</span>
+`defaultKeyLength` `number`
 
 The length of the API key. Longer is better. Default is 64. (Doesn't include the prefix length)
 
-`defaultPrefix` <span className="opacity-70">`string`</span>
+`defaultPrefix` `string`
 
 The prefix of the API key.
 
 Note: We recommend you append an underscore to the prefix to make the prefix more identifiable. (eg `hello_`)
 
-`maximumPrefixLength` <span className="opacity-70">`number`</span>
+`maximumPrefixLength` `number`
 
 The maximum length of the prefix.
 
-`minimumPrefixLength` <span className="opacity-70">`number`</span>
+`minimumPrefixLength` `number`
 
 The minimum length of the prefix.
 
-`requireName` <span className="opacity-70">`boolean`</span>
+`requireName` `boolean`
 
 Whether to require a name for the API key. Default is `false`.
 
-`maximumNameLength` <span className="opacity-70">`number`</span>
+`maximumNameLength` `number`
 
 The maximum length of the name.
 
-`minimumNameLength` <span className="opacity-70">`number`</span>
+`minimumNameLength` `number`
 
 The minimum length of the name.
 
-`enableMetadata` <span className="opacity-70">`boolean`</span>
+`enableMetadata` `boolean`
 
 Whether to enable metadata for an API key.
 
-`keyExpiration` <span className="opacity-70">`{ defaultExpiresIn?: number | null; disableCustomExpiresTime?: boolean; minExpiresIn?: number; maxExpiresIn?: number; }`</span>
+`keyExpiration` `{ defaultExpiresIn?: number | null; disableCustomExpiresTime?: boolean; minExpiresIn?: number; maxExpiresIn?: number; }`
 
 Customize the key expiration.
 
-<Accordions>
-  <Accordion title="keyExpiration options">
-    `defaultExpiresIn` <span className="opacity-70">`number | null`</span>
-
-    The default expires time in milliseconds.
-    If `null`, then there will be no expiration time.
-    Default is `null`.
-
-    `disableCustomExpiresTime` <span className="opacity-70">`boolean`</span>
-
-    Whether to disable the expires time passed from the client.
-    If `true`, the expires time will be based on the default values.
-    Default is `false`.
-
-    `minExpiresIn` <span className="opacity-70">`number`</span>
-
-    The minimum expiresIn value allowed to be set from the client. in days.
-    Default is `1`.
-
-    `maxExpiresIn` <span className="opacity-70">`number`</span>
-
-    The maximum expiresIn value allowed to be set from the client. in days.
-    Default is `365`.
-  </Accordion>
-</Accordions>
-
-`rateLimit` <span className="opacity-70">`{ enabled?: boolean; timeWindow?: number; maxRequests?: number; }`</span>
+`rateLimit` `{ enabled?: boolean; timeWindow?: number; maxRequests?: number; }`
 
 Customize the rate-limiting.
 
-<Accordions>
-  <Accordion title="rateLimit options">
-    `enabled` <span className="opacity-70">`boolean`</span>
-
-    Whether to enable rate limiting. (Default true)
-
-    `timeWindow` <span className="opacity-70">`number`</span>
-
-    The duration in milliseconds where each request is counted.
-    Once the `maxRequests` is reached, the request will be rejected until the `timeWindow` has passed, at which point the `timeWindow` will be reset.
-
-    `maxRequests` <span className="opacity-70">`number`</span>
-
-    Maximum amount of requests allowed within a window.
-    Once the `maxRequests` is reached, the request will be rejected until the `timeWindow` has passed, at which point the `timeWindow` will be reset.
-  </Accordion>
-</Accordions>
-
-`schema` <span className="opacity-70">`InferOptionSchema<ReturnType<typeof apiKeySchema>>`</span>
+`schema` `InferOptionSchema<ReturnType<typeof apiKeySchema>>`
 
 Custom schema for the API key plugin.
 
-`enableSessionForAPIKeys` <span className="opacity-70">`boolean`</span>
+`enableSessionForAPIKeys` `boolean`
 
 An API Key can represent a valid session, so we can mock a session for the user if we find a valid API key in the request headers. Default is `false`.
 
-`storage` <span className="opacity-70">`"database" | "secondary-storage"`</span>
+`storage` `"database" | "secondary-storage"`
 
 Storage backend for API keys. Default is `"database"`.
 
-* `"database"`: Store API keys in the database adapter (default)
-* `"secondary-storage"`: Store API keys in the configured secondary storage (e.g., Redis)
+- `"database"`: Store API keys in the database adapter (default)
+- `"secondary-storage"`: Store API keys in the configured secondary storage (e.g., Redis)
 
-`fallbackToDatabase` <span className="opacity-70">`boolean`</span>
+`fallbackToDatabase` `boolean`
 
-When `storage` is `"secondary-storage"`, enable fallback to database if key is not found in secondary storage.
-Default is `false`.
+When `storage` is `"secondary-storage"`, enable fallback to database if key is not found in secondary storage. Default is `false`.
 
-<Callout>
-  When `storage` is set to `"secondary-storage"`, you must configure `secondaryStorage` in your Better Auth options. API keys will be stored using key-value patterns:
-
-  * `api-key:${hashedKey}` - Primary lookup by hashed key
-  * `api-key:by-id:${id}` - Lookup by ID
-  * `api-key:by-ref:${referenceId}` - Reference's API key list (user or organization)
-
-  If an API key has an expiration date (`expiresAt`), a TTL will be automatically set in secondary storage to ensure automatic cleanup.
-</Callout>
-
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { apiKey } from "@better-auth/api-key"
 
@@ -202,13 +127,13 @@ export const auth = betterAuth({
 });
 ```
 
-`customStorage` <span className="opacity-70">`{ get: (key: string) => Promise<unknown> | unknown; set: (key: string, value: string, ttl?: number) => Promise<void | null | unknown> | void; delete: (key: string) => Promise<void | null | string> | void; }`</span>
+`customStorage` `{ get: (key: string) => Promise<unknown> | unknown; set: (key: string, value: string, ttl?: number) => Promise<void | null | unknown> | void; delete: (key: string) => Promise<void | null | string> | void; }`
 
 Custom storage methods for API keys. If provided, these methods will be used instead of `ctx.context.secondaryStorage`. Custom methods take precedence over global secondary storage.
 
 Useful when you want to use a different storage backend specifically for API keys, or when you need custom logic for storage operations.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { apiKey } from "@better-auth/api-key"
 
@@ -226,94 +151,54 @@ export const auth = betterAuth({
 });
 ```
 
-`deferUpdates` <span className="opacity-70">`boolean`</span>
+`deferUpdates` `boolean`
 
 Defer non-critical updates (rate limiting counters, timestamps, remaining count) to run after the response is sent using the global `backgroundTasks` handler. This can significantly improve response times on serverless platforms. Default is `false`.
 
 Requires `backgroundTasks.handler` to be configured in the main auth options.
 
-<Callout type="warn">
-  Enabling this introduces eventual consistency where the response returns optimistic data before the database is updated. Only enable if your application can tolerate this trade-off for improved latency.
-</Callout>
+#### Vercel
 
-<Tabs items={["Vercel", "Cloudflare Workers"]}>
-  <Tab value="Vercel">
-    ```ts
-    import { waitUntil } from "@vercel/functions";
+```
+import { waitUntil } from "@vercel/functions";
 
-    export const auth = betterAuth({
-      advanced: { 
-          backgroundTasks: {
-             handler: waitUntil,
-          },
-      }
-      plugins: [
-        apiKey({
-          deferUpdates: true,
-        }),
-      ],
-    });
-    ```
-  </Tab>
+export const auth = betterAuth({
+  advanced: { 
+      backgroundTasks: {
+         handler: waitUntil,
+      },
+  }
+  plugins: [
+    apiKey({
+      deferUpdates: true,
+    }),
+  ],
+});
+```
 
-  <Tab value="Cloudflare Workers">
-    ```ts
-    import { AsyncLocalStorage } from "node:async_hooks";
+#### Cloudflare Workers
 
-    const execCtxStorage = new AsyncLocalStorage<ExecutionContext>();
-
-    export const auth = betterAuth({
-      advanced: { 
-          backgroundTasks: {
-             handler: waitUntil,
-          },
-      }
-      plugins: [
-        apiKey({
-          deferUpdates: true,
-        }),
-      ],
-    });
-
-    // In your request handler, wrap with execCtxStorage.run(ctx, ...)
-    ```
-  </Tab>
-</Tabs>
-
-`permissions` <span className="opacity-70">`{ defaultPermissions?: Statements | ((referenceId: string, ctx: GenericEndpointContext) => Statements | Promise<Statements>) }`</span>
+`permissions` `{ defaultPermissions?: Statements | ((referenceId: string, ctx: GenericEndpointContext) => Statements | Promise<Statements>) }`
 
 Permissions for the API key.
 
 Read more about permissions [below](#permissions).
 
-<Accordions>
-  <Accordion title="permissions Options">
-    `defaultPermissions` <span className="opacity-70">`Statements | ((referenceId: string, ctx: GenericEndpointContext) => Statements | Promise<Statements>)`</span>
-
-    The default permissions for the API key. The `referenceId` is either the user ID or organization ID depending on the `references` setting.
-  </Accordion>
-</Accordions>
-
-`disableKeyHashing` <span className="opacity-70">`boolean`</span>
+`disableKeyHashing` `boolean`
 
 Disable hashing of the API key.
 
-<Callout type="warn">
-  Security Warning: It's strongly recommended to not disable hashing.
-  Storing API keys in plaintext makes them vulnerable to database breaches, potentially exposing all your users' API keys.
-</Callout>
+---
 
-***
-
-Permissions [#permissions]
+## Permissions
 
 API keys can have permissions associated with them, allowing you to control access at a granular level. Permissions are structured as a record of resource types to arrays of allowed actions.
 
-Setting Default Permissions [#setting-default-permissions]
+### Setting Default Permissions
 
 You can configure default permissions that will be applied to all newly created API keys:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -333,7 +218,7 @@ export const auth = betterAuth({
 
 You can also provide a function that returns permissions dynamically:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -355,11 +240,11 @@ export const auth = betterAuth({
 });
 ```
 
-Creating API Keys with Permissions [#creating-api-keys-with-permissions]
+### Creating API Keys with Permissions
 
 When creating an API key, you can specify custom permissions:
 
-```ts title="create-api-key.ts"
+```
 import { auth } from "@/lib/auth"
 
 const apiKey = await auth.api.createApiKey({
@@ -374,11 +259,11 @@ const apiKey = await auth.api.createApiKey({
 });
 ```
 
-Verifying API Keys with Required Permissions [#verifying-api-keys-with-required-permissions]
+### Verifying API Keys with Required Permissions
 
 When verifying an API key, you can check if it has the required permissions:
 
-```ts title="verify-api-key.ts"
+```
 import { auth } from "@/lib/auth"
 
 const result = await auth.api.verifyApiKey({
@@ -397,11 +282,11 @@ if (result.valid) {
 }
 ```
 
-Updating API Key Permissions [#updating-api-key-permissions]
+### Updating API Key Permissions
 
 You can update the permissions of an existing API key:
 
-```ts title="update-api-key.ts"
+```
 import { auth } from "@/lib/auth"
 
 const apiKey = await auth.api.updateApiKey({
@@ -416,11 +301,11 @@ const apiKey = await auth.api.updateApiKey({
 });
 ```
 
-Permissions Structure [#permissions-structure]
+### Permissions Structure
 
 Permissions follow a resource-based structure:
 
-```ts
+```
 type Permissions = {
   [resourceType: string]: string[];
 };
@@ -435,154 +320,201 @@ const permissions = {
 
 When verifying an API key, all required permissions must be present in the API key's permissions for validation to succeed.
 
-Schema [#schema]
+## Schema
 
 Table: `apikey`
 
-export const apiKeyTableFields = [
-	{
-		name: "id",
-		type: "string",
-		description: "The ID of the API key.",
-		isUnique: true,
-		isPrimaryKey: true,
-	},
-	{
-		name: "configId",
-		type: "string",
-		description:
-			"The configuration ID this key belongs to. Default is 'default'.",
-	},
-	{
-		name: "name",
-		type: "string",
-		description: "The name of the API key.",
-		isOptional: true,
-	},
-	{
-		name: "start",
-		type: "string",
-		description:
-			"The starting characters of the API key. Useful for showing the first few characters of the API key in the UI for the users to easily identify.",
-		isOptional: true,
-	},
-	{
-		name: "prefix",
-		type: "string",
-		description: "The API Key prefix. Stored as plain text.",
-		isOptional: true,
-	},
-	{
-		name: "key",
-		type: "string",
-		description: "The hashed API key itself.",
-	},
-	{
-		name: "referenceId",
-		type: "string",
-		description:
-			"The ID of the owner (user ID or organization ID based on the config's `references` setting).",
-		isIndexed: true,
-	},
-	{
-		name: "refillInterval",
-		type: "number",
-		description: "The interval to refill the key in milliseconds.",
-		isOptional: true,
-	},
-	{
-		name: "refillAmount",
-		type: "number",
-		description: "The amount to refill the remaining count of the key.",
-		isOptional: true,
-	},
-	{
-		name: "lastRefillAt",
-		type: "Date",
-		description: "The date and time when the key was last refilled.",
-		isOptional: true,
-	},
-	{
-		name: "enabled",
-		type: "boolean",
-		description: "Whether the API key is enabled.",
-		isOptional: true,
-	},
-	{
-		name: "rateLimitEnabled",
-		type: "boolean",
-		description: "Whether the API key has rate limiting enabled.",
-		isOptional: true,
-	},
-	{
-		name: "rateLimitTimeWindow",
-		type: "number",
-		description: "The time window in milliseconds for the rate limit.",
-		isOptional: true,
-	},
-	{
-		name: "rateLimitMax",
-		type: "number",
-		description:
-			"The maximum number of requests allowed within the `rateLimitTimeWindow`.",
-		isOptional: true,
-	},
-	{
-		name: "requestCount",
-		type: "number",
-		description:
-			"The number of requests made within the rate limit time window.",
-		isOptional: true,
-	},
-	{
-		name: "remaining",
-		type: "number",
-		description: "The number of requests remaining.",
-		isOptional: true,
-	},
-	{
-		name: "lastRequest",
-		type: "Date",
-		description: "The date and time of the last request made to the key.",
-		isOptional: true,
-	},
-	{
-		name: "expiresAt",
-		type: "Date",
-		description: "The date and time when the key will expire.",
-		isOptional: true,
-	},
-	{
-		name: "createdAt",
-		type: "Date",
-		description: "The date and time the API key was created.",
-	},
-	{
-		name: "updatedAt",
-		type: "Date",
-		description: "The date and time the API key was updated.",
-	},
-	{
-		name: "permissions",
-		type: "string",
-		description: "The permissions of the key.",
-		isOptional: true,
-	},
-	{
-		name: "metadata",
-		type: "string",
-		isOptional: true,
-		description: "Any additional metadata you want to store with the key.",
-	},
-];
+Table
 
-<DatabaseTable name="apikey" fields={apiKeyTableFields} />
+Field
 
-Migration from Previous Versions [#migration-from-previous-versions]
+Type
+
+Key
+
+Description
+
+id
+
+string
+
+PK
+
+The ID of the API key.
+
+configId
+
+string
+
+\-
+
+The configuration ID this key belongs to. Default is 'default'.
+
+name?
+
+string
+
+\-
+
+The name of the API key.
+
+start?
+
+string
+
+\-
+
+The starting characters of the API key. Useful for showing the first few characters of the API key in the UI for the users to easily identify.
+
+prefix?
+
+string
+
+\-
+
+The API Key prefix. Stored as plain text.
+
+key
+
+string
+
+\-
+
+The hashed API key itself.
+
+referenceId
+
+string
+
+\-
+
+The ID of the owner (user ID or organization ID based on the config's \`references\` setting).
+
+refillInterval?
+
+number
+
+\-
+
+The interval to refill the key in milliseconds.
+
+refillAmount?
+
+number
+
+\-
+
+The amount to refill the remaining count of the key.
+
+lastRefillAt?
+
+Date
+
+\-
+
+The date and time when the key was last refilled.
+
+enabled?
+
+boolean
+
+\-
+
+Whether the API key is enabled.
+
+rateLimitEnabled?
+
+boolean
+
+\-
+
+Whether the API key has rate limiting enabled.
+
+rateLimitTimeWindow?
+
+number
+
+\-
+
+The time window in milliseconds for the rate limit.
+
+rateLimitMax?
+
+number
+
+\-
+
+The maximum number of requests allowed within the \`rateLimitTimeWindow\`.
+
+requestCount?
+
+number
+
+\-
+
+The number of requests made within the rate limit time window.
+
+remaining?
+
+number
+
+\-
+
+The number of requests remaining.
+
+lastRequest?
+
+Date
+
+\-
+
+The date and time of the last request made to the key.
+
+expiresAt?
+
+Date
+
+\-
+
+The date and time when the key will expire.
+
+createdAt
+
+Date
+
+\-
+
+The date and time the API key was created.
+
+updatedAt
+
+Date
+
+\-
+
+The date and time the API key was updated.
+
+permissions?
+
+string
+
+\-
+
+The permissions of the key.
+
+metadata?
+
+string
+
+\-
+
+Any additional metadata you want to store with the key.
+
+### Migration from Previous Versions
 
 If you're upgrading from a previous version, you'll need to migrate the `userId` field to the new reference system:
 
-```sql
+```
 -- Add new columns
 ALTER TABLE apikey ADD COLUMN config_id VARCHAR(255) NOT NULL DEFAULT 'default';
 ALTER TABLE apikey ADD COLUMN reference_id VARCHAR(255);
@@ -598,7 +530,3 @@ CREATE INDEX idx_apikey_config_id ON apikey(config_id);
 -- Optionally drop the old column after verifying migration
 -- ALTER TABLE apikey DROP COLUMN user_id;
 ```
-
-<Callout type="warn">
-  **Breaking Change**: The `userId` field has been replaced with `referenceId`. API responses now return `referenceId` instead of `userId`. The owner type (user vs organization) is determined by the configuration's `references` setting, not stored on each key.
-</Callout>

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/telemetry
 title: "Telemetry"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Telemetry
@@ -14,14 +14,12 @@ Better Auth now collects anonymous telemetry data about general usage.
 
 Better Auth collects anonymous usage data to help us improve the project. This is optional, transparent, and disabled by default.
 
-Why is telemetry collected? [#why-is-telemetry-collected]
-
+## Why is telemetry collected?
 Since v1.3.5, Better Auth collects anonymous telemetry data about general usage if enabled.
 
 Telemetry data helps us understand how Better Auth is being used across different environments so we can improve performance, prioritize features, and fix issues more effectively. It guides our decisions on performance optimizations, feature development, and bug fixes. All data is collected completely anonymously and with privacy in mind, and users can opt out at any time. We strive to keep what we collect as transparent as possible.
 
-What is being collected? [#what-is-being-collected]
-
+## What is being collected?
 The following data points may be reported. Everything is anonymous and intended for aggregate insights only.
 
 * **Anonymous identifier**: A non-reversible hash derived from your project (`package.json` name and optionally `baseURL`). This lets us de‑duplicate events per project without knowing who you are.
@@ -38,29 +36,25 @@ We also collect anonymous telemetry from the CLI:
 * **CLI generate (`cli_generate`)**: outcome `generated | overwritten | appended | no_changes | aborted` plus redacted config.
 * **CLI migrate (`cli_migrate`)**: outcome `migrated | no_changes | aborted | unsupported_adapter` plus adapter id (when relevant) and redacted config.
 
-<Callout type="info">
-  You can audit telemetry locally by setting the `BETTER_AUTH_TELEMETRY_DEBUG=1` environment variable when running your project or by setting `telemetry: { debug: true }` in your auth config. In this debug mode, telemetry events are logged only to the console.
+> You can audit telemetry locally by setting the `BETTER_AUTH_TELEMETRY_DEBUG=1` environment variable when running your project or by setting `telemetry: { debug: true }` in your auth config. In this debug mode, telemetry events are logged only to the console.
+> 
+> ```ts title="auth.ts"
+> export const auth = betterAuth({
+>   // [!code highlight]
+>   telemetry: { // [!code highlight]
+>     debug: true // [!code highlight]
+>   } // [!code highlight]
+> });
+> ```
 
-  ```ts title="auth.ts"
-  export const auth = betterAuth({
-    // [!code highlight]
-    telemetry: { // [!code highlight]
-      debug: true // [!code highlight]
-    } // [!code highlight]
-  });
-  ```
-</Callout>
-
-How is my data protected? [#how-is-my-data-protected]
-
+## How is my data protected?
 All collected data is fully anonymous and only useful in aggregate. It cannot be traced back to any individual source and is accessible only to a small group of core Better Auth maintainers to guide roadmap decisions.
 
 * **No PII or secrets**: We do not collect emails, usernames, tokens, secrets, client IDs, client secrets, or database URLs.
 * **No full config**: We never send your full `betterAuth` configuration. Instead we send a reduced, redacted snapshot of non‑sensitive toggles and counts.
 * **Redaction by design**: See [detect-auth-config.ts](https://github.com/better-auth/better-auth/blob/main/packages/telemetry/src/detectors/detect-auth-config.ts) in the Better Auth source for the exact shape of what is included. It purposely converts sensitive values to booleans, counts, or generic identifiers.
 
-How can I enable it? [#how-can-i-enable-it]
-
+## How can I enable it?
 You can enable telemetry collection in your auth config or by setting an environment variable.
 
 * Via your auth config.
@@ -84,8 +78,7 @@ You can enable telemetry collection in your auth config or by setting an environ
   BETTER_AUTH_TELEMETRY=0
   ```
 
-When is telemetry sent? [#when-is-telemetry-sent]
-
+## When is telemetry sent?
 * On `betterAuth` initialization (`type: "init"`).
 * On CLI actions: `generate` and `migrate` as described above.
 

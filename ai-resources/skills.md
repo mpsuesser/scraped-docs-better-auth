@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/ai-resources/skills
 title: "Skills"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Skills

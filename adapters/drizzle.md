@@ -2,242 +2,92 @@
 url: https://better-auth.com/llms.txt/docs/adapters/drizzle
 title: "Drizzle"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
-# Drizzle ORM Adapter
-
 Integrate Better Auth with Drizzle ORM.
-
-
 
 Drizzle ORM is a powerful and flexible ORM for Node.js and TypeScript. It provides a simple and intuitive API for working with databases, and supports a wide range of databases including MySQL, PostgreSQL, SQLite, and more.
 
 Before getting started, make sure you have Drizzle installed and configured. For more information, see [Drizzle Documentation](https://orm.drizzle.team/docs/overview/)
 
-Installation [#installation]
+## Installation
 
 To use the Drizzle adapter, you need to install the `@better-auth/drizzle-adapter` package:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
+#### npm
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
+```
+npm install @better-auth/drizzle-adapter
+```
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
+#### pnpm
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### yarn
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npm install @better-auth/drizzle-adapter
-    ```
-  </CodeBlockTab>
+#### bun
 
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm add @better-auth/drizzle-adapter
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn add @better-auth/drizzle-adapter
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="bun">
-    ```bash
-    bun add @better-auth/drizzle-adapter
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
-
-Example Usage [#example-usage]
+## Example Usage
 
 You can use the Drizzle adapter to connect to your database as follows.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { db } from "./database.ts";
 
 export const auth = betterAuth({
-  database: drizzleAdapter(db, { // [!code highlight]
-    provider: "sqlite", // or "pg" or "mysql" // [!code highlight]
-  }), // [!code highlight]
+  database: drizzleAdapter(db, { 
+    provider: "sqlite", // or "pg" or "mysql"
+  }), 
   //... the rest of your config
 });
 ```
 
-Schema generation & migration [#schema-generation--migration]
+## Schema generation & migration
 
-The [Better Auth CLI](/docs/concepts/cli) allows you to generate or migrate
-your database schema based on your Better Auth configuration and plugins.
+The [Better Auth CLI](https://better-auth.com/docs/concepts/cli) allows you to generate or migrate your database schema based on your Better Auth configuration and plugins.
 
 To generate the schema required by Better Auth, run the following command:
 
-<CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-  <CodeBlockTabsList>
-    <CodeBlockTabsTrigger value="npm">
-      npm
-    </CodeBlockTabsTrigger>
+#### npm
 
-    <CodeBlockTabsTrigger value="pnpm">
-      pnpm
-    </CodeBlockTabsTrigger>
+```
+npx auth@latest generate
+```
 
-    <CodeBlockTabsTrigger value="yarn">
-      yarn
-    </CodeBlockTabsTrigger>
+#### pnpm
 
-    <CodeBlockTabsTrigger value="bun">
-      bun
-    </CodeBlockTabsTrigger>
-  </CodeBlockTabsList>
+#### yarn
 
-  <CodeBlockTab value="npm">
-    ```bash
-    npx auth@latest generate
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="pnpm">
-    ```bash
-    pnpm dlx auth@latest generate
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="yarn">
-    ```bash
-    yarn dlx auth@latest generate
-    ```
-  </CodeBlockTab>
-
-  <CodeBlockTab value="bun">
-    ```bash
-    bun x auth@latest generate
-    ```
-  </CodeBlockTab>
-</CodeBlockTabs>
+#### bun
 
 To generate and apply the migration, run the following commands:
 
-<Tabs items={["generate", "migrate"]}>
-  <Tab value="generate">
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+#### generate
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+#### npm
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
+#### migrate
 
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
+```
+npx drizzle-kit generate # generate the migration file
+```
 
-      <CodeBlockTab value="npm">
-        ```bash
-        npx drizzle-kit generate # generate the migration file
-        ```
-      </CodeBlockTab>
+#### pnpm
 
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm dlx drizzle-kit generate # generate the migration file
-        ```
-      </CodeBlockTab>
+#### yarn
 
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn dlx drizzle-kit generate # generate the migration file
-        ```
-      </CodeBlockTab>
+#### bun
 
-      <CodeBlockTab value="bun">
-        ```bash
-        bun x drizzle-kit generate # generate the migration file
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Tab>
+## Joins (Experimental)
 
-  <Tab value="migrate">
-    <CodeBlockTabs defaultValue="npm" groupId="persist-install" persist>
-      <CodeBlockTabsList>
-        <CodeBlockTabsTrigger value="npm">
-          npm
-        </CodeBlockTabsTrigger>
+Database joins is useful when Better-Auth needs to fetch related data from multiple tables in a single query. Endpoints like `/get-session`, `/get-full-organization` and many others benefit greatly from this feature, seeing upwards of 2x to 3x performance improvements depending on database latency.
 
-        <CodeBlockTabsTrigger value="pnpm">
-          pnpm
-        </CodeBlockTabsTrigger>
+The Drizzle adapter supports joins out of the box since version `1.4.0`. To enable this feature, you need to set the `experimental.joins` option to `true` in your auth configuration.
 
-        <CodeBlockTabsTrigger value="yarn">
-          yarn
-        </CodeBlockTabsTrigger>
-
-        <CodeBlockTabsTrigger value="bun">
-          bun
-        </CodeBlockTabsTrigger>
-      </CodeBlockTabsList>
-
-      <CodeBlockTab value="npm">
-        ```bash
-        npx drizzle-kit migrate # apply the migration
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="pnpm">
-        ```bash
-        pnpm dlx drizzle-kit migrate # apply the migration
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="yarn">
-        ```bash
-        yarn dlx drizzle-kit migrate # apply the migration
-        ```
-      </CodeBlockTab>
-
-      <CodeBlockTab value="bun">
-        ```bash
-        bun x drizzle-kit migrate # apply the migration
-        ```
-      </CodeBlockTab>
-    </CodeBlockTabs>
-  </Tab>
-</Tabs>
-
-Joins (Experimental) [#joins-experimental]
-
-Database joins is useful when Better-Auth needs to fetch related data from multiple tables in a single query.
-Endpoints like `/get-session`, `/get-full-organization` and many others benefit greatly from this feature,
-seeing upwards of 2x to 3x performance improvements depending on database latency.
-
-The Drizzle adapter supports joins out of the box since version `1.4.0`.
-To enable this feature, you need to set the `experimental.joins` option to `true` in your auth configuration.
-
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -245,24 +95,11 @@ export const auth = betterAuth({
 });
 ```
 
-<Callout type="warn">
-  Please make sure that your Drizzle schema has the necessary relations defined.
-  If you do not see any relations in your Drizzle schema, you can manually add them using the [`relation`](https://orm.drizzle.team/docs/relations) drizzle-orm function
-  or run our latest CLI version `npx auth@latest generate` to generate a new Drizzle schema with the relations.
+When a table has multiple foreign keys to the same table, each relation pair must use a matching [`relationName`](https://orm.drizzle.team/docs/relations#disambiguating-relations). The CLI generates these names automatically. If you generated your schema with an older CLI, regenerate it or add matching names to both sides.
 
-  Additionally, you're required to pass each [relation](https://orm.drizzle.team/docs/relations) through the drizzle adapter schema object.
-</Callout>
+The `relationName` prefix follows your table naming: with `usePlural: true` it is plural (`tests_userId`), otherwise singular (`test_userId`). Keep both sides identical.
 
-When a table has multiple foreign keys to the same table, each relation pair
-must use a matching [`relationName`](https://orm.drizzle.team/docs/relations#disambiguating-relations).
-The CLI generates these names automatically. If you generated your schema with
-an older CLI, regenerate it or add matching names to both sides.
-
-The `relationName` prefix follows your table naming: with `usePlural: true` it
-is plural (`tests_userId`), otherwise singular (`test_userId`). Keep both sides
-identical.
-
-```ts title="schema.ts"
+```
 export const usersRelations = relations(users, ({ many }) => ({
   testsByUserId: many(tests, { relationName: "tests_userId" }),
   testsByManagerId: many(tests, { relationName: "tests_managerId" }),
@@ -282,15 +119,13 @@ export const testsRelations = relations(tests, ({ one }) => ({
 }));
 ```
 
-Do not keep both singular and plural aliases for the same foreign key (for
-example, both `user` and `users`). Drizzle treats those as separate relations
-and cannot infer which reverse relation a join should use.
+Do not keep both singular and plural aliases for the same foreign key (for example, both `user` and `users`). Drizzle treats those as separate relations and cannot infer which reverse relation a join should use.
 
-Modifying Table Names [#modifying-table-names]
+## Modifying Table Names
 
 The Drizzle adapter expects the schema you define to match the table names. For example, if your Drizzle schema maps the `user` table to `users`, you need to manually pass the schema and map it to the user table.
 
-```ts
+```
 import { betterAuth } from "better-auth";
 import { db } from "./drizzle";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
@@ -299,19 +134,17 @@ import { schema } from "./schema";
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "sqlite", // or "pg" or "mysql"
-    schema: { // [!code highlight]
-      ...schema, // [!code highlight]
-      user: schema.users, // [!code highlight]
-    }, // [!code highlight]
+    schema: { 
+      ...schema, 
+      user: schema.users, 
+    }, 
   }),
 });
 ```
 
-You can either modify the provided schema values like the example above,
-or you can mutate the auth config's `modelName` property directly.
-For example:
+You can either modify the provided schema values like the example above, or you can mutate the auth config's `modelName` property directly. For example:
 
-```ts
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -320,32 +153,28 @@ export const auth = betterAuth({
     schema,
   }),
   user: {
-    modelName: "users", // [!code highlight]
+    modelName: "users", 
   }
 });
 ```
 
-Modifying Field Names [#modifying-field-names]
+## Modifying Field Names
 
-We map field names based on property you passed to your Drizzle schema.
-For example, if you want to modify the `email` field to `email_address`,
-you simply need to change the Drizzle schema to:
+We map field names based on property you passed to your Drizzle schema. For example, if you want to modify the `email` field to `email_address`, you simply need to change the Drizzle schema to:
 
-```ts
+```
 export const user = mysqlTable("user", {
   // Changed field name without changing the schema property name
   // This allows drizzle & better-auth to still use the original field name,
   // while your DB uses the modified field name
-  email: varchar("email_address", { length: 255 }).notNull().unique(), // [!code highlight]
+  email: varchar("email_address", { length: 255 }).notNull().unique(), 
   // ... others
 });
 ```
 
-You can either modify the Drizzle schema like the example above,
-or you can mutate the auth config's `fields` property directly.
-For example:
+You can either modify the Drizzle schema like the example above, or you can mutate the auth config's `fields` property directly. For example:
 
-```ts
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -355,27 +184,27 @@ export const auth = betterAuth({
   }),
   user: {
     fields: {
-      email: "email_address", // [!code highlight]
+      email: "email_address", 
     }
   }
 });
 ```
 
-Using Plural Table Names [#using-plural-table-names]
+## Using Plural Table Names
 
 If all your tables are using plural form, you can just pass the `usePlural` option:
 
-```ts
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     ...
-    usePlural: true, // [!code highlight]
+    usePlural: true, 
   }),
 });
 ```
 
-Additional Information [#additional-information]
+## Additional Information
 
-* If you're looking for performance improvements or tips, take a look at our guide to <Link href="/docs/guides/optimizing-for-performance">performance optimizations</Link>.
+- If you're looking for performance improvements or tips, take a look at our guide to [performance optimizations](https://better-auth.com/docs/guides/optimizing-for-performance).

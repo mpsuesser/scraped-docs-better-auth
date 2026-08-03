@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/hono
 title: "Hono"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Hono Integration
@@ -14,8 +14,7 @@ Integrate Better Auth with Hono.
 
 Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
-Mount the handler [#mount-the-handler]
-
+## Mount the handler
 We need to mount the handler to Hono endpoint.
 
 ```ts
@@ -32,8 +31,7 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => {
 serve(app);
 ```
 
-Cors [#cors]
-
+## Cors
 To configure cors, you need to use the `cors` plugin from `hono/cors`.
 
 ```ts
@@ -65,8 +63,7 @@ serve(app);
 
 > **Important:** CORS middleware must be registered before your routes. This ensures that cross-origin requests are properly handled before they reach your authentication endpoints.
 
-Middleware [#middleware]
-
+## Middleware
 You can add a middleware to save the `session` and `user` in a `context` and also add validations for every route.
 
 ```ts
@@ -121,8 +118,7 @@ app.get("/session", (c) => {
 });
 ```
 
-Cross-Domain Cookies [#cross-domain-cookies]
-
+## Cross-Domain Cookies
 By default, all Better Auth cookies are set with `SameSite=Lax`. If you need to use cookies across different domains, you’ll need to set `SameSite=None` and `Secure=true`. However, we recommend using subdomains whenever possible, as this allows you to keep `SameSite=Lax`. To enable cross-subdomain cookies, simply turn on `crossSubDomainCookies` in your auth config.
 
 ```ts title="auth.ts"
@@ -167,8 +163,7 @@ export const auth = createAuth({
 })
 ```
 
-Client-Side Configuration [#client-side-configuration]
-
+## Client-Side Configuration
 When using the Hono client (`@hono/client`) to make requests to your Better Auth-protected endpoints, you need to configure it to send credentials (cookies) with cross-origin requests.
 
 ```ts title="api.ts"

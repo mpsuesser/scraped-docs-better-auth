@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/kakao
 title: "Kakao"
 description: ""
-access_date: 2026-08-03T19:38:28.543Z
-current_date: 2026-08-03T19:38:28.543Z
+access_date: 2026-08-03T19:43:07.705Z
+current_date: 2026-08-03T19:43:07.705Z
 ---
 
 # Kakao
@@ -12,55 +12,43 @@ Kakao provider setup and usage.
 
 
 
-<Steps>
-  <Step>
-    Get your Kakao Credentials [#get-your-kakao-credentials]
 
-    To use Kakao sign in, you need a client ID and client secret. You can get them from the [Kakao Developer Portal](https://developers.kakao.com).
+### Get your Kakao Credentials
+To use Kakao sign in, you need a client ID and client secret. You can get them from the [Kakao Developer Portal](https://developers.kakao.com).
 
-    Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/kakao` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
-  </Step>
+Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/kakao` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-  <Step>
-    Configure the provider [#configure-the-provider]
+### Configure the provider
+To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-    To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
+> * The default scopes are `account_email`, `profile_image`, and `profile_nickname`.
+> * Note that retrieving `account_email` requires the app to be a **Biz App** (an app that has completed business verification). For more details, refer to the [Kakao Login scopes documentation](https://developers.kakao.com/docs/latest/kakaologin/utilize#scope-user).
 
-    <Callout type="info">
-      * The default scopes are `account_email`, `profile_image`, and `profile_nickname`.
-      * Note that retrieving `account_email` requires the app to be a **Biz App** (an app that has completed business verification). For more details, refer to the [Kakao Login scopes documentation](https://developers.kakao.com/docs/latest/kakaologin/utilize#scope-user).
-    </Callout>
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
 
-    ```ts title="auth.ts"
-    import { betterAuth } from "better-auth"
-
-    export const auth = betterAuth({
-        socialProviders: {
-            kakao: { // [!code highlight]
-                clientId: process.env.KAKAO_CLIENT_ID as string, // [!code highlight]
-                clientSecret: process.env.KAKAO_CLIENT_SECRET as string, // [!code highlight]
-            }, // [!code highlight]
-        }
-    })
-    ```
-  </Step>
-
-  <Step>
-    Sign In with Kakao [#sign-in-with-kakao]
-
-    To sign in with Kakao, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
-
-    * `provider`: The provider to use. It should be set to `kakao`.
-
-    ```ts title="auth-client.ts"
-    import { createAuthClient } from "better-auth/client"
-    const authClient =  createAuthClient()
-
-    const signIn = async () => {
-        const data = await authClient.signIn.social({
-            provider: "kakao"
-        })
+export const auth = betterAuth({
+    socialProviders: {
+        kakao: { // [!code highlight]
+            clientId: process.env.KAKAO_CLIENT_ID as string, // [!code highlight]
+            clientSecret: process.env.KAKAO_CLIENT_SECRET as string, // [!code highlight]
+        }, // [!code highlight]
     }
-    ```
-  </Step>
-</Steps>
+})
+```
+
+### Sign In with Kakao
+To sign in with Kakao, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
+
+* `provider`: The provider to use. It should be set to `kakao`.
+
+```ts title="auth-client.ts"
+import { createAuthClient } from "better-auth/client"
+const authClient =  createAuthClient()
+
+const signIn = async () => {
+    const data = await authClient.signIn.social({
+        provider: "kakao"
+    })
+}
+```
