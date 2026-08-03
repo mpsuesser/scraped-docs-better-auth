@@ -1,0 +1,29 @@
+---
+url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
+title: "Community Plugins"
+description: ""
+access_date: 2026-08-03T18:54:22.481Z
+current_date: 2026-08-03T18:54:22.481Z
+---
+
+# Community Plugins
+
+Community-built plugins that extend Better Auth.
+
+
+
+import { CommunityPluginsTable } from "@/components/community-plugins-table";
+
+Plugins make Better Auth flexible and extensible. Beyond the official plugins we maintain, the community has built many more for a wide range of use cases. We encourage you to create custom plugins and maybe get added to the list!
+
+<Callout type="warn">
+  Community plugins are not official or verified by the Better Auth team. Use them at your own discretion and review their source code before integrating them into your application.
+</Callout>
+
+Create Your Own Plugin [#create-your-own-plugin]
+
+To create your own custom plugin, get started by reading our [Create your first plugin](/docs/guides/your-first-plugin) guide. And if you want to share your plugin with the community, please open a pull request to add it to this list.
+
+Browse Community Plugins [#browse-community-plugins]
+
+<CommunityPluginsTable />
