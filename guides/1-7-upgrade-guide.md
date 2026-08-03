@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/1-7-upgrade-guide
 title: "1 7 Upgrade Guide"
 description: ""
-access_date: 2026-08-03T18:54:22.481Z
-current_date: 2026-08-03T18:54:22.481Z
+access_date: 2026-08-03T19:00:28.246Z
+current_date: 2026-08-03T19:00:28.246Z
 ---
 
 # Upgrading to Better Auth 1.7
