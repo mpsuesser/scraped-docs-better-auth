@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/basic-usage
 title: "Basic Usage"
 description: ""
-access_date: 2026-08-03T19:08:19.489Z
-current_date: 2026-08-03T19:08:19.489Z
+access_date: 2026-08-03T19:38:28.543Z
+current_date: 2026-08-03T19:38:28.543Z
 ---
 
 # Basic Usage

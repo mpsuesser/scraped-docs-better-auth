@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unable_to_get_user_info
 title: "Unable_to_get_user_info"
 description: ""
-access_date: 2026-08-03T19:08:19.489Z
-current_date: 2026-08-03T19:08:19.489Z
+access_date: 2026-08-03T19:38:28.543Z
+current_date: 2026-08-03T19:38:28.543Z
 ---
 
 # unable_to_get_user_info

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/next-auth-migration-guide
 title: "Next Auth Migration Guide"
 description: ""
-access_date: 2026-08-03T19:08:19.489Z
-current_date: 2026-08-03T19:08:19.489Z
+access_date: 2026-08-03T19:38:28.543Z
+current_date: 2026-08-03T19:38:28.543Z
 ---
 
 # Migrating from Auth.js to Better Auth
