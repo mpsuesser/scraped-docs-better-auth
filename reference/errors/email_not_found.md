@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/email_not_found
 title: "Email_not_found"
 description: ""
-access_date: 2026-08-03T19:00:28.246Z
-current_date: 2026-08-03T19:00:28.246Z
+access_date: 2026-08-03T19:08:19.489Z
+current_date: 2026-08-03T19:08:19.489Z
 ---
 
 # email_not_found

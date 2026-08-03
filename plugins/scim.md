@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/scim
 title: "Scim"
 description: ""
-access_date: 2026-08-03T19:00:28.246Z
-current_date: 2026-08-03T19:00:28.246Z
+access_date: 2026-08-03T19:08:19.489Z
+current_date: 2026-08-03T19:08:19.489Z
 ---
 
 # System for Cross-domain Identity Management (SCIM)

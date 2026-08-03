@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unable_to_link_account
 title: "Unable_to_link_account"
 description: ""
-access_date: 2026-08-03T19:00:28.246Z
-current_date: 2026-08-03T19:00:28.246Z
+access_date: 2026-08-03T19:08:19.489Z
+current_date: 2026-08-03T19:08:19.489Z
 ---
 
 # unable_to_link_account
