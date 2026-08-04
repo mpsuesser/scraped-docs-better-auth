@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/security
 title: "Security"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-04T08:00:07.846Z
+current_date: 2026-08-04T08:00:07.846Z
 ---
 
 # Security
@@ -277,4 +277,4 @@ Better Auth prevents email enumeration on the sign-up and change-email endpoints
 See [Email and Password — Email Enumeration Protection](/docs/authentication/email-password#email-enumeration-protection) for configuration details.
 
 ## Reporting Vulnerabilities
-If you discover a security vulnerability in Better Auth, please report it to us at [security@better-auth.com](mailto:security@better-auth.com). We address all reports promptly, and credits will be given for validated discoveries.
+If you discover a security vulnerability in Better Auth, please report it via [GitHub Security Advisories](https://github.com/better-auth/better-auth/security/advisories/new). We address all reports promptly, and credits will be given for validated discoveries.

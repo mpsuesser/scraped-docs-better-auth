@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/multi-session
 title: "Multi Session"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-04T08:00:07.846Z
+current_date: 2026-08-04T08:00:07.846Z
 ---
 
 # Multi Session
@@ -28,7 +28,7 @@ export const auth = betterAuth({
 ```
 
 ### Add the client Plugin
-Add the client plugin and Specify where the user should be redirected if they need to verify 2nd factor
+Add the multi-session client plugin to enable managing multiple active sessions.
 
 ```ts title="auth-client.ts"
 import { createAuthClient } from "better-auth/client"
