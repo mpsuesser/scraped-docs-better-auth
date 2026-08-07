@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/open-api
 title: "Open Api"
 description: ""
-access_date: 2026-08-07T11:52:07.248Z
-current_date: 2026-08-07T11:52:07.248Z
+access_date: 2026-08-07T12:50:33.389Z
+current_date: 2026-08-07T12:50:33.389Z
 ---
 
 Open API reference for Better Auth.
@@ -29,7 +29,7 @@ export const auth = betterAuth({
 
 Each plugin endpoints are grouped by the plugin name. The core endpoints are grouped under the `Default` group. And Model schemas are grouped under the `Models` group.
 
-![Open API reference](https://better-auth.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fopen-api-reference.4369w7jqubrsa.png&w=3840&q=75&dpl=dpl_Aqut57ZzYwtmVEsnXaAWLVCnyGMW)
+![Open API reference](https://better-auth.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fopen-api-reference.4369w7jqubrsa.png&w=3840&q=75&dpl=dpl_5Km1TCYxxR5FsjaWHdJSukdwTFgc)
 
 ## Usage
 
@@ -37,7 +37,7 @@ The Open API reference is generated using the [OpenAPI 3.1.1](https://swagger.io
 
 The reference is generated using the [Scalar](https://scalar.com/) library. Scalar provides a way to view and test the endpoints. You can test the endpoints by clicking on the `Try it out` button and providing the required parameters.
 
-![Open API reference](https://better-auth.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fopen-api-reference.4369w7jqubrsa.png&w=3840&q=75&dpl=dpl_Aqut57ZzYwtmVEsnXaAWLVCnyGMW)
+![Open API reference](https://better-auth.com/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fopen-api-reference.4369w7jqubrsa.png&w=3840&q=75&dpl=dpl_5Km1TCYxxR5FsjaWHdJSukdwTFgc)
 
 ### Generated Schema
 
