@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/cli
 title: "Cli"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-10T17:01:16.004Z
+current_date: 2026-08-10T17:01:16.004Z
 ---
 
 # CLI
@@ -126,6 +126,41 @@ bun x auth@latest init
 * `--plugins` - The plugins you want to use. You can specify multiple plugins by separating them with a comma.
 * `--database` - The database you want to use. Currently, the only supported database is `SQLite`.
 * `--package-manager` - The package manager you want to use. Currently, the only supported package managers are `npm`, `pnpm`, `yarn`, `bun` (defaults to the manager you used to initialize the CLI).
+
+## Upgrade
+The `upgrade` command updates older `better-auth` and official `@better-auth/*` dependencies to the version of the CLI being run. Dependencies at the same or a newer version are left unchanged.
+
+
+
+
+#### npm
+
+```bash title="Terminal"
+npx auth@latest upgrade
+```
+
+#### pnpm
+
+```bash title="Terminal"
+pnpm dlx auth@latest upgrade
+```
+
+#### yarn
+
+```bash title="Terminal"
+yarn dlx auth@latest upgrade
+```
+
+#### bun
+
+```bash title="Terminal"
+bun x auth@latest upgrade
+```
+
+
+## Options
+* `--cwd` - The project directory containing the `package.json` to update. Defaults to the current directory.
+* `--yes` - Skip the confirmation prompt and install the updates directly.
 
 ## Info
 The `info` command provides diagnostic information about your Better Auth setup and environment. Useful for debugging and sharing when seeking support.
