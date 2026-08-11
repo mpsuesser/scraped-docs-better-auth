@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/sso
 title: "Sso"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-11T17:58:34.590Z
+current_date: 2026-08-11T17:58:34.590Z
 ---
 
 Integrate Single Sign-On (SSO) with your application.
@@ -666,7 +666,7 @@ await auth.api.registerSSOProvider({
 });
 ```
 
-Now when users from `acmecorp.com` sign in through this provider, they'll automatically be added to the "Acme Corp" organization with the appropriate role.
+Users who sign in through this provider are automatically added to the "Acme Corp" organization because the provider is explicitly linked to that organization. Domain-derived assignment from another sign-in method requires domain verification, a verified stored user email, and one unambiguous organization match.
 
 #### Self-Service SSO Dashboard
 
@@ -1135,9 +1135,11 @@ The provider ID is stored in the OAuth state so the callback can identify which 
 
 ## Domain verification
 
-Domain verification allows your application to automatically trust a new SSO provider by automatically validating ownership via the associated domain.
+Domain verification allows your application to trust a new SSO provider after validating ownership of every associated domain.
 
 When a provider's domain is verified, it is also trusted for **automatic account linking**. This means that if a user signs in with an SSO provider (OIDC or SAML) and an existing account with the same email exists, the accounts will be linked automatically — as long as the user's email domain matches the provider's verified domain.
+
+Domain verification is also required for automatic organization assignment after a user signs in through another identity provider, such as a social provider. Better Auth uses the stored user's verified email and assigns an organization only when the verified domain maps to exactly one.
 
 #### client
 
@@ -1195,6 +1197,8 @@ If the SSO provider lists multiple comma-separated domains, add this `TXT` recor
 ### Domain validation request
 
 Once you have configured your domain, you can use your `auth` instance to submit a validation request. This request will either result in a rejection (could not prove your ownership over the domain) or if the verification is successful, your SSO provider domain will be marked as verified.
+
+Verification applies to the provider's exact domain configuration when the request starts. If the provider is updated or deleted while DNS verification is in progress, the request returns a `409` response with the `SSO_PROVIDER_CHANGED` code. Reload the provider, confirm its current domains, and retry verification. Request a new token first if the current provider does not have an active verification token.
 
 POST/sso/verify-domain
 
