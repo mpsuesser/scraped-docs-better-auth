@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/community-adapters
 title: "Community Adapters"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-12T18:51:38.659Z
+current_date: 2026-08-12T18:51:38.659Z
 ---
 
 Community-built database adapters that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom adapter, get started by reading our [Create a Database
 
 ## Browse Community Adapters
 
-Showing 18 of 18 adapters
+Showing 19 of 19 adapters
 
 |  |  |  |
 | --- | --- | --- |
@@ -38,3 +38,4 @@ Showing 18 of 18 adapters
 | [`better-auth-mikro-orm`](https://github.com/octet-stream/better-auth-mikro-orm) | [MikroORM](https://mikro-orm.io/) | [![octet-stream](https://github.com/octet-stream.png) octet-stream](https://github.com/octet-stream) |
 | [`@datar-platform/better-auth-dynamodb`](https://github.com/datar-platform/better-auth-dynamodb) | [DynamoDB](https://aws.amazon.com/dynamodb/) | [![joesome-git](https://github.com/joesome-git.png) joesome-git](https://github.com/joesome-git) |
 | [`@bjorntech/betterauth-dynamodb`](https://github.com/bjorntech/betterauth-dynamodb) | [DynamoDB](https://aws.amazon.com/dynamodb/) | [![BjornTech AB](https://github.com/bjorntech.png) BjornTech AB](https://github.com/bjorntech) |
+| [`better-auth-azure-cosmos`](https://github.com/9hsein5/better-auth-azure-cosmos) | [Azure Cosmos DB](https://learn.microsoft.com/azure/cosmos-db/nosql/) | [![9hsein5](https://github.com/9hsein5.png) 9hsein5](https://github.com/9hsein5) |
