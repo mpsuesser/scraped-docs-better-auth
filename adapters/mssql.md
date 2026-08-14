@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/mssql
 title: "Mssql"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-14T12:20:50.524Z
+current_date: 2026-08-14T12:20:50.524Z
 ---
 
 Integrate Better Auth with MS SQL.
@@ -86,7 +86,7 @@ npx auth@latest migrate
 
 ## Joins (Experimental)
 
-Database joins is useful when Better-Auth needs to fetch related data from multiple tables in a single query. Endpoints like `/get-session`, `/get-full-organization` and many others benefit greatly from this feature, seeing upwards of 2x to 3x performance improvements depending on database latency.
+Database joins are useful when Better-Auth needs to fetch related data from multiple tables in a single query. Endpoints like `/get-session`, `/get-full-organization` and many others benefit greatly from this feature, seeing upwards of 2x to 3x performance improvements depending on database latency.
 
 The Kysely MS SQL dialect supports joins out of the box since version `1.4.0`. To enable this feature, you need to set the `experimental.joins` option to `true` in your auth configuration.
 
