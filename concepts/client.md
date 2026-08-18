@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/client
 title: "Client"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Learn how to set up the Better Auth client for React, Vue, Svelte, and other frameworks, use hooks, configure fetch options, handle errors, and extend with client plugins.
@@ -327,6 +327,42 @@ const { error } = await authClient.signUp.email({
 });
 if(error?.code){
     alert(getErrorMessage(error.code, "en"));
+}
+```
+
+### SSR Hydration
+
+With SSR frameworks like Next.js, Nuxt, or SvelteKit, `useSession` fetches the session on the client, causing a loading flash. Pass the server-fetched session to `hydrateSession` and use it as a fallback so the first render has data on both the server and the client:
+
+```
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
+import { SessionCard } from "./session-card"
+
+export default async function Page() {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    })
+    return <SessionCard initialSession={session} />
+}
+```
+
+```
+"use client"
+
+import { authClient } from "@/lib/auth-client"
+
+type Props = {
+    initialSession: typeof authClient.$Infer.Session | null
+}
+
+export function SessionCard({ initialSession }: Props) {
+    authClient.hydrateSession(initialSession)
+    const { data, isPending, isRefetching } = authClient.useSession()
+    const session = isPending && !isRefetching ? initialSession : data
+
+    if (!session) return <p>Not signed in</p>
+    return <pre>{JSON.stringify(session, null, 2)}</pre>
 }
 ```
 

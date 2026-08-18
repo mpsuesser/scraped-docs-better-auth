@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/have-i-been-pwned
 title: "Have I Been Pwned"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Have I Been Pwned
@@ -14,8 +14,8 @@ A plugin to check if a password has been compromised
 
 The Have I Been Pwned plugin helps protect user accounts by preventing the use of passwords that have been exposed in known data breaches. It uses the [Have I Been Pwned](https://haveibeenpwned.com/) API to check if a password has been compromised.
 
-## Installation
-## Add the plugin to your auth config
+## ## Installation
+## ### Add the plugin to your **auth** config
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { haveIBeenPwned } from "better-auth/plugins" // [!code highlight]
@@ -27,7 +27,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Usage
+## ## Usage
 When a user attempts to create an account or update their password with a compromised password, they'll receive the following default error:
 
 ```json
@@ -37,8 +37,8 @@ When a user attempts to create an account or update their password with a compro
 }
 ```
 
-## Options
-## enabled
+## ## Options
+## ### `enabled`
 Enable or disable password checks against the HIBP database. Useful for skipping checks in development or testing without removing the plugin. Defaults to `true`.
 
 ```ts title="auth.ts"
@@ -54,7 +54,7 @@ const auth = betterAuth({
 })
 ```
 
-## customPasswordCompromisedMessage
+## ### `customPasswordCompromisedMessage`
 Customize the error message shown when a compromised password is detected.
 
 ```ts title="auth.ts"
@@ -70,7 +70,7 @@ const auth = betterAuth({
 })
 ```
 
-## Security Notes
+## ## Security Notes
 * Only the first 5 characters of the password hash are sent to the API
 * The full password is never transmitted
 * Provides an additional layer of account security

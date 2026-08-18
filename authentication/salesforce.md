@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/salesforce
 title: "Salesforce"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Salesforce
@@ -13,7 +13,7 @@ Salesforce provider setup and usage.
 
 
 
-### Get your Salesforce Credentials
+### ### Get your Salesforce Credentials
 1. Log into your Salesforce org (Production or Developer Edition)
 2. Navigate to **Setup > App Manager**
 3. Click **New Connected App**
@@ -29,7 +29,7 @@ Salesforce provider setup and usage.
      * Access your identity URL service (openid)
      * Access your email address (email)
      * Perform requests on your behalf at any time (refresh\_token, offline\_access)
-6. Enable **Require Proof Key for Code Exchange (PKCE)** (required)
+6. Enable &#x2A;*Require Proof Key for Code Exchange (PKCE)** (required)
 7. Save and note your **Consumer Key** (Client ID) and **Consumer Secret** (Client Secret)
 
 > * For development, you can use `http://localhost:3000` URLs, but production requires HTTPS
@@ -38,7 +38,7 @@ Salesforce provider setup and usage.
 
 > For sandbox testing, you can create the Connected App in your sandbox org, or use the same Connected App but specify `environment: "sandbox"` in the provider configuration.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -55,14 +55,14 @@ export const auth = betterAuth({
 })
 ```
 
-#### Configuration Options
+#### #### Configuration Options
 * `clientId`: Your Connected App's Consumer Key
 * `clientSecret`: Your Connected App's Consumer Secret
 * `environment`: `"production"` (default) or `"sandbox"`
 * `loginUrl`: Custom My Domain URL (without `https://`) - overrides environment setting
 * `redirectURI`: Override the auto-generated redirect URI if needed
 
-#### Advanced Configuration
+#### #### Advanced Configuration
 ```ts title="auth.ts"
 export const auth = betterAuth({
     socialProviders: {
@@ -81,7 +81,7 @@ export const auth = betterAuth({
 > * The `loginUrl` option is useful for organizations with My Domain enabled
 > * The `redirectURI` option helps resolve redirect URI mismatch errors
 
-### Environment Variables
+### ### Environment Variables
 Add the following environment variables to your `.env.local` file:
 
 ```bash title=".env.local"
@@ -98,7 +98,7 @@ SALESFORCE_CLIENT_SECRET=your_consumer_secret_here
 BETTER_AUTH_URL=https://yourdomain.com
 ```
 
-### Sign In with Salesforce
+### ### Sign In with Salesforce
 To sign in with Salesforce, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `salesforce`.
@@ -114,8 +114,8 @@ const signIn = async () => {
 }
 ```
 
-### Troubleshooting
-#### Redirect URI Mismatch Error
+### ### Troubleshooting
+#### #### Redirect URI Mismatch Error
 If you encounter a `redirect_uri_mismatch` error:
 
 1. **Check Callback URL**: Ensure the Callback URL in your Salesforce Connected App exactly matches your Better Auth callback URL
@@ -131,12 +131,12 @@ salesforce: {
 }
 ```
 
-#### Environment Issues
+#### #### Environment Issues
 * **Production**: Use `environment: "production"` (default) with `login.salesforce.com`
 * **Sandbox**: Use `environment: "sandbox"` with `test.salesforce.com`
 * **My Domain**: Use `loginUrl: "yourcompany.my.salesforce.com"` for custom domains
 
-#### PKCE Requirements
+#### #### PKCE Requirements
 Salesforce requires PKCE (Proof Key for Code Exchange) which is automatically handled by this provider. Make sure PKCE is enabled in your Connected App settings.
 
 > The default scopes requested are `openid`, `email`, and `profile`. The provider will automatically include the `id` scope for accessing basic user information.

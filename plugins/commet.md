@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/commet
 title: "Commet"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Commet
@@ -18,7 +18,7 @@ Better Auth Plugin for Billing and Subscriptions using Commet
 > requests, please visit the [Commet GitHub
 > repo](https://github.com/commet-labs/commet).
 
-## Features
+## ## Features
 * Automatic customer creation on signup
 * Customer portal for self-service billing management
 * Subscription management (get, cancel)
@@ -27,7 +27,7 @@ Better Auth Plugin for Billing and Subscriptions using Commet
 * Seat management for per-user pricing
 * Secure webhook handling with signature verification
 
-## Installation
+## ## Installation
 #### npm
 
 ```bash
@@ -53,7 +53,7 @@ bun add better-auth @commet/better-auth @commet/node
 ```
 
 
-## Preparation
+## ## Preparation
 Get your API key from the [Commet dashboard](https://commet.co) and add it to your environment.
 
 ```bash title=".env"
@@ -64,7 +64,7 @@ COMMET_API_KEY=ck_...
 > Commet determines the environment from the key itself, so there is no separate
 > option to configure.
 
-## Configuring BetterAuth Server
+## ### Configuring BetterAuth Server
 The Commet plugin comes with a set of sub-plugins that add functionality to your stack. Add only the ones you need.
 
 * Portal — Redirect customers to a self-service billing portal
@@ -108,7 +108,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Configuring BetterAuth Client
+## ### Configuring BetterAuth Client
 You will use the Better Auth client to interact with the Commet functionalities.
 
 ```typescript title="auth-client.ts"
@@ -120,7 +120,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-## Configuration Options
+## ## Configuration Options
 ```typescript title="auth.ts"
 commet({
   client: commetClient,
@@ -135,18 +135,18 @@ commet({
 });
 ```
 
-## Required Options
+## ### Required Options
 * `client`: Commet SDK client instance
 * `use`: Array of Commet sub-plugins (at least one)
 
-## Optional Options
+## ### Optional Options
 * `createCustomerOnSignUp`: Automatically create a Commet customer when a user signs up
 * `getCustomerCreateParams`: Custom function to provide additional customer creation parameters (`fullName`, `domain`, `metadata`)
 
-## Customers
+## ### Customers
 When `createCustomerOnSignUp` is enabled, a Commet customer is automatically created when a new user signs up. The customer is created with its `id` set to the Better Auth user ID, so you don't need any mapping between your users and Commet customers.
 
-## Portal Plugin
+## ## Portal Plugin
 Redirects customers to the Commet customer portal for self-service billing management.
 
 ```typescript title="auth.ts"
@@ -164,10 +164,10 @@ The portal plugin adds a `portal` method scoped under `authClient.customer`, whi
 await authClient.customer.portal();
 ```
 
-## Configuration
+## ### Configuration
 * `returnUrl`: URL to return to after the customer leaves the portal
 
-## Subscriptions Plugin
+## ## Subscriptions Plugin
 Get and cancel the authenticated user's subscription.
 
 ```typescript title="auth.ts"
@@ -192,7 +192,7 @@ await authClient.subscription.cancel({
 
 The `cancel` method accepts an optional `reason` and an `immediate` flag. By default, cancellation takes effect at the end of the current billing period.
 
-## Features Plugin
+## ## Features Plugin
 Check feature access for the authenticated user. Supports boolean, metered and seat-based features.
 
 ```typescript title="auth.ts"
@@ -220,7 +220,7 @@ const { data: canUse } = await authClient.features.canUse("api_calls");
 // { allowed: boolean, willBeCharged: boolean }
 ```
 
-## Usage Plugin
+## ## Usage Plugin
 Track usage events for metered billing.
 
 ```typescript title="auth.ts"
@@ -243,7 +243,7 @@ await authClient.usage.track({
 
 The authenticated user is automatically associated with the event. The `feature` field maps to a feature code in your Commet plan.
 
-## Seats Plugin
+## ## Seats Plugin
 Manage seat-based licenses for the authenticated user.
 
 ```typescript title="auth.ts"
@@ -272,7 +272,7 @@ await authClient.seats.set({ featureCode: "admin", count: 3 });
 await authClient.seats.setAll({ admin: 2, member: 10, viewer: 50 });
 ```
 
-## Webhooks Plugin
+## ## Webhooks Plugin
 Handle Commet webhooks with signature verification. Webhooks are optional — you can always query the current state through the other sub-plugins.
 
 ```typescript title="auth.ts"

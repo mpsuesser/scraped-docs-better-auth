@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/astro
 title: "Astro"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Astro Integration
@@ -16,7 +16,7 @@ Better Auth comes with first class support for Astro. This guide will show you h
 
 Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
-## Mount the handler
+## ### Mount the handler
 To enable Better Auth to handle requests, we need to mount the handler to a catch all API route. Create a file inside `/pages/api/auth` called `[...all].ts` and add the following code:
 
 ```ts title="pages/api/auth/[...all].ts"
@@ -32,7 +32,7 @@ export const ALL: APIRoute = async (ctx) => {
 
 > You can change the path on your better-auth configuration but it's recommended to keep it as `/api/auth/[...all]`
 
-## Create a client
+## ## Create a client
 Astro supports multiple frontend frameworks, so you can easily import your client based on the framework you're using.
 
 If you're not using a frontend framework, you can still import the vanilla client.
@@ -74,8 +74,8 @@ export const authClient =  createAuthClient()
 ```
 
 
-## Auth Middleware
-## Astro Locals types
+## ## Auth Middleware
+## ### Astro Locals types
 To have types for your Astro locals, you need to set it inside the `env.d.ts` file.
 
 ```ts title="env.d.ts"
@@ -91,7 +91,7 @@ declare namespace App {
 }
 ```
 
-## Middleware
+## ### Middleware
 To protect your routes, you can check if the user is authenticated using the `getSession` method in middleware and set the user and session data using the Astro locals with the types we set before. Start by creating a `middleware.ts` file in the root of your project and follow the example below:
 
 ```ts title="middleware.ts"
@@ -116,7 +116,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 });
 ```
 
-## Getting session on the server inside .astro file
+## ### Getting session on the server inside `.astro` file
 You can use `Astro.locals` to check if the user has session and get the user data from the server side. Here is an example of how you can get the session inside an `.astro` file:
 
 ```astro

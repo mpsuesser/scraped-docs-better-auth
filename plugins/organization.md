@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/organization
 title: "Organization"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 The organization plugin allows you to manage your organization's members and teams.
@@ -624,6 +624,33 @@ function App(){
 #### Vue
 
 #### Svelte
+
+### Get Organization
+
+To get organization metadata without members or invitations, use `getOrganization`. By default, if you don't pass any properties, it will use the active organization.
+
+Prefer this over `getFullOrganization` when you only need fields like `id`, `name`, `slug`, `logo`, and `metadata`.
+
+GET/organization/get-organization
+
+```
+const { data, error } = await authClient.organization.getOrganization({
+    query: {
+        organizationId: "org-id",
+        organizationSlug: "org-slug",
+    },
+});
+```
+
+Parameters
+
+`organizationId` string
+
+The organization ID to get. By default, it will use the active organization.
+
+`organizationSlug` string
+
+The organization slug to get.
 
 ### Get Full Organization
 
@@ -1840,13 +1867,31 @@ The team ID of the team to set as the current active team. The team must belong 
 
 #### List User Teams
 
-List all teams that the current user is a part of.
+List all teams that a user is a part of. Defaults to the current user and returns teams across every organization the user belongs to.
+
+- Pass `userId` to list teams for another member. This is gated behind the `member:update` permission in the target organization.
+- Pass `organizationId` to scope the result to a single organization without having to switch the session's active organization. When omitted, queries for another user use the session's active organization.
 
 GET/organization/list-user-teams
 
 ```
-const { data, error } = await authClient.organization.listUserTeams();
+const { data, error } = await authClient.organization.listUserTeams({
+    query: {
+        userId,
+        organizationId,
+    },
+});
 ```
+
+Parameters
+
+`userId` string
+
+The user ID to list teams for. Defaults to the current session user.
+
+`organizationId` string
+
+The organization ID to scope the team list to. When omitted on a self-query, teams are returned across every organization the user belongs to. When querying another user, falls back to the session's active organization.
 
 #### List Team Members
 
@@ -1951,6 +1996,7 @@ The teams feature supports several configuration options:
 	  },
 	}
 	```
+	`maximumMembersPerTeam` is enforced when accepting team invitations, when adding an existing organization member to a team, and when adding a new organization member with a `teamId`.
 - `allowRemovingAllTeams`: Control whether the last team can be removed
 	```
 	teams: {
@@ -2004,6 +2050,14 @@ string
 \-
 
 The name of the team
+
+memberCount
+
+number
+
+\-
+
+Durable member count used to enforce team capacity
 
 organizationId
 
@@ -2064,6 +2118,14 @@ string
 FK
 
 The ID of the user
+
+membershipKey?
+
+string
+
+\-
+
+Internal unique key for the team and user membership pair
 
 createdAt?
 
@@ -2415,6 +2477,14 @@ string
 
 The name of the team
 
+memberCount
+
+number
+
+\-
+
+Durable member count used to enforce team capacity
+
 organizationId
 
 string
@@ -2474,6 +2544,14 @@ string
 FK
 
 The ID of the user
+
+membershipKey?
+
+string
+
+\-
+
+Internal unique key for the team and user membership pair
 
 createdAt?
 

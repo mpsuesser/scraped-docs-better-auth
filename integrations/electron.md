@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/electron
 title: "Electron"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Electron Integration
@@ -16,13 +16,13 @@ Electron is a popular framework for building cross-platform desktop applications
 
 Better Auth can be integrated into Electron apps to provide secure authentication flows, leveraging the system browser.
 
-## Installation
-### Configure a Better Auth front- & back-end
+## ## Installation
+### ### Configure a Better Auth front- & back-end
 Before integrating with Electron, ensure you have a Better Auth server and client set up.
 
 To get started, check out our [installation](/docs/installation) guide for setting up Better Auth.
 
-### Install the required packages
+### ### Install the required packages
 Install the Better Auth server package and the Electron integration package in your server, Electron app, and web client projects.
 
 **In each project, run:**
@@ -58,7 +58,7 @@ bun add better-auth @better-auth/electron
 > We support two major versions behind the latest stable major release of Electron.
 > This keeps you on versions that receive security updates and aligns with [Electron's version support policy](https://www.electronjs.org/docs/latest/tutorial/electron-timelines#breaking-api-changes).
 
-### Add the Electron plugin to your Better Auth server
+### ### Add the Electron plugin to your Better Auth server
 Add the Electron plugin to your Better Auth server.
 
 ```ts title="web/lib/auth.ts"
@@ -79,7 +79,7 @@ export const auth = betterAuth({
 });
 ```
 
-### Add the proxy plugin to your web client
+### ### Add the proxy plugin to your web client
 On your frontend, add the proxy plugin to handle redirects back into the Electron app.
 
 ```ts title="web/lib/auth-client.ts"
@@ -98,7 +98,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-### Initialize the Electron client
+### ### Initialize the Electron client
 ```ts title="electron/lib/auth-client.ts"
 import { createAuthClient } from "better-auth/client";
 import { electronClient } from "@better-auth/electron/client";
@@ -171,7 +171,7 @@ electronClient({
 > 
 > Also make sure not to expose any sensitive data like tokens or cookies to the renderer process to mitigate injection attacks.
 
-### Scheme and Trusted Origins
+### ### Scheme and Trusted Origins
 The Electron plugin uses deep links to redirect users back to your app after authentication.
 To enable this, you need to add your app's protocol scheme to the `trustedOrigins` on your **Better Auth server**.
 
@@ -215,7 +215,7 @@ export const auth = betterAuth({
 });
 ```
 
-### Configure the BrowserWindow
+### ### Configure the BrowserWindow
 Ensure that your `BrowserWindow` is configured with `nodeIntegration` set to `false` and `contextIsolation` set to `true`, to ensure NodeJS APIs aren't exposed to any JavaScript process running in the browser.
 
 ```ts title="electron/main.ts"
@@ -252,7 +252,7 @@ const win = new BrowserWindow({
 > 
 > If your config uses a list of externals instead, do **not** add `@better-auth/electron` to that list so it gets bundled.
 
-### Setup the Main Process
+### ### Setup the Main Process
 In your Electron main process, use the `setupMain()` method from the Electron auth client to handle necessary configurations.
 
 This will:
@@ -270,7 +270,7 @@ authClient.setupMain();
 
 Note that this must be called before the app is ready.
 
-### Setup the Renderer Process
+### ### Setup the Renderer Process
 In your preload script, use the `setupRenderer()` method from the Electron auth client to expose safe IPC bridges to the renderer process.
 
 ```ts title="electron/preload.ts"
@@ -293,8 +293,8 @@ Note that this must also be called before the app is ready.
 > ```
 
 
-## Usage
-## Handling Authorization in the Browser
+## ## Usage
+## ### Handling Authorization in the Browser
 In order to redirect users back to your Electron application, you need to call the `ensureElectronRedirect()` method on your web sign-in callback page. Also make sure to preserve any PKCE and state parameters during the sign-in initiation, by passing them via `fetchOptions.query`.
 
 The following example uses React, but the same logic applies to any framework:
@@ -310,7 +310,6 @@ function SignIn({
     client_id?: string | undefined;
     state?: string | undefined;
     code_challenge?: string | undefined;
-    code_challenge_method?: string | undefined;
   }>;
 }) {
   const query = use(searchParams);
@@ -339,7 +338,7 @@ function SignIn({
 
 To handle already signed-in users, you can use the `electron.transferUser` method on the client and `electronTransferUser` on the server to transfer the user to the Electron app. [See Example](https://github.com/better-auth/better-auth/blob/main/demo/nextjs/app/\(auth\)/sign-in/_components/electron.tsx)
 
-## Handling Authentication in Electron
+## ### Handling Authentication in Electron
 In your Electron renderer process, you can use the IPC bridges exposed by the preload script.
 
 ```tsx title="electron/App.tsx"
@@ -387,14 +386,14 @@ import { authClient } from "./lib/auth-client";
 authClient.requestAuth();
 ```
 
-## Sign Out
+## ### Sign Out
 To sign out the user inside the renderer process, you can use the `signOut` bridge in the renderer process:
 
 ```ts title="electron/App.tsx"
 <button onClick={() => window.signOut()}>Sign out</button>
 ```
 
-## Subscribing to User Updates
+## ### Subscribing to User Updates
 You can listen for user changes via the `onUserUpdated` bridge in the renderer process:
 
 ```ts title="electron/App.tsx"
@@ -406,7 +405,7 @@ useEffect(() => {
 }, []);
 ```
 
-## Handling Errors
+## ### Handling Errors
 Listen for authentication errors via the `onAuthError` bridge in the renderer process. The bridge will receive error context forwarded from fetch hooks.
 
 ```ts title="electron/error-listener.tsx"
@@ -418,7 +417,7 @@ useEffect(() => {
 }, []);
 ```
 
-## Manual Token Exchange
+## ### Manual Token Exchange
 In some environments, deep link redirects may not work reliably (e.g. certain Linux desktop environments, sandboxed browsers, or when the Electron app isn't registered as the default handler for the protocol scheme).
 As a fallback, users can manually copy the authorization code from the web UI and paste it into the Electron app.
 
@@ -483,7 +482,7 @@ The `authenticate` bridge sends the authorization code to the main process, whic
 
 > The authorization code is a short-lived 32-character string. A `requestAuth()` call must have been made before `authenticate()` can be used, as it relies on the code verifier and state generated during the initial request.
 
-## User Image Proxy
+## ### User Image Proxy
 To avoid CSP issues, the Electron plugin securely proxies user avatar images through a custom `user-image://` protocol.
 
 You can use the image URL directly in your renderer:
@@ -497,7 +496,7 @@ To configure or disable the proxy, see the [`userImageProxy`](#userimageproxy) o
 
 > To access avatars for users other than the current one, you need to enable the [Admin](/docs/plugins/admin) plugin.
 
-## Creating IPC bridges
+## ### Creating IPC bridges
 You should create IPC bridges to extend the functionality exposed to your renderer process. This ensures a minimal, safe API surface.
 
 First, create an IPC handler in the main process that uses the `authClient` to perform the desired action:
@@ -556,9 +555,9 @@ useEffect(() => {
 
 For more details, check out Electron's [Inter-Process Communication](https://www.electronjs.org/docs/latest/tutorial/ipc) tutorial.
 
-## Options
-## Server plugin
-## codeExpiresIn?
+## ## Options
+## ### Server plugin
+## #### `codeExpiresIn?`
 The duration, in seconds, for which the authorization code is valid. (defaults to `300`)
 
 Note that the authorization code will be refreshed during active endpoint usage.
@@ -569,7 +568,7 @@ electron({
 });
 ```
 
-## redirectCookieExpiresIn?
+## #### `redirectCookieExpiresIn?`
 The duration, in seconds, for which the redirect cookie remains valid. (defaults to `120`)
 
 ```ts title="web/auth.ts"
@@ -580,7 +579,7 @@ electron({
 
 The redirect cookie name is derived by the `clientID`.
 
-## cookiePrefix?
+## #### `cookiePrefix?`
 The prefix to use for cookies set by the plugin. (defaults to `better-auth`)
 
 ```ts title="web/auth.ts"
@@ -589,7 +588,7 @@ electron({
 });
 ```
 
-## clientID?
+## #### `clientID?`
 The client id to use for identifying the Electron client during authorization. (defaults to `electron`)
 
 Make sure this matches the clientID provided to both the proxy and electron client plugin.
@@ -600,19 +599,8 @@ electron({
 });
 ```
 
-## disableOriginOverride?
-Override the origin for Electron API routes. (defaults to `false`)
-
-Enable this if you're facing cors origin issues with Electron API routes.
-
-```ts title="web/auth.ts"
-electron({
-  disableOriginOverride: true,
-});
-```
-
-## Proxy client
-## protocol
+## ### Proxy client
+## #### `protocol`
 The protocol scheme to use for deep linking in Electron.
 
 Should follow the [reverse domain name notation](https://datatracker.ietf.org/doc/html/rfc8252#section-7.1) to ensure uniqueness.
@@ -633,7 +621,7 @@ electronProxyClient({
 });
 ```
 
-## callbackPath?
+## #### `callbackPath?`
 The callback path to use for authentication redirects. (defaults to `/auth/callback`)
 
 Make sure this matches the path provided to the electron client plugin.
@@ -644,7 +632,7 @@ electronProxyClient({
 });
 ```
 
-## clientID?
+## #### `clientID?`
 The client id to use for identifying the Electron client during authorization. (defaults to `electron`)
 
 Make sure this matches the clientID provided to both the server and electron client plugin.
@@ -655,7 +643,7 @@ electronProxyClient({
 });
 ```
 
-## cookiePrefix?
+## #### `cookiePrefix?`
 The prefix to use for cookies set by the plugin. (defaults to `better-auth`)
 
 ```ts title="web/auth-client.ts"
@@ -664,8 +652,8 @@ electronProxyClient({
 });
 ```
 
-## Client plugin
-## signInURL
+## ### Client plugin
+## #### `signInURL`
 The URL to redirect to for authentication.
 
 ```ts title="electron/auth-client.ts"
@@ -674,7 +662,7 @@ electronClient({
 });
 ```
 
-## protocol
+## #### `protocol`
 The protocol scheme to use for deep linking in Electron.
 
 Should follow the [reverse domain name notation](https://datatracker.ietf.org/doc/html/rfc8252#section-7.1) to ensure uniqueness.
@@ -695,7 +683,7 @@ electronProxyClient({
 });
 ```
 
-## callbackPath?
+## #### `callbackPath?`
 The callback path to use for authentication redirects. (defaults to `/auth/callback`)
 
 Make sure this matches the path provided to the proxy client plugin.
@@ -706,7 +694,7 @@ electronClient({
 });
 ```
 
-## storage
+## #### `storage`
 Storage solution to use to store session and cookie data.
 
 By default a storage file is generated in the `userData` directory. The name is derived by the project name.
@@ -724,7 +712,7 @@ electronClient({
 });
 ```
 
-## storagePrefix?
+## #### `storagePrefix?`
 Prefix for local storage keys. (defaults to `better-auth`)
 
 ```ts title="electron/auth-client.ts"
@@ -733,7 +721,7 @@ electronClient({
 });
 ```
 
-## cookiePrefix?
+## #### `cookiePrefix?`
 Prefix(es) for server cookie names to filter. (defaults to `better-auth`)
 
 This is used to identify which cookies belong to better-auth to
@@ -751,7 +739,7 @@ electronClient({
 });
 ```
 
-## channelPrefix?
+## #### `channelPrefix?`
 Channel prefix for IPC bridges. (defaults to `better-auth`)
 
 ```ts title="electron/auth-client.ts"
@@ -760,7 +748,7 @@ electronClient({
 });
 ```
 
-## clientID?
+## #### `clientID?`
 The client id to use for identifying the Electron client during authorization. (defaults to `electron`)
 
 Make sure this matches the clientID provided to both the server and proxy client plugin.
@@ -771,7 +759,7 @@ electronClient({
 });
 ```
 
-## sanitizeUser?
+## #### `sanitizeUser?`
 A function to sanitize the user object before it is sent to the renderer process. Use this to strip sensitive fields.
 
 ```ts title="electron/auth-client.ts"
@@ -783,7 +771,7 @@ electronClient({
 });
 ```
 
-## userImageProxy?
+## #### `userImageProxy?`
 Configuration for the user image proxy. See [User Image Proxy](#user-image-proxy) for details.
 
 ```ts title="electron/auth-client.ts"
@@ -805,7 +793,7 @@ electronClient({
 });
 ```
 
-## disableCache?
+## #### `disableCache?`
 Whether to disable caching the session data locally. (defaults to `false`)
 
 ```ts title="electron/auth-client.ts"

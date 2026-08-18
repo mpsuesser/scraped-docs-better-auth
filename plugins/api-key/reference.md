@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/api-key/reference
 title: "Reference"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 API Key plugin options, permissions, and schema reference.
@@ -127,11 +127,11 @@ export const auth = betterAuth({
 });
 ```
 
-`customStorage` `{ get: (key: string) => Promise<unknown> | unknown; set: (key: string, value: string, ttl?: number) => Promise<void | null | unknown> | void; delete: (key: string) => Promise<void | null | string> | void; }`
+`customStorage` `SecondaryStorage`
 
-Custom storage methods for API keys. If provided, these methods will be used instead of `ctx.context.secondaryStorage`. Custom methods take precedence over global secondary storage.
+Custom secondary storage for API keys. If provided, it is used instead of `ctx.context.secondaryStorage`. Custom storage takes precedence over global secondary storage.
 
-Useful when you want to use a different storage backend specifically for API keys, or when you need custom logic for storage operations.
+Useful when you want to use a different storage backend specifically for API keys, or when you need custom logic for storage operations. It must implement the full secondary-storage contract, including `getAndDelete` and `increment`.
 
 ```
 import { betterAuth } from "better-auth";
@@ -143,6 +143,8 @@ export const auth = betterAuth({
       storage: "secondary-storage",
       customStorage: {
         get: async (key) => await customStorage.get(key),
+        getAndDelete: async (key) => await customStorage.getAndDelete(key),
+        increment: async (key, ttl) => await customStorage.increment(key, ttl),
         set: async (key, value, ttl) => await customStorage.set(key, value, ttl),
         delete: async (key) => await customStorage.delete(key), 
       },
@@ -386,7 +388,7 @@ referenceId
 
 string
 
-\-
+IDX
 
 The ID of the owner (user ID or organization ID based on the config's \`references\` setting).
 

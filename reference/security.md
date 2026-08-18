@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/security
 title: "Security"
 description: ""
-access_date: 2026-08-04T08:00:07.846Z
-current_date: 2026-08-04T08:00:07.846Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Security
@@ -14,26 +14,26 @@ Better Auth security features.
 
 This page contains information about security features of Better Auth.
 
-## Password Hashing
+## ## Password Hashing
 Better Auth uses the `scrypt` algorithm to hash passwords by default. This algorithm is designed to be memory-hard and CPU-intensive, making it resistant to brute-force attacks. You can customize the password hashing function by setting the `password` option in the configuration. This option should include a `hash` function to hash passwords and a `verify` function to verify them.
 
-## Secret Rotation
+## ## Secret Rotation
 Better Auth supports non-destructive rotation of `BETTER_AUTH_SECRET`. When you configure versioned secrets via the `secrets` option or the `BETTER_AUTH_SECRETS` environment variable, all new encrypted data includes a key version identifier. Decryption performs a direct key lookup by version — no trial decryption.
 
 Legacy data encrypted before rotation (bare-hex format) is still decryptable using the original `BETTER_AUTH_SECRET` as a fallback. No database migrations or downtime are required. Data is lazily re-encrypted with the current key when it is next written.
 
 See the [`secrets` option](/docs/reference/options#secrets) for configuration details.
 
-## Session Management
-## Session Expiration
+## ## Session Management
+## ### Session Expiration
 Better Auth uses secure session management to protect user data. Sessions are stored in the database or a secondary storage, if configured, to prevent unauthorized access. By default, sessions expire after 7 days, but you can customize this value in the configuration. Additionally, each time a session is used, if it reaches the `updateAge` threshold, the expiration date is extended, which by default is set to 1 day.
 
-## Session Revocation
+## ### Session Revocation
 Better Auth allows you to revoke sessions to enhance security. When a session is revoked, the user is logged out and can no longer access the application. A logged in user can also revoke their own sessions to log out from different devices or browsers.
 
 See the [session management](/docs/concepts/session-management) for more details.
 
-## CSRF Protection
+## ## CSRF Protection
 Better Auth includes multiple safeguards to prevent Cross-Site Request Forgery (CSRF) attacks:
 
 1. **Avoid simple requests**
@@ -67,10 +67,10 @@ Better Auth includes multiple safeguards to prevent Cross-Site Request Forgery (
 5. **No Mutations on GET Requests (with additional safeguards)**
    `GET` requests are assumed to be read-only and should not alter the application's state. In cases where a `GET` request must perform a mutation—such as during OAuth callbacks - Better Auth applies extra security measures, including validating `nonce` and `state` parameters to ensure the request's authenticity.
 
-## Disabling Security Checks
+## ### Disabling Security Checks
 Better Auth provides two separate options to disable security checks. These options control different aspects of security:
 
-## disableCSRFCheck
+## #### `disableCSRFCheck`
 Disables **all CSRF protection**, including:
 
 * Origin header validation when cookies are present
@@ -87,7 +87,7 @@ Disables **all CSRF protection**, including:
 
 > Disabling CSRF checks allows requests from any origin to use cookies and perform actions on behalf of users. This opens your application to CSRF attacks.
 
-## disableOriginCheck
+## #### `disableOriginCheck`
 Disables **URL validation** against `trustedOrigins`, including:
 
 * `callbackURL` validation
@@ -107,31 +107,31 @@ Disables **URL validation** against `trustedOrigins`, including:
 
 > For backward compatibility, `disableOriginCheck: true` also disables CSRF protection. If you only want to disable URL validation without affecting CSRF protection, this is not currently possible - both checks are disabled together when using this option.
 
-## Summary
+## #### Summary
 | Option               | What it disables                                                       |
 | -------------------- | ---------------------------------------------------------------------- |
 | `disableCSRFCheck`   | CSRF protection only (origin header validation, Fetch Metadata checks) |
 | `disableOriginCheck` | URL validation AND CSRF protection (for backward compatibility)        |
 
-## OAuth State and PKCE
+## ## OAuth State and PKCE
 To secure OAuth flows, Better Auth stores the OAuth state and PKCE (Proof Key for Code Exchange) using the configured state storage strategy. By default, the state payload is stored in verification storage and the state value is also persisted in a signed cookie for validation. When `storeStateStrategy` is set to `cookie`, the full state payload is encrypted into a short-lived cookie instead of creating a verification record.
 
 The state helps prevent CSRF attacks, while PKCE protects against code injection threats. After the OAuth callback is processed, Better Auth expires the relevant cookie and, when verification storage is used, deletes the stored verification record.
 
-## Cookies
+## ## Cookies
 Better Auth assigns secure cookies by default when the base URL uses `https`. These secure cookies are encrypted and only sent over secure connections, adding an extra layer of protection. They are also set with the `sameSite` attribute to `lax` by default to prevent cross-site request forgery attacks. And the `httpOnly` attribute is enabled to prevent client-side JavaScript from accessing the cookie.
 
 For Cross-Subdomain Cookies, you can set the `crossSubDomainCookies` option in the configuration. This option allows cookies to be shared across subdomains, enabling seamless authentication across multiple subdomains.
 
-## Customizing Cookies
+## ### Customizing Cookies
 You can customize cookie names to minimize the risk of fingerprinting attacks and set specific cookie options as needed for additional control. For more information, refer to the [cookie options](/docs/concepts/cookies).
 
 Plugins can also set custom cookie options to align with specific security needs. If you're using Better Auth in non-browser environments, plugins offer ways to manage cookies securely in those contexts as well.
 
-## Rate Limiting
+## ## Rate Limiting
 Better Auth includes built-in rate limiting to safeguard against brute-force attacks. Rate limits are applied across all routes by default, with specific routes subject to stricter limits based on potential risk.
 
-## IP Address Headers
+## ## IP Address Headers
 Better Auth uses client IP addresses for rate limiting and security monitoring. By default, it reads the IP address from the standard `X-Forwarded-For` header. However, you can configure a specific trusted header to ensure accurate IP address detection and prevent IP spoofing attacks.
 
 You can configure the IP address header in your Better Auth configuration:
@@ -168,7 +168,7 @@ token:
 > * When setting a custom IP address header, ensure that your proxy or load balancer is properly configured to set this header, and that it cannot be set by end users directly.
 > * In dev/test environments, if the IP cannot be retrieved from headers, 127.0.0.1 is used as a fallback.
 
-## Trusted Proxy Headers
+## ## Trusted Proxy Headers
 If your application runs behind a reverse proxy or load balancer, Better Auth can derive the base URL from the inbound request's `X-Forwarded-Host` and `X-Forwarded-Proto` headers. This is useful when your app is accessible from multiple domains (e.g. `example.com` and `app.example.dev`) and you don't want to hardcode a single `baseURL` in the configuration.
 
 When `trustedProxyHeaders` is enabled and no `baseURL` is set in the configuration (or via environment variables), Better Auth uses the forwarded headers to construct the base URL on each request. This means OAuth callbacks, email verification links, and redirects will automatically use whichever domain the user loaded the app on.
@@ -193,13 +193,13 @@ When enabled, the base URL resolution follows this priority:
 If you're serving your app from multiple approved domains, you'll typically want to:
 
 * **Omit `baseURL`** from the configuration so it's derived per-request from the proxy headers
-* Set **`trustedOrigins`** to an allowlist of your approved domains (see below)
+* Set &#x2A;*`trustedOrigins`** to an allowlist of your approved domains (see below)
 * Leave `crossSubDomainCookies` disabled — cookies are host-only by default, which means each domain gets its own independent session
 
-## Trusted Origins
+## ## Trusted Origins
 Trusted origins prevent CSRF attacks and block open redirects. You can set a list of trusted origins in the `trustedOrigins` configuration option. Requests from origins not on this list are automatically blocked.
 
-## Basic Usage
+## ### Basic Usage
 The most basic usage is to specify exact origins, below is an example of a trusted origins configuration:
 
 ```typescript
@@ -214,7 +214,7 @@ The most basic usage is to specify exact origins, below is an example of a trust
 
 > Do not leave the localhost origin in a trusted origins list of a production auth instance.
 
-## Wildcard Origins
+## ### Wildcard Origins
 Better Auth supports wildcard patterns in trusted origins, which allows you to trust multiple subdomains with a single entry:
 
 ```typescript
@@ -227,20 +227,20 @@ Better Auth supports wildcard patterns in trusted origins, which allows you to t
 }
 ```
 
-## Protocol-specific wildcards
+## #### Protocol-specific wildcards
 When using a wildcard pattern with a protocol prefix (like `https://`):
 
 * The protocol must match exactly
 * The domain can have any subdomain in place of the `*`
 * Requests using a different protocol will be rejected, even if the domain matches
 
-## Protocol-agnostic wildcards
+## #### Protocol-agnostic wildcards
 When using a wildcard pattern without a protocol prefix (like `*.example.com`):
 
 * Any protocol (http, https, etc.) will be accepted
 * The domain must match the wildcard pattern
 
-## Custom Schemes
+## ### Custom Schemes
 Trusted origins also support custom schemes for mobile apps and browser extensions:
 
 ```typescript
@@ -254,7 +254,7 @@ Trusted origins also support custom schemes for mobile apps and browser extensio
 }
 ```
 
-## Dynamic origin list
+## ### Dynamic origin list
 You can also dynamically set the list of trusted origins by providing a function that returns it:
 
 ```typescript
@@ -268,13 +268,13 @@ You can also dynamically set the list of trusted origins by providing a function
 
 > **Important**: This function will be invoked per incoming request, so be careful if you decide to dynamically fetch your list of trusted domains.
 
-## Outbound OAuth Requests
+## ## Outbound OAuth Requests
 During sign-in, Better Auth makes server-side requests to OAuth and OIDC provider endpoints: the token exchange, token refresh, token introspection, and key-set (JWKS) requests. These requests do not follow HTTP redirects. A conformant provider answers these endpoints with a direct response and never redirects, so standard integrations are unaffected. Refusing redirects keeps a provider endpoint from steering a server-side request to an unintended internal address.
 
-## Email Enumeration Protection
+## ## Email Enumeration Protection
 Better Auth prevents email enumeration on the sign-up and change-email endpoints. When `requireEmailVerification` is enabled or `autoSignIn` is set to `false`, the sign-up endpoint returns the same `200` response whether the email is already registered or not, following [OWASP authentication best practices](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages). Timing attacks are mitigated by simulating password hashing on duplicate sign-up attempts.
 
 See [Email and Password — Email Enumeration Protection](/docs/authentication/email-password#email-enumeration-protection) for configuration details.
 
-## Reporting Vulnerabilities
+## ## Reporting Vulnerabilities
 If you discover a security vulnerability in Better Auth, please report it via [GitHub Security Advisories](https://github.com/better-auth/better-auth/security/advisories/new). We address all reports promptly, and credits will be given for validated discoveries.

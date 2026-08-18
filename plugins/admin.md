@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/admin
 title: "Admin"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Admin plugin for Better Auth
@@ -68,6 +68,22 @@ export const authClient = createAuthClient({
 ## Usage
 
 Before performing any admin operations, the user must be authenticated with an admin account. An admin is any user assigned the `admin` role or any user whose ID is included in the `adminUserIds` option.
+
+To create the first admin user, run the CLI after adding the Admin plugin and applying the schema:
+
+#### npm
+
+```
+npx auth@latest create-admin --email admin@example.com --name "Admin" --role admin
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+If users already exist, the CLI asks for confirmation before creating another admin. Use `--force` or `--yes` to skip that prompt. The CLI marks the admin email as verified by default; pass `--no-email-verified` to disable that.
 
 ### Create User
 

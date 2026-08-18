@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/auth0-migration-guide
 title: "Auth0 Migration Guide"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Migrating from Auth0 to Better Auth
@@ -16,11 +16,11 @@ In this guide, we'll walk through the steps to migrate a project from Auth0 to B
 
 > This migration will invalidate all active sessions. When the [Organization](/docs/plugins/organization) plugin is enabled, the script will also attempt a best-effort migration of Auth0 Organizations, their members, and per-member roles. Invitations and enabled-connection configuration are not migrated and should be reconfigured manually in Better Auth.
 
-## Before You Begin
+## ## Before You Begin
 Before starting the migration process, set up Better Auth in your project. Follow the [installation guide](/docs/installation) to get started.
 
 
-### Connect to your database
+### ### Connect to your database
 You'll need to connect to your database to migrate the users and accounts. You can use any database you want, but for this example, we'll use PostgreSQL.
 
 
@@ -63,7 +63,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Enable Email and Password (Optional)
+### ### Enable Email and Password (Optional)
 Enable the email and password in your auth config and implement your own logic for sending verification emails, reset password emails, etc.
 
 ```ts title="auth.ts"
@@ -86,7 +86,7 @@ export const auth = betterAuth({
 
 See [Email and Password](/docs/authentication/email-password) for more configuration options.
 
-### Setup Social Providers (Optional)
+### ### Setup Social Providers (Optional)
 Add social providers you have enabled in your Auth0 project in your auth config.
 
 ```ts title="auth.ts"
@@ -112,7 +112,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Add Plugins (Optional)
+### ### Add Plugins (Optional)
 You can add the following plugins to your auth config based on your needs.
 
 [Admin](/docs/plugins/admin) Plugin will allow you to manage users, user impersonations and app level roles and permissions.
@@ -152,7 +152,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Generate Schema
+### ### Generate Schema
 If you're using a custom database adapter, generate the schema:
 
 ```sh
@@ -165,14 +165,14 @@ or if you're using the default adapter, you can use the following command:
 npx auth migrate
 ```
 
-### Install Dependencies
+### ### Install Dependencies
 Install the required dependencies for the migration:
 
 ```bash
 npm install auth0
 ```
 
-### Create the migration script
+### ### Create the migration script
 Create a new file called `migrate-auth0.ts` in the `scripts` folder and add the following code:
 
 > Instead of using the Management API, you can use Auth0's bulk user export functionality and pass the exported JSON data directly to the `auth0Users` array. This is especially useful if you need to migrate password hashes and complete user data, which are not available through the Management API.
@@ -211,7 +211,52 @@ const auth0Client = new ManagementClient({
     clientSecret: process.env.AUTH0_SECRET!,
 });
 
+// Map every social provider in your Auth0 export to the exact trusted issuer
+// Better Auth uses. For OAuth providers without one, use
+// local:oauth:<encoded providerId>, with the provider ID segment
+// percent-encoded.
+const accountIssuers: Record<string, string> = {
+    github: "local:oauth:github",
+    google: "https://accounts.google.com",
+};
 
+function getAccountIssuer(providerId: string) {
+    const issuer = accountIssuers[providerId];
+    if (!issuer) {
+        throw new Error(`Missing trusted issuer for ${providerId}`);
+    }
+    return issuer;
+}
+
+function getAccountProviderId(identity: { provider: string }) {
+    return identity.provider === "auth0"
+        ? "credential"
+        : (identity.provider.split("-")[0] ?? identity.provider);
+}
+
+function assertAccountIssuerCoverage(
+    users: ReadonlyArray<{
+        identities?: ReadonlyArray<{ provider: string }>;
+    }>,
+) {
+    const missingProviderIds = [
+        ...new Set(
+            users
+                .flatMap((user) => user.identities ?? [])
+                .map(getAccountProviderId)
+                .filter(
+                    (providerId) =>
+                        providerId !== "credential" && !accountIssuers[providerId],
+                ),
+        ),
+    ].sort();
+
+    if (missingProviderIds.length > 0) {
+        throw new Error(
+            `Missing trusted issuers for Auth0 providers: ${missingProviderIds.join(", ")}. Update accountIssuers before running the migration.`,
+        );
+    }
+}
 
 function safeDateConversion(timestamp?: string | number): Date {
     if (!timestamp) return new Date();
@@ -341,7 +386,13 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
 
     for (const identity of auth0User.identities) {
         try {
-            const providerId = identity.provider === 'auth0' ? "credential" : identity.provider.split("-")[0];
+            const providerId = getAccountProviderId(identity);
+            const issuer = providerId === "credential"
+                ? "local:credential"
+                : getAccountIssuer(providerId);
+            const accountId = providerId === "credential"
+                ? userId
+                : identity.user_id;
             await ctx.adapter.create({
                 model: "account",
                 data: {
@@ -349,7 +400,8 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
                     userId: userId,
                     password: await migratePassword(auth0User),
                     providerId: providerId || identity.provider,
-                    accountId: identity.user_id,
+                    issuer,
+                    accountId,
                     accessToken: identity.access_token,
                     tokenType: identity.token_type,
                     refreshToken: identity.refresh_token,
@@ -373,7 +425,8 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
                         userId: userId,
                         password: await migratePassword(auth0User),
                         providerId: providerId,
-                        accountId: identity.user_id,
+                        issuer,
+                        accountId,
                         accessToken: identity.access_token,
                         tokenType: identity.token_type,
                         refreshToken: identity.refresh_token,
@@ -496,6 +549,7 @@ async function migrateFromAuth0() {
 
 
         console.log(`Found ${auth0Users.length} users to migrate`);
+        assertAccountIssuerCoverage(auth0Users);
 
         for (const auth0User of auth0Users) {
             try {
@@ -567,7 +621,7 @@ Make sure to replace the Auth0 environment variables with your own values:
 * `AUTH0_CLIENT_ID`
 * `AUTH0_SECRET`
 
-### Run the migration
+### ### Run the migration
 Run the migration script:
 
 ```sh
@@ -582,7 +636,7 @@ bun run scripts/migrate-auth0.ts # or use your preferred runtime
 > 4. Keep Auth0 installed and configured until the migration is complete
 > 5. The script handles bcrypt password hashes by default. For custom password hashing algorithms, you'll need to modify the `migratePassword` function
 
-### Change password hashing algorithm
+### ### Change password hashing algorithm
 By default, Better Auth uses the `scrypt` algorithm to hash passwords. Since Auth0 uses `bcrypt`, you'll need to configure Better Auth to use bcrypt for password verification.
 
 First, install bcrypt:
@@ -612,7 +666,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Verify the migration
+### ### Verify the migration
 After running the migration, verify that:
 
 1. All users have been properly migrated
@@ -621,7 +675,7 @@ After running the migration, verify that:
 4. Two-factor authentication settings are preserved (if enabled)
 5. User roles and permissions are correctly mapped
 
-### Update your components
+### ### Update your components
 Now that the data is migrated, update your components to use Better Auth. Here's an example for the sign-in component:
 
 ```tsx title="components/auth/sign-in.tsx"
@@ -649,7 +703,7 @@ export const SignIn = () => {
 };
 ```
 
-### Update the middleware
+### ### Update the middleware
 Replace your Auth0 middleware with Better Auth's middleware:
 
 ```ts title="middleware.ts"
@@ -676,7 +730,7 @@ export const config = {
 };
 ```
 
-### Remove Auth0 Dependencies
+### ### Remove Auth0 Dependencies
 Once you've verified everything is working correctly with Better Auth, remove Auth0:
 
 ```bash
@@ -684,17 +738,17 @@ npm remove @auth0/auth0-react @auth0/auth0-spa-js @auth0/nextjs-auth0
 ```
 
 
-## Additional Considerations
-## Password Migration
+## ## Additional Considerations
+## ### Password Migration
 The migration script handles bcrypt password hashes by default. If you're using custom password hashing algorithms in Auth0, you'll need to modify the `migratePassword` function in the migration script to handle your specific case.
 
-## Role Mapping
+## ### Role Mapping
 The script includes a basic role mapping function (`mapAuth0RoleToBetterAuthRole`). Customize this function based on your Auth0 roles and Better Auth role requirements.
 
-## Rate Limiting
+## ### Rate Limiting
 The migration script includes pagination to handle large numbers of users. Adjust the `per_page` (offset pagination) and `take` (checkpoint pagination) values passed to the Auth0 `list()` calls based on your needs and Auth0's rate limits.
 
-## Wrapping Up
+## ## Wrapping Up
 Now! You've successfully migrated from Auth0 to Better Auth.
 
 Better Auth offers greater flexibility and more features—be sure to explore the [documentation](/docs) to unlock its full potential.

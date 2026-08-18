@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/2fa
 title: "2fa"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Enhance your app's security with two-factor authentication.
@@ -83,33 +83,45 @@ export const authClient = createAuthClient({
 
 ### Enabling 2FA
 
-To enable two-factor authentication, call `twoFactor.enable` with the user's password (required for credential accounts) and issuer (optional). If you enable `allowPasswordless`, the password can be omitted for users without a credential account.
+To enable two-factor authentication, call `twoFactor.enable`. The user must provide their password if they have an email/password account. You can choose between two methods:
+
+- **`totp`** (default) — sets up an authenticator app. The user must verify a TOTP code before 2FA becomes active. Returns `{ method: "totp", totpURI, backupCodes }`.
+- **`otp`** — enables email/SMS-based codes immediately, with no extra verification step. Returns `{ method: "otp" }`. Requires `otpOptions.sendOTP` to be configured on the server.
 
 POST/two-factor/enable
 
 ```
 const { data, error } = await authClient.twoFactor.enable({
-    password: "secure-password",
+    password: "secure-password", // required
+    method: "totp",
     issuer: "my-app-name",
 });
 ```
 
 Parameters
 
-`password` string
+`password` stringrequired
 
-The user's password (required for credential accounts)
+The user’s password. Required for email/password accounts.
+
+`method` "otp" | "totp"
+
+The 2FA method to enable.
 
 `issuer` string
 
-An optional custom issuer for the TOTP URI. Defaults to app-name defined in your auth config.
+Custom issuer for the TOTP URI. Defaults to the app name in your auth config.
 
-When 2FA is enabled:
+When `method` is `"totp"` (default):
 
-- An encrypted `secret` and `backupCodes` are generated.
-- `enable` returns `totpURI` and `backupCodes`.
+- Returns `{ method: "totp", totpURI, backupCodes }`. Use `totpURI` to display a QR code.
+- By default, `twoFactorEnabled` remains `false` until the user verifies a TOTP code. When the server plugin is configured with `skipVerificationOnEnable: true`, TOTP is enabled without enrollment-code verification. See [verifying TOTP](#totp).
 
-Note: `twoFactorEnabled` won’t be set to `true` until the user verifies their TOTP code. Learn more about verifying TOTP in the [TOTP section](#totp). You can skip verification by setting `skipVerificationOnEnable` to true in your plugin config.
+When `method` is `"otp"`:
+
+- Returns `{ method: "otp" }`. `twoFactorEnabled` is set to `true` immediately.
+- Requires `otpOptions.sendOTP` to be configured on the server.
+- OTP codes are sent via the configured `sendOTP` function at sign-in time. Setting `twoFactorEnabled` directly via a database hook achieves the same result.
 
 ### Sign In with 2FA
 
@@ -527,7 +539,9 @@ When the account lockout expires; null when the account is not locked.
 
 **twoFactorTable**: The name of the table that stores the two factor authentication data. Default: `twoFactor`.
 
-**skipVerificationOnEnable**: Skip the verification process before enabling two factor for a user.
+**issuer**: Custom issuer name for the TOTP URI. Defaults to your `appName`.
+
+**skipVerificationOnEnable**: Activate TOTP immediately without verifying an enrollment code. Defaults to `false`.
 
 **allowPasswordless**: Allow enabling and managing 2FA without a password for users that do not have a credential account. Password is still required if a credential account exists. This option does not change which sign-in methods are challenged for 2FA.
 

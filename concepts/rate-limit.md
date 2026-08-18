@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/rate-limit
 title: "Rate Limit"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Learn how to configure rate limiting in Better Auth, including IP address detection, IPv6 support, custom rate limit windows, storage backends, error handling, and per-endpoint rules.
@@ -252,16 +252,20 @@ export const auth = betterAuth({
     //...other options
     rateLimit: {
         customStorage: {
-            get: async (key) => {
-                // get rate limit data
-            },
-            set: async (key, value) => {
-                // set rate limit data
+            consume: async (key, rule) => {
+                // atomically record one request for \`key\`
+                // rule.window is in seconds, rule.max is the request limit
+                return {
+                    allowed: true,
+                    retryAfter: null,
+                };
             },
         },
     },
 })
 ```
+
+`customStorage.consume` must check and increment in one operation. Better Auth no longer accepts separate `get` and `set` methods for rate limiting because that shape can allow concurrent requests to pass the same stale counter.
 
 ## Handling Rate Limit Errors
 

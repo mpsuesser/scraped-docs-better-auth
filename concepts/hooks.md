@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/hooks
 title: "Hooks"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Hooks
@@ -16,10 +16,10 @@ Hooks in Better Auth let you "hook into" the lifecycle and execute custom logic.
 
 > We highly recommend using hooks if you need to make custom adjustments to an endpoint rather than making another endpoint outside of Better Auth.
 
-## Before Hooks
+## ## Before Hooks
 **Before hooks** run *before* an endpoint is executed. Use them to modify requests, pre validate data, or return early.
 
-## Example: Enforce Email Domain Restriction
+## ### Example: Enforce Email Domain Restriction
 This hook ensures that users can only sign up if their email ends with `@example.com`:
 
 ```ts title="auth.ts"
@@ -42,7 +42,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Example: Modify Request Context
+## ### Example: Modify Request Context
 To adjust the request context before proceeding:
 
 ```ts title="auth.ts"
@@ -68,10 +68,10 @@ export const auth = betterAuth({
 });
 ```
 
-## After Hooks
+## ## After Hooks
 **After hooks** run *after* an endpoint is executed. Use them to modify responses.
 
-## Example: Send a notification to your channel when a new user is registered
+## ### Example: Send a notification to your channel when a new user is registered
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 import { createAuthMiddleware } from "better-auth/api";
@@ -94,7 +94,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Example: Handling Multiple Endpoints in a Single Hook
+## ### Example: Handling Multiple Endpoints in a Single Hook
 Since `before` and `after` each accept a single `createAuthMiddleware` call, use conditional checks on `ctx.path` to handle multiple endpoints within the same hook:
 
 ```ts title="auth.ts"
@@ -120,7 +120,7 @@ export const auth = betterAuth({
 
 > Each hook (`before` / `after`) takes a single middleware function, not an array. To run logic for different endpoints, branch on `ctx.path` inside that single function.
 
-## Ctx
+## ## Ctx
 When you call `createAuthMiddleware` a `ctx` object is passed that provides a lot of useful properties. Including:
 
 * **Path:** `ctx.path` to get the current endpoint path.
@@ -132,10 +132,10 @@ When you call `createAuthMiddleware` a `ctx` object is passed that provides a lo
 
 and more.
 
-## Request Response
+## ### Request Response
 This utilities allows you to get request information and to send response from a hook.
 
-## JSON Responses
+## #### JSON Responses
 Use `ctx.json` to send JSON responses:
 
 ```ts
@@ -148,7 +148,7 @@ const hook = createAuthMiddleware(async (ctx) => {
 });
 ```
 
-## Redirects
+## #### Redirects
 Use `ctx.redirect` to redirect users:
 
 ```ts
@@ -159,7 +159,7 @@ const hook = createAuthMiddleware(async (ctx) => {
 });
 ```
 
-## Cookies
+## #### Cookies
 * Set cookies: `ctx.setCookie` or `ctx.setSignedCookie`.
 * Get cookies: `ctx.getCookie` or `ctx.getSignedCookie`.
 
@@ -179,7 +179,7 @@ const hook = createAuthMiddleware(async (ctx) => {
 });
 ```
 
-## Errors
+## #### Errors
 Throw errors with `APIError` for a specific status code and message:
 
 ```ts
@@ -192,10 +192,10 @@ const hook = createAuthMiddleware(async (ctx) => {
 });
 ```
 
-## Context
+## ### Context
 The `ctx` object contains another `context` object inside that's meant to hold contexts related to auth. Including a newly created session on after hook, cookies configuration, password hasher and so on.
 
-## New Session
+## #### New Session
 The newly created session after an endpoint is run. This only exist in after hook.
 
 ```ts title="auth.ts"
@@ -206,7 +206,7 @@ createAuthMiddleware(async (ctx) => {
 });
 ```
 
-## Returned
+## #### Returned
 The returned value from the hook is passed to the next hook in the chain.
 
 ```ts title="auth.ts"
@@ -217,7 +217,7 @@ createAuthMiddleware(async (ctx) => {
 });
 ```
 
-## Response Headers
+## #### Response Headers
 The response headers added by endpoints and hooks that run before this hook.
 
 ```ts title="auth.ts"
@@ -228,7 +228,7 @@ createAuthMiddleware(async (ctx) => {
 });
 ```
 
-## Predefined Auth Cookies
+## #### Predefined Auth Cookies
 Access BetterAuth’s predefined cookie properties:
 
 ```ts title="auth.ts"
@@ -239,27 +239,27 @@ createAuthMiddleware(async (ctx) => {
 });
 ```
 
-## Secret
+## #### Secret
 You can access the `secret` for your auth instance on `ctx.context.secret`
 
-## Password
+## #### Password
 The password object provider `hash` and `verify`
 
 * `ctx.context.password.hash`: let's you hash a given password.
 * `ctx.context.password.verify`: let's you verify given `password` and a `hash`.
 
-## Adapter
+## #### Adapter
 Adapter exposes the adapter methods used by Better Auth. Including `findOne`, `findMany`, `create`, `delete`, `update` and `updateMany`. You generally should use your actually `db` instance from your orm rather than this adapter.
 
-## Internal Adapter
+## #### Internal Adapter
 These are calls to your db that perform specific actions. `createUser`, `createSession`, `updateSession`...
 
 This may be useful to use instead of using your db directly to get access to `databaseHooks`, proper `secondaryStorage` support and so on. If you're make a query similar to what exist in this internal adapter actions it's worth a look.
 
-## generateId
+## #### generateId
 You can use `ctx.context.generateId` to generate Id for various reasons.
 
-## runInBackground
+## #### runInBackground
 Schedules a task to run after the response is sent. Use for fire-and-forget operations (cleanup, analytics, rate limit counter updates). Configure the handler in [advanced.backgroundTasks](/docs/reference/options#backgroundtasks).
 
 ```ts title="auth.ts"
@@ -280,7 +280,7 @@ export const auth = betterAuth({
 });
 ```
 
-## runInBackgroundOrAwait
+## #### runInBackgroundOrAwait
 Defers the task when a handler is configured, otherwise awaits it. Use for operations that must complete (e.g. sending emails) but benefit from not blocking when a handler exists. Configure the handler in [advanced.backgroundTasks](/docs/reference/options#backgroundtasks).
 
 ```ts title="auth.ts"
@@ -303,5 +303,5 @@ export const auth = betterAuth({
 });
 ```
 
-## Reusable Hooks
+## ## Reusable Hooks
 If you need to reuse a hook across multiple endpoints, consider creating a plugin. Learn more in the [Plugins Documentation](/docs/concepts/plugins).

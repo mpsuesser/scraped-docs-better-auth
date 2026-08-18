@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/apple
 title: "Apple"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Apple
@@ -13,7 +13,7 @@ Apple provider setup and usage.
 
 
 
-### Get your OAuth credentials
+### ### Get your OAuth credentials
 To use Apple sign in, you need a client ID, Team ID, Key ID, and private key. You can get them from the [Apple Developer Portal](https://developer.apple.com/account/resources/authkeys/list), then use them to generate the client secret JWT.
 
 You will need an active **Apple Developer account** to access the developer portal and generate these credentials.
@@ -38,7 +38,7 @@ Follow these steps to set up your App ID, Service ID, and generate the key neede
    * Click the `+` icon.
    * Select `Service IDs`, then click `Continue`.
    * **Description:** Enter a description for this service (e.g., your app name again).
-   * **Identifier:** Set a unique identifier for the service. Use a reverse domain format, distinct from your App ID (e.g., `com.yourcompany.yourapp.si`, where `.si` indicates service identifier - this is for your organization and not required). **This Service ID will be your `clientId`.**
+   * **Identifier:** Set a unique identifier for the service. Use a reverse domain format, distinct from your App ID (e.g., `com.yourcompany.yourapp.si`, where `.si` indicates service identifier - this is for your organization and not required). &#x2A;*This Service ID will be your `clientId`.**
    * Click `Continue`, then `Register`.
 
 4. **Configure the Service ID:**
@@ -58,7 +58,7 @@ Follow these steps to set up your App ID, Service ID, and generate the key neede
    * Click the `Configure` button next to `Sign In with Apple`.
    * Select the **Primary App ID** you created earlier.
    * Click `Save`, then `Continue`, then `Register`.
-   * **Download the Key:** Immediately download the `.p8` key file. **This file is only available for download once.** Note the Key ID (available on the Keys page after creation) and your Team ID (available in your Apple Developer Account settings).
+   * **Download the Key:** Immediately download the `.p8` key file. &#x2A;*This file is only available for download once.** Note the Key ID (available on the Keys page after creation) and your Team ID (available in your Apple Developer Account settings).
 
 6. **Generate the Client Secret (JWT):**
    Apple requires a JSON Web Token (JWT) to be generated dynamically using the downloaded `.p8` key, the Key ID, and your Team ID. This JWT serves as your `clientSecret`.
@@ -103,7 +103,7 @@ bun add jose
 ```
 
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to add it to the `socialProviders` option of the auth instance.
 
 You also need to add `https://appleid.apple.com` to the `trustedOrigins` array in your auth instance configuration to allow communication with Apple's authentication servers.
@@ -161,8 +161,8 @@ For multiple static audiences (for example a Service ID plus a native bundle ID)
 > 
 > This limitation is enforced by Apple's security requirements and cannot be bypassed.
 
-## Usage
-## Sign In with Apple
+## ## Usage
+## ### Sign In with Apple
 To sign in with Apple, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `apple`.
@@ -178,7 +178,7 @@ const signIn = async () => {
 }
 ```
 
-## Sign In with Apple With ID Token
+## ### Sign In with Apple With ID Token
 To sign in with Apple using the ID Token, you can use the `signIn.social` function to pass the ID Token.
 
 This is useful when you have the ID Token from Apple on the client-side and want to use it to sign in on the server.
@@ -196,7 +196,7 @@ await authClient.signIn.social({
 })
 ```
 
-## Generate Apple Client Secret (JWT)
+## ## Generate Apple Client Secret (JWT)
 If you previously used the in-page generator from this section, use the [`jose` example above](#configure-the-provider) instead. It uses Better Auth's async provider configuration to generate the Apple client secret JWT from your Client ID, Team ID, Key ID, and private key.
 
 The example uses a 180-day expiration, which stays below Apple's six-month limit. Generating the token from configuration avoids copying a static generated token into your auth setup.

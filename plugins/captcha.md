@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/captcha
 title: "Captcha"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Captcha plugin
@@ -69,7 +69,7 @@ it validates the captcha token on the server, by calling the captcha provider's 
 
 - **`provider` (required)**: your captcha provider.
 - **`secretKey` (required)**: your provider's secret key used for the server-side validation.
-- `endpoints` (optional): replaces the default array of paths where captcha verification is enforced. If set, only the specified paths will be protected. Default is `["/sign-up/email", "/sign-in/email", "/request-password-reset"]`.
+- `endpoints` (optional): replaces the default array of paths where captcha verification is enforced. If set, only the specified paths will be protected. Paths match exactly unless they include wildcards, such as `/sign-in/*` for one segment or `/sign-in/**` for nested routes. Default is `["/sign-up/email", "/sign-in/email", "/request-password-reset"]`.
 - `minScore` (optional - only *Google ReCAPTCHA v3*): minimum score threshold. Default is `0.5`.
 - `siteKey` (optional - only *hCaptcha* and *CaptchaFox*): prevents tokens issued on one sitekey from being redeemed elsewhere.
 - `siteVerifyURLOverride` (optional): overrides endpoint URL for the captcha verification request.

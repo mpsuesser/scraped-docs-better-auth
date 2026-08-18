@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/cookies
 title: "Cookies"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Cookies
@@ -12,9 +12,17 @@ Learn how Better Auth uses cookies, including cookie prefixes, custom cookie att
 
 
 
-Cookies are used to store data such as session tokens, session data, OAuth state, and more. All cookies are signed using the `secret` key provided in the auth options or the `BETTER_AUTH_SECRET` environment variable. If you use [versioned secrets](/docs/reference/options#secrets) for rotation, encrypted cookie data (such as JWE session caches) will automatically use the current key and remain decryptable with previous keys.
+Cookies are used to store data such as session tokens, session data, OAuth state, and more.
 
-## Cookie Prefix
+* The primary `session_token` cookie remains an opaque, secret-signed session identifier.
+* The `session_data` cookie is only present when `session.cookieCache` is enabled, and its encoding depends on the configured strategy:
+  * `compact`: base64url + HMAC with your Better Auth secret
+  * `jwt`: HS256 by default, or asymmetric signing when `sessionCookieCache` is enabled on the JWT plugin
+  * `jwe`: encrypted with your Better Auth secret
+
+If you use [versioned secrets](/docs/reference/options#secrets) for rotation, secret-backed cookie data (including signed cookies and encrypted JWE session caches) will automatically use the current key and remain compatible with previous keys where supported.
+
+## ### Cookie Prefix
 By default, Better Auth cookies follow the format `${prefix}.${cookie_name}`. The default prefix is "better-auth". You can change the prefix by setting `cookiePrefix` in the `advanced` object of the auth options.
 
 ```ts title="auth.ts"
@@ -27,7 +35,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Custom Cookies
+## ### Custom Cookies
 All cookies are `httpOnly` and `secure` when the server is running in production mode.
 
 If you want to set custom cookie names and attributes, you can do so by setting `cookies` in the `advanced` object of the auth options.
@@ -57,7 +65,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Cross Subdomain Cookies
+## ### Cross Subdomain Cookies
 Sometimes you may need to share cookies across subdomains.
 For example, if you authenticate on `auth.example.com`, you may also want to access the same session on `app.example.com`.
 
@@ -86,7 +94,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Secure Cookies
+## ### Secure Cookies
 By default, cookies are secure only when the server is running in production mode. You can force cookies to be always secure by setting `useSecureCookies` to `true` in the `advanced` object in the auth options.
 
 ```ts title="auth.ts"
@@ -99,7 +107,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Safari, ITP, and Cross-Domain Setups
+## ## Safari, ITP, and Cross-Domain Setups
 Safari includes a privacy feature called Intelligent Tracking Prevention (ITP) that blocks third-party cookies.
 
 If your Better Auth API is hosted on a different domain than your frontend, Safari may block authentication cookies entirely.
@@ -127,7 +135,7 @@ To solve this, there are two solutions:
 1. Using a reverse proxy to proxy the request to the API.
 2. Using a shared parent domain.
 
-## Using a Reverse Proxy
+## ### Using a Reverse Proxy
 Instead of calling your API directly, you can proxy it through the same domain as your frontend.
 
 For example, instead of calling:
@@ -146,7 +154,7 @@ Then configure your hosting provider to proxy the request to your actual API ser
 
 This makes the request appear first-party to Safari, allowing cookies to function correctly.
 
-## Example with Netlify
+## #### Example with Netlify
 ```toml title="netlify.toml"
 [[redirects]]
   from = "/api/*"
@@ -155,7 +163,7 @@ This makes the request appear first-party to Safari, allowing cookies to functio
   force = true
 ```
 
-## Example with Vercel
+## #### Example with Vercel
 ```ts title="vercel.json"
 {
   "rewrites": [
@@ -167,7 +175,7 @@ This makes the request appear first-party to Safari, allowing cookies to functio
 }
 ```
 
-## Using a Shared Parent Domain
+## ### Using a Shared Parent Domain
 You can also use a shared parent domain to allow cookies to be shared across subdomains:
 
 ```

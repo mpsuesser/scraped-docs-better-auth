@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/typescript
 title: "Typescript"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # TypeScript
@@ -14,8 +14,8 @@ Learn about TypeScript configuration for Better Auth, including strict mode, inf
 
 Better Auth is designed to be type-safe. Both the client and server are built with TypeScript, allowing you to easily infer types.
 
-## TypeScript Config
-## Strict Mode
+## ## TypeScript Config
+## ### Strict Mode
 Better Auth is designed to work with TypeScript's strict mode. We recommend enabling strict mode in your TypeScript config file:
 
 ```json title="tsconfig.json"
@@ -41,7 +41,7 @@ When `strict` is `true`, `strictNullChecks` is enabled as well. If you explicitl
 > If you're running into issues with TypeScript inference exceeding maximum length the compiler will serialize,
 > then please make sure you're following the instructions above, as well as ensuring that both `declaration` and `composite` are not enabled.
 
-## Inferring Types
+## ## Inferring Types
 Both the client SDK and the server offer types that can be inferred using the `$Infer` property. Plugins can extend base types like `User` and `Session`, and you can use `$Infer` to infer these types. Additionally, plugins can provide extra types that can also be inferred through `$Infer`.
 
 ```ts title="auth-client.ts" 
@@ -67,7 +67,7 @@ export const auth = betterAuth({
 type Session = typeof auth.$Infer.Session
 ```
 
-## Additional Fields
+## ## Additional Fields
 Better Auth allows you to add additional fields to the user and session objects. All additional fields are properly inferred and available on the server and client side.
 
 ```ts title="auth.ts"
@@ -92,7 +92,7 @@ type Session = typeof auth.$Infer.Session
 
 In the example above, we added a `role` field to the user object. This field is now available on the `Session` type.
 
-## The input property
+## ### The `input` property
 The `input` property in an additional field configuration determines whether the field should be included in the user input. This property defaults to `true`, meaning the field will be part of the user input during operations like registration.
 
 To prevent a field from being part of the user input, you must explicitly set `input: false`:
@@ -110,7 +110,7 @@ When `input` is set to `false`, the field will be excluded from user input, prev
 
 By default, additional fields are included in the user input, which can lead to security vulnerabilities if not handled carefully. For fields that should not be set by the user, like a `role`, it is crucial to set `input: false` in the configuration.
 
-## Inferring Additional Fields on Client
+## ### Inferring Additional Fields on Client
 To make sure proper type inference for additional fields on the client side, you need to inform the client about these fields. There are two approaches to achieve this, depending on your project structure:
 
 1. For Monorepo or Single-Project Setups

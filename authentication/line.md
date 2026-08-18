@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/line
 title: "Line"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # LINE
@@ -13,7 +13,7 @@ LINE provider setup and usage.
 
 
 
-### Get your LINE credentials
+### ### Get your LINE credentials
 1. Create a channel in the LINE Developers Console.
 2. Note your Channel ID (client\_id) and Channel secret (client\_secret).
 3. In the channel settings, add your Redirect URI, e.g. `http://localhost:3000/api/auth/callback/line` for local development.
@@ -21,7 +21,7 @@ LINE provider setup and usage.
 
 See the [LINE Login v2.1 reference](https://developers.line.biz/en/reference/line-login/#issue-access-token) for details.
 
-### Configure the provider
+### ### Configure the provider
 Add your LINE credentials to `socialProviders.line` in your auth configuration.
 
 ```ts title="auth.ts"
@@ -41,8 +41,8 @@ export const auth = betterAuth({
 ```
 
 
-## Usage
-## Sign In with LINE
+## ## Usage
+## ### Sign In with LINE
 Use the client `signIn.social` with `provider: "line"`.
 
 ```ts title="auth-client.ts"
@@ -54,7 +54,7 @@ async function signInWithLINE() {
 }
 ```
 
-## Sign In with LINE using ID Token (optional)
+## ### Sign In with LINE using ID Token (optional)
 If you obtain the LINE ID token on the client, you can sign in directly without redirection.
 
 ```ts title="auth-client.ts"
@@ -67,14 +67,14 @@ await authClient.signIn.social({
 });
 ```
 
-## Notes
+## ### Notes
 * Default scopes include `openid profile email`. Adjust as needed via provider options.
 * Verify redirect URI exactly matches the value configured in LINE Developers Console.
 * LINE ID token verification uses the official endpoint and checks audience and optional nonce per spec.
 
 Designing a login button? Follow LINE's button [guidelines](https://developers.line.biz/en/docs/line-login/login-button/).
 
-## Multi-Channel Support
+## ## Multi-Channel Support
 LINE requires separate OAuth channels for different countries (Japan, Thailand, Taiwan, etc.), each with its own `clientId` and `clientSecret`. The standard `socialProviders.line` configuration only supports a single channel.
 
 To support multiple countries/channels, use the [Generic OAuth plugin](/docs/plugins/generic-oauth) with the `line()` helper function. This allows you to configure multiple LINE providers with different `providerId`s:
@@ -115,11 +115,8 @@ When signing in, use the appropriate `providerId` (e.g., `"line-jp"`, `"line-th"
 
 ```ts title="auth-client.ts"
 import { createAuthClient } from "better-auth/client";
-import { genericOAuthClient } from "better-auth/client/plugins";
 
-const authClient = createAuthClient({
-  plugins: [genericOAuthClient()],
-});
+const authClient = createAuthClient();
 
 // Sign in with Japan channel
 await authClient.signIn.social({ provider: "line-jp" });

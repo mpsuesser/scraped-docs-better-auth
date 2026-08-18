@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/dash
 title: "Dash"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Dashboard Plugin (dash)
@@ -12,7 +12,7 @@ The `dash()` plugin connects your Better Auth instance to Better Auth Infrastruc
 
 
 
-## Installation
+## ## Installation
 ```ts
 import { betterAuth } from "better-auth";
 import { dash } from "@better-auth/infra";
@@ -28,18 +28,21 @@ export const auth = betterAuth({
 });
 ```
 
-## Configuration Options
-## DashOptions
-| Option             | Type     | Description                                                           |
-| ------------------ | -------- | --------------------------------------------------------------------- |
-| `apiUrl`           | `string` | Better Auth Infrastructure API URL                                    |
-| `kvUrl`            | `string` | KV store URL for caching                                              |
-| `apiKey`           | `string` | Your API key for authentication                                       |
-| `apiTimeout`       | `number` | Timeout in ms for infra API HTTP requests (`apiUrl`). Default: `3000` |
-| `kvTimeout`        | `number` | Timeout in ms for KV HTTP requests (`kvUrl`). Default: `1000`         |
-| `activityTracking` | `object` | Activity tracking configuration                                       |
+## ## Configuration Options
+## ### DashOptions
+| Option                 | Type     | Description                                                                                  |
+| ---------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| `apiUrl`               | `string` | Better Auth infrastructure URL. Default: `https://dash.better-auth.com`                      |
+| `kvUrl`                | `string` | Better Auth identification infrastructure URL. Default: `https://kv.better-auth.com`         |
+| `apiKey`               | `string` | Your API key for authentication.                                                             |
+| `apiOptions`           | `object` | Dash API HTTP client options. Accepts `timeout?: number` in ms.                              |
+| `kvOptions`            | `object` | KV HTTP client options. Accepts `timeout?: number` and `retry?: { attempts?: number; ... }`. |
+| `apiTimeout`           | `number` | Deprecated alias for `apiOptions.timeout`.                                                   |
+| `kvTimeout`            | `number` | Deprecated alias for `kvOptions.timeout`.                                                    |
+| `activityTracking`     | `object` | Activity tracking configuration.                                                             |
+| `managedDirectorySync` | `object` | Managed SCIM/directory-sync control plane options.                                           |
 
-## Activity Tracking
+## ### Activity Tracking
 ```ts
 dash({
   apiKey: process.env.BETTER_AUTH_API_KEY,
@@ -52,10 +55,124 @@ dash({
 
 When enabled, this adds a `lastActiveAt` field to your user schema that's automatically updated on user activity.
 
-## Event Tracking
+## ### Managed Directory Sync
+```ts
+dash({
+  apiKey: process.env.BETTER_AUTH_API_KEY,
+  managedDirectorySync: {
+    enabled: true,
+    ssoPairing: true,
+    membershipProjection: {
+      enabled: true,
+      role: "member",
+    },
+  },
+})
+```
+
+This opt-in control plane is for the SCIM 1.7 plugin-managed runtime flow. In Better Auth 1.7, SCIM supports three connection modes:
+
+* static code-defined connections
+* application-owned runtime verification
+* plugin-managed runtime connections via `managedConnections`
+
+The `managedDirectorySync` option enables the plugin-managed mode for directory-sync provisioning in `dash`. It creates the reserved schema and APIs needed to manage directory connections and paired SSO state.
+
+## #### Managed directory sync options
+| Option                         | Type      | Description                                                                                                                                                  |
+| ------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `enabled`                      | `boolean` | Enables the managed directory-sync control plane and the SCIM reservation tables / APIs. Default: `false`.                                                   |
+| `ssoPairing`                   | `boolean` | Installs the SSO `resolveUser` and provider-mutation hooks required when a paired directory needs to reconcile a user identity through SSO. Default: `true`. |
+| `membershipProjection`         | `object`  | Enables SCIM-to-organization membership projection when a directory should create group or member membership records.                                        |
+| `membershipProjection.enabled` | `boolean` | Enables the projection hook. Default: `true`.                                                                                                                |
+| `membershipProjection.role`    | `string`  | Role assigned to projected organization memberships. Default: `"member"`.                                                                                    |
+
+Use this when the application wants Better Auth to manage the runtime tenant connection lifecycle for SCIM and pair it with SSO-based identity resolution. It is intended for the new 1.7 flow and complements `scim({ managedConnections })`.
+
+> Enabling `managedDirectorySync` requires the corresponding database migrations for the managed directory-sync tables. Run the migration step before using the managed runtime flow.
+
+
+
+
+#### npm
+
+```bash
+npx auth migrate
+```
+
+#### pnpm
+
+```bash
+pnpm dlx auth migrate
+```
+
+#### yarn
+
+```bash
+yarn dlx auth migrate
+```
+
+#### bun
+
+```bash
+bun x auth migrate
+```
+
+
+If your app manages schema generation separately, run `npx auth generate` and apply the generated migration with your preferred tool.
+
+## ### Database Schema
+When `managedDirectorySync.enabled` is `true`, the dash plugin adds the following models. Better Auth supplies the primary `id` field for each model.
+
+## #### `directorySyncConnection`
+Stores the managed directory's organization, SCIM connection, SSO pairing, lifecycle, and decommission state.
+
+| Column                  | Type      | Constraints                   | Description                                      |
+| ----------------------- | --------- | ----------------------------- | ------------------------------------------------ |
+| `organizationId`        | `string`  | Required, indexed             | Organization that owns the directory.            |
+| `providerId`            | `string`  | Required                      | SSO provider identifier.                         |
+| `aliasKey`              | `string`  | Required, unique, hidden      | Internal directory alias.                        |
+| `provisioningDomainId`  | `string`  | Required, unique              | SCIM provisioning domain.                        |
+| `activeOrganizationKey` | `string`  | Required, unique, hidden      | Active organization key for reconciliation.      |
+| `connectionId`          | `string`  | Optional, unique              | Managed SCIM connection identifier.              |
+| `creationRequestId`     | `string`  | Required, unique, hidden      | Immutable ownership correlation value.           |
+| `status`                | `string`  | Required                      | Current directory lifecycle status.              |
+| `revision`              | `number`  | Required, default `0`, hidden | Mutation revision used for concurrency control.  |
+| `createdAt`             | `date`    | Required                      | Creation timestamp.                              |
+| `createdByActorId`      | `string`  | Required                      | Actor that created the directory.                |
+| `updatedAt`             | `date`    | Required                      | Last update timestamp.                           |
+| `lastActorId`           | `string`  | Required                      | Actor responsible for the latest mutation.       |
+| `ssoProviderId`         | `string`  | Optional                      | Paired SSO provider ID.                          |
+| `ssoProviderRecordId`   | `string`  | Optional, indexed             | Paired SSO provider record.                      |
+| `activeSsoProviderKey`  | `string`  | Required, unique, hidden      | Active SSO provider key.                         |
+| `serializedSsoPairing`  | `string`  | Optional, hidden              | Serialized SSO pairing metadata.                 |
+| `pairingEnforced`       | `boolean` | Required, default `false`     | Whether the SSO pairing requirement is enforced. |
+| `unpairedAt`            | `date`    | Optional                      | Time at which the directory was unpaired.        |
+| `unpairedBy`            | `string`  | Optional                      | Actor that removed the pairing.                  |
+| `decommissionStartedAt` | `date`    | Optional                      | Time decommissioning started.                    |
+| `decommissionedAt`      | `date`    | Optional                      | Time decommissioning completed.                  |
+| `lastError`             | `string`  | Optional, hidden              | Most recent reconciliation error.                |
+
+## #### `directorySyncMembershipProvenance`
+Tracks organization memberships created or managed by directory-sync projection so the plugin can reconcile only the memberships it owns.
+
+| Column                 | Type     | Constraints              | Description                                |
+| ---------------------- | -------- | ------------------------ | ------------------------------------------ |
+| `membershipKey`        | `string` | Required, unique, hidden | Stable key for the projected membership.   |
+| `organizationId`       | `string` | Required, indexed        | Organization containing the membership.    |
+| `userId`               | `string` | Required, indexed        | Better Auth User receiving the membership. |
+| `memberId`             | `string` | Required, unique         | Organization `member` record identifier.   |
+| `ownership`            | `string` | Required, hidden         | Projection ownership state.                |
+| `provisioningDomainId` | `string` | Required, indexed        | SCIM provisioning domain that produced it. |
+| `createdAt`            | `date`   | Required                 | Creation timestamp.                        |
+| `updatedAt`            | `date`   | Required                 | Last update timestamp.                     |
+
+For the full SCIM model and migration guidance, see the [SCIM plugin reference](/docs/plugins/scim/reference) and the [1.7 upgrade guide](/docs/guides/1-7-upgrade-guide).
+
+## ## Event Tracking
 The dash plugin automatically tracks the following events:
 
-## User Events
+## ### User Events
 | Event                        | Trigger                      |
 | ---------------------------- | ---------------------------- |
 | `user_signed_up`             | New user registration        |
@@ -66,7 +183,7 @@ The dash plugin automatically tracks the following events:
 | `user_unbanned`              | User is unbanned             |
 | `user_deleted`               | User account deleted         |
 
-## Session Events
+## ### Session Events
 | Event                        | Trigger                         |
 | ---------------------------- | ------------------------------- |
 | `user_signed_in`             | Successful sign-in              |
@@ -77,21 +194,21 @@ The dash plugin automatically tracks the following events:
 | `user_impersonated`          | Admin starts impersonating user |
 | `user_impersonation_stopped` | Admin stops impersonating       |
 
-## Account Events
+## ### Account Events
 | Event              | Trigger                 |
 | ------------------ | ----------------------- |
 | `account_linked`   | Social account linked   |
 | `account_unlinked` | Social account unlinked |
 | `password_changed` | Password updated        |
 
-## Verification Events
+## ### Verification Events
 | Event                      | Trigger                  |
 | -------------------------- | ------------------------ |
 | `password_reset_requested` | Password reset initiated |
 | `password_reset_completed` | Password reset finished  |
 | `email_verification_sent`  | Verification email sent  |
 
-## Organization Events
+## ### Organization Events
 If you're using the organization plugin, these events are also tracked:
 
 | Event                  | Trigger                          |
@@ -111,10 +228,10 @@ If you're using the organization plugin, these events are also tracked:
 | `team_member_added`    | Member added to team             |
 | `team_member_removed`  | Member removed from team         |
 
-## Dashboard Endpoints
+## ## Dashboard Endpoints
 The dash plugin registers numerous admin endpoints for the dashboard:
 
-## User Management
+## ### User Management
 | Endpoint                   | Method | Description                |
 | -------------------------- | ------ | -------------------------- |
 | `/dash/users`              | GET    | List users with pagination |
@@ -128,7 +245,7 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/user/password`      | POST   | Set user password          |
 | `/dash/user/impersonate`   | POST   | Impersonate user           |
 
-## Session Management
+## ### Session Management
 | Endpoint                    | Method | Description              |
 | --------------------------- | ------ | ------------------------ |
 | `/dash/sessions`            | GET    | List all sessions        |
@@ -136,7 +253,7 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/session/revoke`      | POST   | Revoke single session    |
 | `/dash/sessions/revoke-all` | POST   | Revoke all user sessions |
 
-## Organization Management
+## ### Organization Management
 | Endpoint                         | Method | Description              |
 | -------------------------------- | ------ | ------------------------ |
 | `/dash/organizations`            | GET    | List organizations       |
@@ -149,7 +266,7 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/organization/member`      | DELETE | Remove member            |
 | `/dash/organization/member/role` | PATCH  | Update member role       |
 
-## Team Management
+## ### Team Management
 | Endpoint                         | Method | Description        |
 | -------------------------------- | ------ | ------------------ |
 | `/dash/organization/teams`       | GET    | List teams         |
@@ -159,7 +276,7 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/organization/team/member` | POST   | Add team member    |
 | `/dash/organization/team/member` | DELETE | Remove team member |
 
-## Invitation Management
+## ### Invitation Management
 | Endpoint                           | Method | Description       |
 | ---------------------------------- | ------ | ----------------- |
 | `/dash/organization/invitations`   | GET    | List invitations  |
@@ -167,7 +284,7 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/organization/invite/cancel` | POST   | Cancel invitation |
 | `/dash/organization/invite/resend` | POST   | Resend invitation |
 
-## SSO Management
+## ### SSO Management
 | Endpoint                                        | Method | Description         |
 | ----------------------------------------------- | ------ | ------------------- |
 | `/dash/organization/sso-providers`              | GET    | List SSO providers  |
@@ -176,7 +293,7 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/organization/sso-provider`               | DELETE | Delete SSO provider |
 | `/dash/organization/sso-provider/verify-domain` | POST   | Verify domain       |
 
-## Directory Sync
+## ### Directory Sync
 | Endpoint                             | Method | Description      |
 | ------------------------------------ | ------ | ---------------- |
 | `/dash/organization/directories`     | GET    | List directories |
@@ -184,7 +301,7 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/organization/directory`       | DELETE | Delete directory |
 | `/dash/organization/directory/token` | POST   | Regenerate token |
 
-## Log Drains
+## ### Log Drains
 | Endpoint                            | Method | Description      |
 | ----------------------------------- | ------ | ---------------- |
 | `/dash/organization/log-drains`     | GET    | List log drains  |
@@ -193,14 +310,14 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/organization/log-drain`      | DELETE | Delete log drain |
 | `/dash/organization/log-drain/test` | POST   | Test log drain   |
 
-## Events & Audit Logs
+## ### Events & Audit Logs
 | Endpoint             | Method | Description     |
 | -------------------- | ------ | --------------- |
 | `/events/list`       | GET    | Get user events |
 | `/events/audit-logs` | GET    | Get audit logs  |
 | `/events/types`      | GET    | Get event types |
 
-## Analytics
+## ### Analytics
 | Endpoint          | Method | Description         |
 | ----------------- | ------ | ------------------- |
 | `/dash/stats`     | GET    | Get user statistics |
@@ -208,7 +325,7 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/retention` | GET    | Get retention data  |
 | `/dash/map`       | GET    | Get geographic data |
 
-## Two-Factor Management
+## ### Two-Factor Management
 | Endpoint                               | Method | Description          |
 | -------------------------------------- | ------ | -------------------- |
 | `/dash/user/2fa/enable`                | POST   | Enable 2FA for user  |
@@ -217,8 +334,8 @@ The dash plugin registers numerous admin endpoints for the dashboard:
 | `/dash/user/2fa/backup-codes`          | GET    | View backup codes    |
 | `/dash/user/2fa/backup-codes/generate` | POST   | Generate new codes   |
 
-## Client Integration
-## dashClient()
+## ## Client Integration
+## ### dashClient()
 The client plugin provides access to audit log queries:
 
 ```ts
@@ -232,7 +349,7 @@ export const authClient = createAuthClient({
 
 **Note**: For **Expo** or **React Native**, import `dashClient` from `@better-auth/infra/native` (same API) and pair it with `sentinelNativeClient` as described in [Sentinel — Expo and React Native](/docs/infrastructure/plugins/sentinel#expo-and-react-native).
 
-## Configuration
+## ### Configuration
 ```ts
 dashClient({
   resolveUserId: ({ userId, user, session }) => {
@@ -242,10 +359,10 @@ dashClient({
 }),
 ```
 
-## Get the current user's audit logs
+## ### Get the current user's audit logs
 Returns audit events for the **current user**, or organization-scoped events when you pass `organizationId` as a member.
 
-## Basic query
+## #### Basic query
 ```ts
 const session = await authClient.getSession();
 
@@ -264,10 +381,10 @@ console.log(logs.data?.offset);  // Current offset
 
 See [Get current user's audit logs](/docs/infrastructure/plugins/audit-logs#get-current-users-audit-logs) for more information.
 
-## Get all audit logs
+## ### Get all audit logs
 Returns all audit events for organizations the current user has **admin** or **owner** access to. Requires the [organization plugin](/docs/plugins/organization) for role checks.
 
-## Basic query
+## #### Basic query
 ```ts
 const session = await authClient.getSession();
 
@@ -283,7 +400,7 @@ console.log(activity.data?.total);
 
 See [Get all audit logs](/docs/infrastructure/plugins/audit-logs#get-all-audit-logs) for more information.
 
-## Schema Extensions
+## ## Schema Extensions
 When activity tracking is enabled, the plugin adds fields to your user schema:
 
 ```ts
@@ -298,7 +415,7 @@ user: {
 
 Make sure to run database migrations after enabling activity tracking.
 
-## Best Practices
+## ## Best Practices
 1. **Always set an API key** - Without it, the plugin cannot communicate with the infrastructure API.
 
 2. **Use activity tracking wisely** - The update interval affects database writes. For high-traffic apps, consider a longer interval.

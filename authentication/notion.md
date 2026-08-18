@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/notion
 title: "Notion"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Notion
@@ -13,14 +13,14 @@ Notion provider setup and usage.
 
 
 
-### Get your Notion credentials
+### ### Get your Notion credentials
 To use Notion as a social provider, you need to get your Notion OAuth credentials. You can get them by creating a new integration in the [Notion Developers Portal](https://www.notion.so/my-integrations).
 
 In the Notion integration settings > OAuth Domain & URIs, make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/notion` for local development. For production, make sure to set the redirect URL as your application domain, e.g. `https://example.com/api/auth/callback/notion`. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
 > Make sure your Notion integration has the appropriate capabilities enabled. For user authentication, you'll need the "Read user information including email addresses" capability.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to pass the `clientId` and `clientSecret` to `socialProviders.notion` in your auth configuration.
 
 ```ts title="auth.ts"   
@@ -37,8 +37,8 @@ export const auth = betterAuth({
 ```
 
 
-## Usage
-## Sign In with Notion
+## ## Usage
+## ### Sign In with Notion
 To sign in with Notion, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `notion`.
@@ -54,7 +54,7 @@ const signIn = async () => {
 }
 ```
 
-## Notion Integration Types
+## ### Notion Integration Types
 Notion supports different integration types. When creating your integration, you can choose between:
 
 * **Public integrations**: Can be installed by any Notion workspace
@@ -62,7 +62,7 @@ Notion supports different integration types. When creating your integration, you
 
 For most authentication use cases, you'll want to create a public integration to allow users from different workspaces to sign in.
 
-## Requesting Additional Notion Scopes
+## ### Requesting Additional Notion Scopes
 If your application needs additional Notion capabilities after the user has already signed up, you can request them using the `linkSocial` method with the same Notion provider and additional scopes.
 
 ```ts title="auth-client.ts"

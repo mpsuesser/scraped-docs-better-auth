@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/examples/next-js
 title: "Next Js"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Next.js Example
@@ -23,7 +23,7 @@ See [Demo](https://demo.better-auth.com)
 
 [Better Auth Next.js Example](https://stackblitz.com/github/better-auth/better-auth/tree/main/demo/nextjs?codemirror=1&fontsize=14&hidenavigation=1&runonclick=1&hidedevtools=1)
 
-## How to run
+## ## How to run
 1. Clone the code sandbox (or the repo) and open it in your code editor
 2. Move .env.example to .env and provide necessary variables
 3. Run the following commands
@@ -33,8 +33,8 @@ See [Demo](https://demo.better-auth.com)
    ```
 4. Open the browser and navigate to `http://localhost:3000`
 
-## SSO Login Example
+## ### SSO Login Example
 For this example, we utilize DummyIDP. Initiate the login from the [DummyIDP login](https://dummyidp.com/apps/app_01k16v4vb5yytywqjjvv2b3435/login), click "Proceed", and from here it will direct you to user's dashboard.
 
-## SCIM Sync Example
+## ### SCIM Sync Example
 For this example, we utilize DummyIDP. Head out to the [IDP dashboard](https://dummyidp.com/apps/app_01k16v4vb5yytywqjjvv2b3435) and try to add, update or remove users, then go to the admin page or directly to your database and watch the synchronization work.

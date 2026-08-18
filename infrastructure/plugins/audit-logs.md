@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/audit-logs
 title: "Audit Logs"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Audit Logs
@@ -14,7 +14,7 @@ Track and query authentication events across your application with automatic aud
 
 Better Auth Infrastructure automatically collects audit logs for authentication events in your application. Once you've added the `dash()` plugin, events are tracked without any additional configuration.
 
-## How Audit Logs Are Collected
+## ## How Audit Logs Are Collected
 The `dash()` plugin hooks into your Better Auth instance and automatically records events as they happen. No manual instrumentation is needed — sign-ups, sign-ins, password changes, and more are all captured.
 
 ```ts
@@ -30,7 +30,7 @@ export const auth = betterAuth({
 
 That's it. Once `dash()` is active, audit logs are collected automatically.
 
-## Tracked Events
+## ## Tracked Events
 #### User
 
 | Event                        | Trigger                      |
@@ -111,8 +111,8 @@ Tracked when using the [Sentinel](/docs/infrastructure/plugins/sentinel) plugin.
 | `security_stale_account`        | Stale account reactivation          |
 
 
-## Fetching Audit Logs
-## Client setup
+## ## Fetching Audit Logs
+## ### Client setup
 Add `dashClient()` to your auth client:
 
 ```ts
@@ -124,10 +124,10 @@ export const authClient = createAuthClient({
 });
 ```
 
-## Get current user's audit logs
+## ### Get current user's audit logs
 Returns audit events for the **current user**. Use this for end-user activity and org views where the caller is a normal member.
 
-## Query parameters
+## #### Query parameters
 | Parameter        | Type     | Description                            |
 | ---------------- | -------- | -------------------------------------- |
 | `limit`          | `number` | Results per page (max 100, default 50) |
@@ -139,7 +139,7 @@ Returns audit events for the **current user**. Use this for end-user activity an
 | `user`           | `object` | User object with ID                    |
 | `session`        | `object` | Session object with user               |
 
-## Basic query
+## #### Basic query
 ```ts
 const session = await authClient.getSession();
 
@@ -155,7 +155,7 @@ logs.data?.limit;   // Page size
 logs.data?.offset;  // Current offset
 ```
 
-## Filter by event type
+## #### Filter by event type
 Returns the current user's signed-in audit logs.
 
 ```ts
@@ -165,7 +165,7 @@ const signIns = await authClient.dash.getAuditLogs({
 });
 ```
 
-## Filter by organization
+## #### Filter by organization
 Returns the current user's audit logs restricted to the given organization.
 
 ```ts
@@ -175,7 +175,7 @@ const orgLogs = await authClient.dash.getAuditLogs({
 });
 ```
 
-## Combined filters
+## #### Combined filters
 You can combine filters to get more specific results (e.g. all current user's signed-in events for a specific organization).
 
 ```ts
@@ -198,7 +198,7 @@ const orgSignIns = await authClient.dash.getAuditLogs({
 
 > **Note**: An identifier is a unique value for an event. For example, an email address, username, etc.
 
-## Pagination
+## #### Pagination
 Results are paginated. If you need to consume more than one page, you can use the `limit` and `offset` parameters to paginate the results:
 
 ```ts
@@ -225,11 +225,11 @@ async function fetchAllUserAuditLogEvents(session: unknown) {
 }
 ```
 
-## Get all audit logs
+## ### Get all audit logs
 Returns all audit events for organizations the current user has **admin** or **owner** access to. Use it for admin-style dashboards that need activity across organizations you manage.
 You must use the [organization plugin](/docs/plugins/organization) so membership roles can be evaluated.
 
-## Query parameters
+## #### Query parameters
 | Parameter        | Type     | Description                                                                        |
 | ---------------- | -------- | ---------------------------------------------------------------------------------- |
 | `limit`          | `number` | Results per page (max `100`, default `50`)                                         |
@@ -240,7 +240,7 @@ You must use the [organization plugin](/docs/plugins/organization) so membership
 | `identifier`     | `string` | Match `eventData.identifier` (organization-scoped actor identity)                  |
 | `session`        | `object` | Session object with user                                                           |
 
-## Basic query
+## #### Basic query
 ```ts
 const session = await authClient.getSession();
 
@@ -256,7 +256,7 @@ activity.data?.limit;
 activity.data?.offset;
 ```
 
-## Filter by organization
+## #### Filter by organization
 Returns all audit events for the given organization:
 
 ```ts
@@ -266,7 +266,7 @@ const orgActivity = await authClient.dash.getAllAuditLogs({
 });
 ```
 
-## Filter by user
+## #### Filter by user
 Returns all audit events for the given user across organizations:
 
 ```ts
@@ -276,7 +276,7 @@ const userActivity = await authClient.dash.getAllAuditLogs({
 });
 ```
 
-## Filter by event type
+## #### Filter by event type
 Returns all audit events across organizations for the given event type:
 
 ```ts
@@ -286,7 +286,7 @@ const events = await authClient.dash.getAllAuditLogs({
 });
 ```
 
-## Combined filters
+## #### Combined filters
 You can combine filters to get more specific results (e.g. all audit events for a specific organization and event type).
 
 ```ts
@@ -297,7 +297,7 @@ const orgEvents = await authClient.dash.getAllAuditLogs({
 });
 ```
 
-## Pagination
+## #### Pagination
 Results are paginated. If you need to consume more than one page, you can use the `limit` and `offset` parameters to paginate the results:
 
 ```ts

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/session-management
 title: "Session Management"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Session Management
@@ -14,7 +14,9 @@ Learn about session management in Better Auth, including session expiration, fre
 
 Better Auth manages session using a traditional cookie-based session management. The session is stored in a cookie and is sent to the server on every request. The server then verifies the session and returns the user data if the session is valid.
 
-## Session table
+The main `session_token` cookie is still the server-side session identifier. If you enable `session.cookieCache`, Better Auth also writes a separate `session_data` cookie for short-lived cached session data. This cache cookie is distinct from the JWT plugin's `/token` endpoint and `set-auth-jwt` header output.
+
+## ## Session table
 The session table stores the session data. The session table has the following fields:
 
 * `id`: Unique identifier for the session.
@@ -24,7 +26,7 @@ The session table stores the session data. The session table has the following f
 * `ipAddress`: The IP address of the user.
 * `userAgent`: The user agent of the user. It stores the user agent header from the request.
 
-## Session Expiration
+## ## Session Expiration
 The session expires after 7 days by default. But whenever the session is used and the `updateAge` is reached, the session expiration is updated to the current time plus the `expiresIn` value.
 
 You can change both the `expiresIn` and `updateAge` values by passing the `session` object to the `auth` configuration.
@@ -41,7 +43,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Disable Session Refresh
+## ### Disable Session Refresh
 You can disable session refresh so that the session is not updated regardless of the `updateAge` option.
 
 ```ts title="auth.ts"
@@ -55,7 +57,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Defer Session Refresh
+## ### Defer Session Refresh
 By default, `GET /get-session` performs database writes to refresh the session. This can cause issues with read-replica database setups where GET requests are routed to read-only replicas.
 
 When enabled, GET becomes read-only and returns `needsRefresh: true` when refresh is needed. The client automatically calls POST to perform the refresh.
@@ -70,7 +72,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Session Freshness
+## ## Session Freshness
 Some endpoints in Better Auth require the session to be **fresh**. A session is considered fresh if its `createdAt` is within the `freshAge` limit. By default, the `freshAge` is set to **1 day** (60 \* 60 \* 24).
 
 You can customize the `freshAge` value by passing a `session` object in the `auth` configuration:
@@ -99,10 +101,10 @@ export const auth = betterAuth({
 })
 ```
 
-## Session Management
+## ## Session Management
 Better Auth provides a set of functions to manage sessions.
 
-## Get Session
+## ### Get Session
 The `getSession` function retrieves the current active session.
 
 ```ts
@@ -113,7 +115,7 @@ const { data: session } = await authClient.getSession()
 
 To learn how to customize the session response check the [Customizing Session Response](#customizing-session-response) section.
 
-## Use Session
+## ### Use Session
 The `useSession` action provides a reactive way to access the current session.
 
 ```ts title="auth-client.ts"
@@ -122,7 +124,7 @@ import { authClient } from "@/lib/auth-client"
 const { data: session } = authClient.useSession()
 ```
 
-## List Sessions
+## ### List Sessions
 The `listSessions` function returns a list of sessions that are active for the user.
 
 ```ts title="auth-client.ts"
@@ -131,7 +133,7 @@ import { authClient } from "@/lib/auth-client"
 const sessions = await authClient.listSessions()
 ```
 
-## Revoke Session
+## ### Revoke Session
 When a user signs out of a device, the session is automatically ended. However, you can also end a session manually from any device the user is signed into.
 
 To end a session, use the `revokeSession` function. Just pass the session token as a parameter.
@@ -144,7 +146,7 @@ await authClient.revokeSession({
 })
 ```
 
-## Revoke Other Sessions
+## ### Revoke Other Sessions
 To revoke all other sessions except the current session, you can use the `revokeOtherSessions` function.
 
 ```ts title="auth-client.ts"
@@ -153,7 +155,7 @@ import { authClient } from "@/lib/auth-client"
 await authClient.revokeOtherSessions()
 ```
 
-## Revoke All Sessions
+## ### Revoke All Sessions
 To revoke all sessions, you can use the `revokeSessions` function.
 
 ```ts title="auth-client.ts"
@@ -162,7 +164,7 @@ import { authClient } from "@/lib/auth-client"
 await authClient.revokeSessions()
 ```
 
-## Update Session
+## ### Update Session
 If you have [additional fields](/docs/concepts/database#extending-core-schema) configured on the session, you can update them using the `updateSession` function.
 
 ```ts title="auth-client.ts"
@@ -187,7 +189,7 @@ await auth.api.updateSession({
 });
 ```
 
-## Revoking Sessions on Password Change
+## ### Revoking Sessions on Password Change
 You can revoke all sessions when the user changes their password by passing `revokeOtherSessions` as true on `changePassword` function.
 
 ```ts title="auth.ts"
@@ -200,8 +202,8 @@ await authClient.changePassword({
 })
 ```
 
-## Session Caching
-## Cookie Cache
+## ## Session Caching
+## ### Cookie Cache
 Calling your database every time `useSession` or `getSession` is invoked isn't ideal, especially if sessions don't change frequently. Cookie caching handles this by storing session data in a short-lived, signed cookie—similar to how JWT access tokens are used with refresh tokens.
 
 When cookie caching is enabled, the server can check session validity from the cookie itself instead of hitting the database each time. The cookie is signed to prevent tampering, and a short `maxAge` ensures that the session data gets refreshed regularly. If a session is revoked or expires, the cookie will be invalidated automatically.
@@ -235,11 +237,11 @@ export const auth = betterAuth({
 > * Set a shorter `maxAge` (e.g. 60 seconds), or
 > * Use `disableCookieCache: true` for sensitive operations
 
-## Cookie Cache Strategies
+## #### Cookie Cache Strategies
 Better Auth supports three different encoding strategies for cookie cache:
 
 * **`compact`** (default): Uses base64url encoding with HMAC-SHA256 signature. Most compact format with no JWT spec overhead. Best for performance and size.
-* **`jwt`**: Standard JWT with HMAC-SHA256 signature (HS256). Signed but not encrypted - readable by anyone but tamper-proof. Follows JWT spec for interoperability.
+* **`jwt`**: Standard JWT. By default this uses HMAC-SHA256 (HS256) with your Better Auth secret. Signed but not encrypted - readable by anyone but tamper-proof. If you need session cache cookies that verify against the JWT plugin's JWKS, install the `jwt()` plugin with `sessionCookieCache: true` to use its asymmetric signing keys instead.
 * **`jwe`**: Uses JWE (JSON Web Encryption) with A256CBC-HS512 and HKDF key derivation. Fully encrypted tokens - neither readable nor tamperable. Most secure but largest size.
 
 **Comparison:**
@@ -267,8 +269,30 @@ export const auth = betterAuth({
 **When to use each:**
 
 * **Use `compact`** when you need maximum performance and smallest cookie size. Best for most applications where cookies are only used internally by Better Auth.
-* **Use `jwt`** when you need JWT compatibility for external systems, or when you want standard JWT tokens that can be verified by third-party tools. The tokens are readable (base64-encoded JSON) but tamper-proof.
+* **Use `jwt`** when you need JWT compatibility for external systems, or when you want standard JWT tokens that can be verified by third-party tools. The tokens are readable (base64-encoded JSON) but tamper-proof. Enable `sessionCookieCache` on the JWT plugin if you want the cookie-cache JWT to verify against its JWKS instead of a shared secret.
 * **Use `jwe`** when you need maximum security and want to hide session data from the client. The tokens are fully encrypted and cannot be read without the secret key. Use this for sensitive data or compliance requirements.
+
+## ### JWKS-backed cookie-cache JWTs
+If you want the `session_data` cookie to be verifiable with the JWT plugin's JWKS endpoint instead of a shared secret, enable the JWT plugin and opt into JWKS-backed signing explicitly:
+
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
+import { jwt } from "better-auth/plugins"
+
+export const auth = betterAuth({
+    plugins: [jwt({
+        sessionCookieCache: true
+    })],
+    session: {
+        cookieCache: {
+            enabled: true,
+            strategy: "jwt"
+        }
+    }
+})
+```
+
+This only affects the `session_data` cookie. The primary `session_token` cookie is still an opaque session identifier and is not exposed through JWKS. Cookie-cache JWTs also use a separate token profile from the JWT plugin's `/token` endpoint, so those tokens are not interchangeable.
 
 If you want to disable returning from the cookie cache when fetching the session, you can pass `disableCookieCache:true` this will force the server to fetch the session from the database and also refresh the cookie cache.
 
@@ -291,7 +315,7 @@ await auth.api.getSession({
 });
 ```
 
-## Sessions in Secondary Storage
+## ## Sessions in Secondary Storage
 By default, if you provide a [secondary storage](/docs/concepts/database#secondary-storage) in your auth configuration, the session will be stored in the secondary storage.
 
 ```ts
@@ -305,7 +329,7 @@ betterAuth({
 });
 ```
 
-## Storing Sessions in the Database
+## ### Storing Sessions in the Database
 By default, Better Auth already stores sessions in the database, however if you provide a secondary storage,
 Better Auth will store sessions in the secondary storage instead of the database.
 
@@ -323,9 +347,9 @@ export const auth = betterAuth({
 });
 ```
 
-## Preserving Sessions
+## ### Preserving Sessions
 When a session is revoked, it will be removed from the secondary storage, however if you enable `preserveSessionInDatabase`,
-the session will be preserved in the database and not be deleted.
+the session row will be kept in the database instead of deleted. The preserved row is marked ended (its `expiresAt` is set to the revocation time), so it is never restored as a live session and any token bound to it (for example OAuth Provider access tokens) is treated as ended.
 
 This is useful if you want to keep track of the sessions that have been revoked.
 
@@ -340,10 +364,10 @@ export const auth = betterAuth({
 });
 ```
 
-## Stateless Session Management
+## ## Stateless Session Management
 Better Auth supports stateless session management without any database. This means that the session data is stored in a signed/encrypted cookie and the server never queries a database to validate sessions - it simply verifies the cookie signature and checks expiration.
 
-## Basic Stateless Setup
+## ### Basic Stateless Setup
 If you don't pass a database configuration, Better Auth will automatically enable stateless mode.
 
 ```ts title="auth.ts"
@@ -383,11 +407,11 @@ export const auth = betterAuth({
 
 > If you don't provide a database, by default we provide the above configuration for you.
 
-In stateless OAuth flows, `storeAccountCookie` stores provider account data, including OAuth token material, in the encrypted `account_data` cookie. `getAccessToken` can refresh expired provider access tokens when the account cookie contains a refresh token and a known access-token expiry. Token refresh responses set an updated account cookie, so server-side integrations must forward the returned `Set-Cookie` header to the browser.
+In stateless OAuth flows, `storeAccountCookie` stores provider account data, including OAuth token material, in the encrypted `account_data` cookie. `getAccessToken({ useAccountCookie: true })` can refresh expired provider access tokens when the account cookie contains a refresh token and a known access-token expiry. Token refresh responses set an updated account cookie, so server-side integrations must forward the returned `Set-Cookie` header to the browser.
 
 Better Auth chunks oversized account cookies, but browsers and proxies can still enforce total cookie or header limits. Use database-backed account storage for providers that issue large JWTs or for production flows that need durable token storage.
 
-## Understanding refreshCache
+## ### Understanding `refreshCache`
 The `refreshCache` option controls automatic cookie refresh **before expiry** without querying any database:
 
 * **`false`** (default): No automatic refresh. When the cookie cache expires (reaches `maxAge`), it will attempt to fetch from the database if available.
@@ -410,7 +434,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Versioning Stateless Sessions
+## ### Versioning Stateless Sessions
 One of the biggest drawbacks of stateless sessions is that you can't invalidate session easily. To solve this with better auth, if you would like to invalidate all sessions, you can change the version of the cookie cache and re-deploy your application.
 
 ```ts title="auth.ts"
@@ -427,7 +451,7 @@ export const auth = betterAuth({
 
 > This will invalidate all sessions that don't match the new version.
 
-## Stateless with Secondary Storage
+## ### Stateless with Secondary Storage
 You can combine stateless sessions with secondary storage (Redis, etc.) for the best of both worlds:
 
 ```ts title="auth.ts"
@@ -456,7 +480,7 @@ This setup:
 * Uses Redis for storing session data and refreshing the cookie cache before expiry
 * You can revoke sessions from the secondary storage and the cookie cache will be invalidated on refresh
 
-## Customizing Session Response
+## ## Customizing Session Response
 When you call `getSession` or `useSession`, the session data is returned as a `user` and `session` object. You can customize this response using the `customSession` plugin.
 
 ```ts title="auth.ts"
@@ -497,7 +521,7 @@ const { data: sessionData } = await authClient.getSession();
 // data.user.newField
 ```
 
-## Caveats on Customizing Session Response
+## ### Caveats on Customizing Session Response
 1. The passed `session` object to the callback does not infer fields added by plugins.
 
 However, as a workaround, you can pull up your auth options and pass it to the plugin to infer the fields.

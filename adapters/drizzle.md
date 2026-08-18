@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/drizzle
 title: "Drizzle"
 description: ""
-access_date: 2026-08-14T12:20:50.524Z
-current_date: 2026-08-14T12:20:50.524Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Integrate Better Auth with Drizzle ORM.
@@ -81,17 +81,21 @@ npx drizzle-kit generate # generate the migration file
 
 #### bun
 
-## Joins (Experimental)
+## Joins
 
 Database joins are useful when Better-Auth needs to fetch related data from multiple tables in a single query. Endpoints like `/get-session`, `/get-full-organization` and many others benefit greatly from this feature, seeing upwards of 2x to 3x performance improvements depending on database latency.
 
-The Drizzle adapter supports joins out of the box since version `1.4.0`. To enable this feature, you need to set the `experimental.joins` option to `true` in your auth configuration.
+The Drizzle adapter supports joins out of the box since version `1.4.0`. To enable this feature, set `advanced.database.joins` to `true` in your auth configuration.
 
 ```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
-  experimental: { joins: true }
+  advanced: {
+    database: {
+      joins: true,
+    },
+  },
 });
 ```
 
@@ -202,6 +206,100 @@ export const auth = betterAuth({
     ...
     usePlural: true, 
   }),
+});
+```
+
+## Custom Schema namespace
+
+If you're using PostgreSQL and you want to generate the schema with a custom schema namespace, you can pass the `schemaName` option to the Drizzle adapter.
+
+```
+export const auth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: "pg",
+    schemaName: "auth", 
+  }),
+});
+```
+
+Then when using the Better Auth CLI, it will generate the schema that looks something like this:
+
+```
+npx @better-auth/cli@latest generate
+```
+
+```
+export const authSchema = pgSchema("auth");
+
+export const user = authSchema.table("user", {...});
+export const session = authSchema.table("session", {...});
+```
+
+The `schemaName` option is also supported by the `@better-auth/drizzle-adapter/relations-v2` adapter described below.
+
+## Drizzle Relations v2
+
+The current Drizzle adapter uses Drizzle Relations v1. To use Drizzle Relations v2, you need to use the `@better-auth/drizzle-adapter/relations-v2` adapter.
+
+Install the adapter:
+
+#### npm
+
+```
+npm install @better-auth/drizzle-adapter
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+Update your imports to use the relations-v2 adapter:
+
+```
+import { betterAuth } from 'better-auth';
+import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2'; 
+import { db } from './database.ts';
+import * as schema from './schema.ts';
+
+export const auth = betterAuth({
+    database: drizzleAdapter(db, {
+        provider: 'sqlite', // or "pg" or "mysql"
+        schema,
+    }),
+    //... the rest of your config
+});
+```
+
+Then regenerate your schema using the Better Auth CLI:
+
+#### npm
+
+```
+npx auth@latest generate
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+The generated auth schema exports relations using `defineRelationsPart`, which is designed to be merged alongside your app's own `defineRelations`. Pass both to the drizzle instance — `schema` is no longer required since Drizzle v1 RC:
+
+```
+import { drizzle } from 'drizzle-orm/...';
+// generated relations from auth CLI (uses defineRelationsPart)
+import { authRelations } from './auth-schema.ts';
+// your app's own relations (uses defineRelations)
+import { relations } from './app-schema.ts';
+
+export const db = drizzle({
+    client,
+    // authRelations uses defineRelationsPart,
+    // so it must come after the main relations
+    relations: { ...relations, ...authRelations }, 
 });
 ```
 

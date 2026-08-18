@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/slack
 title: "Slack"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Slack
@@ -13,7 +13,7 @@ Slack provider setup and usage.
 
 
 
-### Get your Slack credentials
+### ### Get your Slack credentials
 To use Slack as a social provider, you need to create a Slack app and get your credentials.
 
 1. Go to [Your Apps on Slack API](https://api.slack.com/apps) and click "Create New App"
@@ -26,7 +26,7 @@ To use Slack as a social provider, you need to create a Slack app and get your c
 
 > Slack requires HTTPS for redirect URLs in production. For local development, you can use tools like [ngrok](https://ngrok.com/) to create a secure tunnel.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to pass the `clientId` and `clientSecret` to `socialProviders.slack` in your auth configuration.
 
 ```ts title="auth.ts"
@@ -43,8 +43,8 @@ export const auth = betterAuth({
 ```
 
 
-## Usage
-## Sign In with Slack
+## ## Usage
+## ### Sign In with Slack
 To sign in with Slack, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `slack`.
@@ -58,7 +58,7 @@ const signIn = async () => {
 };
 ```
 
-## Requesting Additional Scopes
+## ### Requesting Additional Scopes
 By default, Slack uses OpenID Connect scopes: `openid`, `profile`, and `email`. You can request additional Slack scopes during sign-in:
 
 ```ts title="auth-client.ts"
@@ -70,7 +70,7 @@ const signInWithSlack = async () => {
 };
 ```
 
-## Workspace-Specific Sign In
+## ### Workspace-Specific Sign In
 If you want to restrict sign-in to a specific Slack workspace, you can pass the `team` parameter:
 
 ```ts title="auth.ts"
@@ -83,7 +83,7 @@ socialProviders: {
 }
 ```
 
-## Using Slack API After Sign In
+## ### Using Slack API After Sign In
 After successful authentication, you can access the user's Slack information through the session. The access token can be used to make requests to the Slack API:
 
 ```ts

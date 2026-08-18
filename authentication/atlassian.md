@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/atlassian
 title: "Atlassian"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Atlassian
@@ -13,7 +13,7 @@ Atlassian provider setup and usage.
 
 
 
-### Get your Credentials
+### ### Get your Credentials
 1. Sign in to your Atlassian account and go to the [Atlassian Developer Console](https://developer.atlassian.com/console/myapps/)
 2. Click "Create new app"
 3. Fill out the app details
@@ -24,7 +24,7 @@ Atlassian provider setup and usage.
 
 Make sure to set the redirect URI to match your application's callback URL. If you change the base path of the auth routes, you should update the redirect URI accordingly.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -40,7 +40,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with Atlassian
+### ### Sign In with Atlassian
 To sign in with Atlassian, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `atlassian`.

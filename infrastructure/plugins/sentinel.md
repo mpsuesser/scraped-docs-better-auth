@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/sentinel
 title: "Sentinel"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Security Plugin (sentinel)
@@ -12,7 +12,7 @@ The `sentinel()` plugin provides comprehensive security and abuse protection for
 
 
 
-## Installation
+## ## Installation
 ```tsx
 import { betterAuth } from "better-auth";
 import { sentinel } from "@better-auth/infra";
@@ -28,18 +28,20 @@ export const auth = betterAuth({
 });
 ```
 
-## Configuration Options
-## SentinelOptions
-| Option       | Type              | Description                                                           |
-| ------------ | ----------------- | --------------------------------------------------------------------- |
-| `apiUrl`     | `string`          | Better Auth Infrastructure API URL                                    |
-| `kvUrl`      | `string`          | KV store URL for rate limiting data                                   |
-| `apiKey`     | `string`          | Your API key for authentication                                       |
-| `apiTimeout` | `number`          | Timeout in ms for Infra API HTTP requests (`apiUrl`). Default: `3000` |
-| `kvTimeout`  | `number`          | Timeout in ms for KV HTTP requests (`kvUrl`). Default: `1000`         |
-| `security`   | `SecurityOptions` | Security feature configuration                                        |
+## ## Configuration Options
+## ### SentinelOptions
+| Option       | Type              | Description                                                                           |
+| ------------ | ----------------- | ------------------------------------------------------------------------------------- |
+| `apiUrl`     | `string`          | Better Auth infrastructure API URL. Default: `https://dash.better-auth.com`           |
+| `kvUrl`      | `string`          | Better Auth identification infrastructure URL. Default: `https://kv.better-auth.com`  |
+| `apiKey`     | `string`          | Your API key for authentication.                                                      |
+| `apiOptions` | `object`          | Dash API HTTP options. Accepts `timeout?: number` in ms.                              |
+| `kvOptions`  | `object`          | KV HTTP options. Accepts `timeout?: number` and `retry?: { attempts?: number; ... }`. |
+| `apiTimeout` | `number`          | Deprecated alias for `apiOptions.timeout`.                                            |
+| `kvTimeout`  | `number`          | Deprecated alias for `kvOptions.timeout`.                                             |
+| `security`   | `SecurityOptions` | Security feature configuration.                                                       |
 
-## SecurityOptions
+## ### SecurityOptions
 ```ts
 interface SecurityOptions {
   unknownDeviceNotification?: boolean;
@@ -60,8 +62,8 @@ interface SecurityOptions {
 type SecurityAction = "log" | "challenge" | "block";
 ```
 
-## Security Features
-## Credential Stuffing Protection
+## ## Security Features
+## ### Credential Stuffing Protection
 Detects and blocks credential stuffing attacks by tracking failed login attempts per visitor.
 
 ```ts
@@ -88,7 +90,7 @@ sentinel({
 3. After reaching the block threshold, blocks the visitor entirely
 4. Automatically clears failed attempts on successful login
 
-## Impossible Travel Detection
+## ### Impossible Travel Detection
 Detects logins from geographically distant locations in impossibly short timeframes.
 
 ```ts
@@ -106,7 +108,7 @@ sentinel({
 
 **Example:** If a user logs in from New York and then 30 minutes later from Tokyo, this would be flagged as impossible travel (would require traveling faster than 1000 km/h).
 
-## Free Trial Abuse Prevention
+## ### Free Trial Abuse Prevention
 Prevents users from creating multiple accounts to abuse free trials using device fingerprinting.
 
 ```ts
@@ -132,7 +134,7 @@ sentinel({
 2. When threshold is exceeded, blocks new account creation
 3. Useful for preventing free tier abuse
 
-## Compromised Password Detection
+## ### Compromised Password Detection
 Checks passwords against the HaveIBeenPwned database to detect compromised credentials.
 
 ```ts
@@ -150,7 +152,7 @@ sentinel({
 
 **Privacy:** Uses k-anonymity - only the first 5 characters of the password hash are sent to the API, never the full password.
 
-## Stale Account Monitoring
+## ### Stale Account Monitoring
 Detects when dormant accounts suddenly become active, which could indicate account takeover.
 
 ```ts
@@ -175,7 +177,7 @@ sentinel({
 * Days since last activity
 * Device information
 
-## Geo-Blocking
+## ### Geo-Blocking
 Block or challenge users from specific countries.
 
 ```ts
@@ -194,7 +196,7 @@ sentinel({
 
 Use ISO 3166-1 alpha-2 country codes.
 
-## Bot Blocking
+## ### Bot Blocking
 Detect and block automated bot traffic.
 
 ```ts
@@ -210,7 +212,7 @@ sentinel({
 }),
 ```
 
-## Suspicious IP Detection
+## ### Suspicious IP Detection
 Block requests from known malicious IP addresses.
 
 ```ts
@@ -226,7 +228,7 @@ sentinel({
 }),
 ```
 
-## Velocity / Rate Limiting
+## ### Velocity / Rate Limiting
 Limit the rate of various operations.
 
 ```ts
@@ -249,7 +251,7 @@ sentinel({
 }),
 ```
 
-## Email Validation
+## ### Email Validation
 Block disposable email addresses and validate email domains.
 
 ```ts
@@ -271,7 +273,7 @@ sentinel({
 * `medium` - Also check for valid MX records
 * `high` - Additional heuristic checks
 
-## Email normalization
+## ### Email normalization
 Sentinel can normalize email addresses before sign-up and sign-in so aliases and provider quirks do not create duplicate accounts or mismatched logins. Normalization includes lowercasing, stripping plus-address tags on common providers (for example `user+tag@gmail.com` → `user@gmail.com`), removing dots in Gmail-style addresses, and mapping `googlemail.com` to `gmail.com`.
 
 Use `security.emailNormalization` when you want to control this separately from disposable-domain validation (`emailValidation`):
@@ -290,16 +292,16 @@ sentinel({
 }),
 ```
 
-## Proof-of-Work Challenges
+## ## Proof-of-Work Challenges
 When a security check results in a "challenge" action, Sentinel issues a Proof-of-Work (PoW) challenge that must be solved by the client.
 
-## How PoW Works
+## ### How PoW Works
 1. Server issues a cryptographic challenge
 2. Client must find a solution that satisfies difficulty requirements
 3. Solution is computationally expensive but verification is fast
 4. Prevents automated attacks while allowing legitimate users through
 
-## Challenge Difficulty
+## ### Challenge Difficulty
 ```ts
 sentinel({
   apiKey: process.env.BETTER_AUTH_API_KEY,
@@ -311,8 +313,8 @@ sentinel({
 
 Higher difficulty = more computation required = slower for attackers.
 
-## Client Integration
-## sentinelClient()
+## ## Client Integration
+## ### sentinelClient()
 The client plugin handles device fingerprinting and automatic PoW challenge solving.
 
 ```ts
@@ -328,23 +330,25 @@ export const authClient = createAuthClient({
 });
 ```
 
-## Configuration
-| Option               | Type      | Default | Description                                             |
-| -------------------- | --------- | ------- | ------------------------------------------------------- |
-| `autoSolveChallenge` | `boolean` | `true`  | Automatically solve PoW challenges                      |
-| `kvTimeout`          | `number`  | `1000`  | Timeout in ms for KV identify and related HTTP requests |
+## ### Configuration
+| Option               | Type      | Default                                                                    | Description                                     |
+| -------------------- | --------- | -------------------------------------------------------------------------- | ----------------------------------------------- |
+| `identifyUrl`        | `string`  | `BETTER_AUTH_KV_URL` or `https://kv.better-auth.com`                       | Base URL for the identify endpoint.             |
+| `identifyOptions`    | `object`  | `{ timeout: 1000, retry: { attempts: 2, baseDelay: 400, maxDelay: 600 } }` | Identify HTTP client settings.                  |
+| `autoSolveChallenge` | `boolean` | `true`                                                                     | Automatically solve PoW challenges.             |
+| `kvTimeout`          | `number`  | `1000`                                                                     | Deprecated alias for `identifyOptions.timeout`. |
 
-## Browser Fingerprinting
+## ### Browser Fingerprinting
 The client automatically includes a visitor ID in requests via the `X-Visitor-Id` header. This fingerprint is used for:
 
 * Credential stuffing detection
 * Free trial abuse prevention
 * Device tracking
 
-## PoW Solution Header
+## ### PoW Solution Header
 When auto-solving is enabled, solved challenges are sent via the `X-PoW-Solution` header.
 
-## Expo and React Native
+## ### Expo and React Native
 For **Expo** and **React Native** apps, use `sentinelNativeClient` from `@better-auth/infra/native` instead of using `@better-auth/infra/client`.
 
 For **React Native** apps, install the following peer dependencies:
@@ -379,7 +383,7 @@ bun add @react-native-async-storage/async-storage react-native-get-random-values
 
 `@react-native-async-storage/async-storage` is optional. If it is not installed, the client uses a session-only in-memory visitor ID. For production, install it or pass a custom `storage` (for example a secure store).
 
-## Example
+## #### Example
 ```ts
 import { createAuthClient } from "better-auth/client";
 import { dashClient, sentinelNativeClient } from "@better-auth/infra/native";
@@ -427,7 +431,7 @@ bun add expo-constants expo-device expo-crypto
 ```
 
 
-## Example
+## #### Example
 ```ts
 import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
@@ -450,18 +454,19 @@ export const authClient = createAuthClient({
 });
 ```
 
-## sentinelNativeClient options
-| Option                | Type                            | Default                                                 | Description                                                                 |
-| --------------------- | ------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `identifyUrl`         | `string`                        | `BETTER_AUTH_KV_URL`, then `https://kv.better-auth.com` | KV identify endpoint base URL                                               |
-| `kvTimeout`           | `number`                        | `1000`                                                  | Timeout in ms for KV identify and related HTTP requests                     |
-| `autoSolveChallenge`  | `boolean`                       | `true`                                                  | On `423` with `X-PoW-Challenge`, solve and retry once with `X-PoW-Solution` |
-| `onChallengeReceived` | `(reason: string) => void`      | —                                                       | Called when a PoW challenge is received                                     |
-| `onChallengeSolved`   | `(solveTimeMs: number) => void` | —                                                       | Called after a successful solve                                             |
-| `onChallengeFailed`   | `(error: Error) => void`        | —                                                       | Called if solving fails                                                     |
-| `storage`             | `{ getItem, setItem }`          | Async Storage when installed                            | Persistent async storage for a stable per-install visitor ID                |
+## #### `sentinelNativeClient` options
+| Option                | Type                            | Default                                                                    | Description                                                                  |
+| --------------------- | ------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `identifyUrl`         | `string`                        | `BETTER_AUTH_KV_URL`, then `https://kv.better-auth.com`                    | Identify endpoint base URL.                                                  |
+| `identifyOptions`     | `object`                        | `{ timeout: 1000, retry: { attempts: 2, baseDelay: 400, maxDelay: 600 } }` | Identify HTTP timeout and retry policy.                                      |
+| `kvTimeout`           | `number`                        | `1000`                                                                     | Deprecated alias for `identifyOptions.timeout`.                              |
+| `autoSolveChallenge`  | `boolean`                       | `true`                                                                     | On `423` with `X-PoW-Challenge`, solve and retry once with `X-PoW-Solution`. |
+| `onChallengeReceived` | `(reason: string) => void`      | —                                                                          | Called when a PoW challenge is received.                                     |
+| `onChallengeSolved`   | `(solveTimeMs: number) => void` | —                                                                          | Called after a successful solve.                                             |
+| `onChallengeFailed`   | `(error: Error) => void`        | —                                                                          | Called if solving fails.                                                     |
+| `storage`             | `{ getItem, setItem }`          | Async Storage when installed                                               | Persistent async storage for a stable per-install visitor ID.                |
 
-## Security Events
+## ## Security Events
 Sentinel tracks the following security event types:
 
 | Event Type                      | Description                         |
@@ -480,7 +485,7 @@ Sentinel tracks the following security event types:
 
 These events are visible in the Security dashboard and included in audit logs.
 
-## Complete Example
+## ## Complete Example
 ```ts
 import { betterAuth } from "better-auth";
 import { sentinel } from "@better-auth/infra";
@@ -545,7 +550,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Best Practices
+## ## Best Practices
 1. **Start with logging** - Set actions to "log" initially to understand your traffic patterns before blocking.
 
 2. **Tune thresholds** - Every application is different. Monitor false positives and adjust thresholds accordingly.
@@ -558,22 +563,22 @@ export const auth = betterAuth({
 
 6. **Set up admin notifications** - Enable `notifyAdmin` for critical events like stale account reactivations.
 
-## Troubleshooting
-## Missing API Key Warning
+## ## Troubleshooting
+## ### Missing API Key Warning
 ```
 [Sentinel] Missing BETTER_AUTH_API_KEY. Security checks may fall back to allow mode.
 ```
 
 Make sure your API key environment variable is set correctly.
 
-## Challenges Not Working
+## ### Challenges Not Working
 If PoW challenges aren't being solved:
 
 1. Verify the correct client plugin: `sentinelClient()` for web (`@better-auth/infra/client`), or `sentinelNativeClient()` for Expo / React Native (`@better-auth/infra/native`)
 2. Check that `autoSolveChallenge` is `true`
 3. Ensure the client can reach the server
 
-## High False Positive Rate
+## ### High False Positive Rate
 If legitimate users are being blocked:
 
 1. Increase thresholds

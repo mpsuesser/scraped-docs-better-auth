@@ -1,0 +1,165 @@
+---
+url: https://better-auth.com/llms.txt/docs/plugins/scim/groups-and-roles
+title: "Groups And Roles"
+description: ""
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
+---
+
+Provision SCIM Groups and map them to application roles.
+
+SCIM Groups store directory-owned membership. They do not grant application permissions until you configure a projection.
+
+## Provision groups and memberships
+
+A Group requires a `displayName` and may include an `externalId`. Members reference SCIM User IDs from the same connection. They do not reference Better Auth User IDs.
+
+```
+{
+  "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+  "externalId": "directory-group-finance",
+  "displayName": "Finance administrators",
+  "members": [
+    {
+      "value": "<scim-user-id>",
+      "type": "User"
+    }
+  ]
+}
+```
+
+Groups support direct User members only. Nested Groups and members from another connection are rejected. A Group may contain up to 1,000 unique members, and membership changes are atomic.
+
+See the [Group endpoint reference](https://better-auth.com/docs/plugins/scim/reference#groups) for the supported operations and PATCH paths.
+
+## Map Groups to custom roles
+
+Configure `projection.roles` to translate a Group into application roles. Then implement `projection.reconcileUser` to apply the complete SCIM-managed access state.
+
+```
+const rolesByExternalGroupId = new Map([
+  ["directory-group-finance", "billing-manager"],
+]);
+
+const allowedRolesByWorkspace = new Map([
+  ["workspace-acme", new Set(["billing-manager"])],
+]);
+
+scim({
+  connections: [
+    {
+      id: "workforce-acme",
+      provisioningDomainId: "workspace-acme",
+      credentials: [
+        { type: "bearer", id: "workforce-primary", token: workforceToken },
+      ],
+    },
+  ],
+  projection: {
+    roles: {
+      map: ({ source }) => {
+        const role = source.externalId
+          ? rolesByExternalGroupId.get(source.externalId)
+          : undefined;
+        return role ? [role] : [];
+      },
+      exists: ({ provisioningDomainId, role }) => {
+        const allowedRoles = allowedRolesByWorkspace.get(provisioningDomainId);
+        return allowedRoles?.has(role) ?? false;
+      },
+    },
+    async reconcileUser(state, { database }) {
+      await replaceSCIMManagedRoles(database, state);
+    },
+  },
+});
+```
+
+The callbacks have separate responsibilities:
+
+| Callback | Responsibility |
+| --- | --- |
+| `roles.map` | Returns candidate role identifiers for one Group source. |
+| `roles.exists` | Confirms that each candidate role exists in the provisioning domain. |
+| `reconcileUser` | Applies the complete desired SCIM state for one Better Auth User in one provisioning domain. |
+
+All three callbacks receive a transaction-bound database context. Use it for role-catalog reads and application access writes that must commit with the SCIM change.
+
+Prefer the immutable SCIM `id` in `roles.map`. Use `externalId` only when the directory guarantees that it remains stable. The callback may return several role identifiers. Empty values and roles rejected by `roles.exists` grant nothing.
+
+`projection.reconcileUser` receives the following state:
+
+| Field | Meaning |
+| --- | --- |
+| `provisioningDomainId` | The application boundary that receives the access state. |
+| `userId` | The linked Better Auth User ID. |
+| `active` | `true` while at least one SCIM source in this domain is active. |
+| `sources` | Every linked source in the domain, with its connection and active state. |
+| `grants` | Validated role grants with the Group source that produced each grant. |
+
+Make the reconciler idempotent and write through the supplied `database` transaction. Replace only access owned by SCIM so manual assignments and roles from other systems remain intact. Throwing from the callback rolls back the SCIM request.
+
+Without `projection`, Groups and memberships remain available through SCIM but grant no application access.
+
+## Reconcile mapping changes
+
+SCIM requests reconcile affected users immediately. If you change role mappings or your role catalog without a directory request, replay the provisioning domain from trusted server code:
+
+```
+await auth.api.reconcileSCIMProjection({
+  body: { provisioningDomainId: "workspace-acme" },
+});
+```
+
+`reconcileSCIMProjection` has no HTTP route. It invokes `projection.reconcileUser` with the complete desired state for every linked user in the domain.
+
+Keep `projection.reconcileUser` configured until the replay finishes. To remove all mapped roles, remove `projection.roles` or make `map` return no roles, run the replay, and then remove the remaining projection configuration.
+
+## Rotate a credential
+
+Add the new credential beside the old one so the directory can switch tokens without interrupting provisioning. Give the retiring credential an expiry, deploy the configuration, update the directory, and remove the old value after the overlap ends.
+
+```
+scim({
+  connections: [
+    {
+      id: "workforce-acme",
+      credentials: [
+        { type: "bearer", id: "current", token: currentToken },
+        {
+          type: "bearer",
+          id: "retiring",
+          token: retiringToken,
+          expiresAt: rotationEndsAt,
+        },
+      ],
+    },
+  ],
+});
+```
+
+An expired credential receives `401 Unauthorized`. Tokens must be unique across all configured connections.
+
+## Decommission a connection
+
+Decommission a connection that has authenticated at least once before removing it from `connections`. A never-used connection has no persisted binding and can be removed from configuration directly.
+
+Decommissioning is irreversible. It permanently rejects the connection's credentials and removes its contribution from lifecycle and access state.
+
+```
+const result = await auth.api.decommissionSCIMConnection({
+  body: { connectionId: "workforce-acme" },
+});
+
+if (result.status === "reconciling") {
+  console.info("SCIM decommissioning is still running", {
+    reconciledUsers: result.reconciledUsers,
+    batches: result.batches,
+    retryAfter: result.retryAfter,
+  });
+}
+```
+
+The method is available only through the trusted server API. It reconciles affected users after retiring the connection. If the result is `reconciling`, call the method again at or after the `Date` in `retryAfter`. Continue until it returns `complete`, then remove the connection from configuration.
+
+Keep identity and projection callbacks idempotent because a failed operation may be retried. Decommissioning retains the connection's SCIM Users, Groups, and memberships.

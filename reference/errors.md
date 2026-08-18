@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors
 title: "Errors"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Errors
@@ -14,7 +14,7 @@ Errors that can occur in Better Auth.
 
 This section contains all the errors that cause you to be redirected to the `/api/auth/error` page.
 
-## List of errors
+## ## List of errors
 * [invalid\_callback\_request](/docs/reference/errors/invalid_callback_request)
 * [invalid\_code](/docs/reference/errors/invalid_code)
 * [internal\_server\_error](/docs/reference/errors/internal_server_error)

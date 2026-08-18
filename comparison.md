@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/comparison
 title: "Comparison"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Comparison
@@ -18,20 +18,20 @@ Comparison of Better Auth versus other auth libraries and services.
 
 Here are some key reasons why you may want to use Better Auth instead of other auth libraries and services.
 
-## vs Other Auth Libraries
+## ### vs Other Auth Libraries
 * **Framework agnostic** - Works with any framework, not just specific ones
 * **Advanced features built-in** - 2FA, multi-tenancy, multi-session, rate limiting, and many more
 * **Plugin system** - Extend functionality without forking or complex workarounds
 * **Full control** - Customize auth flows exactly how you want
 * **Flexible deployment** - Run alongside your app or as a standalone self-hosted auth server
 
-## vs Managed Auth Services
+## ### vs Managed Auth Services
 * **Keep your data** - Users stay in your database, not a third-party service
 * **No per-user costs** - Scale without worrying about auth billing
 * **Single source of truth** - All user data in one place
 * **Self-host anywhere** - Deploy on your own infrastructure with full control
 
-## vs Rolling Your Own
+## ### vs Rolling Your Own
 * **Security handled** - Battle-tested auth flows and security practices
 * **Focus on your product** - Spend time on features that matter to your business
 * **Plugin extensibility** - Add custom features without starting from scratch

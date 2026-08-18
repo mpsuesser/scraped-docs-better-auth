@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/tiktok
 title: "Tiktok"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # TikTok
@@ -13,7 +13,7 @@ TikTok provider setup and usage.
 
 
 
-### Get your TikTok Credentials
+### ### Get your TikTok Credentials
 To integrate with TikTok, you need to obtain API credentials by creating an application in the [TikTok Developer Portal](https://developers.tiktok.com/apps).
 
 Follow these steps:
@@ -33,7 +33,7 @@ Make sure to set the redirect URL to a valid HTTPS domain for local development.
 > * The TikTok API does not provide email addresses. As a workaround, this implementation uses the user's `username` value for the `email` field, which is why it requires the `user.info.profile` scope instead of just `user.info.basic`.
 > * For production use, you will need to request approval from TikTok for the scopes you intend to use.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -49,7 +49,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with TikTok
+### ### Sign In with TikTok
 To sign in with TikTok, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `tiktok`.

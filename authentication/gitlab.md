@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/gitlab
 title: "Gitlab"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # GitLab
@@ -13,12 +13,12 @@ GitLab provider setup and usage.
 
 
 
-### Get your GitLab credentials
+### ### Get your GitLab credentials
 To use GitLab sign in, you need a client ID and client secret. [GitLab OAuth documentation](https://docs.gitlab.com/ee/api/oauth2.html).
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/gitlab` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -35,7 +35,7 @@ export const auth = betterAuth({
 })
 ```
 
-#### Configuration Options
+#### #### Configuration Options
 * `clientId`: Your GitLab application's Client ID
 * `clientSecret`: Your GitLab application's Client Secret
 * `issuer`: (Optional) The URL of your GitLab instance. Use this for self-hosted GitLab servers.
@@ -44,7 +44,7 @@ export const auth = betterAuth({
 
 > The `issuer` option is useful when using a self-hosted GitLab instance. If you're using GitLab.com, you can omit this option as it defaults to `https://gitlab.com`.
 
-#### Example with self-hosted GitLab
+#### #### Example with self-hosted GitLab
 ```ts title="auth.ts"
 export const auth = betterAuth({
     socialProviders: {
@@ -57,7 +57,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with GitLab
+### ### Sign In with GitLab
 To sign in with GitLab, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `gitlab`.

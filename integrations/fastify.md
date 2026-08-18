@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/fastify
 title: "Fastify"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Better Auth Fastify Integration Guide
@@ -16,7 +16,7 @@ This guide provides step-by-step instructions for configuring both essential han
 
 > A configured Better Auth instance is required before proceeding. If you haven't set this up yet, please consult our [Installation Guide](/docs/installation).
 
-## Prerequisites
+## ### Prerequisites
 Verify the following requirements before integration:
 
 * **Node.js Environment**: v16 or later installed
@@ -62,7 +62,7 @@ bun add fastify @fastify/cors
 > 
 >  for optimal compatibility. 
 
-## Authentication Handler Setup
+## ### Authentication Handler Setup
 Configure Better Auth to process authentication requests by creating a catch-all route:
 
 ```ts title="server.ts"
@@ -118,7 +118,7 @@ fastify.listen({ port: 4000 }, (err) => {
 });
 ```
 
-## Trusted origins
+## ### Trusted origins
 When a request is made from a different origin, the request will be blocked by default. You can add trusted origins to the `auth` instance.
 
 ```ts
@@ -127,7 +127,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Configuring CORS
+## ### Configuring CORS
 Secure your API endpoints with proper CORS configuration:
 
 ```ts
@@ -152,7 +152,7 @@ fastify.register(fastifyCors, {
 
 > Always restrict CORS origins in production environments. Use environment variables for dynamic configuration. 
 
-## Getting the User Session
+## ### Getting the User Session
 To retrieve the user's session in your Fastify routes, use the `auth.api.getSession` method. Better Auth provides a `fromNodeHeaders` helper function that converts Node.js request headers to the format expected by Better Auth.
 
 ```ts title="server.ts"

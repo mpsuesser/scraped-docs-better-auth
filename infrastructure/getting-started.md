@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/getting-started
 title: "Getting Started"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Getting Started
@@ -13,13 +13,13 @@ This guide will help you integrate Better Auth Infrastructure into your applicat
 
 
 
-### Prerequisites
+### ## Prerequisites
 Before you begin, make sure you have:
 
 1. A working [Better Auth](/docs/installation) installation
 2. An account & API Key from the [Better Auth Infrastructure](/dashboard) dashboard
 
-### Installation
+### ## Installation
 Install the `@better-auth/infra` package:
 
 
@@ -50,7 +50,7 @@ bun add @better-auth/infra
 ```
 
 
-### Environment Variables
+### ## Environment Variables
 Once you've gotten the API Key from the infrastructure dashboard,
 go ahead and add the `BETTER_AUTH_API_KEY` environment variable in your production environment variables.
 
@@ -63,8 +63,8 @@ BETTER_AUTH_API_KEY=your_api_key_here
 > [Better Auth Infrastructure dashboard](/dashboard).
 
 
-## Server Setup
-## Basic Configuration
+## ## Server Setup
+## ### Basic Configuration
 Add the `dash()` plugin to your Better Auth configuration:
 
 ```ts
@@ -97,8 +97,8 @@ export const auth = betterAuth({
 });
 ```
 
-## Client Setup
-## Basic Client Configuration
+## ## Client Setup
+## ### Basic Client Configuration
 Add the client plugins to your auth client:
 
 ```ts
@@ -115,7 +115,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-## Expo and React Native
+## ### Expo and React Native
 For **Expo** or **React Native** clients, import from `@better-auth/infra/native` instead of `@better-auth/infra/client`. The native entry provides `dashClient` (same audit log APIs as the web client) and `sentinelNativeClient`.
 
 ```ts
@@ -135,13 +135,13 @@ export const authClient = createAuthClient({
 
 See [Sentinel — Expo and React Native](/docs/infrastructure/plugins/sentinel#expo-and-react-native) for more details.
 
-## Plugin Overview
+## ### Plugin Overview
 * **`dash()`** - Enables analytics tracking, audit logging, dashboard admin APIs, and more
 * **`sentinel()`** - Enables security checks and abuse protection
 
 You can use either plugin independently, but using both together provides the full Better Auth Infrastructure experience.
 
-## Next Steps
+## ## Next Steps
 Now that you have the basic setup, explore these topics:
 
 * [Dashboard](/docs/infrastructure/plugins/dashboard) - Analytics, activity tracking, and admin APIs

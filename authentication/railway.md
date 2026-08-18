@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/railway
 title: "Railway"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Railway
@@ -13,7 +13,7 @@ Railway provider setup and usage.
 
 
 
-### Get your Railway credentials
+### ### Get your Railway credentials
 To use Railway sign in, you need a client ID and client secret. You can get them from the [Railway Developer Settings](https://railway.com/workspace/developer).
 
 1. Go to your Railway account's Developer Settings
@@ -25,7 +25,7 @@ Make sure to save your client ID and client secret securely. If you change the b
 
 > Railway uses PKCE (Proof Key for Code Exchange) for enhanced security. This is automatically handled by Better Auth.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -42,8 +42,8 @@ export const auth = betterAuth({
 ```
 
 
-## Usage
-## Sign in with Railway
+## ## Usage
+## ### Sign in with Railway
 To sign in with Railway, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `railway`.
@@ -59,10 +59,10 @@ const signIn = async () => {
 }
 ```
 
-## Options
+## ## Options
 For the full list of options supported by all social providers, check the [Provider Options](/docs/concepts/oauth#provider-options).
 
-## Available Scopes
+## ### Available Scopes
 Railway OAuth supports the following scopes:
 
 | Scope              | Description                                          |

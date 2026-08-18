@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/facebook
 title: "Facebook"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Facebook
@@ -13,7 +13,7 @@ Facebook provider setup and usage.
 
 
 
-### Get your Facebook credentials
+### ### Get your Facebook credentials
 To use Facebook sign in, you need a client ID and client Secret. You can get them from the [Facebook Developer Portal](https://developers.facebook.com/).
 Select your app, navigate to **App Settings > Basic**, locate the following:
 
@@ -24,7 +24,7 @@ Select your app, navigate to **App Settings > Basic**, locate the following:
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/facebook` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"  
@@ -45,7 +45,7 @@ export const auth = betterAuth({
 
 > Facebook may omit `email` even when the permission is granted (phone-only accounts, revoked consent, or addresses Meta has marked invalid). See [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email) for the recommended `mapProfileToUser` fallback.
 
-### Sign In with Facebook
+### ### Sign In with Facebook
 To sign in with Facebook, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `facebook`.
@@ -62,8 +62,8 @@ const signIn = async () => {
 ```
 
 
-## Additional Configuration
-## Scopes
+## ## Additional Configuration
+## ### Scopes
 By default, Facebook provides basic user information. If you need additional permissions, you can specify scopes in your auth configuration:
 
 ```ts title="auth.ts"
@@ -86,7 +86,7 @@ Additional options:
 * `fields`: Extend list of fields to retrieve from the Facebook user profile (assignment).
   * Default: `"id", "name", "email", "picture"`
 
-## Sign In with Facebook With ID or Access Token
+## ### Sign In with Facebook With ID or Access Token
 To sign in with Facebook using the ID Token, you can use the `signIn.social` function to pass the ID Token.
 
 This is useful when you have the ID Token from Facebook on the client-side and want to use it to sign in on the server.

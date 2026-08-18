@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/twitch
 title: "Twitch"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Twitch
@@ -13,12 +13,12 @@ Twitch provider setup and usage.
 
 
 
-### Get your Twitch Credentials
+### ### Get your Twitch Credentials
 To use Twitch sign in, you need a client ID and client secret. You can get them from the [Twitch Developer Portal](https://dev.twitch.tv/console/apps).
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/twitch` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"  
@@ -34,7 +34,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with Twitch
+### ### Sign In with Twitch
 To sign in with Twitch, you can use the `signIn.social` function provided by the client.
 The `signIn` function takes an object with the following properties:
 

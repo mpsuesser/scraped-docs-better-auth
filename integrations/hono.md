@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/hono
 title: "Hono"
 description: ""
-access_date: 2026-08-12T18:51:38.659Z
-current_date: 2026-08-12T18:51:38.659Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Hono Integration
@@ -16,8 +16,8 @@ Both Hono and Better Auth use the Web Standard `Request` and `Response` APIs, so
 
 Before you begin, make sure you have a Better Auth instance configured. If not, follow the [installation guide](/docs/installation).
 
-## Setup
-## Create a Hono App
+## ## Setup
+## ### Create a Hono App
 If you are starting a new project, create a Hono application and select the template for your runtime or platform:
 
 
@@ -50,7 +50,7 @@ bun x create-hono@latest
 
 If you already have a Hono application, you can skip this step. See the [create-hono documentation](https://hono.dev/docs/guides/create-hono) for available templates and options, or Hono's [Getting Started guides](https://hono.dev/docs/getting-started/basic) for runtime-specific setup and deployment.
 
-## Mount the Auth Handler
+## ### Mount the Auth Handler
 Add the highlighted route to your existing Hono application:
 
 ```ts title="src/index.ts"
@@ -72,7 +72,7 @@ If you're using another runtime, keep your existing entry point and add the same
 
 > The resulting Hono route must match your Better Auth `basePath`, which
 > defaults to `/api/auth`. If your app already uses `new
->     Hono().basePath("/api")`, mount Better Auth at `/auth/*`:
+>       Hono().basePath("/api")`, mount Better Auth at `/auth/*`:
 > 
 > ```ts
 > const app = new Hono().basePath("/api");
@@ -80,8 +80,8 @@ If you're using another runtime, keep your existing entry point and add the same
 > app.all("/auth/*", (c) => auth.handler(c.req.raw));
 > ```
 
-## Additional Configuration
-## Cloudflare Workers
+## ### Additional Configuration
+## #### Cloudflare Workers
 Better Auth uses `AsyncLocalStorage`. Add the [`nodejs_compat` compatibility flag](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#nodejs-compatibility-flag) to your Wrangler configuration:
 
 ```jsonc title="wrangler.jsonc"
@@ -91,7 +91,7 @@ Better Auth uses `AsyncLocalStorage`. Add the [`nodejs_compat` compatibility fla
 }
 ```
 
-## CORS
+## ## CORS
 To allow cross-origin authentication requests, register Hono's [CORS middleware](https://hono.dev/docs/middleware/builtin/cors) before the Better Auth route:
 
 ```ts title="src/index.ts"
@@ -126,7 +126,7 @@ export const auth = betterAuth({
 
 When `credentials` is enabled, configure an explicit CORS origin instead of `*` and add the same origin to Better Auth's `trustedOrigins`. See [Cookies](/docs/concepts/cookies) for cross-domain and cross-subdomain cookie behavior.
 
-## Middleware
+## ## Middleware
 You can also use custom middleware to make the current session available through Hono's context:
 
 ```ts title="src/session-middleware.ts"
@@ -174,7 +174,7 @@ export default app;
 
 This example applies the middleware to a single route. For other patterns, see Hono's [Middleware guide](https://hono.dev/docs/guides/middleware).
 
-## Hono RPC
+## ## Hono RPC
 The Better Auth client uses `credentials: "include"` by default. If you use Hono RPC to call authenticated Hono routes from another origin, configure the RPC client to include credentials as well:
 
 

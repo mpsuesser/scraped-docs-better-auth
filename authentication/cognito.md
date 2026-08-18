@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/cognito
 title: "Cognito"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Cognito
@@ -13,7 +13,7 @@ Amazon Cognito provider setup and usage.
 
 
 
-### Get your Cognito Credentials
+### ### Get your Cognito Credentials
 To integrate with Cognito, you need to set up a **User Pool** and an **App client** in the [Amazon Cognito Console](https://console.aws.amazon.com/cognito/).
 
 Follow these steps:
@@ -29,7 +29,7 @@ Follow these steps:
 > * **User Pool is required** for Cognito authentication.
 > * Make sure the callback URL matches exactly what you configure in Cognito.
 
-### Configure the provider
+### ### Configure the provider
 Configure the `cognito` key in `socialProviders` key of your `auth` instance.
 
 ```ts title="auth.ts"
@@ -43,12 +43,13 @@ export const auth = betterAuth({
       domain: process.env.COGNITO_DOMAIN as string, // e.g. "your-app.auth.us-east-1.amazoncognito.com" [!code highlight]
       region: process.env.COGNITO_REGION as string, // e.g. "us-east-1" [!code highlight]
       userPoolId: process.env.COGNITO_USERPOOL_ID as string, // [!code highlight]
+      identityProvider: "Google", // optional: skip the hosted UI picker [!code highlight]
     },
   },
 })
 ```
 
-### Sign In with Cognito
+### ### Sign In with Cognito
 To sign in with Cognito, use the `signIn.social` function from the client.
 
 ```ts title="auth-client.ts"
@@ -63,7 +64,18 @@ const signIn = async () => {
 }
 ```
 
-#### Additional Options:
+To override the preselected identity provider per call (for example, to render
+a "Sign in with Okta" button that bypasses the Cognito picker), pass the
+`identity_provider` key through `additionalParams`:
+
+```ts
+await authClient.signIn.social({
+  provider: "cognito",
+  additionalParams: { identity_provider: "Okta" },
+})
+```
+
+#### ### Additional Options:
 * `scope`: Additional OAuth2 scopes to request (combined with default permissions).
   * Default: `"openid" "profile" "email"`
   * Common Cognito scopes:
@@ -72,11 +84,16 @@ const signIn = async () => {
     * `email`: Access to user’s email
     * `phone`: Access to user’s phone number
     * `aws.cognito.signin.user.admin`: Grants access to Cognito-specific APIs
+
 * Note: You must configure the scopes in your Cognito App Client settings. [available scopes](https://docs.aws.amazon.com/cognito/latest/developerguide/token-endpoint.html#token-endpoint-userinfo)
+
 * `getUserInfo`: Custom function to retrieve user information from the Cognito UserInfo endpoint.
+
+* `identityProvider`: Preselect a Cognito-configured identity provider to skip the hosted-UI picker. Valid values are `"COGNITO"`, a SAML/OIDC provider name on the User Pool, or one of `"Google"`, `"Facebook"`, `"LoginWithAmazon"`, `"SignInWithApple"`. Per-call overrides via `additionalParams.identity_provider` take precedence.
+
 * `refreshAccessToken`: Custom function to refresh tokens. It receives the stored refresh token.
 
-#### Refresh tokens
+#### ### Refresh tokens
 Cognito returns a refresh token after a successful authorization code grant. Later refresh-token grants return new access and ID tokens. Cognito only returns a new refresh token when refresh token rotation is enabled in the app client; otherwise, the original refresh token remains valid and Better Auth keeps using it.
 
 `auth.api.getAccessToken` refreshes an expired access token automatically when the provider account has a refresh token and a known `accessTokenExpiresAt`. It returns the valid access token and ID token. If you need the refresh token in the response, use the `/refresh-token` endpoint instead.

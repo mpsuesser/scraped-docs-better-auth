@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/wechat
 title: "Wechat"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # WeChat
@@ -13,10 +13,10 @@ WeChat provider setup and usage.
 
 
 
-### Get your WeChat Credentials
+### ### Get your WeChat Credentials
 To use WeChat sign in, you need to register a website application on the [WeChat Open Platform](https://open.weixin.qq.com/), set the `Authorization Callback Domain` to the better auth domain and get your App ID and App Secret.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -32,7 +32,7 @@ export const auth = betterAuth({
 })
 ```
 
-#### Optional Configuration
+#### #### Optional Configuration
 You can customize the WeChat provider with additional options:
 
 ```ts title="auth.ts"
@@ -50,7 +50,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with WeChat
+### ### Sign In with WeChat
 To sign in with WeChat, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `wechat`.
@@ -67,9 +67,9 @@ const signIn = async () => {
 ```
 
 
-## Usage
-## Platform Support
+## ## Usage
+## ### Platform Support
 WeChat provider currently supports the Website Application platform type, which enables WeChat QR code login for web applications.
 
-## Development Notes
+## ### Development Notes
 * The redirect URL domain must match the domain configured in the WeChat Open Platform

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/signup_disabled
 title: "Signup_disabled"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # signup_disabled
@@ -14,7 +14,7 @@ Signup disabled error
 
 This error occurs when you disable sign up in your oauth provider config and a user tries to sign up with that provider.
 
-## How to fix
+## ## How to fix
 If you're using the `disableSignUp` option with stateless mode, you will see this error. Please consider using database hooks instead to handle this case.
 
 ```ts title="auth.ts"

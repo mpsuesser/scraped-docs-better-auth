@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/plugins
 title: "Plugins"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Learn how to use and create Better Auth plugins, including defining endpoints, schemas, hooks, middleware, rate limits, trusted origins, and building client plugins with custom actions and atoms.
@@ -168,6 +168,38 @@ The key is the column name and the value is the column definition. The column de
 `required`: if the field should be required on a new record. (default: `true`)
 
 `unique`: if the field should be unique. (default: `false`)
+
+For indexes that span multiple fields, add an `indexes` array to the table. Index fields use the logical field keys from `fields`, even when a field has a custom database column name.
+
+```
+import type { BetterAuthPlugin } from "better-auth";
+
+const directoryPlugin = {
+  id: "directory",
+  schema: {
+    directoryUser: {
+      fields: {
+        connectionId: {
+          type: "string",
+          fieldName: "connection_id",
+        },
+        externalId: {
+          type: "string",
+          fieldName: "external_id",
+        },
+      },
+      indexes: [
+        {
+          fields: ["connectionId", "externalId"],
+          unique: true,
+        },
+      ],
+    },
+  },
+} satisfies BetterAuthPlugin;
+```
+
+Each index can include up to 16 fields. Set `unique: true` when each field tuple must identify at most one row. Every field in a unique table-level index must be required so that null handling remains consistent across databases. You can also provide a schema-wide `name` of up to 63 UTF-8 bytes to control the database index name. Names must start with a letter or underscore and contain only letters, numbers, and underscores. Names are compared case-insensitively and cannot conflict with a table or another index. The CLI includes table-level indexes in SQL migrations and generated Drizzle or Prisma schemas. The MongoDB adapter creates them before the first indexed write to the collection.
 
 `references`: if the field is a reference to another table. (optional) It takes an object with the following properties:
 

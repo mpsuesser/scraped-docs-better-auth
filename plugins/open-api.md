@@ -2,61 +2,66 @@
 url: https://better-auth.com/llms.txt/docs/plugins/open-api
 title: "Open Api"
 description: ""
-access_date: 2026-08-13T18:32:02.692Z
-current_date: 2026-08-13T18:32:02.692Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
+
+# Open API
 
 Open API reference for Better Auth.
 
+
+
+
+
+
+
 This is a plugin that provides an Open API reference for Better Auth. It shows all endpoints added by plugins and the core. It also provides a way to test the endpoints. It uses [Scalar](https://scalar.com/) to display the Open API reference.
 
-## Installation
+> This plugin is still in the early stages of development. We are working on adding more features to it and filling in the gaps.
 
-### Add the plugin to your auth config
-
-```
+## ## Installation
+### ### Add the plugin to your **auth** config
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
-import { openAPI } from "better-auth/plugins"
+import { openAPI } from "better-auth/plugins" // [!code highlight]
 
 export const auth = betterAuth({
     plugins: [
-        openAPI(), 
+        openAPI(), // [!code highlight]
     ]
 })
 ```
 
-### Navigate to /api/auth/reference to view the Open API reference
-
+### ### Navigate to `/api/auth/reference` to view the Open API reference
 Each plugin endpoints are grouped by the plugin name. The core endpoints are grouped under the `Default` group. And Model schemas are grouped under the `Models` group.
 
-![Open API reference](https://better-auth.com/_next/image?url=%2F_next%2Fstatic%2Fimmutable%2Fmedia%2Fopen-api-reference.2eg2mj7e5vge-.png&w=3840&q=75)
+    <img alt="Open API reference" src="__img0" />
 
-## Usage
 
+## ## Usage
 The Open API reference is generated using the [OpenAPI 3.1.1](https://swagger.io/specification/) specification. You can use the reference to generate client libraries, documentation, and more. If you use the generated schema with client generators or other tooling, make sure they support OpenAPI 3.1 semantics.
 
 The reference is generated using the [Scalar](https://scalar.com/) library. Scalar provides a way to view and test the endpoints. You can test the endpoints by clicking on the `Try it out` button and providing the required parameters.
 
-![Open API reference](https://better-auth.com/_next/image?url=%2F_next%2Fstatic%2Fimmutable%2Fmedia%2Fopen-api-reference.2eg2mj7e5vge-.png&w=3840&q=75)
+<img alt="Open API reference" src="__img1" />
 
-### Generated Schema
-
+## ### Generated Schema
 To get the generated Open API schema directly as JSON, you can do `auth.api.generateOpenAPISchema()`. This will return the Open API schema as a JSON object.
 
-```
+```ts
 import { auth } from "@/lib/auth"
 
 const openAPISchema = await auth.api.generateOpenAPISchema()
 console.log(openAPISchema)
 ```
 
-### Using Scalar with Multiple Sources
-
+## ### Using Scalar with Multiple Sources
 If you're using Scalar for your API documentation, you can add Better Auth as an additional source alongside your main API:
 
 When using Hono with Scalar for OpenAPI documentation, you can integrate Better Auth by adding it as a source:
 
-```
+```ts
 app.get("/docs", Scalar({
   pageTitle: "API Documentation", 
   sources: [
@@ -67,8 +72,7 @@ app.get("/docs", Scalar({
 }));
 ```
 
-## Configuration
-
+## ## Configuration
 `path` - The path where the Open API reference is served. Default is `/api/auth/reference`. You can change it to any path you like, but keep in mind that it will be appended to the base path of your auth server.
 
 `disableDefaultReference` - If set to `true`, the default Open API reference UI by Scalar will be disabled. Default is `false`.

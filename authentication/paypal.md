@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/paypal
 title: "Paypal"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # PayPal
@@ -13,7 +13,7 @@ Paypal provider setup and usage.
 
 
 
-### Get your PayPal Credentials
+### ### Get your PayPal Credentials
 To integrate with PayPal, you need to obtain API credentials by creating an application in the [PayPal Developer Portal](https://developer.paypal.com/dashboard).
 
 Follow these steps:
@@ -43,7 +43,7 @@ Make sure to configure "Log in with PayPal" in your app settings:
 > * PayPal doesn't use traditional OAuth2 scopes in the authorization URL. Instead, you configure permissions directly in the Developer Dashboard
 > * For live apps, PayPal must review and approve your application before it can go live, which typically takes a few weeks
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -60,7 +60,7 @@ export const auth = betterAuth({
 })
 ```
 
-#### Options
+#### #### Options
 The PayPal provider accepts the following options:
 
 * `environment`: `'sandbox' | 'live'` - PayPal environment to use (default: `'sandbox'`)
@@ -79,7 +79,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with PayPal
+### ### Sign In with PayPal
 To sign in with PayPal, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `paypal`.
@@ -95,7 +95,7 @@ const signIn = async () => {
 }
 ```
 
-#### Additional Options:
+#### ### Additional Options:
 * `environment`: PayPal environment to use.
   * Default: `"sandbox"`
   * Options: `"sandbox"` | `"live"`

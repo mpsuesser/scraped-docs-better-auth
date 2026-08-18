@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/dub
 title: "Dub"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Dub
@@ -16,8 +16,8 @@ Better Auth Plugin for Lead Tracking using Dub links and OAuth Linking
 
 This plugins allows you to track leads when a user signs up using a Dub link. It also adds OAuth linking support to allow you to build integrations extending Dub's linking management infrastructure.
 
-## Installation
-### Install the plugin
+## ## Installation
+### ### Install the plugin
 First, install the plugin:
 
 
@@ -48,7 +48,7 @@ bun add @dub/better-auth
 ```
 
 
-### Install the Dub SDK
+### ### Install the Dub SDK
 Next, install the Dub SDK on your server:
 
 
@@ -79,7 +79,7 @@ bun add dub
 ```
 
 
-### Configure the plugin
+### ### Configure the plugin
 Add the plugin to your auth config:
 
 ```ts title="auth.ts"
@@ -97,8 +97,8 @@ export const auth = betterAuth({
 ```
 
 
-## Usage
-## Lead Tracking
+## ## Usage
+## ### Lead Tracking
 By default, the plugin will track sign up events as leads. You can disable this by setting `disableLeadTracking` to `true`.
 
 ```ts
@@ -118,7 +118,7 @@ const betterAuth = betterAuth({
 });
 ```
 
-## OAuth Linking
+## ### OAuth Linking
 The plugin supports OAuth for account linking.
 
 First, you need to setup OAuth app in Dub. Dub supports OAuth 2.0 authentication, which is recommended if you build integrations extending Dub’s functionality [Learn more about OAuth](https://dub.co/docs/integrations/quickstart#integrating-via-oauth-2-0-recommended).
@@ -163,9 +163,7 @@ const { data, error } = await authClient.dub.link({
 const data = await auth.api.dubLink({
     body: {
         callbackURL: /dashboard,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
+    }
 });
 ```
 
@@ -183,29 +181,29 @@ type dubLink = {
 ```
 
 
-## Options
+## ## Options
 You can pass the following options to the plugin:
 
-## dubClient
+## ### `dubClient`
 The Dub client instance.
 
-## disableLeadTracking
+## ### `disableLeadTracking`
 Disable lead tracking for sign up events.
 
-## leadEventName
+## ### `leadEventName`
 Event name for sign up leads.
 
-## customLeadTrack
+## ### `customLeadTrack`
 Custom lead track function.
 
-## oauth
+## ### `oauth`
 Dub OAuth configuration.
 
-## oauth.clientId
+## ### `oauth.clientId`
 Client ID for Dub OAuth.
 
-## oauth.clientSecret
+## ### `oauth.clientSecret`
 Client secret for Dub OAuth.
 
-## oauth.pkce
+## ### `oauth.pkce`
 Enable PKCE for Dub OAuth.

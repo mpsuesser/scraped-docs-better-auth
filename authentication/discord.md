@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/discord
 title: "Discord"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Discord
@@ -13,12 +13,12 @@ Discord provider setup and usage.
 
 
 
-### Get your Discord credentials
+### ### Get your Discord credentials
 To use Discord sign in, you need a client ID and client secret. You can get them from the [Discord Developer Portal](https://discord.com/developers/applications).
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/discord` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts" 
@@ -37,8 +37,8 @@ export const auth = betterAuth({
 > Discord returns `email: null` for phone-only accounts, even with the `email` scope granted. See [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email) for the recommended `mapProfileToUser` fallback.
 
 
-## Usage
-## Sign In with Discord
+## ## Usage
+## ### Sign In with Discord
 To sign in with Discord, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `discord`.
@@ -55,10 +55,10 @@ const signIn = async () => {
 }
 ```
 
-## Options
+## ## Options
 For the full list of options supported by all social providers, check the [Provider Options](/docs/concepts/oauth#provider-options).
 
-## Bot Permissions (Optional)
+## ### Bot Permissions (Optional)
 If you're using the `bot` scope with Discord OAuth, you can specify bot permissions using the `permissions` option. It can either be a bitwise value (e.g `2048 | 16384` for Send Messages and Embed Links) or a specific permission value (e.g `16384` for Embed Links).
 
 ```ts title="auth.ts" 

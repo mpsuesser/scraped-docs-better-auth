@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/vercel
 title: "Vercel"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Vercel
@@ -13,14 +13,14 @@ Vercel provider setup and usage.
 
 
 
-### Get your Vercel credentials
+### ### Get your Vercel credentials
 To use Sign in with Vercel, you need a client ID and client secret. You can get them from the [Vercel Dashboard](https://vercel.com/dashboard) by [creating a Vercel App](https://vercel.com/docs/sign-in-with-vercel/manage-from-dashboard).
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/vercel` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
 > Vercel requires PKCE (Proof Key for Code Exchange) for enhanced security. This is automatically handled by Better Auth.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts" 
@@ -37,8 +37,8 @@ export const auth = betterAuth({
 ```
 
 
-## Usage
-## Sign in with Vercel
+## ## Usage
+## ### Sign in with Vercel
 To sign in with Vercel, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `vercel`.
@@ -54,10 +54,10 @@ const signIn = async () => {
 }
 ```
 
-## Options
+## ## Options
 For the full list of options supported by all social providers, check the [Provider Options](/docs/concepts/oauth#provider-options).
 
-## Available Scopes
+## ### Available Scopes
 Vercel supports the following OpenID Connect scopes:
 
 * `openid` (default): Returns the user's unique identifier in the ID token

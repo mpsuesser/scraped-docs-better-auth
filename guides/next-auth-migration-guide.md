@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/next-auth-migration-guide
 title: "Next Auth Migration Guide"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 A step-by-step guide to transitioning from Auth.js to Better Auth.
@@ -463,7 +463,7 @@ Table: **Session**
 Table: **Account**
 
 - Better Auth uses camelCase naming (e.g. `refreshToken` vs `refresh_token`)
-- Better Auth includes `accountId` to distinguish between the account ID and internal ID
+- Better Auth uses `id` for the local account record and the unique `issuer` plus `accountId` pair for the external identity
 - Better Auth uses `providerId` instead of `provider`
 - Better Auth includes `accessTokenExpiresAt` and `refreshTokenExpiresAt` for token management
 - Better Auth includes `password` field to support built-in credential authentication

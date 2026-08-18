@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/last-login-method
 title: "Last Login Method"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 The last login method plugin tracks the most recent authentication method used by users (email, OAuth providers, etc.). This enables you to display helpful indicators on login pages, such as "Last signed in with Google" or prioritize certain login methods based on user preferences.
@@ -74,7 +74,7 @@ export function SignInPage() {
     return (
         <div className="space-y-4">
             <h1>Sign In</h1>
-            
+
             {/* Email sign in */}
             <div className="relative">
                 <Button 
@@ -254,14 +254,14 @@ export const auth = betterAuth({
             },
             
             // GDPR compliance hook
-            beforeStoreCookie: async (ctx, lastUsedLoginMethod) => {
-                // Check if user has given consent for non-essential cookies
-                // Return false to prevent cookie storage
-                const hasConsent = await checkUserCookieConsent(ctx)
-                return hasConsent
-            },
-            
-            // Schema customization (when storeInDatabase is true)
+                beforeStoreCookie: async (ctx, lastUsedLoginMethod) => {
+                    // Check if user has given consent for non-essential cookies
+                    // Return false to prevent cookie storage
+                    const hasConsent = await checkUserCookieConsent(ctx)
+                    return hasConsent
+                },
+
+                // Schema customization (when storeInDatabase is true)
             schema: {
                 user: {
                     lastLoginMethod: "custom_field_name"
@@ -368,13 +368,12 @@ By default, the plugin tracks these authentication methods:
 
 - **Email authentication**: `"email"`
 - **OAuth providers**: Provider ID (e.g., `"google"`, `"github"`, `"discord"`)
-- **OAuth2 callbacks**: Provider ID from URL path
+- **OAuth callbacks**: Provider ID from URL path
 - **Sign up methods**: Tracked the same as sign in methods
 
 The plugin automatically detects the method from these endpoints:
 
 - `/callback/:id` - OAuth callback with provider ID
-- `/oauth2/callback/:id` - OAuth2 callback with provider ID
 - `/sign-in/email` - Email sign in
 - `/sign-up/email` - Email sign up
 

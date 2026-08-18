@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/create-a-db-adapter
 title: "Create A Db Adapter"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Learn how to create a custom database adapter for Better-Auth
@@ -236,9 +236,9 @@ deleteMany: async ({ model, where }) => {
 };
 ```
 
-### consumeOne method (optional)
+### consumeOne method
 
-The `consumeOne` method atomically deletes a single matching record and returns it, so that two concurrent requests cannot both consume the same row. It powers single-use credentials such as one-time verification challenges. Implementing it is optional: when omitted, the adapter factory falls back to wrapping `findMany` + `deleteMany` in a `transaction`, using the deleted-row count as the race gate.
+The `consumeOne` method atomically deletes a single matching record and returns it, so that two concurrent requests cannot both consume the same row. It powers single-use credentials such as one-time verification challenges.
 
 parameters:
 
@@ -251,6 +251,33 @@ parameters:
 consumeOne: async ({ model, where }) => {
   // Single DELETE ... RETURNING is atomic, so only one caller gets the row.
   const [row] = await db.delete(model).where(where).returning();
+  return row ?? null;
+};
+```
+
+### incrementOne method
+
+The `incrementOne` method atomically updates one matching record by applying numeric deltas and optional set values, then returns the updated row. It powers guarded counters such as rate limits, quotas, and one-winner state transitions.
+
+parameters:
+
+- `model`: The model/table name to update.
+- `where`: The `where` clause that must still match for the increment to apply.
+- `increment`: Numeric deltas to apply, such as `{ count: 1 }` or `{ remaining: -1 }`.
+- `set`: Optional fields to set in the same atomic operation.
+
+**Returns** `Promise<T | null>`: the updated record, or `null` if no row matched. Implementations must update at most one matching row.
+
+```
+incrementOne: async ({ model, where, increment, set }) => {
+  const [row] = await db
+    .update(model)
+    .set({
+      ...set,
+      count: sql\`${model.count} + ${increment.count ?? 0}\`,
+    })
+    .where(where)
+    .returning();
   return row ?? null;
 };
 ```
@@ -457,7 +484,7 @@ Whether the adapter supports transactions. If `false`, operations run sequential
 
 ### debugLogs
 
-Used to enable debug logs for the adapter. You can pass in a boolean, or an object with the following keys: `create`, `update`, `updateMany`, `findOne`, `findMany`, `delete`, `deleteMany`, `count`. If any of the keys are `true`, the debug logs will be enabled for that method.
+Used to enable debug logs for the adapter. You can pass in a boolean, or an object with the following keys: `create`, `update`, `updateMany`, `findOne`, `findMany`, `delete`, `deleteMany`, `consumeOne`, `incrementOne`, `count`. If any of the keys are `true`, the debug logs will be enabled for that method.
 
 ```
 // Will log debug logs for all methods.

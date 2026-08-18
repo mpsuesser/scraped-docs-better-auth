@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/community-adapters
 title: "Community Adapters"
 description: ""
-access_date: 2026-08-12T18:51:38.659Z
-current_date: 2026-08-12T18:51:38.659Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Community-built database adapters that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom adapter, get started by reading our [Create a Database
 
 ## Browse Community Adapters
 
-Showing 19 of 19 adapters
+Showing 20 of 20 adapters
 
 |  |  |  |
 | --- | --- | --- |
@@ -36,6 +36,7 @@ Showing 19 of 19 adapters
 | [`neo4j-better-auth`](https://github.com/florianamette/better-auth-neo4j) | [Neo4j](https://neo4j.com/) | [![florianamette](https://github.com/florianamette.png) florianamette](https://github.com/florianamette) |
 | [`@lubiah/better-auth-mikro-orm`](https://github.com/lubiah/better-auth-mikro-orm) | [MikroORM](https://mikro-orm.io/) | [![lubiah](https://github.com/lubiah.png) lubiah](https://github.com/lubiah) |
 | [`better-auth-mikro-orm`](https://github.com/octet-stream/better-auth-mikro-orm) | [MikroORM](https://mikro-orm.io/) | [![octet-stream](https://github.com/octet-stream.png) octet-stream](https://github.com/octet-stream) |
+| [`@proofkit/better-auth`](https://github.com/proofsh/proofkit/tree/main/packages/better-auth) | [FileMaker OData](https://www.claris.com/filemaker/) | [![eluce2](https://github.com/eluce2.png) eluce2](https://github.com/eluce2) |
 | [`@datar-platform/better-auth-dynamodb`](https://github.com/datar-platform/better-auth-dynamodb) | [DynamoDB](https://aws.amazon.com/dynamodb/) | [![joesome-git](https://github.com/joesome-git.png) joesome-git](https://github.com/joesome-git) |
 | [`@bjorntech/betterauth-dynamodb`](https://github.com/bjorntech/betterauth-dynamodb) | [DynamoDB](https://aws.amazon.com/dynamodb/) | [![BjornTech AB](https://github.com/bjorntech.png) BjornTech AB](https://github.com/bjorntech) |
 | [`better-auth-azure-cosmos`](https://github.com/9hsein5/better-auth-azure-cosmos) | [Azure Cosmos DB](https://learn.microsoft.com/azure/cosmos-db/nosql/) | [![9hsein5](https://github.com/9hsein5.png) 9hsein5](https://github.com/9hsein5) |

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/expo
 title: "Expo"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Integrate Better Auth with Expo.
@@ -196,7 +196,7 @@ export const auth = betterAuth({
         
         // Development mode - Expo's exp:// scheme with local IP ranges
         ...(process.env.NODE_ENV === "development" ? [
-            "exp://",                      // Trust all Expo URLs (prefix matching)
+            "exp://",                      // Trust any host of the exp:// scheme
             "exp://**",                    // Trust all Expo URLs (wildcard matching)
             "exp://192.168.*.*:*/**",      // Trust 192.168.x.x IP range with any port and path
         ] : [])
@@ -345,7 +345,7 @@ To make authenticated requests to your server that require the user's session, y
 import { authClient } from "@/lib/auth-client";
 
 const makeAuthenticatedRequest = async () => {
-  const cookies = authClient.getCookie(); 
+  const cookies = await authClient.getCookie(); 
   const headers = {
     "Cookie": cookies, 
   };
@@ -374,9 +374,9 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
       links: [
         httpBatchLink({
           //...your other options
-          headers() {
+          async headers() {
             const headers = new Map<string, string>(); 
-            const cookies = authClient.getCookie(); 
+            const cookies = await authClient.getCookie(); 
             if (cookies) { 
               headers.set("Cookie", cookies); 
             } 
@@ -401,18 +401,18 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
 
 ### Expo Client
 
-**storage**: the storage mechanism used to cache the session data and cookies.
+**storage**: the SecureStore-compatible storage used to cache session data and cookies.
 
 ```
 import { createAuthClient } from "better-auth/react";
 import { expoClient } from "@better-auth/expo/client";
-import SecureStorage from "expo-secure-store";
+import * as SecureStore from "expo-secure-store";
 
 const authClient = createAuthClient({
     baseURL: "http://localhost:8081",
     plugins: [
         expoClient({
-            storage: SecureStorage,
+            storage: SecureStore,
             // ...
         })
     ],

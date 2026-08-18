@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/dashboard
 title: "Dashboard"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Dashboard
@@ -14,7 +14,7 @@ The `dash()` plugin connects your Better Auth instance to Better Auth Infrastruc
 
 The Dashboard plugin is the core connection between your Better Auth instance and Better Auth Infrastructure. It powers the web dashboard with real-time data, tracks user activity, and enables admin APIs.
 
-## Installation
+## ## Installation
 ```ts
 import { betterAuth } from "better-auth";
 import { dash } from "@better-auth/infra";
@@ -26,17 +26,20 @@ export const auth = betterAuth({
 });
 ```
 
-## Configuration Options
-| Option             | Type     | Description                                                           |
-| ------------------ | -------- | --------------------------------------------------------------------- |
-| `apiUrl`           | `string` | Better Auth Infrastructure API URL                                    |
-| `kvUrl`            | `string` | KV store URL for caching                                              |
-| `apiKey`           | `string` | Your API key for authentication                                       |
-| `apiTimeout`       | `number` | Timeout in ms for Infra API HTTP requests (`apiUrl`). Default: `3000` |
-| `kvTimeout`        | `number` | Timeout in ms for KV HTTP requests (`kvUrl`). Default: `1000`         |
-| `activityTracking` | `object` | Activity tracking configuration                                       |
+## ## Configuration Options
+| Option                 | Type     | Description                                                                                  |
+| ---------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| `apiUrl`               | `string` | Better Auth Infrastructure API URL. Default: `https://dash.better-auth.com`                  |
+| `kvUrl`                | `string` | KV store URL. Default: `https://kv.better-auth.com`                                          |
+| `apiKey`               | `string` | Your API key for authentication. Falls back to `BETTER_AUTH_API_KEY` in env.                 |
+| `apiOptions`           | `object` | Dash API HTTP client options. Accepts `timeout?: number` in ms.                              |
+| `kvOptions`            | `object` | KV HTTP client options. Accepts `timeout?: number` and `retry?: { attempts?: number; ... }`. |
+| `apiTimeout`           | `number` | Deprecated alias for `apiOptions.timeout`.                                                   |
+| `kvTimeout`            | `number` | Deprecated alias for `kvOptions.timeout`.                                                    |
+| `activityTracking`     | `object` | Activity tracking configuration.                                                             |
+| `managedDirectorySync` | `object` | Managed directory-sync control-plane options.                                                |
 
-## Activity Tracking
+## ## Activity Tracking
 Track when users were last active in your application. When enabled, a `lastActiveAt` field is automatically updated on user activity.
 
 ```ts
@@ -49,7 +52,7 @@ dash({
 }),
 ```
 
-## Schema Changes
+## ### Schema Changes
 When activity tracking is enabled, the plugin adds a field to your user schema:
 
 ```ts
@@ -64,7 +67,21 @@ user: {
 
 Make sure to run database migrations after enabling activity tracking.
 
-## Client Setup
+## ## Managed Directory Sync
+The `managedDirectorySync` option is the dashboard-side companion to the SCIM 1.7 plugin-managed runtime flow. When `enabled` is `true`, the dashboard installs the reservation tables and APIs needed for managed directory-sync state. `ssoPairing` enables the SSO hooks needed when a directory-backed user identity is paired with an SSO provider, and `membershipProjection` lets the system project SCIM membership changes into organization membership records.
+
+```ts
+dash({
+  apiKey: process.env.BETTER_AUTH_API_KEY,
+  managedDirectorySync: {
+    enabled: true,
+  },
+})
+```
+
+This is specifically for the 1.7 managed-directory-sync flow. See the [managed directory sync section in the Dashboard Plugin (`dash()`)](/docs/infrastructure/plugins/dash#managed-directory-sync) for the complete managed-directory schema and options. For the full SCIM model and migration details, see the [SCIM plugin reference](/docs/plugins/scim/reference) and the [1.7 upgrade guide](/docs/guides/1-7-upgrade-guide).
+
+## ## Client Setup
 ```ts
 import { createAuthClient } from "better-auth/client";
 import { dashClient } from "@better-auth/infra/client";
@@ -74,7 +91,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-## Client Configuration
+## ### Client Configuration
 ```ts
 dashClient({
   resolveUserId: ({ userId, user, session }) => {
@@ -83,7 +100,7 @@ dashClient({
 }),
 ```
 
-## What the Dashboard Plugin Enables
+## ## What the Dashboard Plugin Enables
 Once `dash()` is active, the Better Auth Infrastructure dashboard gives you:
 
 * **User management** — view, search, ban, and delete users
@@ -92,7 +109,7 @@ Once `dash()` is active, the Better Auth Infrastructure dashboard gives you:
 * **Analytics** — track sign-ups, sign-ins, and active users over time
 * **Audit logs** — query event history ([learn more](/docs/infrastructure/plugins/audit-logs))
 
-## Best Practices
+## ## Best Practices
 1. **Always set an API key** — without it, the plugin cannot communicate with the infrastructure API.
 
 2. **Use activity tracking wisely** — the update interval affects database writes. For high-traffic apps, consider a longer interval.

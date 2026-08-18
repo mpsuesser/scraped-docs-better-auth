@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/examples/astro
 title: "Astro"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Astro Example
@@ -21,7 +21,7 @@ Email & Password . Social Sign-in with Google . Passkeys . Email Verification . 
 
 [Better Auth Astro+Solid Example](https://stackblitz.com/github/better-auth/examples/tree/main/astro-example?codemirror=1&fontsize=14&hidenavigation=1&runonclick=1&hidedevtools=1)
 
-## How to run
+## ## How to run
 1. Clone the code sandbox (or the repo) and open it in your code editor
 
 2. Provide .env file with the following variables

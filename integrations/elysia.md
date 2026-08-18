@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/elysia
 title: "Elysia"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Elysia Integration
@@ -16,7 +16,7 @@ This integration guide is assuming you are using Elysia with bun server.
 
 Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
-## Mount the handler
+## ### Mount the handler
 We need to mount the handler to Elysia endpoint.
 
 ```ts
@@ -30,7 +30,7 @@ console.log(
 );
 ```
 
-## CORS
+## ### CORS
 To configure cors, you can use the `cors` plugin from `@elysiajs/cors`.
 
 ```ts
@@ -56,7 +56,7 @@ console.log(
 );
 ```
 
-## Macro
+## ### Macro
 You can use [macro](https://elysiajs.com/patterns/macro.html#macro) with [resolve](https://elysiajs.com/essential/handler.html#resolve) to provide session and user information before pass to view.
 
 ```ts

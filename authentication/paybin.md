@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/paybin
 title: "Paybin"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Paybin
@@ -13,7 +13,7 @@ Paybin provider setup and usage.
 
 
 
-### Get your Paybin credentials
+### ### Get your Paybin credentials
 To use Paybin sign in, you need to create an OAuth 2.0 Client through your Paybin Portfolio application.
 
 1. Log in to your [Paybin Portfolio](https://portfolio.paybin.io)
@@ -28,7 +28,7 @@ To use Paybin sign in, you need to create an OAuth 2.0 Client through your Paybi
 
 5. After creation, copy the Client ID and Client Secret to your environment variables. Keep these credentials secure.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -44,7 +44,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with Paybin
+### ### Sign In with Paybin
 To sign in with Paybin, you can use the `signIn.social` function provided by the client, where the `provider` should be set to `paybin`.
 
 ```ts title="auth-client.ts"
@@ -59,8 +59,8 @@ const signIn = async () => {
 ```
 
 
-## Additional Configuration
-## Scopes
+## ## Additional Configuration
+## ### Scopes
 By default, Paybin provider requests the following scopes: `openid`, `email`, and `profile`. You can customize the scopes based on your application's needs.
 
 For a complete list of available scopes and their descriptions, see the [Paybin OIDC Scopes Documentation](https://developers.paybin.io/knowledge-center/oidc#available-scopes).
@@ -77,7 +77,7 @@ export const auth = betterAuth({
 })
 ```
 
-## User Profile Mapping
+## ### User Profile Mapping
 Paybin returns user information in the ID token following OpenID Connect standards. The provider automatically extracts:
 
 * `id` from `sub` claim

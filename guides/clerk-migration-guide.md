@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/clerk-migration-guide
 title: "Clerk Migration Guide"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Migrating from Clerk to Better Auth
@@ -16,11 +16,11 @@ In this guide, we'll walk through the steps to migrate a project from Clerk to B
 
 > This migration will invalidate all active sessions. This guide doesn't currently show you how to migrate Organization but it should be possible with additional steps and the [Organization](/docs/plugins/organization) Plugin.
 
-## Before You Begin
+## ## Before You Begin
 Before starting the migration process, set up Better Auth in your project. Follow the [installation guide](/docs/installation) to get started. And go to
 
 
-### Connect to your database
+### ### Connect to your database
 You'll need to connect to your database to migrate the users and accounts. You can use any database you want, but for this example, we'll use PostgreSQL.
 
 
@@ -63,7 +63,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Enable Email and Password (Optional)
+### ### Enable Email and Password (Optional)
 Enable the email and password in your auth config and implement your own logic for sending verification emails, reset password emails, etc.
 
 > **Important for Clerk Migrations**: Clerk uses bcrypt to hash passwords, while Better Auth uses `scrypt` by default. To ensure migrated users can sign in with their existing passwords, you'll need to configure Better Auth to use bcrypt for password verification.
@@ -128,7 +128,7 @@ export const auth = betterAuth({
 
 See [Email and Password](/docs/authentication/email-password) for more configuration options.
 
-### Setup Social Providers (Optional)
+### ### Setup Social Providers (Optional)
 Add social providers you have enabled in your Clerk project in your auth config.
 
 ```ts title="auth.ts"
@@ -150,7 +150,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Add Plugins (Optional)
+### ### Add Plugins (Optional)
 You can add the following plugins to your auth config based on your needs.
 
 [Admin](/docs/plugins/admin) Plugin will allow you to manage users, user impersonations and app level roles and permissions.
@@ -192,7 +192,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Generate Schema
+### ### Generate Schema
 If you're using a custom database adapter, generate the schema:
 
 ```sh
@@ -205,16 +205,32 @@ or if you're using the default adapter, you can use the following command:
 npx auth migrate
 ```
 
-### Export Clerk Users
+### ### Export Clerk Users
 Go to the Clerk dashboard and [export the users](https://clerk.com/docs/deployments/exporting-users#export-your-users-data-from-the-clerk-dashboard). It will download a CSV file with the users data. You need to save it as `exported_users.csv` and put it in the root of your project.
 
-### Create the migration script
+### ### Create the migration script
 Create a new file called `migrate-clerk.ts` in the `scripts` folder and add the following code:
 
 ```ts title="scripts/migrate-clerk.ts"
 import { generateRandomString, symmetricEncrypt } from "better-auth/crypto";
 
 import { auth } from "@/lib/auth"; // import your auth instance
+
+// Review every provider in your Clerk export. Use the exact trusted issuer
+// Better Auth uses, or local:oauth:<encoded providerId> when it has no
+// issuer. The provider ID segment is percent-encoded.
+const accountIssuers: Record<string, string> = {
+  github: "local:oauth:github",
+  google: "https://accounts.google.com",
+};
+
+function getAccountIssuer(providerId: string) {
+  const issuer = accountIssuers[providerId];
+  if (!issuer) {
+    throw new Error(`Missing trusted issuer for ${providerId}`);
+  }
+  return issuer;
+}
 
 function getCSVData(csv: string) {
   const lines = csv.split('\n').filter(line => line.trim());
@@ -389,6 +405,9 @@ async function migrateFromClerk() {
               }]
           })
       })
+      if (!createdUser) {
+          throw new Error(`Unable to create or find user ${id}`);
+      }
       // create external account
       const externalAccounts = clerkUser?.external_accounts;
       if (externalAccounts) {
@@ -400,23 +419,26 @@ async function migrateFromClerk() {
                       data: {
                           id,
                           providerId: provider,
-                          accountId: externalAccount.provider_user_id,
+                          issuer: "local:credential",
+                          accountId: createdUser.id,
                           scope: approved_scopes,
-                          userId: createdUser?.id,
+                          userId: createdUser.id,
                           createdAt: safeDateConversion(created_at),
                           updatedAt: safeDateConversion(updated_at),
                           password: password_digest,
                       }
                   })
               } else {
+                  const providerId = provider.replace("oauth_", "");
                   await ctx.adapter.create({
                       model: "account",
                       data: {
                           id,
-                          providerId: provider.replace("oauth_", ""),
+                          providerId,
+                          issuer: getAccountIssuer(providerId),
                           accountId: externalAccount.provider_user_id,
                           scope: approved_scopes,
-                          userId: createdUser?.id,
+                          userId: createdUser.id,
                           createdAt: safeDateConversion(created_at),
                           updatedAt: safeDateConversion(updated_at),
                       },
@@ -431,7 +453,7 @@ async function migrateFromClerk() {
           await ctx.adapter.create({
               model: "twoFactor",
               data: {
-                  userId: createdUser?.id,
+                  userId: createdUser.id,
                   secret: totp_secret,
                   backupCodes: await generateBackupCodes(totp_secret)
               }
@@ -453,7 +475,7 @@ migrateFromClerk()
 
 Make sure to replace the `process.env.CLERK_SECRET_KEY` with your own Clerk secret key. Feel free to customize the script to your needs.
 
-### Run the migration
+### ### Run the migration
 Run the migration:
 
 ```sh
@@ -467,10 +489,10 @@ bun run script/migrate-clerk.ts # you can use any thing you like to run the scri
 > 3. Verify the migrated data in Better Auth before proceeding
 > 4. Keep Clerk installed and configured until the migration is complete
 
-### Verify the migration
+### ### Verify the migration
 After running the migration, verify that all users have been properly migrated by checking the database.
 
-### Update your components
+### ### Update your components
 Now that the data is migrated, you can start updating your components to use Better Auth. Here's an example for the sign-in component:
 
 ```tsx title="components/auth/sign-in.tsx"
@@ -498,7 +520,7 @@ export const SignIn = () => {
 };
 ```
 
-### Update the middleware
+### ### Update the middleware
 Replace your Clerk middleware with Better Auth's middleware:
 
 ```ts title="middleware.ts"
@@ -522,7 +544,7 @@ export const config = {
 };
 ```
 
-### Remove Clerk Dependencies
+### ### Remove Clerk Dependencies
 Once you've verified that everything is working correctly with Better Auth, you can remove Clerk:
 
 ```bash title="Remove Clerk"
@@ -530,10 +552,10 @@ pnpm remove @clerk/nextjs @clerk/themes @clerk/types
 ```
 
 
-## Additional Resources
+## ## Additional Resources
 [Goodbye Clerk, Hello Better Auth – Full Migration Guide!](https://www.youtube.com/watch?v=Za_QihbDSuk)
 
-## Wrapping Up
+## ## Wrapping Up
 Congratulations! You've successfully migrated from Clerk to Better Auth.
 
 Better Auth offers greater flexibility and more features—be sure to explore the [documentation](/docs) to unlock its full potential.

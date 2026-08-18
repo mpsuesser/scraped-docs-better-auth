@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/polar
 title: "Polar"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Polar
@@ -13,7 +13,7 @@ Polar provider setup and usage.
 
 
 
-### Get your Polar credentials
+### ### Get your Polar credentials
 To use Polar sign in, you need to create an OAuth 2.0 Client. You can get your credentials from the [Polar User Settings](https://polar.sh/dashboard/account/developer).
 
 1. Go to your [Polar User Settings](https://polar.sh/settings#oauth)
@@ -34,7 +34,7 @@ To use Polar sign in, you need to create an OAuth 2.0 Client. You can get your c
 
 5. After creation, copy the Client ID and Client Secret to your environment variables. Keep these credentials secure.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -50,7 +50,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with Polar
+### ### Sign In with Polar
 To sign in with Polar, you can use the `signIn.social` function provided by the client, where the `provider` should be set to `polar`.
 
 ```ts title="auth-client.ts"

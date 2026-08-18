@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/services/email
 title: "Email"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Email Service
@@ -12,7 +12,7 @@ Better Auth Infrastructure provides a managed transactional email service with p
 
 
 
-## Overview
+## ## Overview
 The email service offers:
 
 * Pre-built, professionally designed email templates
@@ -21,15 +21,15 @@ The email service offers:
 * No infrastructure to manage
 * Deliverability optimization
 
-## Installation
+## ## Installation
 The email service is included in the `@better-auth/infra` package:
 
 ```ts
 import { sendEmail, createEmailSender } from "@better-auth/infra";
 ```
 
-## Quick Start
-## Send a Single Email
+## ## Quick Start
+## ### Send a Single Email
 ```ts
 import { sendEmail } from "@better-auth/infra";
 
@@ -45,7 +45,7 @@ await sendEmail({
 });
 ```
 
-## Create a Reusable Sender
+## ### Create a Reusable Sender
 ```ts
 import { createEmailSender } from "@better-auth/infra";
 
@@ -65,8 +65,8 @@ await emailSender.send({
 });
 ```
 
-## Available Templates
-## verify-email
+## ## Available Templates
+## ### verify-email
 Sends an email verification link to new users.
 
 ```ts
@@ -84,7 +84,7 @@ await sendEmail({
 });
 ```
 
-## reset-password
+## ### reset-password
 Sends a password reset link.
 
 ```ts
@@ -101,7 +101,7 @@ await sendEmail({
 });
 ```
 
-## change-email
+## ### change-email
 Confirms an email address change request.
 
 ```ts
@@ -119,7 +119,7 @@ await sendEmail({
 });
 ```
 
-## sign-in-otp
+## ### sign-in-otp
 Sends a one-time password for passwordless sign-in.
 
 ```ts
@@ -135,7 +135,7 @@ await sendEmail({
 });
 ```
 
-## verify-email-otp
+## ### verify-email-otp
 Sends an OTP code for email verification.
 
 ```ts
@@ -151,7 +151,7 @@ await sendEmail({
 });
 ```
 
-## reset-password-otp
+## ### reset-password-otp
 Sends an OTP code for password reset.
 
 ```ts
@@ -167,7 +167,7 @@ await sendEmail({
 });
 ```
 
-## magic-link
+## ### magic-link
 Sends a magic link for passwordless authentication.
 
 ```ts
@@ -183,7 +183,7 @@ await sendEmail({
 });
 ```
 
-## two-factor
+## ### two-factor
 Sends a two-factor authentication code.
 
 ```ts
@@ -200,7 +200,7 @@ await sendEmail({
 });
 ```
 
-## invitation
+## ### invitation
 Sends an organization invitation.
 
 ```ts
@@ -219,7 +219,7 @@ await sendEmail({
 });
 ```
 
-## application-invite
+## ### application-invite
 Sends an application-level invitation (inviting users to the platform).
 
 ```ts
@@ -237,7 +237,7 @@ await sendEmail({
 });
 ```
 
-## delete-account
+## ### delete-account
 Sends account deletion confirmation.
 
 ```ts
@@ -254,7 +254,7 @@ await sendEmail({
 });
 ```
 
-## stale-account-user
+## ### stale-account-user
 Notifies a user that their dormant account was accessed.
 
 ```ts
@@ -274,7 +274,7 @@ await sendEmail({
 });
 ```
 
-## stale-account-admin
+## ### stale-account-admin
 Notifies an admin about dormant account reactivation.
 
 ```ts
@@ -296,8 +296,8 @@ await sendEmail({
 });
 ```
 
-## Configuration
-## EmailConfig
+## ## Configuration
+## ### EmailConfig
 ```ts
 interface EmailConfig {
   apiKey?: string;   // Your Better Auth Infrastructure API key
@@ -305,7 +305,7 @@ interface EmailConfig {
 }
 ```
 
-## Environment Variables
+## ### Environment Variables
 The email service automatically reads from environment variables:
 
 ```dotenv
@@ -313,8 +313,8 @@ BETTER_AUTH_API_KEY=your_api_key_here
 BETTER_AUTH_API_URL=https://api.betterauth.com  # Optional
 ```
 
-## Response Format
-## SendEmailResult
+## ## Response Format
+## ### SendEmailResult
 ```ts
 interface SendEmailResult {
   success: boolean;
@@ -323,7 +323,7 @@ interface SendEmailResult {
 }
 ```
 
-## Example Usage
+## ### Example Usage
 ```ts
 const result = await sendEmail({
   template: "verify-email",
@@ -341,14 +341,14 @@ if (result.success) {
 }
 ```
 
-## Plan Requirements
+## ## Plan Requirements
 | Feature             | Starter | Pro | Business | Enterprise |
 | ------------------- | ------- | --- | -------- | ---------- |
 | Transactional Email | -       | Yes | Yes      | Yes        |
 
 Transactional email is available on Pro plans and above.
 
-## Integration with Better Auth
+## ## Integration with Better Auth
 The email service integrates seamlessly with Better Auth's authentication flows. Here's a complete example:
 
 ```ts title="auth.ts"

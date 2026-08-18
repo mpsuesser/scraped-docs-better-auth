@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/instrumentation
 title: "Instrumentation"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Instrumentation (Experimental)
@@ -17,17 +17,17 @@ Distributed tracing for Better Auth
 Better Auth is instrumented through [OpenTelemetry](https://opentelemetry.io/) for distributed tracing. Spans are emitted for endpoints, hooks, database operations and the plugin lifecycle.
 The goal of this instrumentation is to provide better insights into the behavior of your Better Auth instance, helping you debug issues and optimize performance.
 
-## Setup
+## ## Setup
 Better Auth uses the OpenTelemetry API to create spans. For traces to be collected and exported, at minimum, you must configure a **TracerProvider** and a **SpanExporter** in your application.
 
 For setup instructions, see the official OpenTelemetry documentation:
 
 * **[Node.js getting started](https://opentelemetry.io/docs/languages/js/getting-started/nodejs/)** – Core setup for Node.js apps
 
-## Supported Spans
+## ## Supported Spans
 The following spans are supported by Better Auth:
 
-## Endpoint Spans
+## ### Endpoint Spans
 | Span Name          | Description                                | When Emitted                                  |
 | ------------------ | ------------------------------------------ | --------------------------------------------- |
 | `{METHOD} {route}` | Parent span for an auth endpoint           | Every auth API call (e.g. `GET /get-session`) |
@@ -66,12 +66,12 @@ Middlewares are also supported:
 * `http.route` - The **route template** (low cardinality) on middleware spans only
 * `http.response.status_code` - The HTTP response status code (onResponse only)
 
-## Database Spans
+## ### Database Spans
 | Span Name                | Description                   | When Emitted                                   |
 | ------------------------ | ----------------------------- | ---------------------------------------------- |
 | `db {operation} {model}` | Span for a database operation | All adapter operations (create, findOne, etc.) |
 
-* **Operations:** `create`, `findOne`, `findMany`, `update`, `updateMany`, `delete`, `deleteMany`, `count`
+* **Operations:** `create`, `findOne`, `findMany`, `update`, `updateMany`, `delete`, `deleteMany`, `consumeOne`, `incrementOne`, `count`
 * **Models:** Core models include `user`, `account`, `session`, `verification`, plus plugin-defined models (e.g. `organization`, `rateLimit`).
 * **Attributes:**
   * `db.operation.name` - The database operation name (e.g. `create`)

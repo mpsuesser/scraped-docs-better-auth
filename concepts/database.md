@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/database
 title: "Database"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Learn about database adapters, migrations, secondary storage with Redis, core schema (user, session, account, verification), custom tables, extending schemas, ID generation, database hooks, and plugin schemas.
@@ -76,6 +76,8 @@ To use secondary storage, implement the `SecondaryStorage` interface:
 ```
 interface SecondaryStorage {
   get: (key: string) => Promise<unknown>;
+  getAndDelete: (key: string) => Promise<unknown>;
+  increment: (key: string, ttl: number) => Promise<number>;
   set: (key: string, value: string, ttl?: number) => Promise<void>;
   delete: (key: string) => Promise<void>;
 }
@@ -138,11 +140,29 @@ import { betterAuth } from "better-auth";
 const redis = createClient();
 await redis.connect();
 
+const incrementScript = \`
+local value = redis.call("INCR", KEYS[1])
+if value == 1 then
+  redis.call("EXPIRE", KEYS[1], ARGV[1])
+end
+return value
+\`;
+
 export const auth = betterAuth({
     // ... other options
     secondaryStorage: {
         get: async (key) => {
             return await redis.get(key);
+        },
+        getAndDelete: async (key) => {
+            return await redis.getDel(key);
+        },
+        increment: async (key, ttl) => {
+            const value = await redis.eval(incrementScript, {
+                keys: [key],
+                arguments: [String(ttl)],
+            });
+            return Number(value);
         },
         set: async (key, value, ttl) => {
             if (ttl) await redis.set(key, value, { EX: ttl });
@@ -403,6 +423,8 @@ Timestamp of when the session was updated
 
 Table Name: `account`
 
+An account represents one authentication method linked to a user. Better Auth recognizes the provider-side identity by the unique pair of `issuer` and `accountId`, while `id` identifies the local account row. Use `id` when an account API asks for an `accountId`.
+
 Table
 
 Field
@@ -419,7 +441,7 @@ string
 
 PK
 
-Unique identifier for each account
+Unique identifier for the local account record
 
 userId
 
@@ -429,13 +451,21 @@ FK
 
 The ID of the user
 
+issuer
+
+string
+
+\-
+
+The trusted authority that issued the provider account identifier
+
 accountId
 
 string
 
 \-
 
-The ID of the account as provided by the SSO or equal to userId for credential accounts
+The stable account identifier within the issuer namespace
 
 providerId
 
@@ -443,7 +473,7 @@ string
 
 \-
 
-The ID of the provider
+The provider configuration used to authenticate the account
 
 accessToken?
 
@@ -516,6 +546,8 @@ Date
 \-
 
 Timestamp of when the account was updated
+
+The database enforces a unique compound index on `issuer` and `accountId`. Providers with a trusted issuer use that authority, including the verified issuer for OpenID Connect. OAuth providers without an issuer use the synthetic `local:oauth:<encoded providerId>` namespace, with the provider ID segment percent-encoded. Credential accounts use `local:credential` and the linked user's stable `id`.
 
 ### Verification
 
@@ -995,11 +1027,11 @@ To add new tables and columns to your database, you have two options:
 
 Both methods ensure your database schema stays up to date with your plugins' requirements.
 
-## Experimental Joins
+## Joins
 
-Since Better-Auth version `1.4` we've introduced experimental database joins support. This allows Better-Auth to perform multiple database queries in a single request, reducing the number of database roundtrips. Over 50 endpoints support joins, and we're constantly adding more.
+Since Better-Auth version `1.4` we've introduced database joins support. This allows Better-Auth to perform multiple database queries in a single request, reducing the number of database roundtrips. Over 50 endpoints support joins, and we're constantly adding more.
 
-Under the hood, our adapter system supports joins natively, meaning even if you don't enable experimental joins, it will still fallback to making multiple database queries and combining the results.
+Under the hood, our adapter system supports joins natively. When joins are disabled (the default), Better-Auth falls back to making multiple database queries and combining the results.
 
 To enable joins, update your auth config with the following:
 
@@ -1007,18 +1039,22 @@ To enable joins, update your auth config with the following:
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
-  experimental: { joins: true }
+  advanced: {
+    database: {
+      joins: true,
+    },
+  },
 });
 ```
 
-The Better-Auth `1.4` CLI will generate DrizzleORM and PrismaORM relationships for you so if you do not have those already be sure to update your schema by running our migrate or generate CLI commands to be up-to-date with the latest required schema.
+Make sure your DrizzleORM or PrismaORM schema includes the necessary relationships — run our migrate or generate CLI commands to stay up-to-date.
 
-It's very important to read the documentation regarding experimental joins for your given adapter:
+Read the documentation regarding joins for your given adapter:
 
-- [DrizzleORM](https://better-auth.com/docs/adapters/drizzle#joins-experimental)
-- [PrismaORM](https://better-auth.com/docs/adapters/prisma#joins-experimental)
-- [SQLite](https://better-auth.com/docs/adapters/sqlite#joins-experimental)
-- [MySQL](https://better-auth.com/docs/adapters/mysql#joins-experimental)
-- [PostgreSQL](https://better-auth.com/docs/adapters/postgresql#joins-experimental)
-- [MSSQL](https://better-auth.com/docs/adapters/mssql#joins-experimental)
-- [MongoDB](https://better-auth.com/docs/adapters/mongo#joins-experimental)
+- [DrizzleORM](https://better-auth.com/docs/adapters/drizzle#joins)
+- [PrismaORM](https://better-auth.com/docs/adapters/prisma#joins)
+- [SQLite](https://better-auth.com/docs/adapters/sqlite#joins)
+- [MySQL](https://better-auth.com/docs/adapters/mysql#joins)
+- [PostgreSQL](https://better-auth.com/docs/adapters/postgresql#joins)
+- [MSSQL](https://better-auth.com/docs/adapters/mssql#joins)
+- [MongoDB](https://better-auth.com/docs/adapters/mongo#joins)

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/zoom
 title: "Zoom"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Zoom
@@ -13,14 +13,14 @@ Zoom provider setup and usage.
 
 
 
-### Create a Zoom App from Marketplace
+### ### Create a Zoom App from Marketplace
 1. Visit [Zoom Marketplace](https://marketplace.zoom.us).
 
 2. Hover on the `Develop` button and select `Build App`
 
 3. Select `General App` and click `Create`
 
-### Configure your Zoom App
+### ### Configure your Zoom App
 Ensure that you are in the `Basic Information` of your app settings.
 
 1. Under `Select how the app is managed`, choose `User-managed`
@@ -42,7 +42,7 @@ Skip to the `Scopes` section, then
 2. Search for `user:read:user` (View a user) and select it
 3. Add any other scopes your applications needs and click `Done`
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -58,7 +58,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with Zoom
+### ### Sign In with Zoom
 To sign in with Zoom, you can use the `signIn.social` function provided by the client.
 You will need to specify `zoom` as the provider.
 

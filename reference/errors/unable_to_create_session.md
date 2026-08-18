@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unable_to_create_session
 title: "Unable_to_create_session"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # unable_to_create_session
@@ -12,26 +12,26 @@ The session could not be created during authentication.
 
 
 
-## What is it?
+## ## What is it?
 This error occurs when Better Auth fails to create a session after a successful authentication step. A session is required to keep the user logged in, so failure to create one results in this error.
 
-## Common Causes
+## ## Common Causes
 * Database write failure when creating the session record.
 * Session store misconfiguration.
 * Connection issues or timeouts with the database.
 * Invalid or missing session-related fields.
 * Errors in custom hooks or adapters affecting session creation.
 
-## How to resolve
-## Verify database and session storage
+## ## How to resolve
+## ### Verify database and session storage
 * Ensure your database or session store is properly configured and reachable.
 * Check for connection errors or timeouts.
 
-## Check schema and migrations
+## ### Check schema and migrations
 * Confirm that session-related tables/collections exist and are up to date.
 
-## Review configuration
+## ### Review configuration
 * Verify your Better Auth configuration for session handling.
 
-## Inspect logs
+## ### Inspect logs
 * Look for errors during session creation in server logs.

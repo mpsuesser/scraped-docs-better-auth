@@ -2,13 +2,17 @@
 url: https://better-auth.com/llms.txt/docs/plugins/scim
 title: "Scim"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
-Integrate SCIM with your application.
+Provision users and groups from a directory into Better Auth.
 
-System for Cross-domain Identity Management ([SCIM](https://simplecloud.info/#Specification)) makes managing identities in multi-domain scenarios easier to support via a standardized protocol. This plugin exposes a [SCIM](https://simplecloud.info/#Specification) server that allows third party identity providers to sync identities to your service.
+The SCIM plugin adds an inbound System for Cross-domain Identity Management (SCIM) 2.0 service to Better Auth. A directory can use this service to create, update, deactivate, and delete users and groups in your application.
+
+SCIM defines identity resources in [RFC 7643](https://www.rfc-editor.org/rfc/rfc7643) and the HTTP protocol in [RFC 7644](https://www.rfc-editor.org/rfc/rfc7644). Better Auth supports the operations and attributes listed in the [SCIM reference](https://better-auth.com/docs/plugins/scim/reference).
+
+Each SCIM User links to a Better Auth User. Provisioning does not create a sign-in method or grant application access. Configure authentication separately, and use the optional identity and role callbacks when SCIM should affect your application.
 
 ## Installation
 
@@ -26,37 +30,77 @@ npm install @better-auth/scim
 
 #### bun
 
-### Add Plugin to the server
+### Enable database transactions
+
+SCIM resource requests require a database adapter with native interactive transaction support. Enable transactions only when your database driver can run an interactive transaction callback.
+
+#### Kysely
 
 ```
-import { betterAuth } from "better-auth"
-import { scim } from "@better-auth/scim"; 
-
 const auth = betterAuth({
-    plugins: [
-        scim() 
-    ]
-})
+  database: kyselyAdapter(db, {
+    type: "sqlite",
+    transaction: true,
+  }),
+});
 ```
 
-### Enable HTTP methods
+#### Drizzle
 
-SCIM requires the `POST`, `GET`, `PUT`, `PATCH` and `DELETE` HTTP methods to be supported by your server. For most frameworks, this will work out of the box, but some frameworks may require additional configuration:
+#### Prisma
 
-#### Next.js
+### Configure a connection
+
+Create a high-entropy bearer token in your secret manager. Configure the same value in Better Auth and your directory.
+
+```
+import { scim } from "@better-auth/scim";
+import { betterAuth } from "better-auth";
+
+const workforceToken = process.env.SCIM_WORKFORCE_TOKEN;
+
+if (!workforceToken) {
+  throw new Error("SCIM_WORKFORCE_TOKEN is required");
+}
+
+export const auth = betterAuth({
+  baseURL: "https://app.example.com/api/auth",
+  plugins: [
+    scim({
+      connections: [
+        {
+          id: "workforce-acme",
+          provisioningDomainId: "workspace-acme",
+          credentials: [
+            {
+              type: "bearer",
+              id: "workforce-primary",
+              token: workforceToken,
+            },
+          ],
+        },
+      ],
+    }),
+  ],
+});
+```
+
+The connection ID owns the resources provisioned with this credential. The optional `provisioningDomainId` identifies the workspace, tenant, project, or other application boundary that receives lifecycle and role updates. It defaults to the connection ID.
+
+### Expose the SCIM methods
+
+Your Better Auth route must forward `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`. For Next.js, export every method from the handler.
 
 ```
 import { auth } from "@/lib/auth";
 import { toNextJsHandler } from "better-auth/next-js";
 
-export const { POST, GET, PUT, PATCH, DELETE } = toNextJsHandler(auth);
+export const { GET, POST, PUT, PATCH, DELETE } = toNextJsHandler(auth);
 ```
 
-#### Solid Start
+### Create the database tables
 
-### Migrate the database
-
-Run the migration or generate the schema to add the necessary fields and tables to the database.
+Run the migration, or generate the schema if your application manages migrations.
 
 #### migrate
 
@@ -74,641 +118,152 @@ npx auth migrate
 
 #### bun
 
-See the [Schema](#schema) section to add the fields manually.
+## Configure your directory
 
-## Usage
+Use the following values in your directory's SCIM connection settings:
 
-Upon registration, this plugin will expose compliant [SCIM 2.0](https://simplecloud.info/#Specification) server. Generally, this server is meant to be consumed by a third-party (your identity provider), and will require a:
+| Setting | Value |
+| --- | --- |
+| Base URL | Your Better Auth base URL followed by `/scim/v2`, such as `https://app.example.com/api/auth/scim/v2` |
+| Authentication | Bearer token |
+| Token | A static token from `connections[].credentials` or the one-time token returned by a managed create or rotate call |
 
-- **SCIM base URL**: This should be the fully qualified URL to the SCIM server (e.g `http://your-app.com/api/auth/scim/v2`)
-- **SCIM bearer token**: See [generating a SCIM token](#generating-a-scim-token)
+The directory must send the token as `Authorization: Bearer <token>`. User and Group requests use `application/scim+json` or `application/json`. Discovery endpoints are public so the directory can inspect the supported resources and operations before provisioning.
 
-### Self-Service Directory Sync
+## How provisioning maps to your application
 
-If you're using [Better Auth Infrastructure](https://dash.better-auth.com/sign-in), you get self-service directory sync in the dashboard. Organization admins can create and manage SCIM directory connections and rotate bearer tokens without calling the SCIM APIs directly.
+The plugin keeps directory resources and application access separate:
 
-The dashboard is available at:
+- A connection owns an isolated set of SCIM Users, Groups, and direct Group memberships.
+- A SCIM User links to one Better Auth User.
+- A provisioning domain identifies where your application applies lifecycle and access changes.
+- A SCIM Group grants no application permission unless you configure a role projection.
 
-```
-https://dash.better-auth.com/[project]/organization/[orgId]/enterprise
-```
+You can configure several connections. Their credentials remain isolated, while multiple connections may contribute to the same provisioning domain.
 
-From the dashboard you can:
+## Provision users
 
-- **Create and remove directory connections** scoped to an organization
-- **Regenerate SCIM bearer tokens** when your identity provider requires rotation
+When a directory creates a SCIM User, Better Auth creates a User by default, or links one when `identity.resolveUser` returns `link`. The directory can then update the profile, set `active`, or delete the SCIM resource. A SCIM User does not create an authentication account, so the user still needs SSO, a passkey, credentials, or another sign-in method.
 
-This eliminates the back-and-forth typically required when setting up SCIM, reducing onboarding time from days to minutes.
+By default, the SCIM source manages the Better Auth User's email and name. The plugin never links an incoming resource to an existing user by email.
 
-### Generating a SCIM token
+### Link an existing Better Auth User
 
-Before your identity provider can start syncing information to your SCIM server, you need to generate a SCIM token that your identity provider will use to authenticate against it.
-
-A SCIM token is a simple bearer token that you can generate:
-
-POST/scim/generate-token
-
-```
-const { data, error } = await authClient.scim.generateToken({
-    providerId: "acme-corp", // required
-    organizationId: "the-org",
-});
-```
-
-Parameters
-
-`providerId` stringrequired
-
-The provider id
-
-`organizationId` string
-
-Optional organization id. When specified, the organizations plugin must also be enabled
-
-A `SCIM` token is always restricted to a provider, thus you are required to specify a `providerId`. This can be any provider your instance supports (e.g one of the built-in providers such as `credentials` or an external provider registered through an external plugin such as `@better-auth/sso`). Additionally, when the `organization` plugin is registered, you can optionally restrict the token to an organization via the `organizationId`.
-
-#### Organization-scoped authorization
-
-When `organizationId` is provided, Better Auth requires the current user to be a member of that organization and to have at least one of the configured `requiredRole` values.
-
-By default, `requiredRole` resolves to:
-
-- `admin`
-- `organization.creatorRole` or `owner`
-
-The same role requirement is also used by the SCIM management endpoints for organization-scoped connections:
-
-- `GET /scim/list-provider-connections`
-- `GET /scim/get-provider-connection`
-- `POST /scim/delete-provider-connection`
+Use `identity.resolveUser` when your application already has a stable mapping from the directory subject to a Better Auth User. Prefer a directory-owned `externalId` when the directory keeps it immutable. Do not use an unverified email address as the link key.
 
 ```
-const approvedScimOperators = new Set(["some-admin-user-id"]);
-
 scim({
-    beforeSCIMTokenGenerated: async ({ user }) => {
-        // Add stricter rules on top of the built-in organization role checks.
-        if (!approvedScimOperators.has(user.id)) {
-            throw new APIError("FORBIDDEN", { message: "User does not have enough permissions" });
-        }
+  connections,
+  identity: {
+    async resolveUser(input, { database }) {
+      const userId = input.resource.externalId
+        ? await findUserIdByDirectorySubject(
+            database,
+            input.connectionId,
+            input.resource.externalId,
+          )
+        : undefined;
+
+      return userId
+        ? { action: "link", userId, profile: "preserve" }
+        : { action: "create" };
     },
-})
-```
-
-See the [hooks](#hooks) documentation for more details about supported hooks.
-
-#### Default SCIM token
-
-We also provide a way for you to specify a `SCIM` token to use by default. This allows you to test a SCIM connection without setting up providers in the database:
-
-```
-import { betterAuth } from "better-auth"
-import { scim } from "@better-auth/scim"; 
-
-const auth = betterAuth({
-    plugins: [
-        scim({
-            defaultSCIM: [
-                {
-                    providerId: "default-scim", // ID of the existing provider you want to provision
-                    scimToken: "some-scim-token", // SCIM plain token
-                    organizationId: "the-org" // Optional organization id
-                }
-            ]
-        })
-    ]
+  },
 });
 ```
 
-### SCIM provider connection ownership
+Choose the profile behavior when you link a user:
 
-SCIM provider connection ownership applies to personal (non-organization) SCIM connections. It lets your application track who generated a connection and restricts later management operations for that connection to the same user.
+| Result | Behavior |
+| --- | --- |
+| `{ action: "create" }` | Creates a Better Auth User and lets the SCIM source manage its email and name. |
+| `{ action: "link", userId, profile: "manage" }` | Links an existing User and lets this source manage its email and name. |
+| `{ action: "link", userId, profile: "preserve" }` | Links an existing User without changing its Better Auth email or name. |
+
+Only one source can manage a Better Auth User's profile. Separate connections may link preserved sources to the same User, but one connection cannot create two SCIM resources for the same linked User.
+
+## Authenticate provisioned users with SSO
+
+Use `acquireActiveSCIMUserLink` inside the SSO plugin's `resolveUser` callback when one SCIM connection controls who can sign in through a paired OIDC provider. The helper finds an active SCIM User by its exact connection ID and `externalId`, returning `{ scimUserId, userId }` for the active link. It returns `null` for missing, inactive, deleted, tombstoned, orphaned, or decommissioned links.
 
 ```
+import { acquireActiveSCIMUserLink, scim } from "@better-auth/scim";
+import { sso } from "@better-auth/sso";
 import { betterAuth } from "better-auth";
-import { scim } from "@better-auth/scim";
 
-const auth = betterAuth({
-    plugins: [
-        scim({ 
-            providerOwnership: { 
-                enabled: true
-            } 
-        }) 
-    ]
-});
-```
+const workforceProviderId = "acme-workforce-oidc";
+const workforceConnectionId = "workforce-acme";
 
-When enabled:
-
-- Personal connections store the creating user's `userId`
-- Only the owner can regenerate, list, inspect, or delete those personal connections later
-- Organization-scoped connections continue to use the organization role checks configured by `requiredRole`
-
-Once enabled, make sure you migrate the database schema (again).
-
-#### migrate
-
-```
-npx auth migrate
-```
-
-#### generate
-
-See the [Schema](#if-you-have-provider-ownership-enabled-via-providerownershipenabled) section to add the fields manually.
-
-### Managing SCIM provider connections
-
-You can manage SCIM provider connections from your application using the following endpoints:
-
-#### List SCIM provider connections
-
-List existing connections the current user can manage. For organization-scoped connections, the user must have one of the configured `requiredRole` roles for that organization. For personal connections, access is based on ownership when `providerOwnership.enabled` is turned on.
-
-GET/scim/list-provider-connections
-
-```
-const { data, error } = await authClient.scim.listProviderConnections();
-```
-
-#### Get SCIM provider connection details
-
-Get a single connection by provider id. Access is allowed only if the user can manage that connection: either because they satisfy the configured organization role requirement, or because they own the personal connection.
-
-GET/scim/get-provider-connection
-
-```
-const { data, error } = await authClient.scim.getProviderConnection({
-    query: {
-        providerId: "acme-corp", // required
-    },
-});
-```
-
-Parameters
-
-`providerId` stringrequired
-
-Unique provider identifier
-
-#### Delete SCIM provider connection
-
-Delete an existing connection. This will immediately invalidate the connection's associated token.
-
-POST/scim/delete-provider-connection
-
-```
-const { data, error } = await authClient.scim.deleteProviderConnection({
-    providerId: "acme-corp", // required
-});
-```
-
-Parameters
-
-`providerId` stringrequired
-
-Unique provider identifier
-
-### SCIM endpoints
-
-The following subset of the specification is currently supported:
-
-#### List users
-
-Get a list of available users in the database. This is restricted to list only users associated to the same provider and organization than your SCIM token.
-
-GET/scim/v2/Users
-
-Notes
-
-Returns the provisioned SCIM user details. See https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.1
-
-```
-const data = await auth.api.listSCIMUsers({
-    query: {
-        filter: 'userName eq "user-a"',
-    },
-    // This endpoint requires a bearer authentication token.
-    headers: { authorization: 'Bearer <token>' },
-});
-```
-
-Parameters
-
-`filter` string
-
-SCIM compliant filter expression
-
-#### Get user
-
-Get an user from the database. The user will be only returned if it belongs to the same provider and organization than the SCIM token.
-
-GET/scim/v2/Users/:userId
-
-Notes
-
-Returns the provisioned SCIM user details. See https://datatracker.ietf.org/doc/html/rfc7644#section-3.4.1
-
-```
-const data = await auth.api.getSCIMUser({
-    params: {
-        userId: "user id", // required
-    },
-    // This endpoint requires a bearer authentication token.
-    headers: { authorization: 'Bearer <token>' },
-});
-```
-
-Parameters
-
-`userId` stringrequired
-
-Unique user identifier
-
-#### Create new user
-
-Provisions a new user to the database. The user will have an account associated to the same provider and will be member of the same org than the SCIM token.
-
-POST/scim/v2/Users
-
-Notes
-
-Provision a new user via SCIM. See https://datatracker.ietf.org/doc/html/rfc7644#section-3.3
-
-```
-const data = await auth.api.createSCIMUser({
-    body: {
-        externalId: "third party id",
-        name: {
-            formatted: "Daniel Perez",
-            givenName: "Daniel",
-            familyName: "Perez",
+export const auth = betterAuth({
+  plugins: [
+    scim({ connections }),
+    sso({
+      defaultSSO: [
+        {
+          providerId: workforceProviderId,
+          domain: "acme.example",
+          oidcConfig: {
+            issuer: "https://idp.acme.example",
+            clientId: "acme-workforce-client-id",
+            clientSecret: "acme-workforce-client-secret",
+            pkce: true,
+            discoveryEndpoint:
+              "https://idp.acme.example/.well-known/openid-configuration",
+          },
         },
-        emails: [{ value: "daniel@email.com", primary: true }],
-    },
-    // This endpoint requires a bearer authentication token.
-    headers: { authorization: 'Bearer <token>' },
-});
-```
-
-Parameters
-
-`externalId` string
-
-Unique external (third party) identifier
-
-`name` Object
-
-User name details
-
-`formatted` string
-
-Formatted name (takes priority over given and family name)
-
-`givenName` string
-
-Given name
-
-`familyName` string
-
-Family name
-
-`emails` Array<{ value: string, primary?: boolean }>
-
-List of emails associated to the user, only a single email can be primary
-
-#### Update an existing user
-
-Replaces an existing user details in the database. This operation can only update users that belong to the same provider and organization than the SCIM token.
-
-PUT/scim/v2/Users/:userId
-
-Notes
-
-Updates an existing user via SCIM. See https://datatracker.ietf.org/doc/html/rfc7644#section-3.3
-
-```
-const data = await auth.api.updateSCIMUser({
-    body: {
-        externalId: "third party id",
-        name: {
-            formatted: "Daniel Perez",
-            givenName: "Daniel",
-            familyName: "Perez",
-        },
-        emails: [{ value: "daniel@email.com", primary: true }],
-    },
-    // This endpoint requires a bearer authentication token.
-    headers: { authorization: 'Bearer <token>' },
-});
-```
-
-Parameters
-
-`externalId` string
-
-Unique external (third party) identifier
-
-`name` Object
-
-User name details
-
-`formatted` string
-
-Formatted name (takes priority over given and family name)
-
-`givenName` string
-
-Given name
-
-`familyName` string
-
-Family name
-
-`emails` Array<{ value: string, primary?: boolean }>
-
-List of emails associated to the user, only a single email can be primary
-
-#### Partial update an existing user
-
-Allows to apply a partial update to the user details. This operation can only update users that belong to the same provider and organization than the SCIM token.
-
-PATCH/scim/v2/Users/:userId
-
-Notes
-
-Partially updates a user resource. See https://datatracker.ietf.org/doc/html/rfc7644#section-3.5.2
-
-```
-const data = await auth.api.patchSCIMUser({
-    body: {
-        schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"], // required
-        Operations: [{ op: "replace", path: "/userName", value: "any value" }], // required
-    },
-    // This endpoint requires a bearer authentication token.
-    headers: { authorization: 'Bearer <token>' },
-});
-```
-
-Parameters
-
-`schemas` string\[\]required
-
-Mandatory schema declaration
-
-`Operations` Array<{ op: "replace" | "add" | "remove", path: string, value: any }>required
-
-List of JSON patch operations
-
-#### Deletes a user resource
-
-Removes a user resource. This operation only affects users that belong to the same provider (and organization) as the SCIM token.
-
-For an organization-scoped token, the user is deprovisioned from the organization: their membership and the provider account are removed, while the global user record is kept. For a non-organization token, the global user is deleted only when this provider's account is their sole identity; otherwise just that account is unlinked.
-
-DELETE/scim/v2/Users/:userId
-
-Notes
-
-Deletes an existing user resource. See https://datatracker.ietf.org/doc/html/rfc7644#section-3.6
-
-```
-const data = await auth.api.deleteSCIMUser({
-    params: {
-        userId, // required
-    },
-    // This endpoint requires a bearer authentication token.
-    headers: { authorization: 'Bearer <token>' },
-});
-```
-
-Parameters
-
-`userId` stringrequired
-
-#### Get service provider config
-
-Get SCIM metadata describing supported features of this server.
-
-GET/scim/v2/ServiceProviderConfig
-
-Notes
-
-Standard SCIM metadata endpoint used by identity providers. See https://datatracker.ietf.org/doc/html/rfc7644#section-4
-
-```
-const data = await auth.api.getSCIMServiceProviderConfig();
-```
-
-#### Get SCIM schemas
-
-Get the list of supported SCIM schemas.
-
-GET/scim/v2/Schemas
-
-Notes
-
-Standard SCIM metadata endpoint used by identity providers to acquire information about supported schemas. See https://datatracker.ietf.org/doc/html/rfc7644#section-4
-
-```
-const data = await auth.api.getSCIMSchemas();
-```
-
-#### Get SCIM schema
-
-Get the details of a supported SCIM schema.
-
-GET/scim/v2/Schemas/:schemaId
-
-Notes
-
-Standard SCIM metadata endpoint used by identity providers to acquire information about a given schema. See https://datatracker.ietf.org/doc/html/rfc7644#section-4
-
-```
-const data = await auth.api.getSCIMSchema();
-```
-
-#### Get SCIM resource types
-
-Get the list of supported SCIM types.
-
-GET/scim/v2/ResourceTypes
-
-Notes
-
-Standard SCIM metadata endpoint used by identity providers to get a list of server supported types. See https://datatracker.ietf.org/doc/html/rfc7644#section-4
-
-```
-const data = await auth.api.getSCIMResourceTypes();
-```
-
-#### Get SCIM resource type
-
-Get the details of a supported SCIM resource type.
-
-GET/scim/v2/ResourceTypes/:resourceTypeId
-
-Notes
-
-Standard SCIM metadata endpoint used by identity providers to get a server supported type. See https://datatracker.ietf.org/doc/html/rfc7644#section-4
-
-```
-const data = await auth.api.getSCIMResourceType();
-```
-
-#### SCIM attribute mapping
-
-By default, the SCIM provisioning will automatically map the following fields:
-
-- `user.email`: User primary email or the first available email if there is not a primary one
-- `user.name`: Derived from `name` (`name.formatted` or `name.givenName` + `name.familyName`) and fallbacks to the user primary email
-- `account.providerId`: Provider associated to the `SCIM` token
-- `account.accountId`: Defaults to `externalId` and fallbacks to `userName`
-- `member.organizationId`: Organization associated to the provider
-
-The SCIM `active` attribute maps to the user's disabled state. `active: false` deactivates the user (via the [admin](https://better-auth.com/docs/plugins/admin) plugin's `banned` state) and revokes their sessions; `active: true` reactivates. Honoring `active` requires the admin plugin. Changing a user's email through SCIM also resets their verified status.
-
-## Schema
-
-The plugin requires additional fields in the `scimProvider` table to store the provider's configuration.
-
-Table
-
-Field
-
-Type
-
-Key
-
-Description
-
-id
-
-string
-
-PK
-
-A database identifier
-
-providerId
-
-string
-
-\-
-
-The provider ID. Used to identify a provider and to generate a redirect URL.
-
-scimToken
-
-string
-
-\-
-
-The SCIM bearer token. Used by your identity provider to authenticate against your server
-
-organizationId?
-
-string
-
-\-
-
-The organization Id. If provider is linked to an organization.
-
-### If you have provider ownership enabled via providerOwnership.enabled:
-
-The `scimProvider` schema is extended as follows:
-
-Table
-
-Field
-
-Type
-
-Key
-
-Description
-
-userId?
-
-string
-
-\-
-
-The user id of the connection owner. Set automatically when generating a token via the API.
-
-## Options
-
-### Server
-
-- `requiredRole`: `string[]` — Minimum organization role(s) allowed to generate organization-scoped tokens and manage organization-scoped connections. Defaults to `["admin", organization.creatorRole ?? "owner"]`.
-
-Allow only owners to manage organization-scoped SCIM connections
-
-```
-scim({
-    requiredRole: ["owner"],
-})
-```
-
-- `providerOwnership`: `{ enabled: boolean }` — When enabled, links each personal provider connection to the user who generated its token. See [Connection ownership](#scim-provider-connection-ownership) for details. Default is `{ enabled: false }`.
-
-```
-scim({
-    providerOwnership: { enabled: true },
-})
-```
-
-- `defaultSCIM`: Default list of SCIM tokens for testing.
-- `storeSCIMToken`: The method to store the SCIM token in your database, whether `encrypted`, `hashed` or `plain` text. Default is `plain` text.
-
-Alternatively, you can pass a custom encryptor or hasher to store the SCIM token in your database.
-
-**Custom encryptor**
-
-```
-scim({
-    storeSCIMToken: { 
-        encrypt: async (scimToken) => {
-            return myCustomEncryptor(scimToken);
-        },
-        decrypt: async (scimToken) => {
-            return myCustomDecryptor(scimToken);
-        },
-    }
-})
-```
-
-**Custom hasher**
-
-```
-scim({
-    storeSCIMToken: {
-        hash: async (scimToken) => {
-            return myCustomHasher(scimToken);
-        },
-    }
-})
-```
-
-### Hooks
-
-The following hooks allow to intercept the lifecycle of the `SCIM` token generation:
-
-```
-const approvedScimOperators = new Set(["some-admin-user-id"]);
-
-scim({
-    beforeSCIMTokenGenerated: async ({ user, member, scimToken }) => {
-        // \`member\` is null for personal connections.
-        // Add any extra restrictions you need before the token is persisted.
-        if (!approvedScimOperators.has(user.id)) {
-            throw new APIError("FORBIDDEN", { message: "User does not have enough permissions" });
+      ],
+      async resolveUser(input, context) {
+        if (input.providerId !== workforceProviderId) {
+          return { action: "continue" };
         }
-    },
-    afterSCIMTokenGenerated: async ({ user, member, scimToken, scimProvider }) => {
-        // Callback called after the scim token has been persisted
-        // can be useful to send a notification or otherwise share the token
-        await shareSCIMTokenWithInterestedParty(scimToken);
-    },
-})
+
+        const link = await acquireActiveSCIMUserLink(
+          {
+            connectionId: workforceConnectionId,
+            externalId: input.accountKey.accountId,
+          },
+          context,
+        );
+
+        return link
+          ? {
+              action: "link",
+              userId: link.userId,
+              profile: "preserve",
+            }
+          : {
+              action: "reject",
+              code: "SCIM_USER_NOT_ACTIVE",
+            };
+      },
+    }),
+  ],
+});
 ```
+
+Configure the directory to send the OIDC provider's immutable, case-exact subject as the SCIM User's `externalId`. The example uses the validated OIDC `sub` from `input.accountKey.accountId`. The helper never falls back to `userName`, email, another connection, or a deleted-resource tombstone.
+
+Call the helper with the `context` supplied by `resolveUser`; its `database` is the same native transaction adapter used for account linking and session creation. The helper fences the link against concurrent subject changes, source deactivation or deletion, and connection decommissioning. A direct helper caller can retry its entire transaction after a conflict.
+
+During SSO, a lifecycle conflict aborts the current authentication attempt and is returned as `SSO_USER_RESOLUTION_FAILED`; no Account or Session is created. SSO does not retry the callback automatically, and the original OIDC callback cannot be replayed. The user or client must start a fresh SSO authentication attempt, which re-evaluates the current SCIM state.
+
+## Handle activation and deletion
+
+Use `identity.reconcileUser` to apply the combined SCIM lifecycle state to your application. The callback receives every source linked to the Better Auth User and an `active` value that is `true` while at least one source remains active.
+
+```
+scim({
+  connections,
+  identity: {
+    async reconcileUser(state, { database }) {
+      await setDirectoryAccessState(database, state.userId, state.active);
+    },
+  },
+});
+```
+
+The callback runs in the same database transaction as the SCIM change. Make it idempotent and use the supplied `database` transaction for writes. Throwing from the callback rejects the request and rolls back the SCIM change.
+
+When the final active source is deactivated or deleted, Better Auth deletes the User's sessions. Reactivating a source updates the lifecycle state but does not create a session.
+
+Deleting a SCIM resource preserves its Better Auth User. If the resource has an `externalId`, recreating the same `externalId` through the same connection links the new SCIM resource to that User. Without an `externalId`, the next create follows your resolver or creates another Better Auth User.

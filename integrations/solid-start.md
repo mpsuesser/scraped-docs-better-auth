@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/solid-start
 title: "Solid Start"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # SolidStart Integration
@@ -14,7 +14,7 @@ Integrate Better Auth with SolidStart.
 
 Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
-## Mount the handler
+## ### Mount the handler
 We need to mount the handler to SolidStart server. Put the following code in your `[...auth].ts` file inside `/routes/api/auth` folder.
 
 ```ts title="[...auth].ts"

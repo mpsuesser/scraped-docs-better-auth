@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/passkey
 title: "Passkey"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Passkey
@@ -125,8 +125,11 @@ When using passkey-first flows (`registration.requireSession: false`), pass the 
 await authClient.passkey.addPasskey({
   name: "Primary passkey",
   context: "signed-registration-token",
+  createSession: true,
 })
 ```
+
+When `createSession` is `true`, successful verification sets the session cookie and returns the `session` and `user` with the registered passkey. If you want to avoid creating a user before the WebAuthn ceremony succeeds, create or load the user in `registration.afterVerification` and return its `userId`.
 
 ## Usage
 
@@ -143,6 +146,7 @@ const { data, error } = await authClient.passkey.addPasskey({
     extensions,
     returnWebAuthnResponse,
     context,
+    createSession,
 });
 ```
 
@@ -167,6 +171,10 @@ Return WebAuthn response and extension results
 `context` string
 
 Optional context for passkey-first registration flows. Forwarded to `registration.resolveUser`.
+
+`createSession` boolean
+
+Create a session after successfully registering the passkey. The response includes the session and user when enabled.
 
 ### Sign in with a passkey
 

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/users-accounts
 title: "Users Accounts"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # User & Accounts
@@ -18,8 +18,8 @@ The user table stores the authentication data of the user [Click here to view th
 
 The user table can be extended using [additional fields](/docs/concepts/database#extending-core-schema) or by plugins to store additional data.
 
-## Update User
-## Update User Information
+## ## Update User
+## ### Update User Information
 To update user information, you can use the `updateUser` function provided by the client. The `updateUser` function takes an object with the following properties:
 
 ```ts
@@ -31,7 +31,7 @@ await authClient.updateUser({
 })
 ```
 
-## Change Email
+## ### Change Email
 To allow users to change their email, first enable the `changeEmail` feature, which is disabled by default. Set `changeEmail.enabled` to `true`:
 
 ```ts title="auth.ts"
@@ -61,7 +61,7 @@ export const auth = betterAuth({
 By default, when a user requests to change their email, a verification email is sent to the **new** email address.
 The email is only updated after the user verifies the new email.
 
-## Confirming with Current Email
+## #### Confirming with Current Email
 For added security, you can require users to confirm the change via their **current** email before
 the verification email is sent to the new address. To do this, provide the `sendChangeEmailConfirmation` function.
 
@@ -86,7 +86,7 @@ export const auth = betterAuth({
 })
 ```
 
-## Updating Without Verification
+## #### Updating Without Verification
 If you want to allow users to update their email immediately without verification (only if their current email is NOT verified), you can enable `updateEmailWithoutVerification`.
 
 ```ts title="auth.ts"
@@ -104,7 +104,7 @@ export const auth = betterAuth({
 
 > If `updateEmailWithoutVerification` is false (default), the email will not be updated until the new email is verified, even if the current email is unverified.
 
-## Client Usage
+## #### Client Usage
 Use the `changeEmail` function on the client to initiate the process.
 
 ```ts
@@ -116,7 +116,7 @@ await authClient.changeEmail({
 });
 ```
 
-## Change Password
+## ### Change Password
 A user's password isn't stored in the user table. Instead, it's stored in the account table. To change the password of a user, you can use one of the following approaches:
 
 
@@ -138,9 +138,7 @@ const data = await auth.api.changePassword({
         newPassword: newpassword1234,
         currentPassword: oldpassword1234,
         revokeOtherSessions, // optional
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
+    }
 });
 ```
 
@@ -165,7 +163,7 @@ type changePassword = {
 ```
 
 
-## Set Password
+## ### Set Password
 If a user was registered using OAuth or other providers, they won't have a password or a credential account. In this case, you can use the `setPassword` action to set a password for the user. For security reasons, this function can only be called from the server. We recommend having users go through a 'forgot password' flow to set a password for their account.
 
 ```ts title="set-password.ts"
@@ -179,7 +177,7 @@ await auth.api.setPassword({
 });
 ```
 
-## Verify Password
+## ### Verify Password
 The `verifyPassword` function allows you to verify a user's current password. This is useful for confirming user identity before performing sensitive operations like updating security settings. This function can only be called from the server.
 
 ```ts title="verify-password.ts"
@@ -195,7 +193,7 @@ await auth.api.verifyPassword({
 
 > For OAuth users who don't have passwords, consider using email verification or fresh session checks for sensitive operations instead.
 
-## Delete User
+## ## Delete User
 Better Auth provides a utility to hard delete a user from your database. It's disabled by default, but you can enable it easily by passing `enabled:true`
 
 ```ts title="auth.ts"
@@ -213,7 +211,7 @@ export const auth = betterAuth({
 
 Once enabled, you can call `authClient.deleteUser` to permanently delete user data from your database.
 
-## Adding Verification Before Deletion
+## ### Adding Verification Before Deletion
 For added security, you’ll likely want to confirm the user’s intent before deleting their account. A common approach is to send a verification email. Better Auth provides a `sendDeleteAccountVerification` utility for this purpose.
 This is especially needed if you have OAuth setup and want them to be able to delete their account without forcing them to login again for a fresh session.
 
@@ -267,7 +265,7 @@ await authClient.deleteUser({
 });
 ```
 
-## Authentication Requirements
+## ### Authentication Requirements
 To delete a user, the user must meet one of the following requirements:
 
 1. A valid password
@@ -315,7 +313,44 @@ await authClient.deleteUser({
 });
 ```
 
-## Callbacks
+## ### Callbacks
+**validateUserInfo**: A gate that decides which identities Better Auth admits. It fires just before a user is created (`create-user`) or a new provider account is linked (`link-account`), for every authentication method (OAuth, OIDC SSO, SAML SSO, email/password, magic link, email OTP, anonymous, SIWE, phone number, admin-created users, and SCIM), including stateless setups with no persistent database, so policy lives in one place instead of per provider.
+
+It also fires when an existing **OAuth or SSO** user signs in again (`sign-in`), and there it receives the *fresh* provider email and profile rather than the stored row. That lets a domain or org policy reject a user whose provider identity moved out of bounds (for example, an email that left the allowed domain). Non-provider returning sign-ins are not re-validated, because their stored row has not changed since `create-user` gated it; use the admin plugin's ban controls or a `databaseHooks.session.create.before` hook to block those.
+
+`source.action` is `"create-user"`, `"link-account"`, or `"sign-in"`, and `source.method` is the authentication method. For OAuth, `source.oauth` carries the provider id and raw provider profile. For OIDC and SAML SSO, `source.sso` carries the SSO provider id and raw provider claims or assertion attributes.
+
+Return nothing to allow provisioning. Return an object with `error` to reject it: browser/redirect flows send the rejection to the configured error URL, while programmatic flows return a `403` API error. Avoid putting sensitive details in `errorDescription` because it is returned to the client.
+
+```ts title="auth.ts"
+import { betterAuth } from "better-auth";
+
+export const auth = betterAuth({
+    user: {
+        validateUserInfo: ({ user, source }) => {
+            if (!user.email?.endsWith("@example.com")) {
+                return {
+                    error: "email_not_allowed",
+                    errorDescription: "Use your example.com email to sign in",
+                };
+            }
+
+            if (
+                source.oauth?.providerId === "company-oauth" &&
+                source.oauth?.profile?.hd !== "example.com"
+            ) {
+                return {
+                    error: "invalid_organization",
+                    errorDescription: "Use your company OAuth account",
+                };
+            }
+        },
+    },
+});
+```
+
+> `validateUserInfo` is the high-level policy gate. The lower-level `databaseHooks.user.create.before` still runs afterward for data shaping and can also abort a write; reach for it when you need to mutate the record rather than accept or reject the identity.
+
 **beforeDelete**: This callback is called before the user is deleted. You can use this callback to perform any cleanup or additional checks before deleting the user.
 
 ```ts title="auth.ts"
@@ -372,23 +407,31 @@ export const auth = betterAuth({
 });
 ```
 
-## Accounts
-Better Auth supports multiple authentication methods. Each authentication method is called a provider. For example, email and password authentication is a provider, Google authentication is a provider, etc.
+## ## Accounts
+Better Auth supports multiple authentication methods through providers such as email and password, Google, or an enterprise identity provider. Each method linked to a user is stored as an account.
 
-When a user signs in using a provider, an account is created for the user. The account stores the authentication data returned by the provider. This data includes the access token, refresh token, and other information returned by the provider.
+An account has a local record ID and a provider identity. `id` identifies the Better Auth account record and is the value to pass as `accountId` to account-management APIs. The pair of `issuer` and `accountId` identifies the external account: `issuer` names the trusted authority, and `accountId` is the stable identifier that authority assigned. The `providerId` identifies the provider configuration Better Auth uses for protocol operations.
 
-The account table stores the authentication data of the user [Click here to view the schema](/docs/concepts/database#account)
+OAuth providers without a trusted issuer use `local:oauth:<encoded providerId>` as their account namespace, with the provider ID segment percent-encoded. Credential accounts use `local:credential`; do not use that credential namespace for an OAuth provider.
 
-## List User Accounts
-To list user accounts you can use `client.user.listAccounts` method. Which will return all accounts associated with a user.
+This separation allows multiple provider configurations for the same issuer to deduplicate the same external identity without treating an identifier from another issuer as the same person. Provider aliases share one account row and token set; they do not have independent grants or provider lifecycle records. See the [account schema](/docs/concepts/database#account) for the complete set of fields.
+
+## ### List User Accounts
+Use `listAccounts` to retrieve every authentication method linked to the current user. Keep the returned `id` when you need to unlink the account or call another account-specific API.
 
 ```ts
 import { authClient } from "@/lib/auth-client"
 
-const accounts = await authClient.listAccounts();
+const { data: accounts, error } = await authClient.listAccounts();
+
+if (error) {
+    throw new Error(error.message);
+}
+
+const googleAccount = accounts?.find((account) => account.providerId === "google");
 ```
 
-## Token Encryption
+## ### Token Encryption
 Better Auth doesn’t encrypt tokens by default and that’s intentional. We want you to have full control over how encryption and decryption are handled, rather than baking in behavior that could be confusing or limiting. If you need to store encrypted tokens (like accessToken or refreshToken), you can use databaseHooks to encrypt them before they’re saved to your database.
 
 ```ts
@@ -420,7 +463,7 @@ export const auth = betterAuth({
 
 Then whenever you retrieve back the account make sure to decrypt the tokens before using them.
 
-## Account Linking
+## ### Account Linking
 Account linking is [enabled by default](https://www.better-auth.com/docs/reference/options#accountlinking) and lets users associate multiple authentication methods with a single account. With Better Auth, users can connect additional social sign-ons or OAuth providers to their existing accounts if the provider confirms the user's email as verified.
 
 If account linking is disabled, no accounts can be linked, regardless of the provider or email verification status.
@@ -437,7 +480,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Forced Linking
+## #### Forced Linking
 You can specify a list of "trusted providers." When a user logs in using a trusted provider, their account will be automatically linked even if the provider doesn’t confirm the email verification status. Use this with caution as it may increase the risk of account takeover.
 
 ```ts title="auth.ts"
@@ -453,7 +496,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Disable Implicit Linking
+## #### Disable Implicit Linking
 By default, when a user signs in with an OAuth provider whose email matches an existing user (and either the provider verified the email or it is in `trustedProviders`), Better Auth automatically links the OAuth account to that user. Set `disableImplicitLinking: true` to turn this off. With this option enabled:
 
 * Same-email OAuth sign-ins for an existing user are rejected with the [`account_not_linked`](/docs/reference/errors/account_not_linked) error instead of being silently linked, even when the provider is in `trustedProviders` or the email is verified.
@@ -474,7 +517,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Manually Linking Accounts
+## #### Manually Linking Accounts
 Users already signed in can manually link their account to additional social providers or credential-based accounts.
 
 * **Linking Social Accounts:** Use the `linkSocial` method on the client to link a social provider to the user's account.
@@ -499,6 +542,8 @@ Users already signed in can manually link their account to additional social pro
       scopes: ["https://www.googleapis.com/auth/drive.readonly"] // Request additional scopes
   });
   ```
+
+> Newly granted scopes are merged into `account.scope`, so prior grants survive incremental authorization. Sign-in re-authentication and refresh-token responses do not modify `account.scope`.
 
   You can also link accounts using ID tokens directly, without redirecting to the provider's OAuth flow:
 
@@ -567,24 +612,28 @@ Users already signed in can manually link their account to additional social pro
 
 > `setPassword` can't be called from the client for security reasons.
 
-## Account Unlinking
-You can unlink a user account by providing a `providerId`.
+## ### Account Unlinking
+Unlink an account by passing the Better Auth account record's `id`, which you can obtain from `listAccounts`.
 
 ```ts
 import { authClient } from "@/lib/auth-client"
 
-await authClient.unlinkAccount({
-    providerId: "google"
-});
+const { data: accounts, error } = await authClient.listAccounts();
 
-// Unlink a specific account
-await authClient.unlinkAccount({
-    providerId: "google",
-    accountId: "123"
-});
+if (error) {
+    throw new Error(error.message);
+}
+
+const account = accounts?.find((account) => account.providerId === "google");
+
+if (account) {
+    await authClient.unlinkAccount({
+        accountId: account.id,
+    });
+}
 ```
 
-If the account doesn't exist, it will throw an error. Additionally, if the user only has one account, unlinking will be prevented to stop account lockout (unless `allowUnlinkingAll` is set to `true`).
+If the account does not exist or does not belong to the current user, Better Auth returns an error. Better Auth also prevents a user from unlinking their only account unless `allowUnlinkingAll` is `true`.
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth";

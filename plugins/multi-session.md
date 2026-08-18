@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/multi-session
 title: "Multi Session"
 description: ""
-access_date: 2026-08-04T08:00:07.846Z
-current_date: 2026-08-04T08:00:07.846Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Multi Session
@@ -14,8 +14,8 @@ Learn how to use multi-session plugin in Better Auth.
 
 The multi-session plugin allows users to maintain multiple active sessions across different accounts in the same browser. This plugin is useful for applications that require users to switch between multiple accounts without logging out.
 
-## Installation
-### Add the plugin to your auth config
+## ## Installation
+### ### Add the plugin to your **auth** config
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { multiSession } from "better-auth/plugins"  // [!code highlight]
@@ -27,7 +27,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Add the client Plugin
+### ### Add the client Plugin
 Add the multi-session client plugin to enable managing multiple active sessions.
 
 ```ts title="auth-client.ts"
@@ -42,10 +42,10 @@ export const authClient = createAuthClient({
 ```
 
 
-## Usage
+## ## Usage
 Whenever a user logs in, the plugin will add additional cookie to the browser. This cookie will be used to maintain multiple sessions across different accounts.
 
-## List all device sessions
+## ### List all device sessions
 To list all active sessions for the current user, you can call the `listDeviceSessions` method.
 
 
@@ -58,11 +58,7 @@ const { data, error } = await authClient.multiSession.listDeviceSessions({});
 ### Server Side
 
 ```ts
-const data = await auth.api.listDeviceSessions({
-
-    // This endpoint requires session cookies.
-    headers: await headers()
-});
+const data = await auth.api.listDeviceSessions({});
 ```
 
 ### Type Definition
@@ -74,7 +70,7 @@ type listDeviceSessions = {
 ```
 
 
-## Set active session
+## ### Set active session
 To set the active session, you can call the `setActive` method.
 
 
@@ -92,9 +88,7 @@ const { data, error } = await authClient.multiSession.setActive({
 const data = await auth.api.setActiveSession({
     body: {
         sessionToken: some-session-token,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
+    }
 });
 ```
 
@@ -111,7 +105,7 @@ type setActiveSession = {
 ```
 
 
-## Revoke a session
+## ### Revoke a session
 To revoke a session, you can call the `revoke` method.
 
 
@@ -129,9 +123,7 @@ const { data, error } = await authClient.multiSession.revoke({
 const data = await auth.api.revokeDeviceSession({
     body: {
         sessionToken: some-session-token,
-    },
-    // This endpoint requires session cookies.
-    headers: await headers()
+    }
 });
 ```
 
@@ -148,10 +140,10 @@ type revokeDeviceSession = {
 ```
 
 
-## Signout and Revoke all sessions
+## ### Signout and Revoke all sessions
 When a user logs out, the plugin will revoke all active sessions for the user. You can do this by calling the existing `signOut` method, which handles revoking all sessions automatically.
 
-## Max Sessions
+## ### Max Sessions
 You can specify the maximum number of sessions a user can have by passing the `maximumSessions` option to the plugin. By default, the plugin allows 5 sessions per device.
 
 ```ts title="auth.ts"

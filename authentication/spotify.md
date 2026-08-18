@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/spotify
 title: "Spotify"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Spotify
@@ -13,7 +13,7 @@ Spotify provider setup and usage.
 
 
 
-### Get your Spotify Credentials
+### ### Get your Spotify Credentials
 To use Spotify sign in, you need a client ID and client secret. You can get them from the [Spotify Developer Portal](https://developer.spotify.com/dashboard/applications).
 
 **Important:** Spotify no longer supports `localhost` as a redirect URI. You must use `127.0.0.1` for local development.
@@ -24,7 +24,7 @@ Consequently, ensure you access your local app via `http://127.0.0.1:3000` (not 
 
 For production, you should set it to the URL of your application (must be HTTPS). If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 You must also ensure your environment variables use the correct loopback IP to match the redirect URI. Update your `.env` file:
@@ -47,7 +47,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with Spotify
+### ### Sign In with Spotify
 To sign in with Spotify, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `spotify`.

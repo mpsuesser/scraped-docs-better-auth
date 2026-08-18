@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/test-utils
 title: "Test Utils"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # Test Utils
@@ -16,8 +16,8 @@ The Test Utils plugin provides helpers for writing integration and E2E tests aga
 
 > This plugin is designed for test environments only. It does not add public routes, but it does expose privileged helpers on `ctx.test`. Prefer keeping it out of production auth configs.
 
-## Installation
-### Add the plugin to a test-only auth config
+## ## Installation
+### ### Add the plugin to a test-only auth config
 ```ts title="auth.test.ts"
 import { betterAuth } from "better-auth"
 import { testUtils } from "better-auth/plugins" // [!code highlight]
@@ -32,21 +32,21 @@ export const auth = betterAuth({
 
 Keeping `testUtils()` in a separate test-only auth instance preserves type inference for `ctx.test` without adding the plugin to your production auth config.
 
-### Access test helpers via context
+### ### Access test helpers via context
 ```ts title="test-setup.ts"
 const ctx = await auth.$context
 const test = ctx.test
 ```
 
 
-## Can I include this in production?
+## ## Can I include this in production?
 `testUtils()` does not register HTTP routes or API endpoints. Simply adding it to `plugins` does not create a public auth bypass on its own.
 
 However, it still adds privileged server-side helpers on `ctx.test`. Those helpers can create sessions, persist users and organizations, and delete records directly through the auth context. When `captureOTP: true` is enabled, the plugin also installs a verification hook and stores OTPs in memory for later retrieval.
 
 Because of that, the recommended setup is to keep `testUtils` out of your production auth config and add it from a separate test-only auth instance such as `auth.test.ts` or a dedicated test auth factory. That keeps the helpers available in tests without shipping them as part of your production server context.
 
-## TypeScript caveat
+## ### TypeScript caveat
 Better Auth infers plugin helpers best from statically defined plugin arrays. If you conditionally spread `testUtils()` into `plugins`, TypeScript can stop inferring `ctx.test` correctly.
 
 ```ts title="auth.ts"
@@ -64,11 +64,11 @@ export const auth = betterAuth({
 
 If you include `testUtils()` unconditionally to preserve static type inference, treat that as a convenience tradeoff rather than the recommended default. It still does not expose public routes, but you should avoid using `ctx.test` in production code paths.
 
-## Usage
-## Factories
+## ## Usage
+## ### Factories
 Factories create objects without writing to the database. Use them to generate test data with sensible defaults.
 
-## createUser
+## #### createUser
 Creates a user object with default values that can be overridden.
 
 ```ts
@@ -84,7 +84,7 @@ const user = test.createUser({
 })
 ```
 
-## createOrganization
+## #### createOrganization
 Creates an organization object. Only available when the organization plugin is installed.
 
 ```ts
@@ -94,10 +94,10 @@ const org = test.createOrganization({
 })
 ```
 
-## Database Helpers
+## ### Database Helpers
 Database helpers persist and remove test data from the database.
 
-## saveUser
+## #### saveUser
 Saves a user to the database.
 
 ```ts
@@ -105,14 +105,14 @@ const user = test.createUser({ email: "test@example.com" })
 const savedUser = await test.saveUser(user)
 ```
 
-## deleteUser
+## #### deleteUser
 Deletes a user from the database.
 
 ```ts
 await test.deleteUser(user.id)
 ```
 
-## saveOrganization
+## #### saveOrganization
 Saves an organization to the database. Only available with the organization plugin.
 
 ```ts
@@ -120,14 +120,14 @@ const org = test.createOrganization({ name: "Test Org" })
 const savedOrg = await test.saveOrganization(org)
 ```
 
-## deleteOrganization
+## #### deleteOrganization
 Deletes an organization from the database. Only available with the organization plugin.
 
 ```ts
 await test.deleteOrganization(org.id)
 ```
 
-## addMember
+## #### addMember
 Adds a user as a member of an organization. Only available with the organization plugin.
 
 ```ts
@@ -138,10 +138,10 @@ const member = await test.addMember({
 })
 ```
 
-## Auth Helpers
+## ### Auth Helpers
 Auth helpers create authenticated sessions for testing protected routes.
 
-## login
+## #### login
 Creates a session for a user and returns session details, headers, cookies, and token.
 
 ```ts
@@ -156,7 +156,7 @@ const { session, user, headers, cookies, token } = await test.login({
 // token - The session token string
 ```
 
-## getAuthHeaders
+## #### getAuthHeaders
 Returns a `Headers` object with the session cookie set. Useful for making authenticated requests.
 
 ```ts
@@ -169,7 +169,7 @@ const session = await auth.api.getSession({ headers })
 const response = await fetch("/api/protected", { headers })
 ```
 
-## getCookies
+## #### getCookies
 Returns an array of cookie objects compatible with browser testing tools like Playwright and Puppeteer.
 
 ```ts
@@ -197,7 +197,7 @@ Each cookie object contains:
 * `secure` - Whether cookie requires HTTPS
 * `sameSite` - SameSite attribute ("Lax", "Strict", or "None")
 
-## OTP Capture
+## ### OTP Capture
 When `captureOTP: true` is set, the plugin passively captures OTPs as they are created. This allows you to retrieve OTPs in tests without needing to mock email or SMS sending.
 
 > OTP capture is passive - it does not prevent OTPs from being sent via your configured `sendVerificationOTP` function. It simply stores a copy for test retrieval.
@@ -218,7 +218,7 @@ export const auth = betterAuth({
 })
 ```
 
-## getOTP
+## #### getOTP
 Retrieves a captured OTP by identifier (email or phone number).
 
 ```ts
@@ -232,13 +232,13 @@ const otp = test.getOTP("user@example.com")
 // "123456"
 ```
 
-## Options
+## ## Options
 | Option       | Type      | Default | Description                                       |
 | ------------ | --------- | ------- | ------------------------------------------------- |
 | `captureOTP` | `boolean` | `false` | Enable OTP capture for testing verification flows |
 
-## Examples
-## Integration Test (Vitest)
+## ## Examples
+## ### Integration Test (Vitest)
 ```ts
 import { describe, it, expect, beforeAll } from "vitest"
 import { auth } from "./auth"
@@ -270,7 +270,7 @@ describe("protected route", () => {
 })
 ```
 
-## E2E Test (Playwright)
+## ### E2E Test (Playwright)
 ```ts
 import { test, expect } from "@playwright/test"
 import { auth } from "./auth"
@@ -304,7 +304,7 @@ test("dashboard shows user name", async ({ context, page }) => {
 })
 ```
 
-## OTP Verification Test
+## ### OTP Verification Test
 ```ts
 import { describe, it, expect, beforeAll, beforeEach } from "vitest"
 import { auth } from "./auth"

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/github
 title: "Github"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # GitHub
@@ -13,14 +13,14 @@ GitHub provider setup and usage.
 
 
 
-### Get your GitHub credentials
+### ### Get your GitHub credentials
 To use GitHub sign in, you need a client ID and client secret. You can get them from the [GitHub Developer Portal](https://github.com/settings/developers).
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/github` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
 Important: You MUST include the user:email scope in your GitHub app. See details below.
 
-### Configure the provider
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
 ```ts title="auth.ts"
@@ -36,7 +36,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Sign In with GitHub
+### ### Sign In with GitHub
 To sign in with GitHub, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
 * `provider`: The provider to use. It should be set to `github`.
@@ -53,8 +53,8 @@ const signIn = async () => {
 ```
 
 
-## Usage
-## Setting up your Github app
+## ## Usage
+## ### Setting up your Github app
 Github has two types of apps: Github apps and OAuth apps.
 
 For OAuth apps, you don't have to do anything special (just follow the steps above). For Github apps, you DO have to add one more thing, which is enable it to read the user's email:
@@ -67,7 +67,7 @@ That's all! Now you can copy the Client ID and Client Secret of your app!
 
 > If you get an `email_not_found` error, it is most often because either (a) you created a GitHub App and did not grant the "Email addresses: Read-only" permission, or (b) the user has set their primary email to private, in which case `GET /user` returns `email: null`. See [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email) for the recommended `mapProfileToUser` fallback; the user's private addresses are also available via [`/user/emails`](https://docs.github.com/en/rest/users/emails).
 
-## Why don't I have a refresh token?
+## ### Why don't I have a refresh token?
 Github doesn't issue refresh tokens for OAuth apps. For regular OAuth apps,
 GitHub issues access tokens that remain valid indefinitely unless the user revokes them,
 the app revokes them, or they go unused for a year.

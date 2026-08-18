@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unable_to_get_user_info
 title: "Unable_to_get_user_info"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 # unable_to_get_user_info
@@ -12,24 +12,24 @@ The user info was not found in the request.
 
 
 
-## What is it?
+## ## What is it?
 This error occurs only on the `/api/auth/callback` endpoint during an OAuth flow. After exchanging
 the authorization code for tokens, Better Auth fetches the user's profile from the provider. If the
 provider response is incorrect, empty, or missing required fields (like id or email when needed),
 no usable user info can be derived and the request is rejected.
 
-## Common Causes
+## ## Common Causes
 * Missing or insufficient scopes, so the provider does not return profile data.
 * The provider returned an error or an empty profile object for the user info request.
 * Token exchange succeeded, but the user info request failed (network error, 401/403, invalid token).
 * Provider configuration or environment mismatch (wrong client/tenant), causing unexpected or minimal claims.
 * Temporary provider outage or rate limiting.
 
-## How to resolve
-## Request the right data
+## ## How to resolve
+## ### Request the right data
 * Start the OAuth flow using Better Auth methods so the correct scopes and parameters are used.
 * Ensure your provider app is configured to return basic profile details needed by your app.
 
-## Verify configuration and environment
+## ### Verify configuration and environment
 * Confirm the client credentials and callback URL match the environment you are testing (dev/staging/prod).
 * If the provider supports different response modes or endpoints, ensure they align with the integration you use.

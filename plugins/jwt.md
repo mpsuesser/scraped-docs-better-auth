@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/jwt
 title: "Jwt"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-18T00:08:46.984Z
+current_date: 2026-08-18T00:08:46.984Z
 ---
 
 Authenticate users with JWT tokens in services that can't use the session
@@ -414,6 +414,16 @@ Date
 Timestamp of when the web key expires
 
 ## Options
+
+### Session cookie cache
+
+Set `sessionCookieCache` to `true` to sign JWT session cookie cache values with the plugin's locally managed keys. This requires `session.cookieCache.strategy` to be set to `"jwt"`.
+
+```
+jwt({
+  sessionCookieCache: true
+})
+```
 
 ### Algorithm of the Key Pair
 
