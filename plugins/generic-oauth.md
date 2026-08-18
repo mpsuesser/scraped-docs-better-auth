@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/generic-oauth
 title: "Generic Oauth"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-18T21:41:33.171Z
+current_date: 2026-08-18T21:41:33.171Z
 ---
 
 # Generic OAuth
@@ -17,7 +17,7 @@ The Generic OAuth plugin lets you add any OAuth 2.1 or OpenID Connect (OIDC) pro
 ## ## When to Use This Plugin
 Use the Generic OAuth plugin when:
 
-* Your provider is not one of the [built-in social providers](/docs/authentication/social) (Google, GitHub, Discord, etc.)
+* Your provider is not one of the [built-in social providers](/docs/concepts/oauth) (Google, GitHub, Discord, etc.)
 * You need to connect to a corporate identity provider (Keycloak, Okta, Auth0, Microsoft Entra ID)
 * You want to support a provider with custom or non-standard OAuth endpoints
 
