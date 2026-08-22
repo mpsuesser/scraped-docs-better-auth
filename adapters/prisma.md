@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/prisma
 title: "Prisma"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-22T14:33:01.102Z
+current_date: 2026-08-22T14:33:01.102Z
 ---
 
 Integrate Better Auth with Prisma.
@@ -28,6 +28,20 @@ npm install @better-auth/prisma-adapter
 
 #### bun
 
+Prisma 7 with SQLite requires the SQLite driver adapter:
+
+#### npm
+
+```
+npm install @prisma/adapter-better-sqlite3
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
 ## Example Usage
 
 You can use the Prisma adapter to connect to your database as follows.
@@ -36,8 +50,18 @@ You can use the Prisma adapter to connect to your database as follows.
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
-const prisma = new PrismaClient();
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL is not set");
+}
+
+const adapter = new PrismaBetterSqlite3({
+  url: databaseUrl,
+});
+const prisma = new PrismaClient({ adapter });
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
