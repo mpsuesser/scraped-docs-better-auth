@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/session-management
 title: "Session Management"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-24T18:55:52.804Z
+current_date: 2026-08-24T18:55:52.804Z
 ---
 
 # Session Management
@@ -394,7 +394,7 @@ export const auth = betterAuth({
         cookieCache: {
             enabled: true,
             maxAge: 7 * 24 * 60 * 60, // 7 days cache duration
-            strategy: "jwe", // can be "jwt" or "compact"
+            strategy: "jwe", // can be "jwe", "jwt" or "compact"
             refreshCache: true, // Enable stateless refresh
         },
     },
