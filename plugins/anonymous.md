@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/anonymous
 title: "Anonymous"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-24T09:02:55.429Z
+current_date: 2026-08-24T09:02:55.429Z
 ---
 
 Anonymous plugin for Better Auth.
@@ -67,14 +67,14 @@ export const authClient = createAuthClient({
 
 ## Usage
 
-### Sign In
+### Sign In Anonymously
 
-To sign in a user anonymously, use the `signIn.anonymous()` method.
+To sign in a user anonymously, use the `signIn.anonymous()` method. This creates a new user with a generated email and the configured or default name, then establishes a session.
+
+POST/sign-in/anonymous
 
 ```
-import { authClient } from "@/lib/auth-client";
-
-const user = await authClient.signIn.anonymous()
+const { data, error } = await authClient.signIn.anonymous();
 ```
 
 ### Link Account
