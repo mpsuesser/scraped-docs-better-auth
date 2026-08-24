@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/database
 title: "Database"
 description: ""
-access_date: 2026-08-24T11:12:07.205Z
-current_date: 2026-08-24T11:12:07.205Z
+access_date: 2026-08-24T11:54:16.860Z
+current_date: 2026-08-24T11:54:16.860Z
 ---
 
 Learn about database adapters, migrations, secondary storage with Redis, core schema (user, session, account, verification), custom tables, extending schemas, ID generation, database hooks, and plugin schemas.
@@ -98,25 +98,28 @@ betterAuth({
 
 ### Redis Storage
 
-Better Auth provides an official Redis storage package that uses [ioredis](https://github.com/redis/ioredis):
+For most applications, we recommend using the official Redis storage package, which uses [ioredis](https://github.com/redis/ioredis).
+
+#### Official Redis Storage
+
+#### npm
 
 ```
 npm install @better-auth/redis-storage ioredis
-# or
-pnpm add @better-auth/redis-storage ioredis
 ```
 
-**Usage:**
+#### pnpm
+
+#### yarn
+
+#### bun
 
 ```
 import { betterAuth } from "better-auth";
 import { Redis } from "ioredis";
 import { redisStorage } from "@better-auth/redis-storage";
 
-const redis = new Redis({
-    host: "localhost",
-    port: 6379,
-});
+const redis = new Redis(process.env.REDIS_URL!);
 
 export const auth = betterAuth({
     // ... other options
@@ -127,92 +130,43 @@ export const auth = betterAuth({
 });
 ```
 
-The Redis storage supports all ioredis connection modes including standalone, cluster, and sentinel configurations.
+#### Custom Implementations
 
-**Manual Implementation:**
+#### node-redis
 
-If you're using Redis 7 or later, you can use the following implementation:
+If you're using Redis 7 or later, you can implement secondary storage with [node-redis](https://github.com/redis/node-redis):
+
+#### npm
+
+#### Upstash Redis
 
 ```
+npm install redis
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+```
+import { betterAuth, type SecondaryStorage } from "better-auth";
 import { createClient } from "redis";
-import { betterAuth } from "better-auth";
 
 const redis = createClient();
 await redis.connect();
 
-export const auth = betterAuth({
-    // ... other options
-    secondaryStorage: {
-        get: async (key) => {
-            return await redis.get(key);
-        },
-        getAndDelete: async (key) => {
-            return await redis.getDel(key);
-        },
-        increment: async (key, ttl) => {
-            if (!Number.isInteger(ttl) || ttl <= 0) {
-                throw new TypeError("Redis increment TTL must be a positive integer");
-            }
-
-            const [value] = await redis
-                .multi()
-                .incr(key)
-                .expire(key, ttl, "NX")
-                .exec();
-
-            return value;
-        },
-        set: async (key, value, ttl) => {
-            if (ttl) await redis.set(key, value, { EX: ttl });
-            else await redis.set(key, value);
-        },
-        delete: async (key) => {
-            await redis.del(key);
-        }
-    }
-});
-```
-
-This implementation allows Better Auth to use Redis for storing session data and rate limiting counters. You can also add prefixes to the keys names.
-
-**Example: Upstash Redis Implementation**
-
-Here's an example using Upstash Redis. First, install the Upstash Redis client:
-
-```
-npm install @upstash/redis
-```
-
-Then, create a new Redis client:
-
-```
-// src/lib/redis/index.ts
-
-import { Redis } from "@upstash/redis";
-
-export const redis = Redis.fromEnv();
-```
-
-Don't forget to set the `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` environment variables. Also, [see the Upstash documentation](https://upstash.com/docs/redis/howto/connectwithupstashredis) for more information on how to use Upstash Redis with Node.js.
-
-After that, we can create a secondary storage implementation:
-
-```
-// src/lib/auth/adapters/redis-secondary-storage.ts
-
-import type { SecondaryStorage } from "better-auth";
-import { redis } from "~/lib/redis";
-
-export const redisSecondaryStorage: SecondaryStorage = {
-  async get(key) {
-    return await redis.get(key);
+const redisSecondaryStorage: SecondaryStorage = {
+  get(key) {
+    return redis.get(key);
   },
 
-  async getAndDelete(key) {
-    return await redis.getdel(key);
+  getAndDelete(key) {
+    return redis.getDel(key);
   },
 
-  async increment(key: string, ttl: number) {
+  async increment(key, ttl) {
     if (!Number.isInteger(ttl) || ttl <= 0) {
       throw new TypeError("Redis increment TTL must be a positive integer");
     }
@@ -221,36 +175,28 @@ export const redisSecondaryStorage: SecondaryStorage = {
       .multi()
       .incr(key)
       .expire(key, ttl, "NX")
-      .exec();
+      .execTyped();
 
     return value;
   },
 
   async set(key, value, ttl) {
-    if (ttl) {
-      await redis.set(key, value, { ex: ttl });
-    } else {
-      await redis.set(key, value);
-    }
+    if (ttl) await redis.set(key, value, { EX: ttl });
+    else await redis.set(key, value);
   },
 
-  async delete(key: string) {
+  async delete(key) {
     await redis.del(key);
   },
 };
-```
-
-Finally, we can pass the implementation to the `betterAuth` function.
-
-```
-import { betterAuth } from "better-auth";
-import { redisSecondaryStorage } from "~/lib/auth/adapters/redis-secondary-storage";
 
 export const auth = betterAuth({
   // ... other options
   secondaryStorage: redisSecondaryStorage,
 });
 ```
+
+When implementing secondary storage directly, prefix its keys to avoid collisions with other applications sharing the same Redis database.
 
 ## Core Schema
 
