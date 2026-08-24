@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/community-adapters
 title: "Community Adapters"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-24T08:21:38.386Z
+current_date: 2026-08-24T08:21:38.386Z
 ---
 
 Community-built database adapters that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom adapter, get started by reading our [Create a Database
 
 ## Browse Community Adapters
 
-Showing 20 of 20 adapters
+Showing 21 of 21 adapters
 
 |  |  |  |
 | --- | --- | --- |
@@ -40,3 +40,4 @@ Showing 20 of 20 adapters
 | [`@datar-platform/better-auth-dynamodb`](https://github.com/datar-platform/better-auth-dynamodb) | [DynamoDB](https://aws.amazon.com/dynamodb/) | [![joesome-git](https://github.com/joesome-git.png) joesome-git](https://github.com/joesome-git) |
 | [`@bjorntech/betterauth-dynamodb`](https://github.com/bjorntech/betterauth-dynamodb) | [DynamoDB](https://aws.amazon.com/dynamodb/) | [![BjornTech AB](https://github.com/bjorntech.png) BjornTech AB](https://github.com/bjorntech) |
 | [`better-auth-azure-cosmos`](https://github.com/9hsein5/better-auth-azure-cosmos) | [Azure Cosmos DB](https://learn.microsoft.com/azure/cosmos-db/nosql/) | [![9hsein5](https://github.com/9hsein5.png) 9hsein5](https://github.com/9hsein5) |
+| [`better-auth-mongoose`](https://github.com/AshwinSathian/better-auth-mongoose) | [Mongoose](https://mongoosejs.com/) | [![Ashwin Sathian](https://github.com/AshwinSathian.png) Ashwin Sathian](https://github.com/AshwinSathian) |
