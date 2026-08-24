@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/database
 title: "Database"
 description: ""
-access_date: 2026-08-24T11:54:16.860Z
-current_date: 2026-08-24T11:54:16.860Z
+access_date: 2026-08-24T21:18:03.567Z
+current_date: 2026-08-24T21:18:03.567Z
 ---
 
 Learn about database adapters, migrations, secondary storage with Redis, core schema (user, session, account, verification), custom tables, extending schemas, ID generation, database hooks, and plugin schemas.
@@ -290,7 +290,7 @@ userId
 
 string
 
-FK
+FKIDX
 
 The ID of the user
 
@@ -370,7 +370,7 @@ userId
 
 string
 
-FK
+FKIDX
 
 The ID of the user
 
@@ -498,7 +498,7 @@ identifier
 
 string
 
-\-
+IDX
 
 The identifier for the verification request
 
