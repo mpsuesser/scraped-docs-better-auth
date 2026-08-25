@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/security
 title: "Security"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T01:07:33.172Z
+current_date: 2026-08-25T01:07:33.172Z
 ---
 
 # Security
@@ -198,6 +198,8 @@ If you're serving your app from multiple approved domains, you'll typically want
 
 ## ## Trusted Origins
 Trusted origins prevent CSRF attacks and block open redirects. You can set a list of trusted origins in the `trustedOrigins` configuration option. Requests from origins not on this list are automatically blocked.
+
+Relative callback and redirect URLs support standard path and query syntax, but must begin with a single `/`. Better Auth rejects fragments, protocol-relative URLs (`//...`), backslashes, control characters, and encoded path separators in the path.
 
 ## ### Basic Usage
 The most basic usage is to specify exact origins, below is an example of a trusted origins configuration:
