@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/passkey
 title: "Passkey"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 Passkey
@@ -398,7 +398,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

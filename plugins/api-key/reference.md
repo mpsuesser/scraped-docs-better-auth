@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/api-key/reference
 title: "Reference"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 API Key plugin options, permissions, and schema reference.
@@ -332,7 +332,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -340,7 +340,7 @@ id
 
 string
 
-PK
+PKUQ
 
 The ID of the API key.
 
@@ -388,7 +388,7 @@ referenceId
 
 string
 
-IDX
+\-
 
 The ID of the owner (user ID or organization ID based on the config's \`references\` setting).
 

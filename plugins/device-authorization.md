@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 OAuth 2.0 Device Authorization Grant for limited-input devices
@@ -783,7 +783,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -799,7 +799,7 @@ deviceCode
 
 string
 
-\-
+UQ
 
 The device verification code
 
@@ -807,7 +807,7 @@ userCode
 
 string
 
-\-
+UQ
 
 The user-friendly code for verification
 

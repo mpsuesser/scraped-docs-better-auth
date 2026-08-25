@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/last-login-method
 title: "Last Login Method"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 The last login method plugin tracks the most recent authentication method used by users (email, OAuth providers, etc.). This enables you to display helpful indicators on login pages, such as "Last signed in with Google" or prioritize certain login methods based on user preferences.
@@ -189,7 +189,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

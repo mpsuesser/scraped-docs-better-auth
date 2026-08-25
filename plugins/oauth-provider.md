@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 A Better Auth plugin that enables your auth server to serve as an OAuth 2.1 provider.
@@ -1789,7 +1789,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -1805,7 +1805,7 @@ clientId
 
 string
 
-\-
+UQ
 
 Unique identifier for each OAuth client
 
@@ -2051,7 +2051,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2185,7 +2185,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2201,7 +2201,7 @@ token
 
 string
 
-\-
+UQ
 
 Hashed/encrypted access token
 
@@ -2295,7 +2295,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2375,7 +2375,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

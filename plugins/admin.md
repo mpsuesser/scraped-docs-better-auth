@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/admin
 title: "Admin"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 Admin plugin for Better Auth
@@ -753,7 +753,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -797,7 +797,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

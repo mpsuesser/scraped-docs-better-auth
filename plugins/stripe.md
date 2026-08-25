@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/stripe
 title: "Stripe"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 Stripe plugin for Better Auth to manage subscriptions and payments.
@@ -671,7 +671,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -693,7 +693,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -715,7 +715,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

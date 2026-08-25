@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/organization
 title: "Organization"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 The organization plugin allows you to manage your organization's members and teams.
@@ -2031,7 +2031,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2091,7 +2091,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2149,7 +2149,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2173,7 +2173,7 @@ slug
 
 string
 
-\-
+UQ
 
 The slug of the organization
 
@@ -2211,7 +2211,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2265,7 +2265,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2341,7 +2341,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2365,7 +2365,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2395,7 +2395,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2457,7 +2457,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2517,7 +2517,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -2569,7 +2569,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

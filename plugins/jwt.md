@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/jwt
 title: "Jwt"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 Authenticate users with JWT tokens in services that can't use the session
@@ -369,7 +369,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

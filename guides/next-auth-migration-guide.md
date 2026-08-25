@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/next-auth-migration-guide
 title: "Next Auth Migration Guide"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 A step-by-step guide to transitioning from Auth.js to Better Auth.
@@ -207,7 +207,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -255,7 +255,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -303,7 +303,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -415,7 +415,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

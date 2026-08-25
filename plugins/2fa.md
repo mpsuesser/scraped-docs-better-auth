@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/2fa
 title: "2fa"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 Enhance your app's security with two-factor authentication.
@@ -453,7 +453,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -473,7 +473,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

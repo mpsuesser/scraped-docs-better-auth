@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/rate-limit
 title: "Rate Limit"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 Learn how to configure rate limiting in Better Auth, including IP address detection, IPv6 support, custom rate limit windows, storage backends, error handling, and per-endpoint rules.
@@ -323,7 +323,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -339,7 +339,7 @@ key
 
 string
 
-\-
+UQ
 
 Unique identifier for each rate limit key
 

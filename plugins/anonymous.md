@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/anonymous
 title: "Anonymous"
 description: ""
-access_date: 2026-08-24T09:02:55.429Z
-current_date: 2026-08-24T09:02:55.429Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 Anonymous plugin for Better Auth.
@@ -178,7 +178,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 

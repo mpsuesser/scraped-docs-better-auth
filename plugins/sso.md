@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/sso
 title: "Sso"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T05:48:23.554Z
+current_date: 2026-08-25T05:48:23.554Z
 ---
 
 Integrate Single Sign-On (SSO) with your application.
@@ -1431,7 +1431,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
@@ -1487,7 +1487,7 @@ providerId
 
 string
 
-\-
+UQ
 
 The provider ID. Used to identify a provider and to generate a redirect URL.
 
@@ -1509,7 +1509,7 @@ Field
 
 Type
 
-Key
+Attributes
 
 Description
 
