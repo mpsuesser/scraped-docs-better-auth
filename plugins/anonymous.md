@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/anonymous
 title: "Anonymous"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-25T08:38:55.162Z
+current_date: 2026-08-25T08:38:55.162Z
 ---
 
 Anonymous plugin for Better Auth.
@@ -121,7 +121,7 @@ await authClient.deleteAnonymousUser();
 
 ### emailDomainName
 
-The domain name to use when generating an email address for anonymous users. If not provided, the default format `temp@{id}.com` is used.
+The domain name to use when generating an email address for anonymous users. If not provided, the default format `{id}@anonymous.placeholder.invalid` is used.
 
 ```
 import { betterAuth } from "better-auth"

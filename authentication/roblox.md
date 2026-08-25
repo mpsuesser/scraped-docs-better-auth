@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/roblox
 title: "Roblox"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T08:38:55.162Z
+current_date: 2026-08-25T08:38:55.162Z
 ---
 
 # Roblox
@@ -18,7 +18,7 @@ Get your Roblox credentials from the [Roblox Creator Hub](https://create.roblox.
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/roblox` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-> The Roblox API does not provide email addresses. As a workaround, the user's `email` field uses the `preferred_username` value instead.
+> The Roblox API does not provide email addresses. Better Auth uses the user's stable `sub` claim to create a non-routable `{sub}@roblox.placeholder.invalid` address.
 
 ### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.

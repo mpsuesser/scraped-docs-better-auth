@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/tiktok
 title: "Tiktok"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-25T08:38:55.162Z
+current_date: 2026-08-25T08:38:55.162Z
 ---
 
 # TikTok
@@ -30,7 +30,7 @@ Follow these steps:
 
 Make sure to set the redirect URL to a valid HTTPS domain for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-> * The TikTok API does not provide email addresses. As a workaround, this implementation uses the user's `username` value for the `email` field, which is why it requires the `user.info.profile` scope instead of just `user.info.basic`.
+> * The TikTok API does not provide email addresses. Better Auth uses the user's stable `open_id` to create a non-routable `{open_id}@tiktok.placeholder.invalid` address.
 > * For production use, you will need to request approval from TikTok for the scopes you intend to use.
 
 ### ### Configure the provider
