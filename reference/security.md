@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/security
 title: "Security"
 description: ""
-access_date: 2026-08-25T01:07:33.172Z
-current_date: 2026-08-25T01:07:33.172Z
+access_date: 2026-08-25T09:17:50.281Z
+current_date: 2026-08-25T09:17:50.281Z
 ---
 
 # Security
@@ -43,6 +43,8 @@ Better Auth includes multiple safeguards to prevent Cross-Site Request Forgery (
 
 2. **Origin Validation**
    Each request’s `Origin` header is verified to confirm it comes from your application or another explicitly trusted source. Requests from untrusted origins are rejected. By default, Better Auth trusts the base URL of your app, but you can specify additional trusted origins via the `trustedOrigins` configuration option.
+
+   A same-origin form submission from a page using `Referrer-Policy: no-referrer` can carry `Origin: null`. When `Sec-Fetch-Site` confirms the request is same-origin, Better Auth validates the request URL's origin against `trustedOrigins` instead. Requests without that Fetch Metadata evidence and requests targeting an untrusted origin remain rejected.
 
 3. **Secure Cookie Settings**
    Session cookies use the `SameSite=Lax` attribute by default, preventing browsers from sending cookies with most cross-site requests. You can override this behavior using the `defaultCookieAttributes` option.
