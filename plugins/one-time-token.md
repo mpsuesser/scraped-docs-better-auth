@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/one-time-token
 title: "One Time Token"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 # One-Time Token Plugin (/docs/plugins/one-time-token)
@@ -49,39 +49,42 @@ export const authClient = createAuthClient({
 ## ### 1. Generate a Token
 Generate a token using `auth.api.generateOneTimeToken` or `authClient.oneTimeToken.generate`
 
+**Endpoint:** `GET /one-time-token/generate`
 
 ### Client Side
 
 ```ts
-const { data, error } = await authClient.oneTimeToken.generate({});
+const { data, error } = await authClient.oneTimeToken.generate();
 ```
 
 ### Server Side
 
 ```ts
-const data = await auth.api.generateOneTimeToken({});
+const data = await auth.api.generateOneTimeToken({
+    // This endpoint requires session cookies.
+    headers: await headers(),
+});
 ```
 
 ### Type Definition
 
 ```ts
 type generateOneTimeToken = {
-  
 }
 ```
-
 
 This will return a `token` that is attached to the current session which can be used to verify the one-time token. By default, the token will expire in 3 minutes.
 
 ## ### 2. Verify the Token
 When the user clicks the link or submits the token, use the `auth.api.verifyOneTimeToken` or `authClient.oneTimeToken.verify` method in another API route to validate it.
 
+**Endpoint:** `POST /one-time-token/verify`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.oneTimeToken.verify({
-    token: some-token,
+    token: "some-token", // required, The token to verify.
 });
 ```
 
@@ -90,8 +93,8 @@ const { data, error } = await authClient.oneTimeToken.verify({
 ```ts
 const data = await auth.api.verifyOneTimeToken({
     body: {
-        token: some-token,
-    }
+        token: "some-token", // required, The token to verify.
+    },
 });
 ```
 
@@ -99,14 +102,12 @@ const data = await auth.api.verifyOneTimeToken({
 
 ```ts
 type verifyOneTimeToken = {
-      /**
-       * The token to verify. 
-       */
-      token: string = "some-token"
-  
+    /**
+     * The token to verify. 
+     */
+    token: string = "some-token"
 }
 ```
-
 
 This will return the session that was attached to the token.
 

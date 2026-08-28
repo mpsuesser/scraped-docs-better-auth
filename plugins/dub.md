@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/dub
 title: "Dub"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 # Dub (/docs/plugins/dub)
@@ -148,12 +148,13 @@ const authClient = createAuthClient({
 
 To link account with Dub, you need to use the `dub.link`.
 
+**Endpoint:** `POST /dub/link`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.dub.link({
-    callbackURL: /dashboard,
+    callbackURL: "/dashboard", // required, URL to redirect to after linking
 });
 ```
 
@@ -161,9 +162,8 @@ const { data, error } = await authClient.dub.link({
 
 ```ts
 const data = await auth.api.dubLink({
-    body: {
-        callbackURL: /dashboard,
-    }
+    // This endpoint requires session cookies.
+    headers: await headers(),
 });
 ```
 
@@ -171,15 +171,13 @@ const data = await auth.api.dubLink({
 
 ```ts
 type dubLink = {
-    /**
-     * URL to redirect to after linking
-     * @clientOnly
-    */
-    callbackURL: string = "/dashboard"
-  
+  /**
+   * URL to redirect to after linking
+   * @clientOnly
+  */
+  callbackURL: string = "/dashboard"
 }
 ```
-
 
 ## ## Options
 You can pass the following options to the plugin:

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/users-accounts
 title: "Users Accounts"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 # User & Accounts (/docs/concepts/users-accounts)
@@ -119,14 +119,15 @@ await authClient.changeEmail({
 ## ### Change Password
 A user's password isn't stored in the user table. Instead, it's stored in the account table. To change the password of a user, you can use one of the following approaches:
 
+**Endpoint:** `POST /change-password`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.changePassword({
-    newPassword: newpassword1234,
-    currentPassword: oldpassword1234,
-    revokeOtherSessions, // optional
+    newPassword: "newpassword1234", // required, The new password to set
+    currentPassword: "oldpassword1234", // required, The current user password
+    revokeOtherSessions: true, // When set to true, all other active sessions for this user will be invalidated
 });
 ```
 
@@ -135,10 +136,12 @@ const { data, error } = await authClient.changePassword({
 ```ts
 const data = await auth.api.changePassword({
     body: {
-        newPassword: newpassword1234,
-        currentPassword: oldpassword1234,
-        revokeOtherSessions, // optional
-    }
+        newPassword: "newpassword1234", // required, The new password to set
+        currentPassword: "oldpassword1234", // required, The current user password
+        revokeOtherSessions: true, // When set to true, all other active sessions for this user will be invalidated
+    },
+    // This endpoint requires session cookies.
+    headers: await headers(),
 });
 ```
 
@@ -146,22 +149,20 @@ const data = await auth.api.changePassword({
 
 ```ts
 type changePassword = {
-      /**
-       * The new password to set 
-       */
-      newPassword: string = "newpassword1234"
-      /**
-       * The current user password 
-       */
-      currentPassword: string = "oldpassword1234"
-      /**
-       * When set to true, all other active sessions for this user will be invalidated
-       */
-      revokeOtherSessions?: boolean = true
-  
+    /**
+     * The new password to set 
+     */
+    newPassword: string = "newpassword1234"
+    /**
+     * The current user password 
+     */
+    currentPassword: string = "oldpassword1234"
+    /**
+     * When set to true, all other active sessions for this user will be invalidated
+     */
+    revokeOtherSessions?: boolean = true
 }
 ```
-
 
 ## ### Set Password
 If a user was registered using OAuth or other providers, they won't have a password or a credential account. In this case, you can use the `setPassword` action to set a password for the user. For security reasons, this function can only be called from the server. We recommend having users go through a 'forgot password' flow to set a password for their account.

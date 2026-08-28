@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/2fa
 title: "2fa"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 Enhance your app's security with two-factor authentication.
@@ -92,9 +92,9 @@ POST/two-factor/enable
 
 ```
 const { data, error } = await authClient.twoFactor.enable({
-    password: "secure-password", // required
-    method: "totp",
-    issuer: "my-app-name",
+    password: "secure-password", // required, The user’s password. Required for email/password accounts.
+    method: "totp", // The 2FA method to enable.
+    issuer: "my-app-name", // Custom issuer for the TOTP URI. Defaults to the app name in your auth config.
 });
 ```
 
@@ -192,7 +192,7 @@ POST/two-factor/disable
 
 ```
 const { data, error } = await authClient.twoFactor.disable({
-    password,
+    password, // The user's password (required for credential accounts)
 });
 ```
 
@@ -216,7 +216,7 @@ POST/two-factor/get-totp-uri
 
 ```
 const { data, error } = await authClient.twoFactor.getTotpUri({
-    password,
+    password, // The user's password (required for credential accounts)
 });
 ```
 
@@ -258,8 +258,8 @@ POST/two-factor/verify-totp
 
 ```
 const { data, error } = await authClient.twoFactor.verifyTotp({
-    code: "012345", // required
-    trustDevice: true,
+    code: "012345", // required, The otp code to verify.
+    trustDevice: true, // If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
 });
 ```
 
@@ -304,9 +304,8 @@ POST/two-factor/send-otp
 
 ```
 const { data, error } = await authClient.twoFactor.sendOtp({
-    trustDevice: true,
+    trustDevice: true, // If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
 });
-
 if (data) {
     // redirect or show the user to enter the code
 }
@@ -326,8 +325,8 @@ POST/two-factor/verify-otp
 
 ```
 const { data, error } = await authClient.twoFactor.verifyOtp({
-    code: "012345", // required
-    trustDevice: true,
+    code: "012345", // required, The otp code to verify.
+    trustDevice: true, // If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
 });
 ```
 
@@ -353,9 +352,8 @@ POST/two-factor/generate-backup-codes
 
 ```
 const { data, error } = await authClient.twoFactor.generateBackupCodes({
-    password,
+    password, // The users password (required for credential accounts).
 });
-
 if (data) {
     // Show the backup codes to the user
 }
@@ -375,9 +373,9 @@ POST/two-factor/verify-backup-code
 
 ```
 const { data, error } = await authClient.twoFactor.verifyBackupCode({
-    code: "123456", // required
-    disableSession: false,
-    trustDevice: true,
+    code: "123456", // required, A backup code to verify.
+    disableSession: false, // If true, the session cookie will not be set.
+    trustDevice: true, // If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
 });
 ```
 
@@ -398,7 +396,7 @@ To display the backup codes to the user, you can call `viewBackupCodes` on the s
 ```
 const data = await auth.api.viewBackupCodes({
     body: {
-        userId: "user-id",
+        userId: "user-id", // The user ID to view all backup codes.
     },
 });
 ```

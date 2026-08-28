@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/organization
 title: "Organization"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 The organization plugin allows you to manage your organization's members and teams.
@@ -72,14 +72,12 @@ POST/organization/create
 
 ```
 const metadata = { someKey: "someValue" };
-
 const { data, error } = await authClient.organization.create({
-    name: "My Organization", // required
-    slug: "my-org", // required
-    logo: "https://example.com/logo.png",
-    metadata,
-    userId: "some_user_id",
-    keepCurrentActiveOrganization: false,
+    name: "My Organization", // required, The organization name.
+    slug: "my-org", // required, The organization slug.
+    logo: "https://example.com/logo.png", // The organization logo.
+    metadata, // The metadata of the organization.
+    keepCurrentActiveOrganization: false, // Whether to keep the current active organization active after creating a new one.
 });
 ```
 
@@ -100,10 +98,6 @@ The organization logo.
 `metadata` Record<string, any>
 
 The metadata of the organization.
-
-`userId` string
-
-The user ID of the organization creator. @serverOnly - This is ignored if session headers are provided.
 
 `keepCurrentActiveOrganization` boolean
 
@@ -138,7 +132,7 @@ POST/organization/check-slug
 
 ```
 const { data, error } = await authClient.organization.checkSlug({
-    slug: "my-org", // required
+    slug: "my-org", // required, The organization slug to check.
 });
 ```
 
@@ -562,8 +556,8 @@ POST/organization/set-active
 
 ```
 const { data, error } = await authClient.organization.setActive({
-    organizationId: "org-id",
-    organizationSlug: "org-slug",
+    organizationId: "org-id", // The organization ID to set as active. It can be null to unset the active organization.
+    organizationSlug: "org-slug", // The organization slug to set as active. It can be null to unset the active organization if organizationId is not provided.
 });
 ```
 
@@ -636,8 +630,8 @@ GET/organization/get-organization
 ```
 const { data, error } = await authClient.organization.getOrganization({
     query: {
-        organizationId: "org-id",
-        organizationSlug: "org-slug",
+        organizationId: "org-id", // The organization ID to get. By default, it will use the active organization.
+        organizationSlug: "org-slug", // The organization slug to get.
     },
 });
 ```
@@ -661,9 +655,9 @@ GET/organization/get-full-organization
 ```
 const { data, error } = await authClient.organization.getFullOrganization({
     query: {
-        organizationId: "org-id",
-        organizationSlug: "org-slug",
-        membersLimit: 100,
+        organizationId: "org-id", // The organization ID to get. By default, it will use the active organization.
+        organizationSlug: "org-slug", // The organization slug to get.
+        membersLimit: 100, // The limit of members to get. By default, it uses the membershipLimit option which defaults to 100.
     },
 });
 ```
@@ -690,13 +684,13 @@ POST/organization/update
 
 ```
 const { data, error } = await authClient.organization.update({
-    data: { // required
-        name: "updated-name",
-        slug: "updated-slug",
-        logo: "new-logo.url",
-        metadata: { customerId: "test" },
+    data: { // required, A partial list of data to update the organization.
+        name: "updated-name", // The name of the organization.
+        slug: "updated-slug", // The slug of the organization.
+        logo: "new-logo.url", // The logo of the organization.
+        metadata: { customerId: "test" }, // The metadata of the organization.
     },
-    organizationId: "org-id",
+    organizationId: "org-id", // The organization ID. to update.
 });
 ```
 
@@ -734,7 +728,7 @@ POST/organization/delete
 
 ```
 const { data, error } = await authClient.organization.delete({
-    organizationId: "org-id", // required
+    organizationId: "org-id", // required, The organization ID to delete.
 });
 ```
 
@@ -811,11 +805,11 @@ POST/organization/invite-member
 
 ```
 const { data, error } = await authClient.organization.inviteMember({
-    email: "example@gmail.com", // required
-    role: "member", // required
-    organizationId: "org-id",
-    resend: true,
-    teamId: "team-id",
+    email: "example@gmail.com", // required, The email address of the user to invite.
+    role: "member", // required, The role(s) to assign to the user. It can be \`admin\`, \`member\`, \`owner\`
+    organizationId: "org-id", // The organization ID to invite the user to. Defaults to the active organization.
+    resend: true, // Resend the invitation email, if the user is already invited.
+    teamId: "team-id", // The team ID to invite the user to.
 });
 ```
 
@@ -851,7 +845,7 @@ POST/organization/accept-invitation
 
 ```
 const { data, error } = await authClient.organization.acceptInvitation({
-    invitationId: "invitation-id", // required
+    invitationId: "invitation-id", // required, The ID of the invitation to accept.
 });
 ```
 
@@ -893,7 +887,7 @@ POST/organization/cancel-invitation
 
 ```
 await authClient.organization.cancelInvitation({
-    invitationId: "invitation-id", // required
+    invitationId: "invitation-id", // required, The ID of the invitation to cancel.
 });
 ```
 
@@ -911,7 +905,7 @@ POST/organization/reject-invitation
 
 ```
 await authClient.organization.rejectInvitation({
-    invitationId: "invitation-id", // required
+    invitationId: "invitation-id", // required, The ID of the invitation to reject.
 });
 ```
 
@@ -930,7 +924,7 @@ GET/organization/get-invitation
 ```
 const { data, error } = await authClient.organization.getInvitation({
     query: {
-        id: "invitation-id", // required
+        id: "invitation-id", // required, The ID of the invitation to get.
     },
 });
 ```
@@ -950,7 +944,7 @@ GET/organization/list-invitations
 ```
 const { data, error } = await authClient.organization.listInvitations({
     query: {
-        organizationId: "organization-id",
+        organizationId: "organization-id", // An optional ID of the organization to list invitations for. If not provided, will default to the user's active organization.
     },
 });
 ```
@@ -996,14 +990,14 @@ GET/organization/list-members
 ```
 const { data, error } = await authClient.organization.listMembers({
     query: {
-        organizationId: "organization-id",
-        limit: 100,
-        offset: 0,
-        sortBy: "createdAt",
-        sortDirection: "desc",
-        filterField: "createdAt",
-        filterOperator: "eq",
-        filterValue: "value",
+        organizationId: "organization-id", // An optional organization ID to list members for. If not provided, will default to the user's active organization.
+        limit: 100, // The limit of members to return.
+        offset: 0, // The offset to start from.
+        sortBy: "createdAt", // The field to sort by.
+        sortDirection: "desc", // The direction to sort by.
+        filterField: "createdAt", // The field to filter by.
+        filterOperator: "eq", // The operator to filter by.
+        filterValue: "value", // The value to filter by.
     },
 });
 ```
@@ -1050,8 +1044,8 @@ POST/organization/remove-member
 
 ```
 const { data, error } = await authClient.organization.removeMember({
-    memberIdOrEmail: "user@example.com", // required
-    organizationId: "org-id",
+    memberIdOrEmail: "user@example.com", // required, The ID or email of the member to remove.
+    organizationId: "org-id", // The ID of the organization to remove the member from. If not provided, the active organization will be used.
 });
 ```
 
@@ -1073,9 +1067,9 @@ POST/organization/update-member-role
 
 ```
 await authClient.organization.updateMemberRole({
-    role: ["admin", "sale"], // required
-    memberId: "member-id", // required
-    organizationId: "organization-id",
+    role: ["admin", "sale"], // required, The new role to be applied. This can be a string or array of strings representing the roles.
+    memberId: "member-id", // required, The member id to apply the role update to.
+    organizationId: "organization-id", // An optional organization ID which the member is a part of to apply the role update. If not provided, you must provide session headers to get the active organization.
 });
 ```
 
@@ -1120,10 +1114,10 @@ If you want to add a member directly to an organization without sending an invit
 ```
 const data = await auth.api.addMember({
     body: {
-        userId: "user-id",
-        role: ["admin", "sale"], // required
-        organizationId: "org-id",
-        teamId: "team-id",
+        userId: "user-id", // The user ID which represents the user to be added as a member. If \`null\` is provided, then it's expected to provide session headers.
+        role: ["admin", "sale"], // required, The role(s) to assign to the new member.
+        organizationId: "org-id", // An optional organization ID to pass. If not provided, will default to the user's active organization.
+        teamId: "team-id", // An optional team ID to add the member to.
     },
 });
 ```
@@ -1154,7 +1148,7 @@ POST/organization/leave
 
 ```
 await authClient.organization.leave({
-    organizationId: "organization-id", // required
+    organizationId: "organization-id", // required, The organization ID for the member to leave.
 });
 ```
 
@@ -1443,11 +1437,10 @@ POST/organization/create-role
 const permission = {
   project: ["create", "update", "delete"]
 }
-
 await authClient.organization.createRole({
-    role: "my-unique-role", // required
-    permission: permission,
-    organizationId: "organization-id",
+    role: "my-unique-role", // required, A unique name of the role to create.
+    permission: permission, // The permissions to assign to the role.
+    organizationId: "organization-id", // The organization ID which the role will be created in. Defaults to the active organization.
 });
 ```
 
@@ -1475,9 +1468,9 @@ POST/organization/delete-role
 
 ```
 await authClient.organization.deleteRole({
-    roleName: "my-role",
-    roleId: "role-id",
-    organizationId: "organization-id",
+    roleName: "my-role", // The name of the role to delete. Alternatively, you can pass a \`roleId\` parameter instead.
+    roleId: "role-id", // The id of the role to delete. Alternatively, you can pass a \`roleName\` parameter instead.
+    organizationId: "organization-id", // The organization ID which the role will be deleted in. Defaults to the active organization.
 });
 ```
 
@@ -1504,7 +1497,7 @@ GET/organization/list-roles
 ```
 const { data: roles, error } = await authClient.organization.listRoles({
     query: {
-        organizationId: "organization-id",
+        organizationId: "organization-id", // The organization ID which the roles are under to list. Defaults to the user's active organization.
     },
 });
 ```
@@ -1524,9 +1517,9 @@ GET/organization/get-role
 ```
 const { data: role, error } = await authClient.organization.getRole({
     query: {
-        roleName: "my-role",
-        roleId: "role-id",
-        organizationId: "organization-id",
+        roleName: "my-role", // The name of the role to get. Alternatively, you can pass a \`roleId\` parameter instead.
+        roleId: "role-id", // The id of the role to get. Alternatively, you can pass a \`roleName\` parameter instead.
+        organizationId: "organization-id", // The organization ID from which the role will be retrieved. Defaults to the active organization.
     },
 });
 ```
@@ -1553,12 +1546,12 @@ POST/organization/update-role
 
 ```
 const { data: updatedRole, error } = await authClient.organization.updateRole({
-    roleName: "my-role",
-    roleId: "role-id",
-    organizationId: "organization-id",
-    data: { // required
-        permission: { project: ["create", "update", "delete"] },
-        roleName: "my-new-role",
+    roleName: "my-role", // The name of the role to update. Alternatively, you can pass a \`roleId\` parameter instead.
+    roleId: "role-id", // The id of the role to update. Alternatively, you can pass a \`roleName\` parameter instead.
+    organizationId: "organization-id", // The organization ID which the role will be updated in. Defaults to the active organization.
+    data: { // required, The data which will be updated
+        permission: { project: ["create", "update", "delete"] }, // Optionally update the permissions of the role.
+        roleName: "my-new-role", // Optionally update the name of the role.
     },
 });
 ```
@@ -1745,8 +1738,8 @@ POST/organization/create-team
 
 ```
 const { data, error } = await authClient.organization.createTeam({
-    name: "my-team", // required
-    organizationId: "organization-id",
+    name: "my-team", // required, The name of the team.
+    organizationId: "organization-id", // The organization ID which the team will be created in. Defaults to the active organization.
 });
 ```
 
@@ -1769,7 +1762,7 @@ GET/organization/list-teams
 ```
 const { data, error } = await authClient.organization.listTeams({
     query: {
-        organizationId: "organization-id",
+        organizationId: "organization-id", // The organization ID which the teams are under to list. Defaults to the user's active organization.
     },
 });
 ```
@@ -1788,12 +1781,12 @@ POST/organization/update-team
 
 ```
 const { data, error } = await authClient.organization.updateTeam({
-    teamId: "team-id", // required
-    data: { // required
-        name: "My new team name",
-        organizationId: "My new organization ID for this team",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+    teamId: "team-id", // required, The ID of the team to be updated.
+    data: { // required, A partial object containing options for you to update.
+        name: "My new team name", // The name of the team to be updated.
+        organizationId: "My new organization ID for this team", // The organization ID which the team falls under.
+        createdAt: new Date(), // The timestamp of when the team was created.
+        updatedAt: new Date(), // The timestamp of when the team was last updated.
     },
 });
 ```
@@ -1832,8 +1825,8 @@ POST/organization/remove-team
 
 ```
 const { data, error } = await authClient.organization.removeTeam({
-    teamId: "team-id", // required
-    organizationId: "organization-id",
+    teamId: "team-id", // required, The team ID of the team to remove.
+    organizationId: "organization-id", // The organization ID which the team falls under. If not provided, it will default to the user's active organization.
 });
 ```
 
@@ -1855,7 +1848,7 @@ POST/organization/set-active-team
 
 ```
 const { data, error } = await authClient.organization.setActiveTeam({
-    teamId: "team-id",
+    teamId: "team-id", // The team ID of the team to set as the current active team. The team must belong to the current active organization.
 });
 ```
 
@@ -1877,8 +1870,8 @@ GET/organization/list-user-teams
 ```
 const { data, error } = await authClient.organization.listUserTeams({
     query: {
-        userId,
-        organizationId,
+        userId, // The user ID to list teams for. Defaults to the current session user.
+        organizationId, // The organization ID to scope the team list to. When omitted on a self-query, teams are returned across every organization the user belongs to. When querying another user, falls back to the session's active organization.
     },
 });
 ```
@@ -1902,7 +1895,7 @@ POST/organization/list-team-members
 ```
 const { data, error } = await authClient.organization.listTeamMembers({
     query: {
-        teamId: "team-id",
+        teamId: "team-id", // The team whose members we should return. If this is not provided the members of the current active team get returned.
     },
 });
 ```
@@ -1921,8 +1914,8 @@ POST/organization/add-team-member
 
 ```
 const { data, error } = await authClient.organization.addTeamMember({
-    teamId: "team-id", // required
-    userId: "user-id", // required
+    teamId: "team-id", // required, The team the user should be a member of.
+    userId: "user-id", // required, The user ID which represents the user to be added as a member.
 });
 ```
 
@@ -1944,8 +1937,8 @@ POST/organization/remove-team-member
 
 ```
 const { data, error } = await authClient.organization.removeTeamMember({
-    teamId: "team-id", // required
-    userId: "user-id", // required
+    teamId: "team-id", // required, The team the user should be removed from.
+    userId: "user-id", // required, The user which should be removed from the team.
 });
 ```
 

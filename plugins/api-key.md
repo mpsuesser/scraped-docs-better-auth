@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/api-key
 title: "Api Key"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 API Key plugin for Better Auth.
@@ -100,12 +100,12 @@ You can adjust more specific API key configurations by using the server method i
 
 ```
 const { data, error } = await authClient.apiKey.create({
-    configId,
-    name: 'project-api-key',
-    expiresIn: 60 * 60 * 24 * 7,
-    organizationId: "org-id",
-    prefix: 'project-api-key',
-    metadata: { someKey: 'someValue' },
+    configId, // The configuration ID to use. If not provided, the default configuration is used.
+    name: 'project-api-key', // Name of the Api Key.
+    expiresIn: 60 * 60 * 24 * 7, // Expiration time of the Api Key in seconds.
+    organizationId: "org-id", // Organization Id that the Api Key belongs to. Required for organization-owned keys (when config has \`references: "organization"\`).
+    prefix: 'project-api-key', // Prefix of the Api Key.
+    metadata: { someKey: 'someValue' }, // Metadata of the Api Key.
 });
 ```
 
@@ -147,12 +147,11 @@ It'll return the `ApiKey` object which includes the `key` value for you to use. 
 const permissions = { // Permissions to check are optional.
   projects: ["read", "read-write"],
 }
-
 const data = await auth.api.verifyApiKey({
     body: {
-        configId,
-        key: "your_api_key_here", // required
-        permissions,
+        configId, // Configuration ID to scope verification to. When omitted, the key is validated against its own configuration.
+        key: "your_api_key_here", // required, The key to verify.
+        permissions, // The permissions to verify. Optional.
     },
 });
 ```
@@ -190,8 +189,8 @@ GET/api-key/get
 ```
 const { data, error } = await authClient.apiKey.get({
     query: {
-        configId,
-        id: "some-api-key-id", // required
+        configId, // The configuration ID to use for the API key lookup. If not provided, the default configuration is used.
+        id: "some-api-key-id", // required, The id of the Api Key.
     },
 });
 ```
@@ -222,9 +221,9 @@ POST/api-key/update
 
 ```
 const { data, error } = await authClient.apiKey.update({
-    configId,
-    keyId: "some-api-key-id", // required
-    name: "some-api-key-name",
+    configId, // The configuration ID to use for the API key lookup. If not provided, the default configuration is used.
+    keyId: "some-api-key-id", // required, The id of the Api Key to update.
+    name: "some-api-key-name", // The name of the key.
 });
 ```
 
@@ -258,8 +257,8 @@ This endpoint is attempting to delete the API key from the perspective of the us
 
 ```
 const { data, error } = await authClient.apiKey.delete({
-    configId,
-    keyId: "some-api-key-id", // required
+    configId, // The configuration ID to use for the API key lookup. If not provided, the default configuration is used.
+    keyId: "some-api-key-id", // required, The id of the Api Key to delete.
 });
 ```
 
@@ -292,12 +291,12 @@ GET/api-key/list
 ```
 const { data, error } = await authClient.apiKey.list({
     query: {
-        configId,
-        organizationId,
-        limit,
-        offset,
-        sortBy,
-        sortDirection,
+        configId, // Filter by configuration ID. If not provided, returns keys from all configurations.
+        organizationId, // Organization ID to list keys for. If provided, returns organization-owned keys. If not provided, returns user-owned keys for the current session user.
+        limit, // The number of API keys to return.
+        offset, // The offset to start from (for pagination).
+        sortBy, // The field to sort by (e.g., "createdAt", "name", "expiresAt").
+        sortDirection, // The direction to sort by.
     },
 });
 ```

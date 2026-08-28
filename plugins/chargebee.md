@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/chargebee
 title: "Chargebee"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 Chargebee plugin for Better Auth to manage subscriptions and payments.
@@ -245,15 +245,15 @@ POST/subscription/create
 
 ```
 const { data, error } = await authClient.subscription.create({
-    itemPriceId: "pro-USD-Monthly", // required
-    referenceId: "123",
-    metadata,
-    customerType,
-    seats: 1,
-    successUrl, // required
-    cancelUrl, // required
-    disableRedirect: false, // required
-    trialEnd,
+    itemPriceId: "pro-USD-Monthly", // required, The item price ID(s) from Chargebee. Single string or array for multi-item subscriptions.
+    referenceId: "123", // Reference id of the subscription. Defaults based on customerType.
+    metadata, // Additional metadata to store with the subscription.
+    customerType, // The type of customer for billing. (Default: "user")
+    seats: 1, // Number of seats (if applicable).
+    successUrl, // required, The URL to which the user is sent when payment or setup is complete.
+    cancelUrl, // required, If set, customers are directed here if they cancel.
+    disableRedirect: false, // required, Disable redirect after successful subscription.
+    trialEnd, // Unix timestamp for when the trial should end.
 });
 ```
 
@@ -315,16 +315,16 @@ POST/subscription/update
 
 ```
 const { data, error } = await authClient.subscription.update({
-    itemPriceId: "pro-USD-Monthly", // required
-    referenceId: "123",
-    subscriptionId: "sub_123",
-    metadata,
-    customerType,
-    seats: 1,
-    successUrl, // required
-    cancelUrl, // required
-    returnUrl,
-    disableRedirect: false, // required
+    itemPriceId: "pro-USD-Monthly", // required, The item price ID(s) from Chargebee. Single string or array for multi-item subscriptions.
+    referenceId: "123", // Reference id of the subscription. Defaults based on customerType.
+    subscriptionId: "sub_123", // The id of the subscription to update.
+    metadata, // Additional metadata to store with the subscription.
+    customerType, // The type of customer for billing. (Default: "user")
+    seats: 1, // Number of seats to update to (if applicable).
+    successUrl, // required, The URL to which the user is sent when payment or setup is complete.
+    cancelUrl, // required, If set, customers are directed here if they cancel.
+    returnUrl, // The URL to return to from the portal.
+    disableRedirect: false, // required, Disable redirect after successful update.
 });
 ```
 
@@ -387,8 +387,8 @@ GET/subscription/list
 ```
 const { data, error } = await authClient.subscription.list({
     query: {
-        referenceId,
-        customerType,
+        referenceId, // Reference id of the subscription. Defaults based on customerType.
+        customerType, // The type of customer for billing. (Default: "user")
     },
 });
 ```
@@ -424,10 +424,10 @@ POST/subscription/cancel
 
 ```
 const { data, error } = await authClient.subscription.cancel({
-    referenceId: 'org_123',
-    customerType,
-    subscriptionId: 'sub_123',
-    returnUrl: '/account', // required
+    referenceId: 'org_123', // Reference id of the subscription to cancel. Defaults based on customerType.
+    customerType, // The type of customer for billing. (Default: "user")
+    subscriptionId: 'sub_123', // The id of the subscription to cancel.
+    returnUrl: '/account', // required, URL to take customers to when they click on the billing portal's link to return to your website.
 });
 ```
 
@@ -457,10 +457,10 @@ POST/subscription/portal
 
 ```
 const { data, error } = await authClient.subscription.portal({
-    referenceId: 'org_123',
-    customerType,
-    returnUrl: '/account', // required
-    disableRedirect: false,
+    referenceId: 'org_123', // Reference id of the customer. Defaults based on customerType.
+    customerType, // The type of customer for billing. (Default: "user")
+    returnUrl: '/account', // required, URL to redirect customers to after they complete their portal session.
+    disableRedirect: false, // Disable redirect after opening portal.
 });
 ```
 

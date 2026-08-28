@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/admin
 title: "Admin"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 Admin plugin for Better Auth
@@ -93,11 +93,11 @@ POST/admin/create-user
 
 ```
 const { data: newUser, error } = await authClient.admin.createUser({
-    email: "user@example.com", // required
-    password: "some-secure-password", // required
-    name: "James Smith", // required
-    role: "user",
-    data: { customField: "customValue" },
+    email: "user@example.com", // required, The email of the user.
+    password: "some-secure-password", // required, The password of the user.
+    name: "James Smith", // required, The name of the user.
+    role: "user", // A string or array of strings representing the roles to apply to the new user.
+    data: { customField: "customValue" }, // Extra fields for the user. Including custom additional fields.
 });
 ```
 
@@ -136,16 +136,16 @@ All properties are optional to configure. By default, 100 rows are returned, you
 ```
 const { data: users, error } = await authClient.admin.listUsers({
     query: {
-        searchValue: "some name",
-        searchField: "name",
-        searchOperator: "contains",
-        limit: 100,
-        offset: 100,
-        sortBy: "name",
-        sortDirection: "desc",
-        filterField: "email",
-        filterValue: "hello@example.com",
-        filterOperator: "eq",
+        searchValue: "some name", // The value to search for.
+        searchField: "name", // The field to search in, defaults to email. Can be \`email\` or \`name\`.
+        searchOperator: "contains", // The operator to use for the search. Can be \`contains\`, \`starts_with\` or \`ends_with\`.
+        limit: 100, // The number of users to return. Defaults to 100.
+        offset: 100, // The offset to start from.
+        sortBy: "name", // The field to sort by.
+        sortDirection: "desc", // The direction to sort by.
+        filterField: "email", // The field to filter by.
+        filterValue: "hello@example.com", // The value to filter by.
+        filterOperator: "eq", // The operator to use for the filter.
     },
 });
 ```
@@ -248,7 +248,7 @@ GET/admin/get-user
 ```
 const { data, error } = await authClient.admin.getUser({
     query: {
-        id: "user-id", // required
+        id: "user-id", // required, The id of the user you want to fetch.
     },
 });
 ```
@@ -282,8 +282,8 @@ POST/admin/set-role
 
 ```
 const { data, error } = await authClient.admin.setRole({
-    userId: "user-id",
-    role: "admin", // required
+    userId: "user-id", // The user id which you want to set the role for.
+    role: "admin", // required, The role to set, this can be a string or an array of strings.
 });
 ```
 
@@ -305,8 +305,8 @@ POST/admin/set-user-password
 
 ```
 const { data, error } = await authClient.admin.setUserPassword({
-    newPassword: 'new-password', // required
-    userId: 'user-id', // required
+    newPassword: 'new-password', // required, The new password.
+    userId: 'user-id', // required, The user id which you want to set the password for.
 });
 ```
 
@@ -328,8 +328,8 @@ POST/admin/update-user
 
 ```
 const { data, error } = await authClient.admin.updateUser({
-    userId: "user-id", // required
-    data: { name: "John Doe" }, // required
+    userId: "user-id", // required, The user id which you want to update.
+    data: { name: "John Doe" }, // required, The data to update.
 });
 ```
 
@@ -351,9 +351,9 @@ POST/admin/ban-user
 
 ```
 await authClient.admin.banUser({
-    userId: "user-id", // required
-    banReason: "Spamming",
-    banExpiresIn: 60 * 60 * 24 * 7,
+    userId: "user-id", // required, The user id which you want to ban.
+    banReason: "Spamming", // The reason for the ban.
+    banExpiresIn: 60 * 60 * 24 * 7, // The number of seconds until the ban expires. If not provided, the ban will never expire.
 });
 ```
 
@@ -379,7 +379,7 @@ POST/admin/unban-user
 
 ```
 await authClient.admin.unbanUser({
-    userId: "user-id", // required
+    userId: "user-id", // required, The user id which you want to unban.
 });
 ```
 
@@ -397,7 +397,7 @@ POST/admin/list-user-sessions
 
 ```
 const { data, error } = await authClient.admin.listUserSessions({
-    userId: "user-id", // required
+    userId: "user-id", // required, The user id.
 });
 ```
 
@@ -415,7 +415,7 @@ POST/admin/revoke-user-session
 
 ```
 const { data, error } = await authClient.admin.revokeUserSession({
-    sessionToken: "session_token_here", // required
+    sessionToken: "session_token_here", // required, The session token which you want to revoke.
 });
 ```
 
@@ -433,7 +433,7 @@ POST/admin/revoke-user-sessions
 
 ```
 const { data, error } = await authClient.admin.revokeUserSessions({
-    userId: "user-id", // required
+    userId: "user-id", // required, The user id which you want to revoke all sessions for.
 });
 ```
 
@@ -451,7 +451,7 @@ POST/admin/impersonate-user
 
 ```
 const { data, error } = await authClient.admin.impersonateUser({
-    userId: "user-id", // required
+    userId: "user-id", // required, The user id which you want to impersonate.
 });
 ```
 
@@ -488,7 +488,7 @@ POST/admin/remove-user
 
 ```
 const { data: deletedUser, error } = await authClient.admin.removeUser({
-    userId: "user-id", // required
+    userId: "user-id", // required, The user id which you want to remove.
 });
 ```
 
@@ -641,9 +641,9 @@ POST/admin/has-permission
 
 ```
 const { data, error } = await authClient.admin.hasPermission({
-    userId: "user-id",
-    permission: { "project": ["create", "update"] } /* Must use this, or permissions */,
-    permissions,
+    userId: "user-id", // The user id which you want to check the permissions for.
+    permission: { "project": ["create", "update"] } /* Must use this, or permissions */, // Optionally check if a single permission is granted. Must use this, or permissions.
+    permissions, // Optionally check if multiple permissions are granted. Must use this, or permission.
 });
 ```
 

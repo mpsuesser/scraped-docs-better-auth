@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/email-otp
 title: "Email Otp"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 # Email OTP (/docs/plugins/email-otp)
@@ -57,13 +57,14 @@ export const authClient = createAuthClient({
 ## ### Send an OTP
 Use the `sendVerificationOtp()` method to send an OTP to the user's email address.
 
+**Endpoint:** `POST /email-otp/send-verification-otp`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
-    email: user@example.com,
-    type: sign-in,
+    email: "user@example.com", // required, Email address to send the OTP.
+    type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
 });
 ```
 
@@ -72,9 +73,9 @@ const { data, error } = await authClient.emailOtp.sendVerificationOtp({
 ```ts
 const data = await auth.api.sendVerificationOTP({
     body: {
-        email: user@example.com,
-        type: sign-in,
-    }
+        email: "user@example.com", // required, Email address to send the OTP.
+        type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+    },
 });
 ```
 
@@ -82,30 +83,29 @@ const data = await auth.api.sendVerificationOTP({
 
 ```ts
 type sendVerificationOTP = {
-      /**
-       * Email address to send the OTP. 
-       */
-      email: string = "user@example.com"
-      /**
-       * Type of the OTP. `sign-in`, `email-verification`, or `forget-password`. 
-       */
-      type: "email-verification" | "sign-in" | "forget-password" = "sign-in"
-  
+    /**
+     * Email address to send the OTP. 
+     */
+    email: string = "user@example.com"
+    /**
+     * Type of the OTP. `sign-in`, `email-verification`, or `forget-password`. 
+     */
+    type: "email-verification" | "sign-in" | "forget-password" = "sign-in"
 }
 ```
-
 
 ## ### Check an OTP (optional)
 Use the `checkVerificationOtp()` method to check if an OTP is valid.
 
+**Endpoint:** `POST /email-otp/check-verification-otp`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.checkVerificationOtp({
-    email: user@example.com,
-    type: sign-in,
-    otp: 123456,
+    email: "user@example.com", // required, Email address to send the OTP.
+    type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+    otp: "123456", // required, OTP sent to the email.
 });
 ```
 
@@ -114,10 +114,10 @@ const { data, error } = await authClient.emailOtp.checkVerificationOtp({
 ```ts
 const data = await auth.api.checkVerificationOTP({
     body: {
-        email: user@example.com,
-        type: sign-in,
-        otp: 123456,
-    }
+        email: "user@example.com", // required, Email address to send the OTP.
+        type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+        otp: "123456", // required, OTP sent to the email.
+    },
 });
 ```
 
@@ -125,33 +125,32 @@ const data = await auth.api.checkVerificationOTP({
 
 ```ts
 type checkVerificationOTP = {
-      /**
-       * Email address to send the OTP. 
-       */
-      email: string = "user@example.com"
-      /**
-       * Type of the OTP. `sign-in`, `email-verification`, or `forget-password`. 
-       */
-      type: "email-verification" | "sign-in" | "forget-password" = "sign-in"
-      /**
-       * OTP sent to the email. 
-       */
-      otp: string = "123456"
-  
+    /**
+     * Email address to send the OTP. 
+     */
+    email: string = "user@example.com"
+    /**
+     * Type of the OTP. `sign-in`, `email-verification`, or `forget-password`. 
+     */
+    type: "email-verification" | "sign-in" | "forget-password" = "sign-in"
+    /**
+     * OTP sent to the email. 
+     */
+    otp: string = "123456"
 }
 ```
-
 
 ## ### Sign In with OTP
 To sign in with OTP, use the `sendVerificationOtp()` method to send a "sign-in" OTP to the user's email address.
 
+**Endpoint:** `POST /email-otp/send-verification-otp`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
-    email: user@example.com,
-    type: sign-in,
+    email: "user@example.com", // required, Email address to send the OTP.
+    type: "sign-in", // required, Type of the OTP.
 });
 ```
 
@@ -160,9 +159,9 @@ const { data, error } = await authClient.emailOtp.sendVerificationOtp({
 ```ts
 const data = await auth.api.sendVerificationOTP({
     body: {
-        email: user@example.com,
-        type: sign-in,
-    }
+        email: "user@example.com", // required, Email address to send the OTP.
+        type: "sign-in", // required, Type of the OTP.
+    },
 });
 ```
 
@@ -170,30 +169,29 @@ const data = await auth.api.sendVerificationOTP({
 
 ```ts
 type sendVerificationOTP = {
-      /**
-       * Email address to send the OTP. 
-       */
-      email: string = "user@example.com"
-      /**
-       * Type of the OTP.
-       */
-      type: "sign-in" = "sign-in"
-  
+    /**
+     * Email address to send the OTP. 
+     */
+    email: string = "user@example.com"
+    /**
+     * Type of the OTP.
+     */
+    type: "sign-in" = "sign-in"
 }
 ```
 
-
 Once the user provides the OTP, you can sign in the user using the `signIn.emailOtp()` method.
 
+**Endpoint:** `POST /sign-in/email-otp`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.signIn.emailOtp({
-    email: user@example.com,
-    otp: 123456,
-    name: John Doe, // optional
-    image: https://example.com/image.png, // optional
+    email: "user@example.com", // required, Email address to sign in.
+    otp: "123456", // required, OTP sent to the email.
+    name: "John Doe", // User display name. Only used when the user is registering for the first time.
+    image: "https://example.com/image.png", // User profile image URL. Only used when the user is registering for the first time.
 });
 ```
 
@@ -202,11 +200,11 @@ const { data, error } = await authClient.signIn.emailOtp({
 ```ts
 const data = await auth.api.signInEmailOTP({
     body: {
-        email: user@example.com,
-        otp: 123456,
-        name: John Doe, // optional
-        image: https://example.com/image.png, // optional
-    }
+        email: "user@example.com", // required, Email address to sign in.
+        otp: "123456", // required, OTP sent to the email.
+        name: "John Doe", // User display name. Only used when the user is registering for the first time.
+        image: "https://example.com/image.png", // User profile image URL. Only used when the user is registering for the first time.
+    },
 });
 ```
 
@@ -214,26 +212,24 @@ const data = await auth.api.signInEmailOTP({
 
 ```ts
 type signInEmailOTP = {
-      /**
-       * Email address to sign in.
-       */
-      email: string = "user@example.com"
-      /**
-       * OTP sent to the email.
-       */
-      otp: string = "123456"
-      /**
-       * User display name. Only used when the user is registering for the first time.
-       */
-      name?: string = "John Doe"
-      /**
-       * User profile image URL. Only used when the user is registering for the first time.
-       */
-      image?: string = "https://example.com/image.png"
-  
+    /**
+     * Email address to sign in.
+     */
+    email: string = "user@example.com"
+    /**
+     * OTP sent to the email.
+     */
+    otp: string = "123456"
+    /**
+     * User display name. Only used when the user is registering for the first time.
+     */
+    name?: string = "John Doe"
+    /**
+     * User profile image URL. Only used when the user is registering for the first time.
+     */
+    image?: string = "https://example.com/image.png"
 }
 ```
-
 
 > If the user is not registered, they'll be automatically registered. Configured [additional fields](/docs/concepts/typescript#additional-fields) are also accepted for new users. To prevent automatic sign-up, pass `disableSignUp` as `true` in the [options](#options).
 
@@ -242,13 +238,14 @@ type signInEmailOTP = {
 ## ### Verify Email with OTP
 To verify the user's email address with OTP, use the `sendVerificationOtp()` method to send an "email-verification" OTP to the user's email address.
 
+**Endpoint:** `POST /email-otp/send-verification-otp`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
-    email: user@example.com,
-    type: email-verification,
+    email: "user@example.com", // required, Email address to send the OTP.
+    type: "email-verification", // required, Type of the OTP.
 });
 ```
 
@@ -257,9 +254,9 @@ const { data, error } = await authClient.emailOtp.sendVerificationOtp({
 ```ts
 const data = await auth.api.sendVerificationOTP({
     body: {
-        email: user@example.com,
-        type: email-verification,
-    }
+        email: "user@example.com", // required, Email address to send the OTP.
+        type: "email-verification", // required, Type of the OTP.
+    },
 });
 ```
 
@@ -267,28 +264,27 @@ const data = await auth.api.sendVerificationOTP({
 
 ```ts
 type sendVerificationOTP = {
-      /**
-       * Email address to send the OTP. 
-       */
-      email: string = "user@example.com"
-      /**
-       * Type of the OTP.
-       */
-      type: "email-verification" = "email-verification"
-  
+    /**
+     * Email address to send the OTP. 
+     */
+    email: string = "user@example.com"
+    /**
+     * Type of the OTP.
+     */
+    type: "email-verification" = "email-verification"
 }
 ```
 
-
 Once the user provides the OTP, use the `verifyEmail()` method to complete email verification.
 
+**Endpoint:** `POST /email-otp/verify-email`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.verifyEmail({
-    email: user@example.com,
-    otp: 123456,
+    email: "user@example.com", // required, Email address to verify.
+    otp: "123456", // required, OTP to verify.
 });
 ```
 
@@ -297,9 +293,9 @@ const { data, error } = await authClient.emailOtp.verifyEmail({
 ```ts
 const data = await auth.api.verifyEmailOTP({
     body: {
-        email: user@example.com,
-        otp: 123456,
-    }
+        email: "user@example.com", // required, Email address to verify.
+        otp: "123456", // required, OTP to verify.
+    },
 });
 ```
 
@@ -307,28 +303,27 @@ const data = await auth.api.verifyEmailOTP({
 
 ```ts
 type verifyEmailOTP = {
-      /**
-       * Email address to verify. 
-       */
-      email: string = "user@example.com"
-      /**
-       * OTP to verify. 
-       */
-      otp: string = "123456"
-  
+    /**
+     * Email address to verify. 
+     */
+    email: string = "user@example.com"
+    /**
+     * OTP to verify. 
+     */
+    otp: string = "123456"
 }
 ```
-
 
 ## ### Reset Password with OTP
 To reset the user's password with OTP, use the `emailOtp.requestPasswordReset()` method to send a "forget-password" OTP to the user's email address.
 
+**Endpoint:** `POST /email-otp/request-password-reset`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.requestPasswordReset({
-    email: user@example.com,
+    email: "user@example.com", // required, Email address to send the OTP.
 });
 ```
 
@@ -337,8 +332,8 @@ const { data, error } = await authClient.emailOtp.requestPasswordReset({
 ```ts
 const data = await auth.api.requestPasswordResetEmailOTP({
     body: {
-        email: user@example.com,
-    }
+        email: "user@example.com", // required, Email address to send the OTP.
+    },
 });
 ```
 
@@ -346,27 +341,26 @@ const data = await auth.api.requestPasswordResetEmailOTP({
 
 ```ts
 type requestPasswordResetEmailOTP = {
-      /**
-       * Email address to send the OTP.
-       */
-      email: string = "user@example.com"
-  
+    /**
+     * Email address to send the OTP.
+     */
+    email: string = "user@example.com"
 }
 ```
-
 
 > The `/forget-password/email-otp` endpoint is deprecated. Please use `/email-otp/request-password-reset` instead.
 
 Once the user provides the OTP, use the `checkVerificationOtp()` method to check if it's valid (optional).
 
+**Endpoint:** `POST /email-otp/check-verification-otp`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.checkVerificationOtp({
-    email: user@example.com,
-    type: forget-password,
-    otp: 123456,
+    email: "user@example.com", // required, Email address to send the OTP.
+    type: "forget-password", // required, Type of the OTP.
+    otp: "123456", // required, OTP sent to the email.
 });
 ```
 
@@ -375,10 +369,10 @@ const { data, error } = await authClient.emailOtp.checkVerificationOtp({
 ```ts
 const data = await auth.api.checkVerificationOTP({
     body: {
-        email: user@example.com,
-        type: forget-password,
-        otp: 123456,
-    }
+        email: "user@example.com", // required, Email address to send the OTP.
+        type: "forget-password", // required, Type of the OTP.
+        otp: "123456", // required, OTP sent to the email.
+    },
 });
 ```
 
@@ -386,33 +380,32 @@ const data = await auth.api.checkVerificationOTP({
 
 ```ts
 type checkVerificationOTP = {
-      /**
-       * Email address to send the OTP. 
-       */
-      email: string = "user@example.com"
-      /**
-       * Type of the OTP.
-       */
-      type: "forget-password" = "forget-password"
-      /**
-       * OTP sent to the email. 
-       */
-      otp: string = "123456"
-  
+    /**
+     * Email address to send the OTP. 
+     */
+    email: string = "user@example.com"
+    /**
+     * Type of the OTP.
+     */
+    type: "forget-password" = "forget-password"
+    /**
+     * OTP sent to the email. 
+     */
+    otp: string = "123456"
 }
 ```
 
-
 Then, use the `resetPassword()` method to reset the user's password.
 
+**Endpoint:** `POST /email-otp/reset-password`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.resetPassword({
-    email: user@example.com,
-    otp: 123456,
-    password: new-secure-password,
+    email: "user@example.com", // required, Email address to reset the password.
+    otp: "123456", // required, OTP sent to the email.
+    password: "new-secure-password", // required, New password.
 });
 ```
 
@@ -421,10 +414,10 @@ const { data, error } = await authClient.emailOtp.resetPassword({
 ```ts
 const data = await auth.api.resetPasswordEmailOTP({
     body: {
-        email: user@example.com,
-        otp: 123456,
-        password: new-secure-password,
-    }
+        email: "user@example.com", // required, Email address to reset the password.
+        otp: "123456", // required, OTP sent to the email.
+        password: "new-secure-password", // required, New password.
+    },
 });
 ```
 
@@ -432,22 +425,20 @@ const data = await auth.api.resetPasswordEmailOTP({
 
 ```ts
 type resetPasswordEmailOTP = {
-      /**
-       * Email address to reset the password. 
-       */
-      email: string = "user@example.com"
-      /**
-       * OTP sent to the email. 
-       */
-      otp: string = "123456"
-      /**
-       * New password. 
-       */
-      password: string = "new-secure-password"
-  
+    /**
+     * Email address to reset the password. 
+     */
+    email: string = "user@example.com"
+    /**
+     * OTP sent to the email. 
+     */
+    otp: string = "123456"
+    /**
+     * New password. 
+     */
+    password: string = "new-secure-password"
 }
 ```
-
 
 ## ### Change Email with OTP
 To allow users to change their email with OTP, first enable the `changeEmail` feature, which is disabled by default. Set `changeEmail.enabled` to `true`:
@@ -472,13 +463,14 @@ The email is only updated after the user verifies the new email.
 ## #### Usage
 To change the user's email address with OTP, use the `emailOtp.requestEmailChange()` method to send a "change-email" OTP to the user's new email address.
 
+**Endpoint:** `POST /email-otp/request-email-change`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.requestEmailChange({
-    newEmail: user@example.com,
-    otp: 123456, // optional
+    newEmail: "user@example.com", // required, New email address to send the OTP.
+    otp: "123456", // OTP sent to the current email. This is required when the `changeEmail.verifyCurrentEmail` option is set to `true`.
 });
 ```
 
@@ -487,9 +479,11 @@ const { data, error } = await authClient.emailOtp.requestEmailChange({
 ```ts
 const data = await auth.api.requestEmailChangeEmailOTP({
     body: {
-        newEmail: user@example.com,
-        otp: 123456, // optional
-    }
+        newEmail: "user@example.com", // required, New email address to send the OTP.
+        otp: "123456", // OTP sent to the current email. This is required when the `changeEmail.verifyCurrentEmail` option is set to `true`.
+    },
+    // This endpoint requires session cookies.
+    headers: await headers(),
 });
 ```
 
@@ -497,28 +491,27 @@ const data = await auth.api.requestEmailChangeEmailOTP({
 
 ```ts
 type requestEmailChangeEmailOTP = {
-      /**
-       * New email address to send the OTP.
-       */
-      newEmail: string = "user@example.com"
-      /**
-       * OTP sent to the current email. This is required when the `changeEmail.verifyCurrentEmail` option is set to `true`.
-       */
-      otp?: string = "123456"
-  
+    /**
+     * New email address to send the OTP.
+     */
+    newEmail: string = "user@example.com"
+    /**
+     * OTP sent to the current email. This is required when the `changeEmail.verifyCurrentEmail` option is set to `true`.
+     */
+    otp?: string = "123456"
 }
 ```
 
-
 Once the user provides the OTP, use the `changeEmail()` method to change the user's email address.
 
+**Endpoint:** `POST /email-otp/change-email`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.changeEmail({
-    newEmail: user@example.com,
-    otp: 123456,
+    newEmail: "user@example.com", // required, New email address to change to.
+    otp: "123456", // required, OTP sent to the new email.
 });
 ```
 
@@ -527,9 +520,11 @@ const { data, error } = await authClient.emailOtp.changeEmail({
 ```ts
 const data = await auth.api.changeEmailEmailOTP({
     body: {
-        newEmail: user@example.com,
-        otp: 123456,
-    }
+        newEmail: "user@example.com", // required, New email address to change to.
+        otp: "123456", // required, OTP sent to the new email.
+    },
+    // This endpoint requires session cookies.
+    headers: await headers(),
 });
 ```
 
@@ -537,18 +532,16 @@ const data = await auth.api.changeEmailEmailOTP({
 
 ```ts
 type changeEmailEmailOTP = {
-      /**
-       * New email address to change to. 
-       */
-      newEmail: string = "user@example.com"
-      /**
-       * OTP sent to the new email. 
-       */
-      otp: string = "123456"
-  
+    /**
+     * New email address to change to. 
+     */
+    newEmail: string = "user@example.com"
+    /**
+     * OTP sent to the new email. 
+     */
+    otp: string = "123456"
 }
 ```
-
 
 ## #### Confirming with Current Email
 For added security, you can require users to confirm the change with an OTP sent to their **current** email before
@@ -571,13 +564,14 @@ export const auth = betterAuth({
 
 Before requesting the email change, use the `sendVerificationOtp()` method with type `email-verification` to send an OTP to the user's email address.
 
+**Endpoint:** `POST /email-otp/send-verification-otp`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
-    email: user@example.com,
-    type: email-verification,
+    email: "user@example.com", // required, Email address to send the OTP.
+    type: "email-verification", // required, Type of the OTP. Must be `email-verification` for confirming email change.
 });
 ```
 
@@ -586,9 +580,9 @@ const { data, error } = await authClient.emailOtp.sendVerificationOtp({
 ```ts
 const data = await auth.api.sendVerificationOTP({
     body: {
-        email: user@example.com,
-        type: email-verification,
-    }
+        email: "user@example.com", // required, Email address to send the OTP.
+        type: "email-verification", // required, Type of the OTP. Must be `email-verification` for confirming email change.
+    },
 });
 ```
 
@@ -596,18 +590,16 @@ const data = await auth.api.sendVerificationOTP({
 
 ```ts
 type sendVerificationOTP = {
-      /**
-       * Email address to send the OTP. 
-       */
-      email: string = "user@example.com"
-      /**
-       * Type of the OTP. Must be `email-verification` for confirming email change.
-       */
-      type: string = "email-verification"
-  
+    /**
+     * Email address to send the OTP. 
+     */
+    email: string = "user@example.com"
+    /**
+     * Type of the OTP. Must be `email-verification` for confirming email change.
+     */
+    type: string = "email-verification"
 }
 ```
-
 
 Then, the user can provide the OTP when calling `requestEmailChange()`. The system will first verify the OTP sent to the current email before sending an OTP to the new email.
 

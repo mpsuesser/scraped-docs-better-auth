@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/passkey
 title: "Passkey"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 Passkey
@@ -141,12 +141,12 @@ POST/passkey/add-passkey
 
 ```
 const { data, error } = await authClient.passkey.addPasskey({
-    name: "example-passkey-name",
-    authenticatorAttachment: "cross-platform",
-    extensions,
-    returnWebAuthnResponse,
-    context,
-    createSession,
+    name: "example-passkey-name", // An optional name to label the authenticator account being registered. If not provided, it will default to the user's email address or user ID
+    authenticatorAttachment: "cross-platform", // You can also specify the type of authenticator you want to register. Default behavior allows both platform and cross-platform passkeys
+    extensions, // Optional WebAuthn extensions (e.g., PRF, credProps, largeBlob)
+    returnWebAuthnResponse, // Return WebAuthn response and extension results
+    context, // Optional context for passkey-first registration flows. Forwarded to \`registration.resolveUser\`.
+    createSession, // Create a session after successfully registering the passkey. The response includes the session and user when enabled.
 });
 ```
 
@@ -184,9 +184,9 @@ POST/sign-in/passkey
 
 ```
 const { data, error } = await authClient.signIn.passkey({
-    autoFill: true,
-    extensions,
-    returnWebAuthnResponse,
+    autoFill: true, // Browser autofill, a.k.a. Conditional UI. Read more: https://simplewebauthn.dev/docs/packages/browser#browser-autofill-aka-conditional-ui
+    extensions, // Optional WebAuthn extensions (e.g., PRF, credProps, largeBlob)
+    returnWebAuthnResponse, // Return WebAuthn response and extension results
 });
 ```
 
@@ -309,7 +309,7 @@ POST/passkey/delete-passkey
 
 ```
 const { data, error } = await authClient.passkey.deletePasskey({
-    id: "some-passkey-id", // required
+    id: "some-passkey-id", // required, The ID of the passkey to delete.
 });
 ```
 
@@ -325,8 +325,8 @@ POST/passkey/update-passkey
 
 ```
 const { data, error } = await authClient.passkey.updatePasskey({
-    id: "id of passkey", // required
-    name: "my-new-passkey-name", // required
+    id: "id of passkey", // required, The ID of the passkey which you want to update.
+    name: "my-new-passkey-name", // required, The new name which the passkey will be updated to.
 });
 ```
 

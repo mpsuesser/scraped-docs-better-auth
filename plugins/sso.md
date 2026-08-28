@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/sso
 title: "Sso"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 Integrate Single Sign-On (SSO) with your application.
@@ -141,12 +141,12 @@ Minimal OIDC configuration — endpoints are discovered automatically from the i
 
 ```
 const { data, error } = await authClient.sso.register({
-    providerId: "okta", // required
-    issuer: "https://your-org.okta.com", // required
-    domain: "yourcompany.com", // required
-    oidcConfig: { // required
-        clientId: "your-client-id", // required
-        clientSecret: "your-client-secret", // required
+    providerId: "okta", // required, Unique identifier for the provider. Must not collide with a configured social provider, an \`accountLinking.trustedProviders\` entry, or a reserved built-in id (e.g. \`credential\`). Registration is rejected (422) otherwise, since SSO provider ids share the account-linking provider namespace and a collision could otherwise inherit trust meant for that provider.
+    issuer: "https://your-org.okta.com", // required, The OIDC issuer URL. Discovery document is fetched from \`{issuer}/.well-known/openid-configuration\`
+    domain: "yourcompany.com", // required, Bare email domain, or comma-separated bare email domains, for this provider
+    oidcConfig: { // required, OIDC configuration (most fields are auto-discovered)
+        clientId: "your-client-id", // required, OAuth client ID from your IdP
+        clientSecret: "your-client-secret", // required, OAuth client secret from your IdP
     },
 });
 ```
@@ -538,16 +538,16 @@ POST/sign-in/sso
 
 ```
 const { data, error } = await authClient.signIn.sso({
-    email: "john@example.com",
-    organizationSlug: "example-org",
-    providerId: "example-provider",
-    domain: "example.com",
-    callbackURL: "https://example.com/callback", // required
-    errorCallbackURL: "https://example.com/callback",
-    newUserCallbackURL: "https://example.com/new-user",
-    scopes: ["openid", "email", "profile", "offline_access"],
-    loginHint: "user@example.com",
-    requestSignUp: true,
+    email: "john@example.com", // The email address to sign in with. This is used to identify the issuer to sign in with. It's optional if the issuer is provided.
+    organizationSlug: "example-org", // The slug of the organization to sign in with.
+    providerId: "example-provider", // The ID of the provider to sign in with. This can be provided instead of email or issuer.
+    domain: "example.com", // The domain of the provider.
+    callbackURL: "https://example.com/callback", // required, The URL to redirect to after login.
+    errorCallbackURL: "https://example.com/callback", // The URL to redirect to after login.
+    newUserCallbackURL: "https://example.com/new-user", // The URL to redirect to after login if the user is new.
+    scopes: ["openid", "email", "profile", "offline_access"], // Scopes to request from the provider.
+    loginHint: "user@example.com", // Login hint to send to the identity provider (e.g., email or identifier).
+    requestSignUp: true, // Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider.
 });
 ```
 
@@ -1314,7 +1314,7 @@ POST/sso/verify-domain
 
 ```
 const { data, error } = await authClient.sso.verifyDomain({
-    providerId: "acme-corp", // required
+    providerId: "acme-corp", // required, The provider id
 });
 ```
 
@@ -1334,7 +1334,7 @@ POST/sso/request-domain-verification
 
 ```
 const { data, error } = await authClient.sso.requestDomainVerification({
-    providerId: "acme-corp", // required
+    providerId: "acme-corp", // required, The provider id
 });
 ```
 

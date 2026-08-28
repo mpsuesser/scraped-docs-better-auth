@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/multi-session
 title: "Multi Session"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 # Multi Session (/docs/plugins/multi-session)
@@ -48,37 +48,40 @@ Whenever a user logs in, the plugin will add additional cookie to the browser. T
 ## ### List all device sessions
 To list all active sessions for the current user, you can call the `listDeviceSessions` method.
 
+**Endpoint:** `GET /multi-session/list-device-sessions`
 
 ### Client Side
 
 ```ts
-const { data, error } = await authClient.multiSession.listDeviceSessions({});
+const { data, error } = await authClient.multiSession.listDeviceSessions();
 ```
 
 ### Server Side
 
 ```ts
-const data = await auth.api.listDeviceSessions({});
+const data = await auth.api.listDeviceSessions({
+    // This endpoint requires session cookies.
+    headers: await headers(),
+});
 ```
 
 ### Type Definition
 
 ```ts
 type listDeviceSessions = {
-  
 }
 ```
-
 
 ## ### Set active session
 To set the active session, you can call the `setActive` method.
 
+**Endpoint:** `POST /multi-session/set-active`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.multiSession.setActive({
-    sessionToken: some-session-token,
+    sessionToken: "some-session-token", // required, The session token to set as active.
 });
 ```
 
@@ -87,8 +90,10 @@ const { data, error } = await authClient.multiSession.setActive({
 ```ts
 const data = await auth.api.setActiveSession({
     body: {
-        sessionToken: some-session-token,
-    }
+        sessionToken: "some-session-token", // required, The session token to set as active.
+    },
+    // This endpoint requires session cookies.
+    headers: await headers(),
 });
 ```
 
@@ -96,24 +101,23 @@ const data = await auth.api.setActiveSession({
 
 ```ts
 type setActiveSession = {
-      /**
-       * The session token to set as active. 
-       */
-      sessionToken: string = "some-session-token"
-  
+    /**
+     * The session token to set as active. 
+     */
+    sessionToken: string = "some-session-token"
 }
 ```
-
 
 ## ### Revoke a session
 To revoke a session, you can call the `revoke` method.
 
+**Endpoint:** `POST /multi-session/revoke`
 
 ### Client Side
 
 ```ts
 const { data, error } = await authClient.multiSession.revoke({
-    sessionToken: some-session-token,
+    sessionToken: "some-session-token", // required, The session token to revoke.
 });
 ```
 
@@ -122,8 +126,10 @@ const { data, error } = await authClient.multiSession.revoke({
 ```ts
 const data = await auth.api.revokeDeviceSession({
     body: {
-        sessionToken: some-session-token,
-    }
+        sessionToken: "some-session-token", // required, The session token to revoke.
+    },
+    // This endpoint requires session cookies.
+    headers: await headers(),
 });
 ```
 
@@ -131,14 +137,12 @@ const data = await auth.api.revokeDeviceSession({
 
 ```ts
 type revokeDeviceSession = {
-      /**
-       * The session token to revoke. 
-       */
-      sessionToken: string = "some-session-token"
-  
+    /**
+     * The session token to revoke. 
+     */
+    sessionToken: string = "some-session-token"
 }
 ```
-
 
 ## ### Signout and Revoke all sessions
 When a user logs out, the plugin will revoke all active sessions for the user. You can do this by calling the existing `signOut` method, which handles revoking all sessions automatically.

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/phone-number
 title: "Phone Number"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 Phone number plugin
@@ -74,7 +74,7 @@ POST/phone-number/send-otp
 
 ```
 const { data, error } = await authClient.phoneNumber.sendOtp({
-    phoneNumber: "+1234567890", // required
+    phoneNumber: "+1234567890", // required, Phone number to send OTP.
 });
 ```
 
@@ -92,10 +92,10 @@ POST/phone-number/verify
 
 ```
 const { data, error } = await authClient.phoneNumber.verify({
-    phoneNumber: "+1234567890", // required
-    code: "123456", // required
-    disableSession: false,
-    updatePhoneNumber: false,
+    phoneNumber: "+1234567890", // required, Phone number to verify.
+    code: "123456", // required, OTP code.
+    disableSession: false, // Disable session creation after verification.
+    updatePhoneNumber: false, // Update the phone number of an existing logged-in user. Requires an active session.
 });
 ```
 
@@ -180,9 +180,9 @@ POST/sign-in/phone-number
 
 ```
 const { data, error } = await authClient.signIn.phoneNumber({
-    phoneNumber: "+1234567890", // required
-    password, // required
-    rememberMe: true,
+    phoneNumber: "+1234567890", // required, Phone number to sign in.
+    password, // required, Password to use for sign in.
+    rememberMe: true, // Remember the session.
 });
 ```
 
@@ -252,7 +252,7 @@ POST/phone-number/request-password-reset
 
 ```
 const { data, error } = await authClient.phoneNumber.requestPasswordReset({
-    phoneNumber: "+1234567890", // required
+    phoneNumber: "+1234567890", // required, The phone number which is associated with the user.
 });
 ```
 
@@ -268,9 +268,9 @@ POST/phone-number/reset-password
 
 ```
 const { data, error } = await authClient.phoneNumber.resetPassword({
-    otp: "123456", // required
-    phoneNumber: "+1234567890", // required
-    newPassword: "new-and-secure-password", // required
+    otp: "123456", // required, The one time password to reset the password.
+    phoneNumber: "+1234567890", // required, The phone number to the account which intends to reset the password for.
+    newPassword: "new-and-secure-password", // required, The new password.
 });
 ```
 

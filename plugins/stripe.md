@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/stripe
 title: "Stripe"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 Stripe plugin for Better Auth to manage subscriptions and payments.
@@ -221,19 +221,19 @@ POST/subscription/upgrade
 
 ```
 const { data, error } = await authClient.subscription.upgrade({
-    plan: "pro", // required
-    annual: true,
-    referenceId: "123",
-    subscriptionId: "sub_123",
-    metadata,
-    customerType,
-    seats: 1,
-    locale,
-    successUrl, // required
-    cancelUrl, // required
-    returnUrl,
-    disableRedirect: false, // required
-    scheduleAtPeriodEnd: false,
+    plan: "pro", // required, The name of the plan to upgrade to.
+    annual: true, // Whether to upgrade to an annual plan.
+    referenceId: "123", // Reference id of the subscription. Defaults based on customerType.
+    subscriptionId: "sub_123", // The id of the subscription to upgrade.
+    metadata, // Additional metadata to store with the subscription.
+    customerType, // The type of customer for billing. (Default: "user")
+    seats: 1, // Number of seats to upgrade to (if applicable).
+    locale, // The IETF language tag of the locale Checkout is displayed in. If not provided or set to \`auto\`, the browser's locale is used.
+    successUrl, // required, The URL to which Stripe should send customers when payment or setup is complete.
+    cancelUrl, // required, If set, checkout shows a back button and customers will be directed here if they cancel payment.
+    returnUrl, // The URL to return to from the Billing Portal (used when upgrading existing subscriptions)
+    disableRedirect: false, // required, Disable redirect after successful subscription.
+    scheduleAtPeriodEnd: false, // Schedule the plan change at the end of the current billing period instead of applying it immediately.
 });
 ```
 
@@ -361,11 +361,10 @@ GET/subscription/list
 ```
 const { data: subscriptions, error } = await authClient.subscription.list({
     query: {
-        referenceId: '123',
-        customerType,
+        referenceId: '123', // Reference id of the subscription to list.
+        customerType, // The type of customer for billing. (Default: "user")
     },
 });
-
 // get the active subscription
 const activeSubscription = subscriptions.find(
     sub => sub.status === "active" || sub.status === "trialing"
@@ -417,10 +416,10 @@ POST/subscription/cancel
 
 ```
 const { data, error } = await authClient.subscription.cancel({
-    referenceId: 'org_123',
-    customerType,
-    subscriptionId: 'sub_123',
-    returnUrl: '/account', // required
+    referenceId: 'org_123', // Reference id of the subscription to cancel. Defaults based on customerType.
+    customerType, // The type of customer for billing. (Default: "user")
+    subscriptionId: 'sub_123', // The id of the subscription to cancel.
+    returnUrl: '/account', // required, URL to take customers to when they click on the billing portal's link to return to your website.
 });
 ```
 
@@ -454,9 +453,9 @@ POST/subscription/restore
 
 ```
 const { data, error } = await authClient.subscription.restore({
-    referenceId: '123',
-    customerType,
-    subscriptionId: 'sub_123',
+    referenceId: '123', // Reference id of the subscription to restore. Defaults based on customerType.
+    customerType, // The type of customer for billing. (Default: "user")
+    subscriptionId: 'sub_123', // The id of the subscription to restore.
 });
 ```
 
@@ -482,11 +481,11 @@ POST/subscription/billing-portal
 
 ```
 const { data, error } = await authClient.subscription.billingPortal({
-    locale,
-    referenceId: "123",
-    customerType,
-    returnUrl,
-    disableRedirect: false,
+    locale, // The IETF language tag of the locale Customer Portal is displayed in. If not provided or set to \`auto\`, the browser's locale is used.
+    referenceId: "123", // Reference id of the subscription.
+    customerType, // The type of customer for billing. (Default: "user")
+    returnUrl, // Return URL to redirect back after exiting the billing portal.
+    disableRedirect: false, // Disable the automatic redirect to the billing page. @default false
 });
 ```
 

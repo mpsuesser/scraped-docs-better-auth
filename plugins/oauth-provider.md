@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 A Better Auth plugin that enables your auth server to serve as an OAuth 2.1 provider.
@@ -149,14 +149,14 @@ GET/oauth2/get-client
 ```
 const { data, error } = await authClient.oauth2.getClient({
     query: {
-        client_id, // required
+        client_id, // required, The OAuth client's client_id
     },
 });
 ```
 
 Parameters
 
-`client_id` string,required
+`client_id` stringrequired
 
 The OAuth client's client\_id
 
@@ -169,14 +169,14 @@ GET/oauth2/public-client
 ```
 const { data, error } = await authClient.oauth2.publicClient({
     query: {
-        client_id, // required
+        client_id, // required, The OAuth client's client_id
     },
 });
 ```
 
 Parameters
 
-`client_id` string,required
+`client_id` stringrequired
 
 The OAuth client's client\_id
 
@@ -196,14 +196,14 @@ POST/oauth2/public-client-prelogin
 
 ```
 const { data, error } = await authClient.oauth2.publicClientPrelogin({
-    client_id, // required
-    oauth_query, // required
+    client_id, // required, The OAuth client's client_id
+    oauth_query, // required, Valid oauth query parameters (Sent automatically when using the provided client)
 });
 ```
 
 Parameters
 
-`client_id` string,required
+`client_id` stringrequired
 
 The OAuth client's client\_id
 
@@ -256,18 +256,18 @@ POST/oauth2/update-client
 
 ```
 const { data, error } = await authClient.oauth2.updateClient({
-    client_id, // required
-    update, // required
+    client_id, // required, The OAuth client's client_id
+    update, // required, The fields to update
 });
 ```
 
 Parameters
 
-`client_id` string,required
+`client_id` stringrequired
 
 The OAuth client's client\_id
 
-`update` OAuthClient,required
+`update` OAuthClientrequired
 
 The fields to update
 
@@ -300,13 +300,13 @@ POST/oauth2/client/rotate-secret
 
 ```
 const { data, error } = await authClient.oauth2.client.rotateSecret({
-    client_id, // required
+    client_id, // required, The OAuth client's client_id
 });
 ```
 
 Parameters
 
-`client_id` string,required
+`client_id` stringrequired
 
 The OAuth client's client\_id
 
@@ -318,13 +318,13 @@ POST/oauth2/delete-client
 
 ```
 const { data, error } = await authClient.oauth2.deleteClient({
-    client_id, // required
+    client_id, // required, The OAuth client's client_id
 });
 ```
 
 Parameters
 
-`client_id` string,required
+`client_id` stringrequired
 
 The OAuth client's client\_id
 
@@ -341,14 +341,14 @@ GET/oauth2/get-consent
 ```
 const { data, error } = await authClient.oauth2.getConsent({
     query: {
-        id, // required
+        id, // required, The consent id
     },
 });
 ```
 
 Parameters
 
-`id` string,required
+`id` stringrequired
 
 The consent id
 
@@ -370,18 +370,18 @@ POST/oauth2/update-consent
 
 ```
 const { data, error } = await authClient.oauth2.updateConsent({
-    id, // required
-    update, // required
+    id, // required, The consent id
+    update, // required, The values to update
 });
 ```
 
 Parameters
 
-`id` string,required
+`id` stringrequired
 
 The consent id
 
-`update` OAuthConsent,required
+`update` OAuthConsentrequired
 
 The values to update
 
@@ -393,13 +393,13 @@ POST/oauth2/delete-consent
 
 ```
 const { data, error } = await authClient.oauth2.deleteConsent({
-    id, // required
+    id, // required, The consent id
 });
 ```
 
 Parameters
 
-`id` string,required
+`id` stringrequired
 
 The consent id
 
@@ -632,23 +632,23 @@ POST/oauth2/consent
 
 ```
 const { data, error } = await authClient.oauth2.consent({
-    accept, // required
-    scope,
-    claims,
+    accept, // required, Accept or deny user consent for a set of scopes
+    scope, // Space-separated list of accepted scopes. If not provided, the originally requested scopes are accepted.
+    claims, // Accepted OIDC claims request object. If not provided, the originally requested claims are accepted.
 });
 ```
 
 Parameters
 
-`accept` boolean,required
+`accept` booleanrequired
 
 Accept or deny user consent for a set of scopes
 
-`scope` string,
+`scope` string
 
 Space-separated list of accepted scopes. If not provided, the originally requested scopes are accepted.
 
-`claims` string | Record<string, unknown>,
+`claims` string | Record<string, unknown>
 
 Accepted OIDC claims request object. If not provided, the originally requested claims are accepted.
 
@@ -660,19 +660,19 @@ POST/oauth2/continue
 
 ```
 const { data, error } = await authClient.oauth2.continue({
-    selected,
-    created,
-    postLogin,
+    selected, // Confirms an account was selected.
+    created, // Confirms an account was registered
+    postLogin, // Confirms completion of post login activity
 });
 ```
 
 Parameters
 
-`selected` boolean,
+`selected` boolean
 
 Confirms an account was selected.
 
-`created` boolean,
+`created` boolean
 
 Confirms an account was registered
 

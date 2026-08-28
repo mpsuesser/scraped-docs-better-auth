@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:27:55.614Z
+current_date: 2026-08-28T22:27:55.614Z
 ---
 
 OAuth 2.0 Device Authorization Grant for limited-input devices
@@ -233,23 +233,23 @@ POST/device/code
 
 ```
 const { data, error } = await authClient.device.code({
-    client_id, // required
-    scope,
-    user_id,
+    client_id, // required, The device client identifier
+    scope, // Space-separated list of requested scopes (optional)
+    user_id, // The user ID to which the device code should be pre-bound. When set, only that user can approve or deny the code. Pass this from trusted server-side code only. (optional)
 });
 ```
 
 Parameters
 
-`client_id` string;required
+`client_id` stringrequired
 
 The device client identifier
 
-`scope` string;
+`scope` string
 
 Space-separated list of requested scopes (optional)
 
-`user_id` string;
+`user_id` string
 
 The user ID to which the device code should be pre-bound. When set, only that user can approve or deny the code. Pass this from trusted server-side code only. (optional)
 
@@ -294,23 +294,23 @@ POST/device/token
 
 ```
 const { data, error } = await authClient.device.token({
-    grant_type, // required
-    device_code, // required
-    client_id, // required
+    grant_type, // required, Must be "urn:ietf:params:oauth:grant-type:device_code"
+    device_code, // required, The device code from the initial request
+    client_id, // required, The device client identifier
 });
 ```
 
 Parameters
 
-`grant_type` string;required
+`grant_type` stringrequired
 
 Must be "urn:ietf:params:oauth:grant-type:device\_code"
 
-`device_code` string;required
+`device_code` stringrequired
 
 The device code from the initial request
 
-`client_id` string;required
+`client_id` stringrequired
 
 The device client identifier
 
@@ -429,13 +429,13 @@ POST/device/approve
 
 ```
 const { data, error } = await authClient.device.approve({
-    userCode, // required
+    userCode, // required, The user code to approve
 });
 ```
 
 Parameters
 
-`userCode` string;required
+`userCode` stringrequired
 
 The user code to approve
 
@@ -445,13 +445,13 @@ POST/device/deny
 
 ```
 const { data, error } = await authClient.device.deny({
-    userCode, // required
+    userCode, // required, The user code to deny
 });
 ```
 
 Parameters
 
-`userCode` string;required
+`userCode` stringrequired
 
 The user code to deny
 
