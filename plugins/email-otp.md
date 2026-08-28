@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/plugins/email-otp
 title: "Email Otp"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Email OTP
+# Email OTP (/docs/plugins/email-otp)
 
 Email OTP plugin for Better Auth.
 

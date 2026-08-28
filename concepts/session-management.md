@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/concepts/session-management
 title: "Session Management"
 description: ""
-access_date: 2026-08-24T18:55:52.804Z
-current_date: 2026-08-24T18:55:52.804Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Session Management
+# Session Management (/docs/concepts/session-management)
 
 Learn about session management in Better Auth, including session expiration, freshness, cookie caching strategies, secondary storage, stateless sessions, and customizing session responses.
 

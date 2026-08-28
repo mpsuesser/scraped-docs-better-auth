@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/state_invalid
 title: "State_invalid"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# state_invalid
+# state_invalid (/docs/reference/errors/state_invalid)
 
 Failed to decrypt or parse the OAuth state during the callback.
 

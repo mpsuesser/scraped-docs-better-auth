@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/integrations/express
 title: "Express"
 description: ""
-access_date: 2026-08-24T20:38:30.397Z
-current_date: 2026-08-24T20:38:30.397Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Express Integration
+# Express Integration (/docs/integrations/express)
 
 Integrate Better Auth with Express.
 

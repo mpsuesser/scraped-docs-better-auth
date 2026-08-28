@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/guides/1-7-upgrade-guide
 title: "1 7 Upgrade Guide"
 description: ""
-access_date: 2026-08-18T17:57:51.883Z
-current_date: 2026-08-18T17:57:51.883Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Upgrading to Better Auth 1.7
+# Upgrading to Better Auth 1.7 (/docs/guides/1-7-upgrade-guide)
 
 Upgrade Better Auth from 1.6 to 1.7, including Expo, OAuth, OpenID Connect, MCP, SAML, SCIM, proxy, and custom adapter changes.
 

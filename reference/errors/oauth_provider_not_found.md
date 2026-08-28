@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/oauth_provider_not_found
 title: "Oauth_provider_not_found"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# oauth_provider_not_found
+# oauth_provider_not_found (/docs/reference/errors/oauth_provider_not_found)
 
 The OAuth provider was not found.
 

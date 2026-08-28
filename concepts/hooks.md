@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/concepts/hooks
 title: "Hooks"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Hooks
+# Hooks (/docs/concepts/hooks)
 
 Learn how to use before and after hooks to customize endpoint behavior, modify requests and responses, handle cookies, throw errors, access auth context, and run background tasks.
 

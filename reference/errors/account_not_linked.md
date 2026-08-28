@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/account_not_linked
 title: "Account_not_linked"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# account_not_linked
+# account_not_linked (/docs/reference/errors/account_not_linked)
 
 The provider account is not linked to the current user and cannot be linked automatically.
 

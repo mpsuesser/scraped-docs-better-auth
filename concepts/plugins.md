@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/plugins
 title: "Plugins"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
 Learn how to use and create Better Auth plugins, including defining endpoints, schemas, hooks, middleware, rate limits, trusted origins, and building client plugins with custom actions and atoms.
@@ -682,4 +682,16 @@ If you need to use better fetch plugins, you can pass them to the `fetchPlugins`
 
 This is only useful if you want to provide `hooks` like `useSession` and you want to listen to atoms and re-evaluate them when they change.
 
-You can see how this is used in the built-in plugins.
+You can see how this is used in the built-in plugins.[Hooks](https://better-auth.com/docs/concepts/hooks)
+
+[
+
+Learn how to use before and after hooks to customize endpoint behavior, modify requests and responses, handle cookies, throw errors, access auth context, and run background tasks.
+
+](https://better-auth.com/docs/concepts/hooks)[
+
+OAuth
+
+Learn how to configure social OAuth providers, sign in and link accounts, request scopes, pass additional data, refresh access tokens, map profiles, and customize provider options.
+
+](https://better-auth.com/docs/concepts/oauth)

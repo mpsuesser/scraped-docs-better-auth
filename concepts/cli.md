@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/cli
 title: "Cli"
 description: ""
-access_date: 2026-08-24T21:33:40.357Z
-current_date: 2026-08-24T21:33:40.357Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
 Learn about the Better Auth CLI commands for generating and migrating database schemas, creating initial admins, initializing projects, generating secret keys, and gathering diagnostic info.
@@ -219,4 +219,10 @@ npx auth@latest secret
 
 The CLI resolves most imports for you: `tsconfig.json` path aliases (including SvelteKit's `$lib`) and stubbed framework virtual modules (`$env/*`, `$app/*`, `cloudflare:workers`, Vite assets like `?raw`). For SvelteKit, run `svelte-kit sync` first so `.svelte-kit/tsconfig.json` exists.
 
-A few module types can't load outside their bundler (e.g. `.svelte` components or `import.meta.glob`). Keep those out of your config file's import graph.
+A few module types can't load outside their bundler (e.g. `.svelte` components or `import.meta.glob`). Keep those out of your config file's import graph.[Client](https://better-auth.com/docs/concepts/client)
+
+[
+
+Learn how to set up the Better Auth client for React, Vue, Svelte, and other frameworks, use hooks, configure fetch options, handle errors, and extend with client plugins.
+
+](https://better-auth.com/docs/concepts/client)

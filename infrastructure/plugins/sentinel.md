@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/sentinel
 title: "Sentinel"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Security Plugin (sentinel)
+# Security Plugin (sentinel) (/docs/infrastructure/plugins/sentinel)
 
 The `sentinel()` plugin provides comprehensive security and abuse protection for your authentication system. It detects and prevents various attack vectors including credential stuffing, impossible travel, free trial abuse, and more.
 

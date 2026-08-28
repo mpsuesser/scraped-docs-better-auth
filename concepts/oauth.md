@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/concepts/oauth
 title: "Oauth"
 description: ""
-access_date: 2026-08-25T08:38:55.162Z
-current_date: 2026-08-25T08:38:55.162Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# OAuth
+# OAuth (/docs/concepts/oauth)
 
 Learn how to configure social OAuth providers, sign in and link accounts, request scopes, pass additional data, refresh access tokens, map profiles, and customize provider options.
 

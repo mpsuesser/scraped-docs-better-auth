@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/integrations/svelte-kit
 title: "Svelte Kit"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# SvelteKit Integration
+# SvelteKit Integration (/docs/integrations/svelte-kit)
 
 Integrate Better Auth with SvelteKit.
 

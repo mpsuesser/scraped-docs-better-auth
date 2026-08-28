@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/guides/auth0-migration-guide
 title: "Auth0 Migration Guide"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Migrating from Auth0 to Better Auth
+# Migrating from Auth0 to Better Auth (/docs/guides/auth0-migration-guide)
 
 A step-by-step guide to transitioning from Auth0 to Better Auth.
 

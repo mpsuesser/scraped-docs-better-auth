@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/plugins/have-i-been-pwned
 title: "Have I Been Pwned"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Have I Been Pwned
+# Have I Been Pwned (/docs/plugins/have-i-been-pwned)
 
 A plugin to check if a password has been compromised
 

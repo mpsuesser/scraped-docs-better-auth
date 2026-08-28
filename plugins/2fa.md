@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/2fa
 title: "2fa"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
 Enhance your app's security with two-factor authentication.
@@ -593,4 +593,10 @@ const authClient =  createAuthClient({
 
 **Options**
 
-`onTwoFactorRedirect`: A callback that will be called when the user needs to verify their 2FA code. Receives a context object with `twoFactorMethods` — an array of enabled 2FA methods (e.g. `["totp", "otp"]`). This can be used to redirect the user to the appropriate 2FA page.
+`onTwoFactorRedirect`: A callback that will be called when the user needs to verify their 2FA code. Receives a context object with `twoFactorMethods` — an array of enabled 2FA methods (e.g. `["totp", "otp"]`). This can be used to redirect the user to the appropriate 2FA page.[SMS Service](https://better-auth.com/docs/infrastructure/services/sms)
+
+[
+
+Better Auth Infrastructure provides a managed SMS service for sending OTP codes for phone verification and two-factor authentication. Send verification codes without managing SMS providers.
+
+](https://better-auth.com/docs/infrastructure/services/sms)

@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/integrations/nitro
 title: "Nitro"
 description: ""
-access_date: 2026-08-24T08:21:38.386Z
-current_date: 2026-08-24T08:21:38.386Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Nitro Integration
+# Nitro Integration (/docs/integrations/nitro)
 
 Integrate Better Auth with Nitro.
 

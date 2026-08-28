@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/ai-resources/skills
 title: "Skills"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Skills
+# Skills (/docs/ai-resources/skills)
 
 Install Better Auth agent skills so your coding assistant follows library conventions and patterns.
 

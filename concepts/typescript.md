@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/concepts/typescript
 title: "Typescript"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# TypeScript
+# TypeScript (/docs/concepts/typescript)
 
 Learn about TypeScript configuration for Better Auth, including strict mode, inferring types for sessions and users, defining additional fields, and inferring additional fields on the client.
 

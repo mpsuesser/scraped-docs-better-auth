@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/authentication/roblox
 title: "Roblox"
 description: ""
-access_date: 2026-08-25T08:38:55.162Z
-current_date: 2026-08-25T08:38:55.162Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Roblox
+# Roblox (/docs/authentication/roblox)
 
 Roblox provider setup and usage.
 

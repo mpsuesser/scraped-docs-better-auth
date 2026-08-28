@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/authentication/other-social-providers
 title: "Other Social Providers"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Other Social Providers
+# Other Social Providers (/docs/authentication/other-social-providers)
 
 Other social providers setup and usage.
 

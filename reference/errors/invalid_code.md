@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/invalid_code
 title: "Invalid_code"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# invalid_code
+# invalid_code (/docs/reference/errors/invalid_code)
 
 The provided authentication code is invalid or expired.
 

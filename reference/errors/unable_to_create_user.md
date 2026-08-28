@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unable_to_create_user
 title: "Unable_to_create_user"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# unable_to_create_user
+# unable_to_create_user (/docs/reference/errors/unable_to_create_user)
 
 The user could not be created during authentication.
 

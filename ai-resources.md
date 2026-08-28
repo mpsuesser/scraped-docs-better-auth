@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/ai-resources
 title: "Ai Resources"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# AI Resources
+# AI Resources (/docs/ai-resources)
 
 Ask AI in the docs, LLMs.txt, the documentation MCP server, and Better Auth skills for coding assistants.
 

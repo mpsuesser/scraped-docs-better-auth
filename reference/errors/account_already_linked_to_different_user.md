@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/account_already_linked_to_different_user
 title: "Account_already_linked_to_different_user"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# account_already_linked_to_different_user
+# account_already_linked_to_different_user (/docs/reference/errors/account_already_linked_to_different_user)
 
 The account is already linked to a different user.
 

@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-proxy
 title: "Oauth Proxy"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# OAuth Proxy
+# OAuth Proxy (/docs/plugins/oauth-proxy)
 
 OAuth Proxy plugin for Better Auth
 

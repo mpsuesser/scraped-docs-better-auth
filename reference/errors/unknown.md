@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unknown
 title: "Unknown"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Unknown error
+# Unknown error (/docs/reference/errors/unknown)
 
 An unknown error occurred.
 

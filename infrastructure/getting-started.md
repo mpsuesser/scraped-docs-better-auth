@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/getting-started
 title: "Getting Started"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Getting Started
+# Getting Started (/docs/infrastructure/getting-started)
 
 This guide will help you integrate Better Auth Infrastructure into your application.
 

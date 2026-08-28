@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/state_not_found
 title: "State_not_found"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# state_not_found
+# state_not_found (/docs/reference/errors/state_not_found)
 
 The state parameter was not found in the request.
 

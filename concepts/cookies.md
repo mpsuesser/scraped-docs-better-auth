@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/concepts/cookies
 title: "Cookies"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Cookies
+# Cookies (/docs/concepts/cookies)
 
 Learn how Better Auth uses cookies, including cookie prefixes, custom cookie attributes, cross-subdomain sharing, secure cookies, and handling Safari ITP with proxies.
 

@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/state_mismatch
 title: "State_mismatch"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# state_mismatch
+# state_mismatch (/docs/reference/errors/state_mismatch)
 
 State verification failed during the OAuth callback. Covers all state-related error codes and their causes.
 

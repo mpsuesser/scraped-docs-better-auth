@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/plugins/siwe
 title: "Siwe"
 description: ""
-access_date: 2026-08-25T08:38:55.162Z
-current_date: 2026-08-25T08:38:55.162Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Sign In With Ethereum (SIWE)
+# Sign In With Ethereum (SIWE) (/docs/plugins/siwe)
 
 Sign in with Ethereum plugin for Better Auth
 

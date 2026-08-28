@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/email_doesn't_match
 title: "Email_doesn't_match"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# email_doesn't_match
+# email_doesn't_match (/docs/reference/errors/email_doesn't_match)
 
 The email doesn't match the email of the account.
 

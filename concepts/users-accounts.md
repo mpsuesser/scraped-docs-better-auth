@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/concepts/users-accounts
 title: "Users Accounts"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# User & Accounts
+# User & Accounts (/docs/concepts/users-accounts)
 
 Learn how to manage users and accounts, including updating user info, changing emails and passwords, deleting users with verification, token encryption, and account linking and unlinking.
 

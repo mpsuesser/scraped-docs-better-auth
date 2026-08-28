@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/concepts/api
 title: "Api"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# API
+# API (/docs/concepts/api)
 
 Learn how to call Better Auth API endpoints on the server, pass body, headers, and query parameters, retrieve response headers, and handle errors.
 

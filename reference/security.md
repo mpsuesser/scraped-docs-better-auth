@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/reference/security
 title: "Security"
 description: ""
-access_date: 2026-08-25T11:14:26.275Z
-current_date: 2026-08-25T11:14:26.275Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Security
+# Security (/docs/reference/security)
 
 Better Auth security features.
 

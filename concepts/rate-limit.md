@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/rate-limit
 title: "Rate Limit"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
 Learn how to configure rate limiting in Better Auth, including IP address detection, IPv6 support, custom rate limit windows, storage backends, error handling, and per-endpoint rules.
@@ -357,4 +357,10 @@ bigint
 
 \-
 
-Timestamp of the last request (epoch ms)
+Timestamp of the last request (epoch ms)[OAuth](https://better-auth.com/docs/concepts/oauth)
+
+[
+
+Learn how to configure social OAuth providers, sign in and link accounts, request scopes, pass additional data, refresh access tokens, map profiles, and customize provider options.
+
+](https://better-auth.com/docs/concepts/oauth)

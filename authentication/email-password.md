@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/email-password
 title: "Email Password"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
 Implementing email and password authentication with Better Auth.
@@ -25,3 +25,11 @@ export const auth = betterAuth({
 ```
 
 Additionally, to use the following server methods like `signUpEmail`, cookies must also be passed back to the client. This may require additional configuration. Plugins are provided for [Next](https://better-auth.com/docs/integrations/next#server-action-cookies) and [SvelteKit](https://better-auth.com/docs/integrations/svelte-kit#server-action-cookies).
+
+## Usage[User & Accounts](https://better-auth.com/docs/concepts/users-accounts)
+
+[
+
+Learn how to manage users and accounts, including updating user info, changing emails and passwords, deleting users with verification, token encryption, and account linking and unlinking.
+
+](https://better-auth.com/docs/concepts/users-accounts)

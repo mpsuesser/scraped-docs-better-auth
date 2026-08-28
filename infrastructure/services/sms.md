@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/services/sms
 title: "Sms"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# SMS Service
+# SMS Service (/docs/infrastructure/services/sms)
 
 Better Auth Infrastructure provides a managed SMS service for sending OTP codes for phone verification and two-factor authentication. Send verification codes without managing SMS providers.
 

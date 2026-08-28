@@ -2,11 +2,11 @@
 url: https://better-auth.com/llms.txt/docs/concepts/email
 title: "Email"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-08-28T22:16:12.077Z
+current_date: 2026-08-28T22:16:12.077Z
 ---
 
-# Email
+# Email (/docs/concepts/email)
 
 Learn how to set up email verification, require verified emails for sign-in, auto sign-in after verification, handle post-verification callbacks, and implement password reset emails.
 
