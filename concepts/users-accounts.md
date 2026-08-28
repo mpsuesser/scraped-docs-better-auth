@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/users-accounts
 title: "Users Accounts"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-08-28T22:43:46.051Z
+current_date: 2026-08-28T22:43:46.051Z
 ---
 
 # User & Accounts (/docs/concepts/users-accounts)
@@ -411,11 +411,30 @@ export const auth = betterAuth({
 ## ## Accounts
 Better Auth supports multiple authentication methods through providers such as email and password, Google, or an enterprise identity provider. Each method linked to a user is stored as an account.
 
-An account has a local record ID and a provider identity. `id` identifies the Better Auth account record and is the value to pass as `accountId` to account-management APIs. The pair of `issuer` and `accountId` identifies the external account: `issuer` names the trusted authority, and `accountId` is the stable identifier that authority assigned. The `providerId` identifies the provider configuration Better Auth uses for protocol operations.
+| Field        | Responsibility                                                                   |
+| ------------ | -------------------------------------------------------------------------------- |
+| `providerId` | Selects the Better Auth provider or SSO connection used for protocol operations. |
+| `accountId`  | Stores the stable subject assigned by that provider.                             |
+| `issuer`     | Stores the namespace paired with `accountId` in the unique account identity key. |
+
+providerId identifies the configured connection; accountId is the provider subject; issuer stores the identity namespace—verified authority under issuer strategy, deterministic provider namespace under provider-id strategy.
+
+Both strategies use the same required fields and unique `(issuer, accountId)` index. Only the value persisted in `issuer` changes:
+
+| Strategy        | `providerId`       | `accountId` | `issuer`                       |
+| --------------- | ------------------ | ----------- | ------------------------------ |
+| `"issuer"`      | `workforce-google` | `104925...` | `https://accounts.google.com`  |
+| `"provider-id"` | `workforce-google` | `104925...` | `local:oauth:workforce-google` |
+
+An account also has a local record ID. `id` identifies the Better Auth account record and is the value to pass as `accountId` to account-management APIs.
 
 OAuth providers without a trusted issuer use `local:oauth:<encoded providerId>` as their account namespace, with the provider ID segment percent-encoded. Credential accounts use `local:credential`; do not use that credential namespace for an OAuth provider.
 
-This separation allows multiple provider configurations for the same issuer to deduplicate the same external identity without treating an identifier from another issuer as the same person. Provider aliases share one account row and token set; they do not have independent grants or provider lifecycle records. See the [account schema](/docs/concepts/database#account) for the complete set of fields.
+Under the issuer strategy, this separation allows multiple provider configurations for the same issuer to deduplicate the same external identity without treating an identifier from another issuer as the same person. Those provider aliases share one account row and token set; they do not have independent grants or provider lifecycle records. Under provider-id, aliases retain separate synthetic namespaces. See the [account schema](/docs/concepts/database#account) for the complete set of fields.
+
+The `auth init` command generates `account: { identityStrategy: "provider-id" }` for new projects. The v1.7 runtime remains compatible with configurations that omit `account.identityStrategy`: it uses `"issuer"` and emits a one-time warning asking the application to make the choice explicit. Applications migrating populated Better Auth 1.6 data should choose explicitly. The recommended compatibility path is `"provider-id"`, which persists `local:oauth:<encoded providerId>` for external accounts so provider aliases remain separate identities. Provider token, signature, issuer, audience, and subject verification does not change; the strategy selects the namespace stored after verification succeeds.
+
+Keep the selected strategy consistent across every application instance and migration. Changing strategy on populated v1.7 data is an account re-key migration, not a configuration-only toggle. See the [1.7 upgrade guide](/docs/guides/1-7-upgrade-guide#choose-account-identity-strategy) before changing it.
 
 ## ### List User Accounts
 Use `listAccounts` to retrieve every authentication method linked to the current user. Keep the returned `id` when you need to unlink the account or call another account-specific API.

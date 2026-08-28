@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/database
 title: "Database"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-08-28T22:43:46.051Z
+current_date: 2026-08-28T22:43:46.051Z
 ---
 
 Learn about database adapters, migrations, secondary storage with Redis, core schema (user, session, account, verification), custom tables, extending schemas, ID generation, database hooks, and plugin schemas.
@@ -346,7 +346,7 @@ Timestamp of when the session was updated
 
 Table Name: `account`
 
-An account represents one authentication method linked to a user. Better Auth recognizes the provider-side identity by the unique pair of `issuer` and `accountId`, while `id` identifies the local account row. Use `id` when an account API asks for an `accountId`.
+An account represents one authentication method linked to a user. providerId identifies the configured connection; accountId is the provider subject; issuer stores the identity namespace—verified authority under issuer strategy, deterministic provider namespace under provider-id strategy. Under issuer strategy, a provider without a trusted authority uses the deterministic `local:oauth:<encoded providerId>` fallback namespace. Better Auth recognizes the provider-side identity by the unique pair of `issuer` and `accountId`, while `id` identifies the local account row. Use `id` when an account API asks for an `accountId`.
 
 Table
 
@@ -380,7 +380,7 @@ string
 
 \-
 
-The trusted authority that issued the provider account identifier
+The persisted identity namespace: a verified authority or deterministic provider namespace
 
 accountId
 
@@ -388,7 +388,7 @@ string
 
 \-
 
-The stable account identifier within the issuer namespace
+The stable account identifier within the provider namespace
 
 providerId
 
@@ -470,7 +470,7 @@ Date
 
 Timestamp of when the account was updated
 
-The database enforces a unique compound index on `issuer` and `accountId`. Providers with a trusted issuer use that authority, including the verified issuer for OpenID Connect. OAuth providers without an issuer use the synthetic `local:oauth:<encoded providerId>` namespace, with the provider ID segment percent-encoded. Credential accounts use `local:credential` and the linked user's stable `id`.
+The database requires `issuer` and `accountId` and enforces a unique compound index across them for every account identity strategy. Newly generated configurations explicitly use [`account.identityStrategy: "provider-id"`](https://better-auth.com/docs/reference/options#identitystrategy), so `issuer` contains a deterministic `local:oauth:<encoded providerId>` namespace, or `local:credential` for credential accounts. An omitted strategy remains a v1.7 compatibility mode that stores the verified authority and warns once; explicit `"issuer"` selects the same namespace without a warning. The selected strategy changes the stored namespace value, not the generated schema.
 
 ### Verification
 

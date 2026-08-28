@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/account_already_linked_to_different_user
 title: "Account_already_linked_to_different_user"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-28T22:43:46.051Z
+current_date: 2026-08-28T22:43:46.051Z
 ---
 
 # account_already_linked_to_different_user (/docs/reference/errors/account_already_linked_to_different_user)
@@ -36,8 +36,7 @@ not triggered by email/password flows on their own.
 * Test/preview environments share the same OAuth provider configuration and database; the provider account
   is already linked to a different user record.
 * Data migration or manual database edits left a stale link pointing to the wrong user.
-* You rely on email matching to decide linking, but the actual unique key is `issuer` and
-  `accountId`. If that identity belongs to another user, linking will be blocked.
+* You rely on email matching to decide linking, but the actual unique key is always `(issuer, accountId)`. Under issuer strategy, `issuer` is the verified authority; under provider-id strategy, it is a deterministic provider namespace. If that identity belongs to another user, linking will be blocked.
 
 ## ### Safer patterns and prevention
 * Avoid automatically linking a provider to whichever user is currently signed in unless you explicitly
@@ -47,9 +46,7 @@ not triggered by email/password flows on their own.
 * Consider disabling linking for providers you only want to use for sign-in, to avoid accidental cross-linking.
 
 ## ### Debug locally
-* Inspect your `account` database table. Each row points to a `userId` and is uniquely keyed by
-  `issuer` and `accountId`. For OpenID Connect providers, these values correspond to the
-  verified issuer and stable subject.
+* Inspect your `account` database table. Each row points to a `userId` and is uniquely keyed by `issuer` and `accountId`. The issuer is either the verified authority or the deterministic provider namespace selected by `account.identityStrategy`.
 * Identify which user currently owns the provider link and decide whether to unlink, merge, or keep as-is.
 * Verify your app is connected to the expected database and environment (dev/staging/prod) to avoid confusion
   due to shared credentials or misconfigured environment variables.

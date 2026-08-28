@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/other-relational-databases
 title: "Other Relational Databases"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-28T22:43:46.051Z
+current_date: 2026-08-28T22:43:46.051Z
 ---
 
 Integrate Better Auth with other relational databases.
@@ -11,6 +11,8 @@ Integrate Better Auth with other relational databases.
 Better Auth supports a wide range of database dialects out of the box thanks to [Kysely](https://kysely.dev/).
 
 Any dialect supported by Kysely can be utilized with Better Auth, including capabilities for generating and migrating database schemas through the [CLI](https://better-auth.com/docs/concepts/cli).
+
+When using the CLI with a custom dialect, set `database.type` alongside `database.dialect` so migrations emit SQL for the correct database.
 
 ## Core Dialects
 
