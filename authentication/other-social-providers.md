@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/other-social-providers
 title: "Other Social Providers"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-30T01:44:42.599Z
+current_date: 2026-08-30T01:44:42.599Z
 ---
 
 # Other Social Providers (/docs/authentication/other-social-providers)
@@ -12,7 +12,7 @@ Other social providers setup and usage.
 
 
 
-Better Auth provides support for any social provider that implements the OAuth2 protocol or OpenID Connect (OIDC) flows through the [Generic OAuth Plugin](/docs/plugins/generic-oauth). You can use pre-configured helper functions for popular providers like Auth0, Keycloak, Okta, Microsoft Entra ID, and Slack, or manually configure any OAuth provider.
+Better Auth supports any social provider that implements OAuth 2.0 or OpenID Connect (OIDC) through the [Generic OAuth Plugin](/docs/plugins/generic-oauth). You can use a built-in provider helper, install a community provider helper, or configure a provider manually.
 
 ## ## Installation
 ### ### Add the plugin to your auth config
@@ -49,7 +49,7 @@ const authClient = createAuthClient()
 ```
 
 
-> Read more about installation and usage of the Generic Oauth plugin
+> Read more about installation and usage of the Generic OAuth plugin
 > [Generic OAuth plugin documentation](/docs/plugins/generic-oauth#usage).
 
 ## ## Example Usage
@@ -75,8 +75,24 @@ export const auth = betterAuth({
 })
 ```
 
-## ## Using Pre-configured Providers
-Better Auth provides pre-configured helper functions for popular OAuth providers. Here's an example using Slack:
+## ## Provider Helpers
+Provider helpers package provider-specific endpoints, scopes, and profile mapping as reusable `GenericOAuthConfig` factories.
+
+## ### Built-in Provider Helpers
+Better Auth includes helpers for these providers:
+
+* **Auth0** - `auth0(options)`
+* **Gumroad** - `gumroad(options)`
+* **HubSpot** - `hubspot(options)`
+* **Keycloak** - `keycloak(options)`
+* **LINE** - `line(options)`
+* **Microsoft Entra ID (Azure AD)** - `microsoftEntraId(options)`
+* **Okta** - `okta(options)`
+* **Patreon** - `patreon(options)`
+* **Slack** - `slack(options)`
+* **Yandex** - `yandex(options)`
+
+Here's an example using Slack:
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
@@ -103,10 +119,96 @@ const response = await authClient.signIn.social({
 })
 ```
 
-For more pre-configured providers (Auth0, Keycloak, Okta, Microsoft Entra ID) and their configuration options, see the [Generic OAuth Plugin documentation](/docs/plugins/generic-oauth#pre-configured-provider-helpers).
+Each helper accepts common OAuth options through `BaseOAuthProviderOptions`, plus these provider-specific fields:
 
-## ## Manual Configuration Examples
-If you need to configure a provider that doesn't have a pre-configured helper, you can manually configure it:
+* **Auth0**: Requires `domain` (for example, `dev-xxx.eu.auth0.com`)
+* **HubSpot**: Accepts optional `scopes`, which default to `["oauth"]`
+* **Keycloak**: Requires `issuer` (for example, `https://my-domain/realms/MyRealm`)
+* **LINE**: Accepts an optional `providerId`. Call `line()` with different provider IDs and credentials to support multiple country-specific channels
+* **Microsoft Entra ID**: Requires a concrete tenant GUID. Use the built-in [Microsoft social provider](/docs/authentication/microsoft) for the multi-tenant `"common"`, `"organizations"`, or `"consumers"` authorities
+* **Okta**: Requires `issuer` (for example, `https://dev-xxxxx.okta.com/oauth2/default`)
+
+All helpers accept these common options:
+
+* `clientId`
+* `clientSecret`
+* `tokenEndpointAuth`
+* `scopes`
+* `redirectURI`
+* `pkce`
+* `disableImplicitSignUp`
+* `disableSignUp`
+* `overrideUserInfo`
+* `endSessionEndpoint`
+* `postLogoutRedirectURI`
+* `disableProviderLogout`
+
+## ### Community Provider Helpers
+Provider authors and community maintainers can publish reusable helpers that return a typed [`GenericOAuthConfig`](/docs/plugins/generic-oauth) for use with the Generic OAuth plugin.
+
+> Community provider helpers are not official or verified by the Better Auth
+> team. Use them at your own discretion and review their source code before
+> integrating them into your application.
+
+{/*
+  | Provider                       | Package                | Repository                                                       | Maintainer                     |
+  | ------------------------------ | ---------------------- | ---------------------------------------------------------------- | ------------------------------ |
+  | [Example](https://example.com) | `@example/better-auth` | [example/better-auth](https://github.com/example/better-auth)    | [Example](https://example.com) |
+  */}
+
+*Community provider helper listings are coming soon.*
+
+## #### Create a Provider Helper
+A provider helper accepts credentials and provider-specific options, then returns a `GenericOAuthConfig`.
+
+```ts title="provider.ts"
+import type {
+  BaseOAuthProviderOptions,
+  GenericOAuthConfig,
+} from "better-auth/plugins/generic-oauth";
+
+export interface ExampleOptions extends BaseOAuthProviderOptions {}
+
+export function example(
+  options: ExampleOptions,
+): GenericOAuthConfig<"example"> {
+  return {
+    providerId: "example",
+    discoveryUrl: "https://auth.example.com/.well-known/openid-configuration",
+    clientId: options.clientId,
+    clientSecret: options.clientSecret,
+    tokenEndpointAuth: options.tokenEndpointAuth,
+    scopes: options.scopes ?? ["openid", "email", "profile"],
+    redirectURI: options.redirectURI,
+  };
+}
+```
+
+Users install the helper from its author and pass it to Generic OAuth.
+
+```ts title="auth.ts"
+import { example } from "@example/better-auth";
+import { betterAuth } from "better-auth";
+import { genericOAuth } from "better-auth/plugins";
+
+export const auth = betterAuth({
+  plugins: [
+    genericOAuth({
+      config: [
+        example({
+          clientId: process.env.EXAMPLE_CLIENT_ID!,
+          clientSecret: process.env.EXAMPLE_CLIENT_SECRET!,
+        }),
+      ],
+    }),
+  ],
+});
+```
+
+To share a provider helper with the community, see the [contribution guidelines](/docs/reference/contributing#social-provider-integrations).
+
+## ## Configure a Provider Manually
+If you need to configure a provider that doesn't have a provider helper, you can configure it manually:
 
 ## ### Instagram Example
 ```ts title="auth.ts"

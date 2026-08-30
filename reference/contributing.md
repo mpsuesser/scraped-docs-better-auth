@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/contributing
 title: "Contributing"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-08-30T01:44:42.599Z
+current_date: 2026-08-30T01:44:42.599Z
 ---
 
 A concise guide to contributing to BetterAuth
@@ -104,6 +104,12 @@ We welcome contributions to support more frameworks:
 - Focus on framework-agnostic solutions where possible
 - Keep integrations minimal and maintainable
 - All integrations currently live in the main package
+
+### Social Provider Integrations
+
+Review the [social provider contribution policy](https://github.com/better-auth/better-auth/blob/main/CONTRIBUTING.md#social-provider-integrations) before proposing a built-in social provider or provider helper.
+
+Community helpers can be developed independently using the [Generic OAuth plugin](https://better-auth.com/docs/plugins/generic-oauth) and submitted for listing under [Other Social Providers](https://better-auth.com/docs/authentication/other-social-providers#community-provider-helpers).
 
 ### Plugin Development
 
