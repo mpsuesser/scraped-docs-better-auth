@@ -2,58 +2,56 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/state_invalid
 title: "State_invalid"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-08-31T16:40:08.345Z
+current_date: 2026-08-31T16:40:08.345Z
 ---
-
-# state_invalid (/docs/reference/errors/state_invalid)
 
 Failed to decrypt or parse the OAuth state during the callback.
 
+## What is it?
 
+When using the **cookie** state storage strategy (`account.storeStateStrategy: "cookie"`), Better Auth encrypts all OAuth state data into a cookie. During the callback, this cookie is decrypted and parsed. The `state_invalid` error means the cookie exists but could not be decrypted, or the decrypted content could not be parsed as valid JSON.
 
-## ## What is it?
-When using the **cookie** state storage strategy (`account.storeStateStrategy: "cookie"`), Better Auth encrypts
-all OAuth state data into a cookie. During the callback, this cookie is decrypted and parsed. The `state_invalid`
-error means the cookie exists but could not be decrypted, or the decrypted content could not be parsed as valid JSON.
+This error is specific to the cookie strategy. On the default database strategy, state failures surface as other codes (for example `state_mismatch`), depending on what failed.
 
-This error is specific to the cookie strategy. On the default database strategy, state failures surface as other
-codes (for example `state_mismatch`), depending on what failed.
+## Common Causes
 
-## ## Common Causes
-* **Secret rotation mid-flow.** The `BETTER_AUTH_SECRET` was changed between the start and the callback of the OAuth
-  flow, so the decryption key no longer matches the one that encrypted the cookie.
-* **Cookie value corrupted in transit.** A proxy, CDN, or middleware modified or truncated the cookie value during
-  the redirect.
-* **Malformed cookie.** The cookie was manually altered, or a different cookie with a conflicting name was read
-  instead.
+- **Secret rotation mid-flow.** The `BETTER_AUTH_SECRET` was changed between the start and the callback of the OAuth flow, so the decryption key no longer matches the one that encrypted the cookie.
+- **Cookie value corrupted in transit.** A proxy, CDN, or middleware modified or truncated the cookie value during the redirect.
+- **Malformed cookie.** The cookie was manually altered, or a different cookie with a conflicting name was read instead.
 
-## ## How to resolve
-## ### Avoid rotating secrets during active flows
-Deploy secret changes during low-traffic windows. If you need to rotate secrets, consider running both the old and new
-secrets simultaneously during a transition period so in-progress flows can complete.
+## How to resolve
 
-## ### Check proxies and middleware
-Verify that any reverse proxies, CDNs, or middleware in front of your application preserve the full, unmodified
-cookie value. Look for cookie rewriting, truncation, or URL-encoding issues.
+### Avoid rotating secrets during active flows
 
-## ### Verify cookie names and values
-Use your browser's DevTools (Application, then Cookies) to confirm that the `better-auth.oauth_state` cookie is set
-before the redirect and still exists (unmodified) when the callback arrives.
+Deploy secret changes during low-traffic windows. If you need to rotate secrets, consider running both the old and new secrets simultaneously during a transition period so in-progress flows can complete.
 
-## ### Switch to the database strategy
-If cookie issues persist, switch to the default database strategy, which does not depend on a state cookie for
-decryption:
+### Check proxies and middleware
 
-```ts title="auth.ts"
+Verify that any reverse proxies, CDNs, or middleware in front of your application preserve the full, unmodified cookie value. Look for cookie rewriting, truncation, or URL-encoding issues.
+
+### Verify cookie names and values
+
+Use your browser's DevTools (Application, then Cookies) to confirm that the `better-auth.oauth_state` cookie is set before the redirect and still exists (unmodified) when the callback arrives.
+
+### Switch to the database strategy
+
+If cookie issues persist, switch to the default database strategy, which does not depend on a state cookie for decryption:
+
+```
 export const auth = betterAuth({
-	account: {
-		storeStateStrategy: "database",
-	},
+    account: {
+        storeStateStrategy: "database",
+    },
 });
 ```
 
-***
+---
 
-For an overview of all state-related errors and their root causes, see
-[state\_mismatch](/docs/reference/errors/state_mismatch).
+For an overview of all state-related errors and their root causes, see [state\_mismatch](https://better-auth.com/docs/reference/errors/state_mismatch).[state\_mismatch](https://better-auth.com/docs/reference/errors/state_mismatch)
+
+[
+
+State verification failed during the OAuth callback. Covers all state-related error codes and their causes.
+
+](https://better-auth.com/docs/reference/errors/state_mismatch)
