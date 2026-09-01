@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/other-social-providers
 title: "Other Social Providers"
 description: ""
-access_date: 2026-08-30T01:44:42.599Z
-current_date: 2026-08-30T01:44:42.599Z
+access_date: 2026-09-01T14:16:27.864Z
+current_date: 2026-09-01T14:16:27.864Z
 ---
 
 # Other Social Providers (/docs/authentication/other-social-providers)
@@ -150,13 +150,9 @@ Provider authors and community maintainers can publish reusable helpers that ret
 > team. Use them at your own discretion and review their source code before
 > integrating them into your application.
 
-{/*
-  | Provider                       | Package                | Repository                                                       | Maintainer                     |
-  | ------------------------------ | ---------------------- | ---------------------------------------------------------------- | ------------------------------ |
-  | [Example](https://example.com) | `@example/better-auth` | [example/better-auth](https://github.com/example/better-auth)    | [Example](https://example.com) |
-  */}
-
-*Community provider helper listings are coming soon.*
+| Provider                                                          | Package                                  | Repository                                                                                        | Maintained by                                        |
+| ----------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| [EVE Online](https://developers.eveonline.com/docs/services/sso/) | `@localisprimary/better-auth-eve-online` | [localisprimary/better-auth-eve-online](https://github.com/localisprimary/better-auth-eve-online) | [@localisprimary](https://github.com/localisprimary) |
 
 ## #### Create a Provider Helper
 A provider helper accepts credentials and provider-specific options, then returns a `GenericOAuthConfig`.
