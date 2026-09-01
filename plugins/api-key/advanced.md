@@ -2,17 +2,27 @@
 url: https://better-auth.com/llms.txt/docs/plugins/api-key/advanced
 title: "Advanced"
 description: ""
-access_date: 2026-09-01T02:53:20.078Z
-current_date: 2026-09-01T02:53:20.078Z
+access_date: 2026-09-01T03:00:57.147Z
+current_date: 2026-09-01T03:00:57.147Z
 ---
+
+# Advanced Features (/docs/plugins/api-key/advanced)
 
 Advanced API Key features including sessions, multiple configurations, organization keys, storage modes, and more.
 
-## Sessions from API keys
 
+
+## ## Sessions from API keys
 Any time an endpoint in Better Auth is called that has a valid API key in the headers, you can automatically create a mock session to represent the user by enabling `enableSessionForAPIKeys` option.
 
-```
+> This is generally not recommended, as it can lead to security issues if not used carefully. A leaked api key can be used to impersonate a user.
+
+> **User-Owned Keys Only**: Session mocking only works with user-owned API keys (where `references: "user"`). Organization-owned keys cannot mock user sessions.
+
+> **Rate Limiting Note**: When `enableSessionForAPIKeys` is enabled, the API key is validated once per request, and rate limiting is applied accordingly.
+> If you manually verify an API key and then fetch a session separately, both operations will increment the rate limit counter. Using `enableSessionForAPIKeys` avoids this double increment.
+
+```ts
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -25,9 +35,10 @@ export const auth = betterAuth({
 });
 ```
 
+
 #### Server
 
-```
+```ts
 import { auth } from "@/lib/auth"
 
 const session = await auth.api.getSession({
@@ -37,9 +48,10 @@ const session = await auth.api.getSession({
 });
 ```
 
+
 The default header key is `x-api-key`, but this can be changed by setting the `apiKeyHeaders` option in the plugin options.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -54,7 +66,7 @@ export const auth = betterAuth({
 
 Or optionally, you can pass a `customAPIKeyGetter` function to the plugin options, which will be called with the `HookEndpointContext`, and from there, you should return the API key, or `null` if the request is invalid.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -71,21 +83,19 @@ export const auth = betterAuth({
 });
 ```
 
-## Multiple Configurations
-
+## ## Multiple Configurations
 You can define multiple API key configurations with different settings. Each configuration is identified by a unique `configId` and can have its own prefix, rate limits, permissions, and other options.
 
 This is useful when you need different types of API keys for different purposes, such as:
 
-- Public vs private API keys
-- Read-only vs read-write keys
-- Different rate limits for different tiers
+* Public vs private API keys
+* Read-only vs read-write keys
+* Different rate limits for different tiers
 
-### Setup
-
+## ### Setup
 Pass an array of configuration objects to the `apiKey` plugin:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -116,11 +126,10 @@ export const auth = betterAuth({
 });
 ```
 
-### Creating Keys with Specific Configurations
-
+## ### Creating Keys with Specific Configurations
 When creating an API key, specify which configuration to use via the `configId` parameter:
 
-```
+```ts title="create-api-key.ts"
 import { auth } from "@/lib/auth"
 
 // Create a public key
@@ -143,11 +152,14 @@ const secretKey = await auth.api.createApiKey({
 // Result: sk_...
 ```
 
-### Using configId for API Key Operations
+> `get`, `update`, and `delete` must pass the same `configId` the key was created with.
+> `verify` resolves the key's own configuration, so it only needs `configId` when a
+> configuration differs from the default in storage or hashing.
 
+## ### Using configId for API Key Operations
 All API key operations support the `configId` parameter to specify which configuration to use for the lookup. This is important when different configurations have different storage backends (e.g., database vs Redis):
 
-```
+```ts title="api-key-operations.ts"
 // Get an API key using a specific config
 const key = await auth.api.getApiKey({
   query: { 
@@ -184,11 +196,10 @@ const result = await auth.api.verifyApiKey({
 });
 ```
 
-### Filtering Keys by Configuration
-
+## ### Filtering Keys by Configuration
 When listing API keys, you can filter by `configId`:
 
-```
+```ts title="list-api-keys.ts"
 // List only public keys
 const publicKeys = await authClient.apiKey.list({
   query: { configId: "public" }
@@ -200,11 +211,10 @@ const secretKeys = await authClient.apiKey.list({
 });
 ```
 
-### Global Options
-
+## ### Global Options
 You can also pass global options (like `schema`) as a second argument:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -225,15 +235,13 @@ export const auth = betterAuth({
 });
 ```
 
-## Organization-Owned API Keys
-
+## ## Organization-Owned API Keys
 By default, API keys are owned by users. However, you can configure API keys to be owned by organizations instead. This is useful for team-based applications where API keys should be shared across organization members.
 
-### Configuration
-
+## ### Configuration
 Set `references: "organization"` in your configuration:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -255,11 +263,10 @@ export const auth = betterAuth({
 });
 ```
 
-### Creating Organization-Owned Keys
-
+## ### Creating Organization-Owned Keys
 When creating an organization-owned API key, pass the `organizationId` together with a user context. The user must be a member of the organization with permission to create API keys. That user is taken from the session (request `headers`); for a pure server call without headers, pass a `userId` in the body instead:
 
-```
+```ts title="create-org-api-key.ts"
 import { auth } from "@/lib/auth"
 
 const orgKey = await auth.api.createApiKey({
@@ -271,31 +278,30 @@ const orgKey = await auth.api.createApiKey({
 });
 ```
 
-### Access Control & Permissions
+> **Session Mocking Limitation**: The `enableSessionForAPIKeys` feature only works with user-owned API keys. Organization-owned keys cannot mock user sessions, as there's no single user associated with the key.
 
+## ### Access Control & Permissions
 Organization-owned API keys use the organization plugin's role-based access control system. To manage organization API keys, users must:
 
 1. Be a member of the organization
 2. Have the appropriate `apiKey` permission for the action they're performing
 
-#### API Key Permissions
-
+## #### API Key Permissions
 The API key plugin uses the following permissions:
 
-| Action | Permission | Description |
-| --- | --- | --- |
-| Create | `apiKey: ["create"]` | Create new organization API keys |
-| Read/List | `apiKey: ["read"]` | View and list organization API keys |
-| Update | `apiKey: ["update"]` | Modify organization API keys |
-| Delete | `apiKey: ["delete"]` | Delete organization API keys |
+| Action    | Permission           | Description                         |
+| --------- | -------------------- | ----------------------------------- |
+| Create    | `apiKey: ["create"]` | Create new organization API keys    |
+| Read/List | `apiKey: ["read"]`   | View and list organization API keys |
+| Update    | `apiKey: ["update"]` | Modify organization API keys        |
+| Delete    | `apiKey: ["delete"]` | Delete organization API keys        |
 
-#### Configuring Organization Roles
-
+## #### Configuring Organization Roles
 By default, **organization owners have full access** to all API key operations. For other roles (like `admin` or `member`), you need to explicitly configure `apiKey` permissions in your organization plugin setup.
 
 Here's how to configure roles with API key permissions:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { organization } from "better-auth/plugins"
 import { apiKey } from "@better-auth/api-key"
@@ -305,7 +311,7 @@ import { createAccessControl } from "better-auth/plugins/access"
 const statements = {
   // ... other statements
   // Add apiKey permissions
-  apiKey: ["create", "read", "update", "delete"], 
+  apiKey: ["create", "read", "update", "delete"], // [!code highlight]
 } as const;
 
 const ac = createAccessControl(statements);
@@ -314,13 +320,13 @@ const ac = createAccessControl(statements);
 const adminRole = ac.newRole({
   // ... other statements
   // Admins can manage API keys
-  apiKey: ["create", "read", "update", "delete"], 
+  apiKey: ["create", "read", "update", "delete"], // [!code highlight]
 });
 
 const memberRole = ac.newRole({
   // ... other statements
   // Members can only view API keys
-  apiKey: ["read"], 
+  apiKey: ["read"], // [!code highlight]
 });
 
 export const auth = betterAuth({
@@ -344,9 +350,10 @@ export const auth = betterAuth({
 });
 ```
 
-#### Permission Examples
+> **Owner Access**: Organization owners (the `creatorRole`, default `"owner"`) automatically have full access to all API key operations, regardless of explicit permission configuration.
 
-```
+## #### Permission Examples
+```ts
 // Admin can create, read, update, delete org API keys
 const key = await auth.api.createApiKey({
   body: { configId: "org-keys", organizationId: "org_123" },
@@ -367,18 +374,16 @@ const result = await client.apiKey.create(
 // Error: INSUFFICIENT_API_KEY_PERMISSIONS
 ```
 
-#### Error Codes
-
+## #### Error Codes
 When access is denied, the following error codes are returned:
 
-- `USER_NOT_MEMBER_OF_ORGANIZATION`: The user is not a member of the organization
-- `INSUFFICIENT_API_KEY_PERMISSIONS`: The user doesn't have the required `apiKey` permission for the action
+* `USER_NOT_MEMBER_OF_ORGANIZATION`: The user is not a member of the organization
+* `INSUFFICIENT_API_KEY_PERMISSIONS`: The user doesn't have the required `apiKey` permission for the action
 
-### API Key Object Structure
-
+## ### API Key Object Structure
 API keys include a `configId` to identify which configuration they belong to, and a `referenceId` for the owner:
 
-```
+```ts
 type ApiKey = {
   id: string;
   configId: string;    // The configuration this key belongs to
@@ -389,28 +394,25 @@ type ApiKey = {
 
 The owner type (user vs organization) is determined by looking up the configuration:
 
-```
+```ts
 const apiKey = await auth.api.getApiKey({
   query: { id: keyId },
   headers,
 });
 
-// The owner type is determined by the config's \`references\` setting
+// The owner type is determined by the config's `references` setting
 // For org-keys config (references: "organization"):
-console.log(\`Key owned by: ${apiKey.referenceId}\`);
+console.log(`Key owned by: ${apiKey.referenceId}`);
 ```
 
-## Storage Modes
-
+## ## Storage Modes
 The API Key plugin supports multiple storage modes for flexible API key management, allowing you to choose the best strategy for your use case.
 
-### Storage Mode Options
-
-#### "database" (Default)
-
+## ### Storage Mode Options
+## #### `"database"` (Default)
 Store API keys only in the database adapter. This is the default mode and requires no additional configuration.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -423,11 +425,11 @@ export const auth = betterAuth({
 });
 ```
 
-#### "secondary-storage"
+## #### `"secondary-storage"`
+Store API keys only in secondary storage (e.g., Redis).
+No fallback to database. Best for high-performance scenarios where all keys are migrated to secondary storage.
 
-Store API keys only in secondary storage (e.g., Redis). No fallback to database. Best for high-performance scenarios where all keys are migrated to secondary storage.
-
-```
+```ts title="auth.ts"
 import { createClient } from "redis";
 import { betterAuth } from "better-auth";
 import { apiKey } from "@better-auth/api-key";
@@ -452,23 +454,22 @@ export const auth = betterAuth({
 });
 ```
 
-#### Secondary Storage with Fallback
-
+## #### Secondary Storage with Fallback
 Check secondary storage first, then fallback to database if not found.
 
 **Read behavior:**
 
-- Checks secondary storage first
-- If not found, queries the database
-- **Automatically populates secondary storage** when falling back to database (cache warming)
-- Ensures frequently accessed keys stay in cache over time
+* Checks secondary storage first
+* If not found, queries the database
+* **Automatically populates secondary storage** when falling back to database (cache warming)
+* Ensures frequently accessed keys stay in cache over time
 
 **Write behavior:**
 
-- Writes to **both** database and secondary storage
-- Ensures consistency between both storage layers
+* Writes to **both** database and secondary storage
+* Ensures consistency between both storage layers
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { createClient } from "redis";
 
@@ -493,11 +494,10 @@ export const auth = betterAuth({
 });
 ```
 
-### Custom Storage Methods
-
+## ### Custom Storage Methods
 You can provide custom storage methods specifically for API keys, overriding the global `secondaryStorage` configuration:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -524,20 +524,24 @@ export const auth = betterAuth({
 });
 ```
 
-## Rate Limiting
-
+## ## Rate Limiting
 Every API key can have its own rate limit settings. The built-in rate-limiting applies whenever an API key is validated, which includes:
 
-- When verifying an API key via the `/api-key/verify` endpoint
-- When using API keys for session creation (if `enableSessionForAPIKeys` is enabled), rate limiting applies to all endpoints that use the API key
+* When verifying an API key via the `/api-key/verify` endpoint
+* When using API keys for session creation (if `enableSessionForAPIKeys` is enabled), rate limiting applies to all endpoints that use the API key
 
-For other endpoints/methods that don't use API keys, you should utilize Better Auth's [built-in rate-limiting](https://better-auth.com/docs/concepts/rate-limit).
+For other endpoints/methods that don't use API keys, you should utilize Better Auth's [built-in rate-limiting](/docs/concepts/rate-limit).
 
-You can refer to the rate-limit default configurations below in the [API Key plugin options](https://better-auth.com/docs/plugins/api-key/reference#api-key-plugin-options).
+> **Double Rate-Limit Increment**: If you manually verify an API key using `verifyApiKey()` and then fetch a session using `getSession()` with the same API key header, both operations will increment the rate limit counter, resulting in two increments for a single request. To avoid this, either:
+> 
+> * Use `enableSessionForAPIKeys: true` and let Better Auth handle session creation automatically (recommended)
+> * Or verify the API key once and reuse the validated result instead of calling both methods separately
+
+You can refer to the rate-limit default configurations below in the [API Key plugin options](/docs/plugins/api-key/reference#api-key-plugin-options).
 
 An example default value:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -556,7 +560,9 @@ export const auth = betterAuth({
 
 For each API key, you can customize the rate-limit options on create.
 
-```
+> You can only customize the rate-limit options on the server auth instance.
+
+```ts title="create-api-key.ts"
 import { auth } from "@/lib/auth"
 
 const apiKey = await auth.api.createApiKey({
@@ -569,52 +575,57 @@ const apiKey = await auth.api.createApiKey({
 });
 ```
 
-### How does it work?
-
+## ### How does it work?
 The rate limiting system uses a sliding window approach:
 
 1. **First Request**: When an API key is used for the first time (no previous `lastRequest`), the request is allowed and `requestCount` is set to 1.
+
 2. **Within Window**: For subsequent requests within the `timeWindow`, the `requestCount` is incremented. If `requestCount` reaches `rateLimitMax`, the request is rejected with a `RATE_LIMITED` error code.
+
 3. **Window Reset**: If the time since the last request exceeds the `timeWindow`, the window resets: `requestCount` is reset to 1 and `lastRequest` is updated to the current time.
+
 4. **Rate Limit Exceeded**: When a request is rejected due to rate limiting, the error response includes a `tryAgainIn` value (in milliseconds) indicating how long to wait before the window resets.
 
 **Disabling Rate Limiting**:
 
-- **Globally**: Set `rateLimit.enabled: false` in plugin options
-- **Per Key**: Set `rateLimitEnabled: false` when creating or updating an API key
-- **Null Values**: If `rateLimitTimeWindow` or `rateLimitMax` is `null`, rate limiting is effectively disabled for that key
+* **Globally**: Set `rateLimit.enabled: false` in plugin options
+* **Per Key**: Set `rateLimitEnabled: false` when creating or updating an API key
+* **Null Values**: If `rateLimitTimeWindow` or `rateLimitMax` is `null`, rate limiting is effectively disabled for that key
 
 When rate limiting is disabled (globally or per-key), requests are still allowed but `lastRequest` is updated for tracking purposes.
 
-## Remaining, refill, and expiration
+## ## Remaining, refill, and expiration
+The remaining count is the number of requests left before the API key is disabled.
+The refill interval is the interval in milliseconds where the `remaining` count is refilled when the interval has passed since the last refill (or since creation if no refill has occurred yet).
+The expiration time is the expiration date of the API key.
 
-The remaining count is the number of requests left before the API key is disabled. The refill interval is the interval in milliseconds where the `remaining` count is refilled when the interval has passed since the last refill (or since creation if no refill has occurred yet). The expiration time is the expiration date of the API key.
+## ### How does it work?
+## #### Remaining:
+Whenever an API key is used, the `remaining` count is updated.
+If the `remaining` count is `null`, then there is no cap to key usage.
+Otherwise, the `remaining` count is decremented by 1.
+If the `remaining` count is 0, then the API key is disabled & removed.
 
-### How does it work?
+## #### refillInterval & refillAmount:
+Whenever an API key is created, the `refillInterval` and `refillAmount` are set to `null` by default.
+This means that the API key will not be refilled automatically.
+However, if both `refillInterval` & `refillAmount` are set, then whenever the API key is used:
 
-#### Remaining:
+* The system checks if the time since the last refill (or since creation if no refill has occurred) exceeds the `refillInterval`
+* If the interval has passed, the `remaining` count is reset to `refillAmount` (not incremented)
+* The `lastRefillAt` timestamp is updated to the current time
 
-Whenever an API key is used, the `remaining` count is updated. If the `remaining` count is `null`, then there is no cap to key usage. Otherwise, the `remaining` count is decremented by 1. If the `remaining` count is 0, then the API key is disabled & removed.
+## #### Expiration:
+Whenever an API key is created, the `expiresAt` is set to `null`.
+This means that the API key will never expire.
+However, if the `expiresIn` is set, then the API key will expire after the `expiresIn` time.
 
-#### refillInterval & refillAmount:
-
-Whenever an API key is created, the `refillInterval` and `refillAmount` are set to `null` by default. This means that the API key will not be refilled automatically. However, if both `refillInterval` & `refillAmount` are set, then whenever the API key is used:
-
-- The system checks if the time since the last refill (or since creation if no refill has occurred) exceeds the `refillInterval`
-- If the interval has passed, the `remaining` count is reset to `refillAmount` (not incremented)
-- The `lastRefillAt` timestamp is updated to the current time
-
-#### Expiration:
-
-Whenever an API key is created, the `expiresAt` is set to `null`. This means that the API key will never expire. However, if the `expiresIn` is set, then the API key will expire after the `expiresIn` time.
-
-## Custom Key generation & verification
-
+## ## Custom Key generation & verification
 You can customize the key generation and verification process straight from the plugin options.
 
 Here's an example:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -640,15 +651,34 @@ export const auth = betterAuth({
 });
 ```
 
-If an API key is validated from your `customAPIKeyValidator`, we still must match that against the database's key. However, by providing this custom function, you can improve the performance of the API key verification process, as all failed keys can be invalidated without having to query your database.
+> If you're **not** using the `length` property provided by `customKeyGenerator`, you **must** set the `defaultKeyLength` property to how long generated keys will be.
+> 
+> ```ts title="auth.ts"
+> import { betterAuth } from "better-auth"
+> import { apiKey } from "@better-auth/api-key"
+> 
+> export const auth = betterAuth({
+>   plugins: [
+>     apiKey({
+>       customKeyGenerator: () => {
+>         return crypto.randomUUID();
+>       },
+>       defaultKeyLength: 36, // Or whatever the length is
+>     }),
+>   ],
+> });
+> ```
 
-## Metadata
+If an API key is validated from your `customAPIKeyValidator`, we still must match that against the database's key.
+However, by providing this custom function, you can improve the performance of the API key verification process,
+as all failed keys can be invalidated without having to query your database.
 
+## ## Metadata
 We allow you to store metadata alongside your API keys. This is useful for storing information about the key, such as a subscription plan for example.
 
 To store metadata, make sure you haven't disabled the metadata feature in the plugin options.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { apiKey } from "@better-auth/api-key"
 
@@ -663,21 +693,21 @@ export const auth = betterAuth({
 
 Then, you can store metadata in the `metadata` field of the API key object.
 
-```
+```ts title="create-api-key.ts"
 import { auth } from "@/lib/auth"
 
 const apiKey = await auth.api.createApiKey({
   body: {
-    metadata: { 
-      plan: "premium", 
-    }, 
+    metadata: { // [!code highlight]
+      plan: "premium", // [!code highlight]
+    }, // [!code highlight]
   },
 });
 ```
 
 You can then retrieve the metadata from the API key object.
 
-```
+```ts title="get-api-key.ts"
 import { auth } from "@/lib/auth"
 
 const apiKey = await auth.api.getApiKey({

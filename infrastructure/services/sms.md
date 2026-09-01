@@ -2,35 +2,37 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/services/sms
 title: "Sms"
 description: ""
-access_date: 2026-09-01T02:53:20.078Z
-current_date: 2026-09-01T02:53:20.078Z
+access_date: 2026-09-01T03:00:57.147Z
+current_date: 2026-09-01T03:00:57.147Z
 ---
+
+# SMS Service (/docs/infrastructure/services/sms)
 
 Better Auth Infrastructure provides a managed SMS service for sending OTP codes for phone verification and two-factor authentication. Send verification codes without managing SMS providers.
 
-## Overview
 
+
+## ## Overview
 The SMS service offers:
 
-- Pre-built SMS templates for common auth flows
-- E.164 phone number format support
-- Type-safe template variables
-- No infrastructure to manage
-- Global delivery support
+* Pre-built SMS templates for common auth flows
+* E.164 phone number format support
+* Type-safe template variables
+* No infrastructure to manage
+* Global delivery support
 
-## Installation
+> Note that SMS delivery is intended to only be used for authentication flows.
 
+## ## Installation
 The SMS service is included in the `@better-auth/infra` package:
 
-```
+```ts
 import { sendSMS, createSMSSender } from "@better-auth/infra";
 ```
 
-## Quick Start
-
-### Send a Single SMS
-
-```
+## ## Quick Start
+## ### Send a Single SMS
+```ts
 import { sendSMS } from "@better-auth/infra";
 
 await sendSMS({
@@ -40,9 +42,8 @@ await sendSMS({
 });
 ```
 
-### Create a Reusable Sender
-
-```
+## ### Create a Reusable Sender
+```ts
 import { createSMSSender } from "@better-auth/infra";
 
 const smsSender = createSMSSender({
@@ -58,13 +59,11 @@ await smsSender.send({
 });
 ```
 
-## Available Templates
-
-### phone-verification
-
+## ## Available Templates
+## ### phone-verification
 Sends a verification code for phone number verification.
 
-```
+```ts
 await sendSMS({
   to: "+1234567890",
   code: "123456",
@@ -76,11 +75,10 @@ await sendSMS({
 
 > Your verification code is 123456. It expires in 10 minutes.
 
-### two-factor
-
+## ### two-factor
 Sends a two-factor authentication code.
 
-```
+```ts
 await sendSMS({
   to: "+1234567890",
   code: "123456",
@@ -92,11 +90,10 @@ await sendSMS({
 
 > Your two-factor authentication code is 123456. Do not share this code with anyone.
 
-### sign-in-otp
-
+## ### sign-in-otp
 Sends a one-time password for passwordless sign-in.
 
-```
+```ts
 await sendSMS({
   to: "+1234567890",
   code: "123456",
@@ -108,11 +105,10 @@ await sendSMS({
 
 > Your sign-in code is 123456. It expires in 10 minutes.
 
-### Default (No Template)
-
+## ### Default (No Template)
 If you don't specify a template, a generic verification message is sent:
 
-```
+```ts
 await sendSMS({
   to: "+1234567890",
   code: "123456",
@@ -123,8 +119,7 @@ await sendSMS({
 
 > Your verification code is 123456.
 
-## Phone Number Format
-
+## ## Phone Number Format
 Phone numbers must be in E.164 format:
 
 ```
@@ -133,75 +128,66 @@ Phone numbers must be in E.164 format:
 
 **Examples:**
 
-- US: `+14155551234`
-- UK: `+447911123456`
-- Germany: `+4915112345678`
-- Japan: `+819012345678`
+* US: `+14155551234`
+* UK: `+447911123456`
+* Germany: `+4915112345678`
+* Japan: `+819012345678`
 
 **Common mistakes:**
 
-- Missing `+` prefix: `14155551234` ❌
-- Including spaces: `+1 415 555 1234` ❌
-- Including dashes: `+1-415-555-1234` ❌
-- Including parentheses: `+1 (415) 555-1234` ❌
+* Missing `+` prefix: `14155551234` ❌
+* Including spaces: `+1 415 555 1234` ❌
+* Including dashes: `+1-415-555-1234` ❌
+* Including parentheses: `+1 (415) 555-1234` ❌
 
-## Configuration
-
-### SMSConfig
-
-```
+## ## Configuration
+## ### SMSConfig
+```ts
 interface SMSConfig {
   apiKey?: string;   // Your Better Auth Infrastructure API key
   apiUrl?: string;   // Custom API URL (optional)
 }
 ```
 
-### Environment Variables
-
+## ### Environment Variables
 The SMS service automatically reads from environment variables:
 
-```
+```dotenv
 BETTER_AUTH_API_KEY=your_api_key_here
 BETTER_AUTH_API_URL=https://api.betterauth.com  # Optional
 ```
 
-## API Reference
-
-### sendSMS
-
+## ## API Reference
+## ### sendSMS
 Send a single SMS message.
 
-```
+```ts
 async function sendSMS(
   options: SendSMSOptions,
   config?: SMSConfig
 ): Promise<SendSMSResult>
 ```
 
-### SendSMSOptions
+## ### SendSMSOptions
+| Property   | Type            | Required | Description                           |
+| ---------- | --------------- | -------- | ------------------------------------- |
+| `to`       | `string`        | Yes      | Phone number in E.164 format          |
+| `code`     | `string`        | Yes      | The OTP code to send                  |
+| `template` | `SMSTemplateId` | No       | Template to use (defaults to generic) |
 
-| Property | Type | Required | Description |
-| --- | --- | --- | --- |
-| `to` | `string` | Yes | Phone number in E.164 format |
-| `code` | `string` | Yes | The OTP code to send |
-| `template` | `SMSTemplateId` | No | Template to use (defaults to generic) |
-
-### createSMSSender
-
+## ### createSMSSender
 Create a reusable SMS sender instance.
 
-```
+```ts
 const sender = createSMSSender(config?: SMSConfig);
 
 // Use the sender
 await sender.send(options: SendSMSOptions);
 ```
 
-## Response Format
-
-### SendSMSResult
-
-```
+## ## Response Format
+## ### SendSMSResult
+```ts
 interface SendSMSResult {
   success: boolean;
   messageId?: string;  // SMS provider message ID
@@ -209,9 +195,8 @@ interface SendSMSResult {
 }
 ```
 
-### Example Usage
-
-```
+## ### Example Usage
+```ts
 const result = await sendSMS({
   to: "+1234567890",
   code: "123456",
@@ -225,11 +210,10 @@ if (result.success) {
 }
 ```
 
-## Error Handling
-
+## ## Error Handling
 Common error scenarios:
 
-```
+```ts
 const result = await sendSMS({
   to: "+1234567890",
   code: "123456",
@@ -250,19 +234,17 @@ if (!result.success) {
 }
 ```
 
-## Integration with Better Auth
-
+## ## Integration with Better Auth
 When using the `dash()` or `sentinel()` plugins with Better Auth's phone authentication, SMS messages are automatically sent for:
 
-- Phone number verification
-- Phone-based two-factor authentication
-- Phone OTP sign-in
+* Phone number verification
+* Phone-based two-factor authentication
+* Phone OTP sign-in
 
 You don't need to call `sendSMS()` manually for these flows - the plugins handle it automatically.
 
-### Better Auth Phone Plugin Integration
-
-```
+## ### Better Auth Phone Plugin Integration
+```ts
 import { betterAuth } from "better-auth";
 import { phoneNumber } from "better-auth/plugins";
 import { dash } from "@better-auth/infra";
@@ -287,16 +269,9 @@ export const auth = betterAuth({
 });
 ```
 
-## Plan Requirements
+## ## Plan Requirements
+| Feature           | Starter | Pro | Business | Enterprise |
+| ----------------- | ------- | --- | -------- | ---------- |
+| Transactional SMS | -       | Yes | Yes      | Yes        |
 
-| Feature | Starter | Pro | Business | Enterprise |
-| --- | --- | --- | --- | --- |
-| Transactional SMS | \- | Yes | Yes | Yes |
-
-Transactional SMS is available on Pro plans and above.[Email Service](https://better-auth.com/docs/infrastructure/services/email)
-
-[
-
-Better Auth Infrastructure provides a managed transactional email service with pre-built templates for common authentication flows. Send verification emails, password resets, invitations, and more without managing email infrastructure.
-
-](https://better-auth.com/docs/infrastructure/services/email)
+Transactional SMS is available on Pro plans and above.
