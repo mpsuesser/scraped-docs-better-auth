@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-08-29T20:52:12.399Z
-current_date: 2026-08-29T20:52:12.399Z
+access_date: 2026-09-01T06:54:14.669Z
+current_date: 2026-09-01T06:54:14.669Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 33 of 33 plugins
+Showing 34 of 34 plugins
 
 |  | Description |
 | --- | --- |
@@ -53,3 +53,4 @@ Showing 33 of 33 plugins
 | [better-inbox](https://github.com/better-inbox/better-inbox)    [![stewartjarod](https://github.com/stewartjarod.png) stewartjarod](https://github.com/stewartjarod) | In-app notifications for Better Auth apps. One plugin, one migration, one component — notifications live in your database, addressed to your users. |
 | [better-auth-email-challenge](https://github.com/lapluviosilla/better-auth-email-challenge)    [![lapluviosilla](https://github.com/lapluviosilla.png) lapluviosilla](https://github.com/lapluviosilla) | Passwordless, multi-device email challenge — one challenge completable by an approval link or OTP, with browser-bound session issuance for safe cross-device sign-in. |
 | [@better-geetest/better-auth-plugin-gt4](https://github.com/typed-sigterm/better-geetest/tree/main/packages/better-auth-plugin-gt4)    [![Typed SIGTERM](https://github.com/typed-sigterm.png) Typed SIGTERM](https://github.com/typed-sigterm) | Integrate GeeTest gt4 bot protection by adding captcha verification for key endpoints. |
+| [better-auth-evp](https://github.com/qamarq/better-auth-evp)    [![qamarq](https://github.com/qamarq.png) qamarq](https://github.com/qamarq) | Email Verification Protocol (Chrome origin trial) plugin - lets a supporting browser verify mailbox ownership in the background and sign the user in, with automatic fallback to any other sign-in method when unsupported. |
