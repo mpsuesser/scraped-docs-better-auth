@@ -2,13 +2,13 @@
 url: https://better-auth.com/llms.txt/docs/ai-resources/mcp
 title: "Mcp"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-09-02T12:04:16.047Z
+current_date: 2026-09-02T12:04:16.047Z
 ---
 
 Connect Better Auth documentation to MCP-capable clients via the remote documentation MCP server.
 
-Better Auth hosts a **remote MCP server** that exposes documentation search, examples, and setup help to any MCP-capable client (Cursor, Claude Code, Open Code, and others).
+Better Auth hosts a **remote MCP server** that exposes documentation search, examples, and setup help to any MCP-capable client (Cursor, Codex, Claude Code, Open Code, and others).
 
 **Endpoint:** `https://mcp.better-auth.com/mcp`
 

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/community-adapters
 title: "Community Adapters"
 description: ""
-access_date: 2026-08-24T17:07:39.478Z
-current_date: 2026-08-24T17:07:39.478Z
+access_date: 2026-09-02T12:04:16.047Z
+current_date: 2026-09-02T12:04:16.047Z
 ---
 
 Community-built database adapters that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom adapter, get started by reading our [Create a Database
 
 ## Browse Community Adapters
 
-Showing 22 of 22 adapters
+Showing 23 of 23 adapters
 
 |  |  |  |
 | --- | --- | --- |
@@ -42,3 +42,4 @@ Showing 22 of 22 adapters
 | [`better-auth-azure-cosmos`](https://github.com/9hsein5/better-auth-azure-cosmos) | [Azure Cosmos DB](https://learn.microsoft.com/azure/cosmos-db/nosql/) | [![9hsein5](https://github.com/9hsein5.png) 9hsein5](https://github.com/9hsein5) |
 | [`better-auth-mongoose`](https://github.com/AshwinSathian/better-auth-mongoose) | [Mongoose](https://mongoosejs.com/) | [![Ashwin Sathian](https://github.com/AshwinSathian.png) Ashwin Sathian](https://github.com/AshwinSathian) |
 | [`@ilbertt/better-auth-bun-sql`](https://github.com/ilbertt/better-auth-bun-sql) | [Bun SQL](https://bun.com/docs/api/sql) | [![ilbertt](https://github.com/ilbertt.png) ilbertt](https://github.com/ilbertt) |
+| [`@a77ay/better-auth-mikro-orm`](https://github.com/a77ay/better-auth-mikro-orm) | [MikroORM](https://mikro-orm.io/) | [![A77AY](https://github.com/a77ay.png) A77AY](https://github.com/a77ay) |

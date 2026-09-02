@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/other-social-providers
 title: "Other Social Providers"
 description: ""
-access_date: 2026-09-01T14:16:27.864Z
-current_date: 2026-09-01T14:16:27.864Z
+access_date: 2026-09-02T12:04:16.047Z
+current_date: 2026-09-02T12:04:16.047Z
 ---
 
 # Other Social Providers (/docs/authentication/other-social-providers)
@@ -152,6 +152,7 @@ Provider authors and community maintainers can publish reusable helpers that ret
 
 | Provider                                                          | Package                                  | Repository                                                                                        | Maintained by                                        |
 | ----------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| [AgentID](https://agentid.com)                                    | `@agentmail/agentid-better-auth`         | [agentmail-to/agentid-better-auth](https://github.com/agentmail-to/agentid-better-auth)           | [@agentmail-to](https://github.com/agentmail-to)     |
 | [EVE Online](https://developers.eveonline.com/docs/services/sso/) | `@localisprimary/better-auth-eve-online` | [localisprimary/better-auth-eve-online](https://github.com/localisprimary/better-auth-eve-online) | [@localisprimary](https://github.com/localisprimary) |
 
 ## #### Create a Provider Helper
