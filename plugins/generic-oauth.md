@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/generic-oauth
 title: "Generic Oauth"
 description: ""
-access_date: 2026-08-30T01:44:42.599Z
-current_date: 2026-08-30T01:44:42.599Z
+access_date: 2026-09-02T16:29:23.117Z
+current_date: 2026-09-02T16:29:23.117Z
 ---
 
 # Generic OAuth (/docs/plugins/generic-oauth)
@@ -270,6 +270,20 @@ Provider configurations with the same `accountIssuer` and subject deduplicate on
 **clientSecret**: The OAuth client secret issued by your provider.
 
 **tokenEndpointAuth**: (Optional) Client authentication configuration for token endpoint requests. Use `{ method: "private_key_jwt", getClientAssertion }` for RFC 7523 client assertions, `{ method: "client_secret_basic" }` or `{ method: "client_secret_post" }` for secret-based clients, and `{ method: "none" }` for public clients. Secret-based methods require `clientSecret`; do not combine `clientSecret` with `private_key_jwt` or `none`. If omitted, Better Auth sends secret-based token requests when `clientSecret` is configured and public-client token requests when it is not.
+
+For providers with non-standard token authentication, use `method: "custom"` to update the request after Better Auth sets the standard grant parameters:
+
+```ts
+tokenEndpointAuth: {
+  method: "custom",
+  customizeRequest({ body }) {
+    body.set("client_key", providerClientKey);
+    body.set("client_secret", providerClientSecret);
+  },
+},
+```
+
+Better Auth builds the standard grant parameters, while `customizeRequest` adds the client authentication required by the provider.
 
 **scopes**: (Optional) An array of scopes to request from the provider (e.g., `["openid", "email", "profile"]`).
 
