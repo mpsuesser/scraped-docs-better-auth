@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/hono
 title: "Hono"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-03T21:16:33.937Z
+current_date: 2026-09-03T21:16:33.937Z
 ---
 
 # Hono Integration (/docs/integrations/hono)
@@ -72,7 +72,7 @@ If you're using another runtime, keep your existing entry point and add the same
 
 > The resulting Hono route must match your Better Auth `basePath`, which
 > defaults to `/api/auth`. If your app already uses `new
->       Hono().basePath("/api")`, mount Better Auth at `/auth/*`:
+>         Hono().basePath("/api")`, mount Better Auth at `/auth/*`:
 > 
 > ```ts
 > const app = new Hono().basePath("/api");
