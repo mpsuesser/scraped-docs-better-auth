@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/have-i-been-pwned
 title: "Have I Been Pwned"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-04T01:03:42.508Z
+current_date: 2026-09-04T01:03:42.508Z
 ---
 
 # Have I Been Pwned (/docs/plugins/have-i-been-pwned)
@@ -36,6 +36,20 @@ When a user attempts to create an account or update their password with a compro
   "message": "The password you entered has been compromised. Please choose a different password."
 }
 ```
+
+## ### Custom password flows
+Use `isPasswordCompromised` to check passwords in server-side flows that do not use Better Auth endpoints.
+
+```ts
+import { isPasswordCompromised } from "better-auth/plugins/haveibeenpwned"
+
+const compromised = await isPasswordCompromised(password)
+if (compromised) {
+    throw new Error("Please choose a password that has not been compromised")
+}
+```
+
+The function only sends the first five characters of the password's SHA-1 hash to Have I Been Pwned. It throws an `APIError` if the service cannot complete the check.
 
 ## ## Options
 ## ### `enabled`
