@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/database
 title: "Database"
 description: ""
-access_date: 2026-08-28T22:43:46.051Z
-current_date: 2026-08-28T22:43:46.051Z
+access_date: 2026-09-05T23:13:13.377Z
+current_date: 2026-09-05T23:13:13.377Z
 ---
 
 Learn about database adapters, migrations, secondary storage with Redis, core schema (user, session, account, verification), custom tables, extending schemas, ID generation, database hooks, and plugin schemas.
@@ -63,6 +63,28 @@ import { auth } from "./auth";
 const { toBeCreated, toBeAdded, runMigrations } = await getMigrations(auth.options);
 
 await runMigrations();
+```
+
+## Schema Validation
+
+During initialization, Better Auth compares the schema with the tables it writes and reports missing tables, missing columns, and required columns it never fills, together with their fixes. Errors appear through your configured logger without waiting for an authentication request. Requests await the same check and fail if the schema does not match; validation does not automatically stop your server or build.
+
+Validation is enabled by default, including in production, and caches a clean result or mismatch per adapter instance. Programmatic migrations invalidate cached checks for the same database instance. Requests waiting on an invalidated check await the new result. Restart after applying schema changes with other tools. Kysely reads live database metadata and needs database access during initialization. Drizzle checks the configured schema object and Prisma checks the generated client's data model, without querying the database. These local checks cannot detect migrations that were not applied to the database. The compact `prisma-client` model omits nullability, so required unwritten columns are reported by `auth generate` instead. Custom adapters without a registered check are not validated.
+
+For adapters without schema validation, initialization logs a warning if you explicitly set `validateSchema: true`, or a debug message if you omit the option. Database operations proceed normally.
+
+Set `advanced.database.validateSchema` to `false` to disable runtime validation and its skip message. `auth migrate` and `auth generate` retain their own schema diagnostics.
+
+```
+import { betterAuth } from "better-auth";
+
+export const auth = betterAuth({
+    advanced: {
+        database: {
+            validateSchema: false, 
+        },
+    },
+});
 ```
 
 ## Secondary Storage
@@ -346,7 +368,7 @@ Timestamp of when the session was updated
 
 Table Name: `account`
 
-An account represents one authentication method linked to a user. providerId identifies the configured connection; accountId is the provider subject; issuer stores the identity namespace—verified authority under issuer strategy, deterministic provider namespace under provider-id strategy. Under issuer strategy, a provider without a trusted authority uses the deterministic `local:oauth:<encoded providerId>` fallback namespace. Better Auth recognizes the provider-side identity by the unique pair of `issuer` and `accountId`, while `id` identifies the local account row. Use `id` when an account API asks for an `accountId`.
+An account represents one authentication method linked to a user. Better Auth recognizes the provider-side identity by the pair of `providerId` and `accountId`, while `id` identifies the local account row. Use `id` when an account API asks for an `accountId`.
 
 Table
 
@@ -374,21 +396,13 @@ FK
 
 The ID of the user
 
-issuer
-
-string
-
-\-
-
-The persisted identity namespace: a verified authority or deterministic provider namespace
-
 accountId
 
 string
 
 \-
 
-The stable account identifier within the provider namespace
+The stable account identifier assigned by the provider
 
 providerId
 
@@ -470,7 +484,7 @@ Date
 
 Timestamp of when the account was updated
 
-The database requires `issuer` and `accountId` and enforces a unique compound index across them for every account identity strategy. Newly generated configurations explicitly use [`account.identityStrategy: "provider-id"`](https://better-auth.com/docs/reference/options#identitystrategy), so `issuer` contains a deterministic `local:oauth:<encoded providerId>` namespace, or `local:credential` for credential accounts. An omitted strategy remains a v1.7 compatibility mode that stores the verified authority and warns once; explicit `"issuer"` selects the same namespace without a warning. The selected strategy changes the stored namespace value, not the generated schema.
+Credential accounts use the `credential` provider ID and the linked user's stable `id` as `accountId`.
 
 ### Verification
 

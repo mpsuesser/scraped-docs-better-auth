@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/auth0-migration-guide
 title: "Auth0 Migration Guide"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-05T23:13:13.377Z
+current_date: 2026-09-05T23:13:13.377Z
 ---
 
 # Migrating from Auth0 to Better Auth (/docs/guides/auth0-migration-guide)
@@ -211,51 +211,10 @@ const auth0Client = new ManagementClient({
     clientSecret: process.env.AUTH0_SECRET!,
 });
 
-// Map every social provider in your Auth0 export to the exact trusted issuer
-// Better Auth uses. For OAuth providers without one, use
-// local:oauth:<encoded providerId>, with the provider ID segment
-// percent-encoded.
-const accountIssuers: Record<string, string> = {
-    github: "local:oauth:github",
-    google: "https://accounts.google.com",
-};
-
-function getAccountIssuer(providerId: string) {
-    const issuer = accountIssuers[providerId];
-    if (!issuer) {
-        throw new Error(`Missing trusted issuer for ${providerId}`);
-    }
-    return issuer;
-}
-
 function getAccountProviderId(identity: { provider: string }) {
     return identity.provider === "auth0"
         ? "credential"
         : (identity.provider.split("-")[0] ?? identity.provider);
-}
-
-function assertAccountIssuerCoverage(
-    users: ReadonlyArray<{
-        identities?: ReadonlyArray<{ provider: string }>;
-    }>,
-) {
-    const missingProviderIds = [
-        ...new Set(
-            users
-                .flatMap((user) => user.identities ?? [])
-                .map(getAccountProviderId)
-                .filter(
-                    (providerId) =>
-                        providerId !== "credential" && !accountIssuers[providerId],
-                ),
-        ),
-    ].sort();
-
-    if (missingProviderIds.length > 0) {
-        throw new Error(
-            `Missing trusted issuers for Auth0 providers: ${missingProviderIds.join(", ")}. Update accountIssuers before running the migration.`,
-        );
-    }
 }
 
 function safeDateConversion(timestamp?: string | number): Date {
@@ -387,9 +346,6 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
     for (const identity of auth0User.identities) {
         try {
             const providerId = getAccountProviderId(identity);
-            const issuer = providerId === "credential"
-                ? "local:credential"
-                : getAccountIssuer(providerId);
             const accountId = providerId === "credential"
                 ? userId
                 : identity.user_id;
@@ -400,7 +356,6 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
                     userId: userId,
                     password: await migratePassword(auth0User),
                     providerId: providerId || identity.provider,
-                    issuer,
                     accountId,
                     accessToken: identity.access_token,
                     tokenType: identity.token_type,
@@ -425,7 +380,6 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
                         userId: userId,
                         password: await migratePassword(auth0User),
                         providerId: providerId,
-                        issuer,
                         accountId,
                         accessToken: identity.access_token,
                         tokenType: identity.token_type,
@@ -549,7 +503,6 @@ async function migrateFromAuth0() {
 
 
         console.log(`Found ${auth0Users.length} users to migrate`);
-        assertAccountIssuerCoverage(auth0Users);
 
         for (const auth0User of auth0Users) {
             try {

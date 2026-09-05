@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/clerk-migration-guide
 title: "Clerk Migration Guide"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-05T23:13:13.377Z
+current_date: 2026-09-05T23:13:13.377Z
 ---
 
 # Migrating from Clerk to Better Auth (/docs/guides/clerk-migration-guide)
@@ -216,22 +216,6 @@ import { generateRandomString, symmetricEncrypt } from "better-auth/crypto";
 
 import { auth } from "@/lib/auth"; // import your auth instance
 
-// Review every provider in your Clerk export. Use the exact trusted issuer
-// Better Auth uses, or local:oauth:<encoded providerId> when it has no
-// issuer. The provider ID segment is percent-encoded.
-const accountIssuers: Record<string, string> = {
-  github: "local:oauth:github",
-  google: "https://accounts.google.com",
-};
-
-function getAccountIssuer(providerId: string) {
-  const issuer = accountIssuers[providerId];
-  if (!issuer) {
-    throw new Error(`Missing trusted issuer for ${providerId}`);
-  }
-  return issuer;
-}
-
 function getCSVData(csv: string) {
   const lines = csv.split('\n').filter(line => line.trim());
   const headers = lines[0]?.split(',').map(header => header.trim()) || [];
@@ -419,7 +403,6 @@ async function migrateFromClerk() {
                       data: {
                           id,
                           providerId: provider,
-                          issuer: "local:credential",
                           accountId: createdUser.id,
                           scope: approved_scopes,
                           userId: createdUser.id,
@@ -435,7 +418,6 @@ async function migrateFromClerk() {
                       data: {
                           id,
                           providerId,
-                          issuer: getAccountIssuer(providerId),
                           accountId: externalAccount.provider_user_id,
                           scope: approved_scopes,
                           userId: createdUser.id,

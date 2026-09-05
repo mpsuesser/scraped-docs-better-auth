@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/supabase-migration-guide
 title: "Supabase Migration Guide"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-05T23:13:13.377Z
+current_date: 2026-09-05T23:13:13.377Z
 ---
 
 # Migrating from Supabase Auth to Better Auth (/docs/guides/supabase-migration-guide)
@@ -240,37 +240,7 @@ const CONFIG = {
    * Format: {phone_number}@{tempEmailDomain}
    */
   tempEmailDomain: 'temp.better-auth.com',
-  /**
-   * Configure every social provider enabled in Better Auth with the exact
-   * trusted issuer it uses. For OAuth providers without one, use
-   * local:oauth:<encoded providerId>. The provider ID segment is
-   * percent-encoded. The script checks this map before it writes.
-   */
-  accountIssuers: {
-    github: 'local:oauth:github',
-    google: 'https://accounts.google.com',
-  } as Record<string, string>,
 };
-
-function getAccountIssuer(providerId: string) {
-  const issuer = CONFIG.accountIssuers[providerId];
-  if (!issuer) {
-    throw new Error(`Missing trusted issuer for ${providerId}`);
-  }
-  return issuer;
-}
-
-function assertAccountIssuerCoverage(providerIds: readonly string[]) {
-  const missingProviderIds = providerIds
-    .filter((providerId) => !CONFIG.accountIssuers[providerId])
-    .sort();
-
-  if (missingProviderIds.length > 0) {
-    throw new Error(
-      `Missing trusted issuers for Better Auth social providers: ${missingProviderIds.join(', ')}. Update CONFIG.accountIssuers before running the migration.`,
-    );
-  }
-}
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -308,7 +278,6 @@ type AccountInsertData = {
   id: string;
   userId: string;
   providerId: string;
-  issuer: string;
   accountId: string;
   password: string | null;
   createdAt: string | null;
@@ -749,7 +718,6 @@ async function processBatch(
             id: generateId(),
             userId: user.id,
             providerId: 'credential',
-            issuer: 'local:credential',
             accountId: user.id,
             password: user.encrypted_password || null,
             createdAt: user.created_at,
@@ -762,7 +730,6 @@ async function processBatch(
             id: generateId(),
             userId: user.id,
             providerId: identity.provider,
-            issuer: getAccountIssuer(identity.provider),
             accountId: identity.identity_data?.sub || identity.provider_id,
             password: null,
             createdAt: identity.created_at ?? user.created_at,
@@ -774,7 +741,7 @@ async function processBatch(
 
     if (accountsData.length > 0) {
       const maxParamsPerQuery = 65000;
-      const fieldsPerAccount = 8;
+      const fieldsPerAccount = 7;
       const accountsPerChunk = Math.floor(maxParamsPerQuery / fieldsPerAccount);
 
       for (let i = 0; i < accountsData.length; i += accountsPerChunk) {
@@ -786,13 +753,12 @@ async function processBatch(
 
         for (const acc of chunk) {
           accountPlaceholders.push(
-            `($${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++})`,
+            `($${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++}, $${paramIndex++})`,
           );
           accountValues.push(
             acc.id,
             acc.userId,
             acc.providerId,
-            acc.issuer,
             acc.accountId,
             acc.password,
             acc.createdAt,
@@ -802,7 +768,7 @@ async function processBatch(
 
         await toDB.query(
           `
-          INSERT INTO "account" ("id", "userId", "providerId", "issuer", "accountId", "password", "createdAt", "updatedAt")
+          INSERT INTO "account" ("id", "userId", "providerId", "accountId", "password", "createdAt", "updatedAt")
           VALUES ${accountPlaceholders.join(', ')}
           ON CONFLICT ("id") DO NOTHING
         `,
@@ -832,7 +798,6 @@ async function migrateFromSupabase() {
 
   // Validate Better Auth configuration
   const ctx = await validateAuthConfig();
-  assertAccountIssuerCoverage(Object.keys(ctx.options.socialProviders ?? {}));
 
   try {
     const countResult = await fromDB.query<{ count: string }>(

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/sso
 title: "Sso"
 description: ""
-access_date: 2026-08-28T22:43:46.051Z
-current_date: 2026-08-28T22:43:46.051Z
+access_date: 2026-09-05T23:13:13.377Z
+current_date: 2026-09-05T23:13:13.377Z
 ---
 
 Integrate Single Sign-On (SSO) with your application.
@@ -84,7 +84,7 @@ To register an OIDC provider, use the `registerSSOProvider` endpoint and provide
 
 A redirect URL will be automatically generated using the provider ID. For instance, if the provider ID is `hydra`, the redirect URL would be `{baseURL}/api/auth/sso/callback/hydra`. Note that `/api/auth` may vary depending on your base path configuration.
 
-Better Auth verifies the OIDC issuer and `sub` claim before resolving an account. providerId identifies the configured connection; accountId is the provider subject; issuer stores the identity namespace—verified authority under issuer strategy, deterministic provider namespace under provider-id strategy. With explicit `account.identityStrategy: "provider-id"`, protocol verification is unchanged, but the persisted issuer becomes the deterministic `local:oauth:<encoded providerId>` namespace. Explicit `"issuer"` persists the verified authority. Omitting the option uses issuer identity only as v1.7 compatibility behavior; newly generated configurations select provider-id explicitly. The `mapping` option maps profile fields such as email, name, and image, but it cannot replace the account subject. Under issuer-scoped identity, provider aliases that return the same issuer and subject resolve to one external identity; this deduplication does not create independent grant or provider lifecycle records for each alias.
+Better Auth identifies an OIDC account by the provider ID and the verified `sub` claim. The `mapping` option maps profile fields such as email, name, and image, but it cannot replace the account subject.
 
 #### Example
 
@@ -314,6 +314,7 @@ const auth = betterAuth({
                 }
 
                 const provisionedUser = await findProvisionedUserByAccountKey({
+                    providerId: input.providerId,
                     issuer: input.accountKey.issuer,
                     subject: input.accountKey.accountId,
                     database: context.database,
@@ -337,11 +338,11 @@ const auth = betterAuth({
 });
 ```
 
-`accountKey` always contains the verified protocol authority and subject: the validated OIDC ID Token's exact `iss` and `sub` claims, or the verified SAML identity provider entity ID and signed `NameID`. It does not change with `account.identityStrategy`. Under the provider-id strategy, Better Auth persists the same subject with a deterministic provider namespace in `Account.issuer`; that storage choice is separate from the verified issuer exposed to the resolver. Subject and `NameID` matching is case-sensitive.
+For OIDC, `accountKey.issuer` and `accountKey.accountId` come from the validated ID Token's exact `iss` and `sub` claims. `verifiedIdTokenClaims` contains the complete verified ID Token payload, while `providerClaims` contains the protocol-accepted raw claims used for the profile. For SAML, the account key is the verified IdP entity ID and signed `NameID`; `providerAttributes` contains the verified assertion attributes without coercing multi-valued attributes into scalars. Subject and `NameID` matching is case-sensitive.
 
 `providerUser` contains normalized profile fields for either protocol. Profile fields, OIDC UserInfo claims, and SAML attributes may still require application-specific validation before they are used for authorization. `providerReference` is an opaque reference to the provider configuration accepted for this authentication flow. It detects provider replacement or authentication-configuration changes during the flow; do not persist it as a tenant or user binding.
 
-`findProvisionedUserByAccountKey` is application-owned in this example. It should query the application's provisioning registry by the verified protocol authority and subject through the transaction-scoped `database` adapter; it does not query Better Auth's persisted `Account.issuer` namespace. Do not fall back to matching an email address when the exact provisioned subject is absent.
+`findProvisionedUserByAccountKey` is application-owned in this example. It should resolve the exact provider, issuer, and subject tuple through the transaction-scoped `database` adapter. Do not fall back to matching an email address when the exact provisioned subject is absent.
 
 The resolver returns one of three decisions:
 
@@ -357,7 +358,7 @@ Database writes made through the transaction adapter during resolution, account 
 
 To register a SAML provider, use the `registerSSOProvider` endpoint with SAML configuration details. The provider will act as a Service Provider (SP) and integrate with your Identity Provider (IdP).
 
-Better Auth identifies a SAML account by the IdP entity ID and the signed `NameID`. The `issuer` field identifies your service provider, while the IdP entity ID comes from `idpMetadata.metadata` or an explicit `idpMetadata.entityID` in a manual configuration. Attribute mappings can populate profile fields, but they cannot replace the signed `NameID` account subject.
+Better Auth identifies a SAML account by the provider ID and the signed `NameID`. The `issuer` field identifies your service provider, while the IdP entity ID comes from `idpMetadata.metadata` or an explicit `idpMetadata.entityID` in a manual configuration. Attribute mappings can populate profile fields, but they cannot replace the signed `NameID` account subject.
 
 Applications that need to pin the IdP authority while storing a SAML connection can derive it through the same metadata parser used by SAML authentication:
 
