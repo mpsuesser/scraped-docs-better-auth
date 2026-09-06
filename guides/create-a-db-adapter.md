@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/create-a-db-adapter
 title: "Create A Db Adapter"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-09-06T05:37:10.752Z
+current_date: 2026-09-06T05:37:10.752Z
 ---
 
 Learn how to create a custom database adapter for Better-Auth
@@ -264,7 +264,7 @@ parameters:
 - `model`: The model/table name to update.
 - `where`: The `where` clause that must still match for the increment to apply.
 - `increment`: Numeric deltas to apply, such as `{ count: 1 }` or `{ remaining: -1 }`.
-- `set`: Optional fields to set in the same atomic operation.
+- `set`: Optional fields to set in the same atomic operation. `undefined` leaves a field unchanged, while `null` clears it.
 
 **Returns** `Promise<T | null>`: the updated record, or `null` if no row matched. Implementations must update at most one matching row.
 
@@ -281,6 +281,10 @@ incrementOne: async ({ model, where, increment, set }) => {
   return row ?? null;
 };
 ```
+
+Fallbacks reuse your adapter's CRUD methods. They need complete, stable row snapshots with mapped IDs, atomic conditional writes, and exact affected-row counts. Null comparisons must also match absent nullable fields.
+
+Fallback counters must be finite numbers, with null or missing values starting at zero. Use native methods for `bigint` counters, OR predicates on structured values, or trigger-generated return values. Fields not updated by the increment fallback reflect the initial read.
 
 ### findOne method
 

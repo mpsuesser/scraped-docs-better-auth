@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/1-7-upgrade-guide
 title: "1 7 Upgrade Guide"
 description: ""
-access_date: 2026-09-05T23:13:13.377Z
-current_date: 2026-09-05T23:13:13.377Z
+access_date: 2026-09-06T05:37:10.752Z
+current_date: 2026-09-06T05:37:10.752Z
 ---
 
 # Upgrading to Better Auth 1.7 (/docs/guides/1-7-upgrade-guide)
@@ -567,12 +567,12 @@ Two OAuth-provider behaviors read the incoming request origin. Behind a custom s
 ***
 
 ## ## Custom adapters and storage
-The atomic-state work introduces required methods. If you use only the built-in adapters and storage, you can skip this.
+The atomic-state work changes custom adapter and storage contracts. If you use only the built-in adapters and storage, you can skip this.
 
-## ### Database adapters must implement `incrementOne` and `consumeOne`
-`incrementOne` updates one row's counter atomically and returns the row, or null when the guard did not match. `consumeOne` reads and deletes a row in one step for single-use credentials. Both are now required, and the old fallback is gone.
+## ### Database adapter atomic methods are optional again
+1.7.0 through 1.7.2 required custom database adapters to implement `incrementOne` and `consumeOne`. They are optional again. Built-in adapters continue using their native implementations.
 
-**What to do:** implement both `incrementOne` and `consumeOne` in any custom adapter. A missing `consumeOne` throws at runtime. All built-in adapters already do.
+**What to do:** ensure your adapter provides atomic conditional writes and accurate affected-row counts. The factory fallbacks check the stored values before writing and reject unsafe snapshots or exhausted retries. See the [adapter guide](/docs/guides/create-a-db-adapter#consumeone-method) for the complete fallback requirements.
 
 ## ### Secondary storage must implement `increment` and `getAndDelete`
 `increment(key, ttl)` bumps a counter by one and sets the expiry only when the key is first created. `getAndDelete(key)` reads and removes a key in one step. Both were optional before and are now required.
