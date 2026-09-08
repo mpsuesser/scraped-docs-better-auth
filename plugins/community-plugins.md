@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-09-01T06:54:14.669Z
-current_date: 2026-09-01T06:54:14.669Z
+access_date: 2026-09-08T18:35:10.024Z
+current_date: 2026-09-08T18:35:10.024Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 34 of 34 plugins
+Showing 36 of 36 plugins
 
 |  | Description |
 | --- | --- |
@@ -31,7 +31,9 @@ Showing 34 of 34 plugins
 | [better-auth-opaque](https://github.com/TheUntraceable/better-auth-opaque)    [![TheUntraceable](https://github.com/theuntraceable.png) TheUntraceable](https://github.com/TheUntraceable) | Provides database-breach resistant authentication using the zero-knowledge OPAQUE protocol. |
 | [better-auth-firebase-auth](https://github.com/yultyyev/better-auth-firebase-auth)    [![yultyyev](https://github.com/yultyyev.png) yultyyev](https://github.com/yultyyev) | Firebase Authentication plugin for Better Auth with built-in email service, Google Sign-In, and password reset functionality. |
 | [better-auth-university](https://github.com/LuyxLLC/better-auth-university)    [![Fyrlex](https://github.com/Fyrlex.png) Fyrlex](https://github.com/Fyrlex) | University plugin for allowing only specific email domains to be passed through. Includes a University model with name and domain. |
-| [@alexasomba/better-auth-paystack](https://github.com/alexasomba/better-auth-paystack)    [![alexasomba](https://github.com/alexasomba.png) alexasomba](https://github.com/alexasomba) | Paystack plugin for Better Auth — integrates Paystack transactions, webhooks, and subscription flows. |
+| [better-auth-paystack](https://github.com/alexasomba/better-auth-paystack)    [![alexasomba](https://github.com/alexasomba.png) alexasomba](https://github.com/alexasomba) | Production-ready Paystack billing plugin for Better Auth with native and locally managed subscriptions, one-time payments, organization billing, trials, secure webhooks, automated limits, and more. |
+| [better-auth-flutterwave](https://github.com/alexasomba/better-auth-flutterwave)    [![alexasomba](https://github.com/alexasomba.png) alexasomba](https://github.com/alexasomba) | Flutterwave plugin for Better Auth — integrates Flutterwave payments, subscriptions, organization billing, marketplace split payments, webhooks, refunds, reconciliation, and more. |
+| [better-auth-solana-payments](https://github.com/alexasomba/better-auth-solana-payments)    [![alexasomba](https://github.com/alexasomba.png) alexasomba](https://github.com/alexasomba) | One-time Solana payment integration for Better Auth with Solana Pay checkout, server-side transfer verification, payment tracking, organization payments, and more. |
 | [better-auth-lark](https://github.com/uselark/better-auth-lark)    [![Vijit](https://github.com/vijit-lark.png) Vijit](https://github.com/vijit-lark) | Lark billing plugin that automatically creates customers and subscribes them to free plans on signup. |
 | [stargate-better-auth](https://github.com/neiii/stargate-better-auth)    [![neiii](https://github.com/neiii.png) neiii](https://github.com/neiii) | Gate access to resources based on whether the user has starred a repository |
 | [@sequenzy/better-auth](https://github.com/Sequenzy/sequenzy-better-auth)    [![Sequenzy](https://sequenzy.com/logo.png) Sequenzy](https://github.com/sequenzy) | Automatically add users to Sequenzy mailing lists on signup for seamless email marketing integration. |

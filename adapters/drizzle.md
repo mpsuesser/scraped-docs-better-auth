@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/drizzle
 title: "Drizzle"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-09-08T18:35:10.024Z
+current_date: 2026-09-08T18:35:10.024Z
 ---
 
 Integrate Better Auth with Drizzle ORM.
@@ -239,7 +239,7 @@ The `schemaName` option is also supported by the `@better-auth/drizzle-adapter/r
 
 ## Drizzle Relations v2
 
-The current Drizzle adapter uses Drizzle Relations v1. To use Drizzle Relations v2, you need to use the `@better-auth/drizzle-adapter/relations-v2` adapter.
+The default Drizzle adapter uses Relations v1. For Drizzle Relations v2, use `@better-auth/drizzle-adapter/relations-v2`.
 
 Install the adapter:
 
@@ -255,18 +255,18 @@ npm install @better-auth/drizzle-adapter
 
 #### bun
 
-Update your imports to use the relations-v2 adapter:
+Configure Better Auth with the v2 adapter and your auth schema:
 
 ```
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from '@better-auth/drizzle-adapter/relations-v2'; 
-import { db } from './database.ts';
-import * as schema from './schema.ts';
+import { db } from './db.ts';
+import * as schema from './auth-schema.ts';
 
 export const auth = betterAuth({
     database: drizzleAdapter(db, {
         provider: 'sqlite', // or "pg" or "mysql"
-        schema,
+        schema, 
     }),
     //... the rest of your config
 });
@@ -286,19 +286,14 @@ npx auth@latest generate
 
 #### bun
 
-The generated auth schema exports relations using `defineRelationsPart`, which is designed to be merged alongside your app's own `defineRelations`. Pass both to the drizzle instance — `schema` is no longer required since Drizzle v1 RC:
+Merge the generated auth relations after your app's relations in your existing Drizzle configuration:
 
 ```
-import { drizzle } from 'drizzle-orm/...';
-// generated relations from auth CLI (uses defineRelationsPart)
 import { authRelations } from './auth-schema.ts';
-// your app's own relations (uses defineRelations)
 import { relations } from './app-schema.ts';
 
 export const db = drizzle({
     client,
-    // authRelations uses defineRelationsPart,
-    // so it must come after the main relations
     relations: { ...relations, ...authRelations }, 
 });
 ```
