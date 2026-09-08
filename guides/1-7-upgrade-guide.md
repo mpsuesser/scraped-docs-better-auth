@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/1-7-upgrade-guide
 title: "1 7 Upgrade Guide"
 description: ""
-access_date: 2026-09-06T05:37:10.752Z
-current_date: 2026-09-06T05:37:10.752Z
+access_date: 2026-09-08T11:13:11.374Z
+current_date: 2026-09-08T11:13:11.374Z
 ---
 
 # Upgrading to Better Auth 1.7 (/docs/guides/1-7-upgrade-guide)
@@ -153,7 +153,7 @@ ALTER TABLE account DROP COLUMN issuer;
 Regenerate instead of writing SQL. The generated `account` model drops both the field and the compound unique index, and your own tooling produces the migration.
 
 ```bash
-npx @better-auth/cli@latest generate
+npx auth@latest generate
 ```
 
 #### MongoDB
