@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/instrumentation
 title: "Instrumentation"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-09T08:26:47.360Z
+current_date: 2026-09-09T08:26:47.360Z
 ---
 
 # Instrumentation (Experimental) (/docs/reference/instrumentation)
@@ -23,6 +23,23 @@ Better Auth uses the OpenTelemetry API to create spans. For traces to be collect
 For setup instructions, see the official OpenTelemetry documentation:
 
 * **[Node.js getting started](https://opentelemetry.io/docs/languages/js/getting-started/nodejs/)** – Core setup for Node.js apps
+
+## ## Disable Instrumentation
+To prevent Better Auth from creating OpenTelemetry spans, set `experimental.instrumentation.enabled` to `false`:
+
+```ts
+import { betterAuth } from "better-auth";
+
+export const auth = betterAuth({
+  experimental: {
+    instrumentation: {
+      enabled: false,
+    },
+  },
+});
+```
+
+Instrumentation is enabled by default. Disabling it affects only this auth instance, leaving spans from your application and other libraries unchanged.
 
 ## ## Supported Spans
 The following spans are supported by Better Auth:
