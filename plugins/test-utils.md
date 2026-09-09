@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/test-utils
 title: "Test Utils"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-09T11:06:04.377Z
+current_date: 2026-09-09T11:06:04.377Z
 ---
 
 # Test Utils (/docs/plugins/test-utils)
@@ -141,12 +141,15 @@ const member = await test.addMember({
 ## ### Auth Helpers
 Auth helpers create authenticated sessions for testing protected routes.
 
+All three helpers accept an optional `session` object for fields configured through `session.additionalFields` or a plugin's session schema. Supplied values override defaults; omitted fields keep their defaults. Standard session fields such as `id`, `userId`, `token`, and timestamps are ignored.
+
 ## #### login
 Creates a session for a user and returns session details, headers, cookies, and token.
 
 ```ts
 const { session, user, headers, cookies, token } = await test.login({
-    userId: user.id
+    userId: user.id,
+    session: { providerToken: "test-token" } // optional additional fields
 })
 
 // session - The session object with userId, token, etc.
