@@ -2,19 +2,22 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/signup_disabled
 title: "Signup_disabled"
 description: ""
-access_date: 2026-09-10T19:49:54.073Z
-current_date: 2026-09-10T19:49:54.073Z
+access_date: 2026-09-10T19:57:19.038Z
+current_date: 2026-09-10T19:57:19.038Z
 ---
+
+# signup_disabled (/docs/reference/errors/signup_disabled)
 
 Signup disabled error
 
+
+
 This error occurs when you disable sign up in your oauth provider config and a user tries to sign up with that provider.
 
-## How to fix
-
+## ## How to fix
 If you're using the `disableSignUp` option with stateless mode, you will see this error. Please consider using database hooks instead to handle this case.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
 
@@ -27,11 +30,11 @@ export const auth = betterAuth({
           if (!isAllowedToSignUp) {
             throw new APIError("BAD_REQUEST", {
               message: "Signup is disabled",
-            });
+			});
           },
         },
       },
-    },
+	},
   }
 });
 ```

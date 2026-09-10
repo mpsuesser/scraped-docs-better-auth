@@ -2,40 +2,40 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unable_to_link_account
 title: "Unable_to_link_account"
 description: ""
-access_date: 2026-09-10T19:49:54.073Z
-current_date: 2026-09-10T19:49:54.073Z
+access_date: 2026-09-10T19:57:19.038Z
+current_date: 2026-09-10T19:57:19.038Z
 ---
+
+# unable_to_link_account (/docs/reference/errors/unable_to_link_account)
 
 The account could not be linked.
 
-## What is it?
 
-This error occurs only during an OAuth flow when attempting to link the provider account to the currently authenticated user. Better Auth blocks the operation if either:
+
+## ## What is it?
+This error occurs only during an OAuth flow when attempting to link the provider account to the
+currently authenticated user. Better Auth blocks the operation if either:
 
 1. The database operation to create/update the linked account fails.
-2. The provider is not considered trusted for linking based on your auth configuration (`account.accountLinking.trustedProviders`).
+2. The provider is not considered trusted for linking based on your auth configuration
+   (`account.accountLinking.trustedProviders`).
 
-## Common Causes
+## ## Common Causes
+* The provider is not listed in `account.accountLinking.trustedProviders`.
+* Configuration differs across environments (dev/staging/prod), so the provider appears untrusted in one environment.
+* Database write failed due to unique constraint, foreign key violation, or transaction/connection issues.
+* A race condition linking the same provider concurrently caused a conflict.
+* Pending migrations or a mismatched schema between services caused the write to fail.
 
-- The provider is not listed in `account.accountLinking.trustedProviders`.
-- Configuration differs across environments (dev/staging/prod), so the provider appears untrusted in one environment.
-- Database write failed due to unique constraint, foreign key violation, or transaction/connection issues.
-- A race condition linking the same provider concurrently caused a conflict.
-- Pending migrations or a mismatched schema between services caused the write to fail.
+## ## How to resolve
+## ### Allow linking for the intended provider
+* Add the provider id (e.g., `github`, `google`) to `account.accountLinking.trustedProviders` in your auth config.
+* Verify you are using the correct provider id/slug that your integration expects.
 
-## How to resolve
+## ### Fix database reliability and constraints
+* Run pending migrations and ensure the schema matches the current Better Auth version.
+* Investigate DB errors (deadlocks, timeouts, connection pool limits) and retry if appropriate.
 
-### Allow linking for the intended provider
-
-- Add the provider id (e.g., `github`, `google`) to `account.accountLinking.trustedProviders` in your auth config.
-- Verify you are using the correct provider id/slug that your integration expects.
-
-### Fix database reliability and constraints
-
-- Run pending migrations and ensure the schema matches the current Better Auth version.
-- Investigate DB errors (deadlocks, timeouts, connection pool limits) and retry if appropriate.
-
-### Verify environment configuration
-
-- Ensure the same auth config is deployed to all environments and that environment variables are loaded as expected.
-- Double-check that the runtime sees the intended `trustedProviders` list.
+## ### Verify environment configuration
+* Ensure the same auth config is deployed to all environments and that environment variables are loaded as expected.
+* Double-check that the runtime sees the intended `trustedProviders` list.
