@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/clerk-migration-guide
 title: "Clerk Migration Guide"
 description: ""
-access_date: 2026-09-05T23:13:13.377Z
-current_date: 2026-09-05T23:13:13.377Z
+access_date: 2026-09-11T09:04:28.046Z
+current_date: 2026-09-11T09:04:28.046Z
 ---
 
 # Migrating from Clerk to Better Auth (/docs/guides/clerk-migration-guide)
@@ -478,7 +478,7 @@ After running the migration, verify that all users have been properly migrated b
 Now that the data is migrated, you can start updating your components to use Better Auth. Here's an example for the sign-in component:
 
 ```tsx title="components/auth/sign-in.tsx"
-import { authClient } from "better-auth/client";
+import { authClient } from "@/lib/auth-client";
 
 export const SignIn = () => {
   const handleSignIn = async () => {
