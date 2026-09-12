@@ -2,65 +2,103 @@
 url: https://better-auth.com/llms.txt/docs/integrations/nitro
 title: "Nitro"
 description: ""
-access_date: 2026-09-11T23:52:38.819Z
-current_date: 2026-09-11T23:52:38.819Z
+access_date: 2026-09-12T00:00:00.638Z
+current_date: 2026-09-12T00:00:00.638Z
 ---
 
+# Nitro Integration (/docs/integrations/nitro)
+
 Integrate Better Auth with Nitro.
+
+
 
 Better Auth can be integrated with your [Nitro Application](https://nitro.build/) (an open source framework to build web servers).
 
 This guide aims to help you integrate Better Auth with your Nitro application in a few simple steps.
 
-## Create a new Nitro Application
-
+## ## Create a new Nitro Application
 Start by scaffolding a new Nitro application using the following command:
 
-```
+```bash title="Terminal"
 npx create-nitro-app
 ```
 
 This will create the `nitro-app` directory and install all the dependencies. You can now open the `nitro-app` directory in your code editor.
 
-### Prisma Adapter Setup
+## ### Prisma Adapter Setup
+> This guide assumes that you have a basic understanding of Prisma. If you are new to Prisma, you can check out the [Prisma documentation](https://www.prisma.io/docs/getting-started).
+> 
+> The `sqlite` database used in this guide will not work in a production environment. You should replace it with a production-ready database like `PostgreSQL`.
 
 For this guide, we will be using the Prisma adapter. You can install prisma client by running the following command:
 
+
+
+
 #### npm
 
-```
+```bash
 npm install @prisma/client
 ```
 
 #### pnpm
 
+```bash
+pnpm add @prisma/client
+```
+
 #### yarn
+
+```bash
+yarn add @prisma/client
+```
 
 #### bun
 
+```bash
+bun add @prisma/client
+```
+
+
 `prisma` can be installed as a dev dependency using the following command:
+
+
+
 
 #### npm
 
-```
+```bash
 npm install -D prisma
 ```
 
 #### pnpm
 
+```bash
+pnpm add -D prisma
+```
+
 #### yarn
+
+```bash
+yarn add --dev prisma
+```
 
 #### bun
 
+```bash
+bun add --dev prisma
+```
+
+
 Generate a `schema.prisma` file in the `prisma` directory by running the following command:
 
-```
+```bash title="Terminal"
 npx prisma init
 ```
 
 You can now replace the contents of the `schema.prisma` file with the following:
 
-```
+```prisma title="prisma/schema.prisma"
 generator client {
   provider = "prisma-client-js"
 }
@@ -79,23 +117,22 @@ model Test {
 
 Ensure that you update the `DATABASE_URL` in your `.env` file to point to the location of your database.
 
-```
+```txt title=".env"
 DATABASE_URL="file:./dev.db"
 ```
 
 Run the following command to generate the Prisma client & sync the database:
 
-```
+```bash title="Terminal"
 npx prisma db push
 ```
 
-### Install & Configure Better Auth
-
-Follow steps 1 & 2 from the [installation guide](https://better-auth.com/docs/installation) to install Better Auth in your Nitro application & set up the environment variables.
+## ### Install & Configure Better Auth
+Follow steps 1 & 2 from the [installation guide](/docs/installation) to install Better Auth in your Nitro application & set up the environment variables.
 
 Once that is done, create your Better Auth instance within the `server/utils/auth.ts` file.
 
-```
+```ts title="server/utils/auth.ts"
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
@@ -108,33 +145,34 @@ export default betterAuth({
 });
 ```
 
-### Update Prisma Schema
-
+## ### Update Prisma Schema
 Use the Better Auth CLI to update your Prisma schema with the required models by running the following command:
 
-```
+```bash title="Terminal"
 npx auth generate --config server/utils/auth.ts
 ```
+
+> The `--config` flag is used to specify the path to the file where you have created your Better Auth instance.
 
 Head over to the `prisma/schema.prisma` file & save the file to trigger the format on save.
 
 After saving the file, you can run the `npx prisma db push` command to update the database schema.
 
-## Mount The Handler
-
+## ## Mount The Handler
 You can now mount the Better Auth handler in your Nitro application. You can do this by adding the following code to your `server/api/auth/[...all].ts` file:
 
-```
+```ts title="server/api/auth/[...all].ts"
 import auth from "~/server/utils/auth";
 
 export default auth;
 ```
 
-### CORS
+> This is a [catch-all](https://nitro.build/guide/routing#catch-all-route) route that will handle all requests to `/api/auth/*`.
 
+## ### CORS
 You can configure CORS for your Nitro app using a [route rule](https://nitro.build/docs/routing#cors) in your `nitro.config.ts`:
 
-```
+```ts title="nitro.config.ts"
 import { defineConfig } from "nitro";
 
 export default defineConfig({
@@ -149,13 +187,14 @@ export default defineConfig({
 });
 ```
 
+> If you use cookie-based sessions, set `credentials: true` and list your frontend's exact origin(s) in `origin`. A wildcard origin (`cors: true`) cannot be combined with credentials. If you only use bearer tokens, `credentials` isn't required. Ensure that the config is in sync with your frontend application.
+
 Learn more about CORS on the [Nitro documentation](https://nitro.build/docs/routing#cors).
 
-### Auth Guard/Middleware
-
+## ### Auth Guard/Middleware
 You can add an auth guard to your Nitro application to protect routes that require authentication. You can do this by creating a new file `server/utils/require-auth.ts` and adding the following code:
 
-```
+```ts title="server/utils/require-auth.ts"
 import { defineHandler, HTTPError } from "nitro";
 import auth from "~/server/utils/auth.ts";
 
@@ -176,11 +215,12 @@ export default defineHandler(async (event) => {
   // You can save the session to the event context for later use
   event.context.auth = session;
 });
+
 ```
 
 You can now use the [Object Syntax Event Handler](https://h3.dev/guide/basics/handler#object-syntax) to apply middleware to specific routes:
 
-```
+```ts title="server/api/secret.get.ts"
 import { defineHandler } from "nitro";
 import requireAuth from "~/server/utils/require-auth.ts";
 
@@ -194,6 +234,5 @@ export default defineHandler({
 });
 ```
 
-### Example
-
+## ### Example
 See an [example Nitro application integrated with Better Auth & Prisma](https://github.com/BayBreezy/nitrojs-better-auth-prisma).
