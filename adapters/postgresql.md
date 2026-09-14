@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/postgresql
 title: "Postgresql"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-09-14T18:07:43.919Z
+current_date: 2026-09-14T18:07:43.919Z
 ---
 
 Integrate Better Auth with PostgreSQL.
@@ -69,26 +69,53 @@ export const auth = betterAuth({
 
 ## Use a non-default schema
 
-In most cases, the default schema is `public`. To have Better Auth use a non-default schema (e.g., `auth`) for its tables, you have several options:
+PostgreSQL uses the `public` schema by default. You can select another schema explicitly with `database.schemaName` or configure PostgreSQL's `search_path`.
 
-### Option 1: Set search\_path in connection string (Recommended)
+When both are configured, Better Auth uses `database.schemaName`. Other unqualified queries continue to use the connection's `search_path`.
 
-Append the `options` parameter to your connection URI:
+### Set database.schemaName
+
+#### Kysely dialect
 
 ```
 import { betterAuth } from "better-auth";
+import { PostgresDialect } from "kysely";
 import { Pool } from "pg";
 
 export const auth = betterAuth({
-  database: new Pool({
-    connectionString: "postgres://user:password@localhost:5432/database?options=-c search_path=auth",
-  }),
+  database: {
+    dialect: new PostgresDialect({
+      pool: new Pool({
+        connectionString: "postgres://user:password@localhost:5432/database",
+      }),
+    }),
+    type: "postgres",
+    schemaName: "auth", 
+  },
 });
 ```
 
-URL-encode if needed: `?options=-c%20search_path%3Dauth`.
+#### Kysely instance
 
-### Option 2: Set search\_path using Pool options
+The schema applies to runtime queries and CLI migrations. `npx auth@latest migrate` creates it when needed and ignores same-named tables in other schemas.
+
+`npx auth@latest generate` starts the generated migration by creating the schema:
+
+```
+create schema if not exists "auth";
+```
+
+All subsequent statements use schema-qualified table names, such as `"auth"."user"`.
+
+The PostgreSQL role used by Better Auth must be able to create the schema and its tables. Otherwise, create the schema and grant access to that role before running `npx auth@latest migrate`.
+
+### Set search\_path
+
+Use PostgreSQL's `search_path` instead when passing a `pg.Pool` directly, or when every unqualified query on the connection should use the same schema.
+
+When using `search_path`, the Better Auth CLI expects the schema to already exist. Create it and grant access to the connection role before running `npx auth@latest migrate`.
+
+#### Pool options
 
 ```
 import { betterAuth } from "better-auth";
@@ -96,50 +123,22 @@ import { Pool } from "pg";
 
 export const auth = betterAuth({
   database: new Pool({
-    host: "localhost",
-    port: 5432,
-    user: "postgres",
-    password: "password",
-    database: "my-db",
+    connectionString: "postgres://user:password@localhost:5432/database",
     options: "-c search_path=auth",
   }),
 });
 ```
 
-### Option 3: Set default schema for database user
+#### Connection string
 
-Set the PostgreSQL user's default schema:
+To make the schema the default when a PostgreSQL role connects to a specific database:
 
 ```
-ALTER USER your_user SET search_path TO auth;
+ALTER ROLE your_role IN DATABASE your_database
+SET search_path TO auth;
 ```
 
-After setting this, reconnect to apply the changes.
-
-### Prerequisites
-
-Before using a non-default schema, ensure:
-
-1. **The schema exists:**
-	```
-	CREATE SCHEMA IF NOT EXISTS auth;
-	```
-2. **The user has appropriate permissions:**
-	```
-	GRANT ALL PRIVILEGES ON SCHEMA auth TO your_user;
-	GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA auth TO your_user;
-	ALTER DEFAULT PRIVILEGES IN SCHEMA auth GRANT ALL ON TABLES TO your_user;
-	```
-
-### How it works
-
-The Better Auth CLI migration system automatically detects your configured `search_path`:
-
-- When running `npx auth migrate`, it inspects only the tables in your configured schema
-- Tables in other schemas (e.g., `public`) are ignored, preventing conflicts
-- All new tables are created in your specified schema
-
-### Troubleshooting
+Reconnect after changing this default. Run `SHOW search_path` to verify the active value.
 
 ## Additional Information
 
