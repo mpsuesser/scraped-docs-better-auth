@@ -2,45 +2,41 @@
 url: https://better-auth.com/llms.txt/docs/reference/errors/unable_to_create_user
 title: "Unable_to_create_user"
 description: ""
-access_date: 2026-09-17T09:23:41.829Z
-current_date: 2026-09-17T09:23:41.829Z
+access_date: 2026-09-17T09:35:19.675Z
+current_date: 2026-09-17T09:35:19.675Z
 ---
+
+# unable_to_create_user (/docs/reference/errors/unable_to_create_user)
 
 The user could not be created during authentication.
 
-## What is it?
 
+
+## ## What is it?
 This error occurs when Better Auth fails to create a new user during the authentication process. It typically happens during OAuth or SSO-based signup flows when a new user record is expected to be created but the operation fails.
 
-## Common Causes
+## ## Common Causes
+* Database write failure due to connection issues, timeouts, or transaction errors.
+* Missing or invalid required fields in the user schema.
+* Unique constraint violations (e.g., email already exists).
+* Mismatch between your database schema and the expected Better Auth schema.
+* Errors thrown inside custom database hooks (e.g., `user.create`).
+* Misconfigured adapters or database clients.
 
-- Database write failure due to connection issues, timeouts, or transaction errors.
-- Missing or invalid required fields in the user schema.
-- Unique constraint violations (e.g., email already exists).
-- Mismatch between your database schema and the expected Better Auth schema.
-- Errors thrown inside custom database hooks (e.g., `user.create`).
-- Misconfigured adapters or database clients.
+## ## How to resolve
+## ### Verify database connectivity
+* Ensure your database is reachable and properly configured.
+* Check for connection pool issues, timeouts, or failed queries.
 
-## How to resolve
+## ### Validate schema and constraints
+* Make sure all required user fields are present and correctly typed.
+* Check for unique constraints (e.g., email conflicts).
 
-### Verify database connectivity
+## ### Run migrations
+* Ensure your database schema is up to date with the current Better Auth version.
 
-- Ensure your database is reachable and properly configured.
-- Check for connection pool issues, timeouts, or failed queries.
+## ### Review custom hooks
+* If you are using `databaseHooks.user.create`, ensure it is not throwing errors or returning invalid data.
 
-### Validate schema and constraints
-
-- Make sure all required user fields are present and correctly typed.
-- Check for unique constraints (e.g., email conflicts).
-
-### Run migrations
-
-- Ensure your database schema is up to date with the current Better Auth version.
-
-### Review custom hooks
-
-- If you are using `databaseHooks.user.create`, ensure it is not throwing errors or returning invalid data.
-
-### Inspect logs
-
-- Check server logs for detailed error messages during user creation.
+## ### Inspect logs
+* Check server logs for detailed error messages during user creation.
