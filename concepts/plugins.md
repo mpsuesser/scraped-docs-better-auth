@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/plugins
 title: "Plugins"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-22T19:36:46.933Z
+current_date: 2026-09-22T19:36:46.933Z
 ---
 
 Learn how to use and create Better Auth plugins, including defining endpoints, schemas, hooks, middleware, rate limits, trusted origins, and building client plugins with custom actions and atoms.
@@ -74,6 +74,22 @@ export const myPlugin = () => {
     } satisfies BetterAuthPlugin
 }
 ```
+
+### Register a plugin type
+
+Reusable plugins can augment `BetterAuthPluginRegistry` so `getPlugin()` returns their exact type. The registry key must match the plugin's `id`:
+
+```
+declare module "@better-auth/core" {
+  interface BetterAuthPluginRegistry<AuthOptions, Options> {
+    "my-plugin": {
+      creator: typeof myPlugin;
+    };
+  }
+}
+```
+
+This only affects TypeScript. Users must still add the plugin to their `plugins` array at runtime.
 
 ### Endpoints
 
