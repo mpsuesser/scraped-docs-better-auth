@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/admin
 title: "Admin"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-09-22T19:45:58.740Z
+current_date: 2026-09-22T19:45:58.740Z
 ---
 
 Admin plugin for Better Auth
@@ -902,8 +902,20 @@ admin({
 
 The message to show when a banned user tries to sign in. Defaults to "You have been banned from this application. Please contact support if you believe this is an error."
 
+You can also pass a synchronous or asynchronous function that receives the banned user and returns the message.
+
 ```
 admin({
   bannedUserMessage: "Custom banned user message",
+});
+```
+
+```
+admin({
+  bannedUserMessage: (user) => {
+    return user.banReason
+      ? \`You have been banned. Reason: ${user.banReason}\`
+      : "You have been banned.";
+  },
 });
 ```
