@@ -2,45 +2,45 @@
 url: https://better-auth.com/llms.txt/docs/plugins/have-i-been-pwned
 title: "Have I Been Pwned"
 description: ""
-access_date: 2026-09-04T01:03:42.508Z
-current_date: 2026-09-04T01:03:42.508Z
+access_date: 2026-09-24T17:28:43.350Z
+current_date: 2026-09-24T17:28:43.350Z
 ---
-
-# Have I Been Pwned (/docs/plugins/have-i-been-pwned)
 
 A plugin to check if a password has been compromised
 
-
-
 The Have I Been Pwned plugin helps protect user accounts by preventing the use of passwords that have been exposed in known data breaches. It uses the [Have I Been Pwned](https://haveibeenpwned.com/) API to check if a password has been compromised.
 
-## ## Installation
-## ### Add the plugin to your **auth** config
-```ts title="auth.ts"
+## Installation
+
+### Add the plugin to your auth config
+
+```
 import { betterAuth } from "better-auth"
-import { haveIBeenPwned } from "better-auth/plugins" // [!code highlight]
+import { haveIBeenPwned } from "better-auth/plugins"
 
 export const auth = betterAuth({
     plugins: [
-        haveIBeenPwned() // [!code highlight]
+        haveIBeenPwned() 
     ]
 })
 ```
 
-## ## Usage
+## Usage
+
 When a user attempts to create an account or update their password with a compromised password, they'll receive the following default error:
 
-```json
+```
 {
   "code": "PASSWORD_COMPROMISED",
   "message": "The password you entered has been compromised. Please choose a different password."
 }
 ```
 
-## ### Custom password flows
+### Custom password flows
+
 Use `isPasswordCompromised` to check passwords in server-side flows that do not use Better Auth endpoints.
 
-```ts
+```
 import { isPasswordCompromised } from "better-auth/plugins/haveibeenpwned"
 
 const compromised = await isPasswordCompromised(password)
@@ -51,40 +51,44 @@ if (compromised) {
 
 The function only sends the first five characters of the password's SHA-1 hash to Have I Been Pwned. It throws an `APIError` if the service cannot complete the check.
 
-## ## Options
-## ### `enabled`
+## Options
+
+### enabled
+
 Enable or disable password checks against the HIBP database. Useful for skipping checks in development or testing without removing the plugin. Defaults to `true`.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { haveIBeenPwned } from "better-auth/plugins"
 
 const auth = betterAuth({
     plugins: [
         haveIBeenPwned({
-            enabled: process.env.NODE_ENV === 'production' // [!code highlight]
+            enabled: process.env.NODE_ENV === 'production'
         })
     ]
 })
 ```
 
-## ### `customPasswordCompromisedMessage`
+### customPasswordCompromisedMessage
+
 Customize the error message shown when a compromised password is detected.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { haveIBeenPwned } from "better-auth/plugins"
 
 const auth = betterAuth({
     plugins: [
         haveIBeenPwned({
-            customPasswordCompromisedMessage: "Please choose a more secure password." // [!code highlight]
+            customPasswordCompromisedMessage: "Please choose a more secure password."
         })
     ]
 })
 ```
 
-## ## Security Notes
-* Only the first 5 characters of the password hash are sent to the API
-* The full password is never transmitted
-* Provides an additional layer of account security
+## Security Notes
+
+- Only the first 5 characters of the password hash are sent to the API
+- The full password is never transmitted
+- Provides an additional layer of account security
