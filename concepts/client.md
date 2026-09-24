@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/client
 title: "Client"
 description: ""
-access_date: 2026-09-22T18:36:54.038Z
-current_date: 2026-09-22T18:36:54.038Z
+access_date: 2026-09-24T14:54:32.060Z
+current_date: 2026-09-24T14:54:32.060Z
 ---
 
 Learn how to set up the Better Auth client for React, Vue, Svelte, and other frameworks, use hooks, configure fetch options, handle errors, and extend with client plugins.
@@ -393,4 +393,10 @@ import { authClient } from "@/lib/auth-client"
 await authClient.signIn.magicLink({
     email: "test@email.com"
 })
-```
+```[CLI](https://better-auth.com/docs/concepts/cli)
+
+[
+
+Learn about the Better Auth CLI commands for generating, migrating, and checking database schemas, creating initial admins, initializing projects, generating secret keys, and gathering diagnostic info.
+
+](https://better-auth.com/docs/concepts/cli)

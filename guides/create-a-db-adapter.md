@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/create-a-db-adapter
 title: "Create A Db Adapter"
 description: ""
-access_date: 2026-09-06T05:37:10.752Z
-current_date: 2026-09-06T05:37:10.752Z
+access_date: 2026-09-24T14:54:32.060Z
+current_date: 2026-09-24T14:54:32.060Z
 ---
 
 Learn how to create a custom database adapter for Better-Auth
@@ -138,10 +138,17 @@ adapter: ({
 
 ### Adapter Methods
 
-- All `model` values are already transformed into the correct model name for the database based on the end-user's schema configuration.
-	- This also means that if you need access to the `schema` version of a given model, you can't use this exact `model` value, you'll need to use the `getDefaultModelName` function provided in the options to convert the `model` to the `schema` version.
+- `model` is the model or table name to use for database operations.
+- `modelKey` is the model's key in the Better Auth schema.
 - We will automatically fill in any missing fields you return based on the user's `schema` configuration.
 - Any method that includes a `select` parameter, is only for the purpose of getting data from your database more efficiently. You do not need to worry about only returning what the `select` parameter states, as we will handle that for you.
+
+When an adapter needs schema metadata, resolve the key once and use it with helpers such as `getFieldName`:
+
+```
+const resolvedModelKey = modelKey ?? getDefaultModelName(model);
+const fieldName = getFieldName({ model: resolvedModelKey, field: "email" });
+```
 
 ### create method
 

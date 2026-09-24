@@ -2,13 +2,13 @@
 url: https://better-auth.com/llms.txt/docs/concepts/cli
 title: "Cli"
 description: ""
-access_date: 2026-09-05T23:13:13.377Z
-current_date: 2026-09-05T23:13:13.377Z
+access_date: 2026-09-24T14:54:32.060Z
+current_date: 2026-09-24T14:54:32.060Z
 ---
 
-Learn about the Better Auth CLI commands for generating and migrating database schemas, creating initial admins, initializing projects, generating secret keys, and gathering diagnostic info.
+Learn about the Better Auth CLI commands for generating, migrating, and checking database schemas, creating initial admins, initializing projects, generating secret keys, and gathering diagnostic info.
 
-Better Auth comes with a built-in CLI to help you manage the database schemas, create initial admin users, initialize your project, generate a secret key for your application, and gather diagnostic information about your setup.
+Better Auth comes with a built-in CLI to help you manage and check database schemas, create initial admin users, initialize your project, generate a secret key for your application, and gather diagnostic information about your setup.
 
 ## Generate
 
@@ -75,6 +75,31 @@ npx auth@latest migrate
 
 - `--config` - The path to your Better Auth config file. By default, the CLI will search for an auth.ts file in **./**, **./utils**, **./lib**, or any of these directories under the `src` directory.
 - `--yes` - Skip the confirmation prompt and apply the schema directly.
+
+## Check
+
+The `check` command runs all available checks. Run it whenever you want to verify your Better Auth setup, manually or in automation:
+
+```
+npx auth@latest check --config ./src/auth.ts
+```
+
+### Schema
+
+The `check schema` command verifies that your configured schema can hold what Better Auth writes. It does not create schema files or apply migrations.
+
+```
+npx auth@latest check schema --config ./src/auth.ts
+```
+
+The schema check reads the live database for Kysely, the configured schema object for Drizzle, and the generated client model for Prisma. Drizzle and Prisma checks do not confirm that migrations have been applied to the database. If validation is unavailable for your adapter, the command fails instead of silently skipping it. It also runs when runtime validation is disabled with `advanced.database.validateSchema: false`.
+
+### Options
+
+Both `check` and `check schema` accept:
+
+- `-c, --cwd` - The working directory. Defaults to the current directory.
+- `--config` - The path to your Better Auth config file. By default, the CLI searches the usual config locations.
 
 ## Create Admin
 
