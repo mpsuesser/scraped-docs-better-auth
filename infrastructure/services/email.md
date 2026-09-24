@@ -2,35 +2,35 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/services/email
 title: "Email"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-24T11:47:36.991Z
+current_date: 2026-09-24T11:47:36.991Z
 ---
-
-# Email Service (/docs/infrastructure/services/email)
 
 Better Auth Infrastructure provides a managed transactional email service with pre-built templates for common authentication flows. Send verification emails, password resets, invitations, and more without managing email infrastructure.
 
+## Overview
 
-
-## ## Overview
 The email service offers:
 
-* Pre-built, professionally designed email templates
-* Multiple provider support (AWS SES, SendGrid, Resend)
-* Type-safe template variables
-* No infrastructure to manage
-* Deliverability optimization
+- Pre-built, professionally designed email templates
+- Multiple provider support (AWS SES, SendGrid, Resend)
+- Type-safe template variables
+- No infrastructure to manage
+- Deliverability optimization
 
-## ## Installation
+## Installation
+
 The email service is included in the `@better-auth/infra` package:
 
-```ts
+```
 import { sendEmail, createEmailSender } from "@better-auth/infra";
 ```
 
-## ## Quick Start
-## ### Send a Single Email
-```ts
+## Quick Start
+
+### Send a Single Email
+
+```
 import { sendEmail } from "@better-auth/infra";
 
 await sendEmail({
@@ -45,8 +45,9 @@ await sendEmail({
 });
 ```
 
-## ### Create a Reusable Sender
-```ts
+### Create a Reusable Sender
+
+```
 import { createEmailSender } from "@better-auth/infra";
 
 const emailSender = createEmailSender({
@@ -65,11 +66,13 @@ await emailSender.send({
 });
 ```
 
-## ## Available Templates
-## ### verify-email
+## Available Templates
+
+### verify-email
+
 Sends an email verification link to new users.
 
-```ts
+```
 await sendEmail({
   template: "verify-email",
   to: "user@example.com",
@@ -84,10 +87,11 @@ await sendEmail({
 });
 ```
 
-## ### reset-password
+### reset-password
+
 Sends a password reset link.
 
-```ts
+```
 await sendEmail({
   template: "reset-password",
   to: "user@example.com",
@@ -101,10 +105,11 @@ await sendEmail({
 });
 ```
 
-## ### change-email
+### change-email
+
 Confirms an email address change request.
 
-```ts
+```
 await sendEmail({
   template: "change-email",
   to: "newemail@example.com",
@@ -119,10 +124,11 @@ await sendEmail({
 });
 ```
 
-## ### sign-in-otp
+### sign-in-otp
+
 Sends a one-time password for passwordless sign-in.
 
-```ts
+```
 await sendEmail({
   template: "sign-in-otp",
   to: "user@example.com",
@@ -135,10 +141,11 @@ await sendEmail({
 });
 ```
 
-## ### verify-email-otp
+### verify-email-otp
+
 Sends an OTP code for email verification.
 
-```ts
+```
 await sendEmail({
   template: "verify-email-otp",
   to: "user@example.com",
@@ -151,10 +158,11 @@ await sendEmail({
 });
 ```
 
-## ### reset-password-otp
+### reset-password-otp
+
 Sends an OTP code for password reset.
 
-```ts
+```
 await sendEmail({
   template: "reset-password-otp",
   to: "user@example.com",
@@ -167,10 +175,11 @@ await sendEmail({
 });
 ```
 
-## ### magic-link
+### magic-link
+
 Sends a magic link for passwordless authentication.
 
-```ts
+```
 await sendEmail({
   template: "magic-link",
   to: "user@example.com",
@@ -183,10 +192,11 @@ await sendEmail({
 });
 ```
 
-## ### two-factor
+### two-factor
+
 Sends a two-factor authentication code.
 
-```ts
+```
 await sendEmail({
   template: "two-factor",
   to: "user@example.com",
@@ -200,10 +210,11 @@ await sendEmail({
 });
 ```
 
-## ### invitation
+### invitation
+
 Sends an organization invitation.
 
-```ts
+```
 await sendEmail({
   template: "invitation",
   to: "newmember@example.com",
@@ -219,10 +230,11 @@ await sendEmail({
 });
 ```
 
-## ### application-invite
+### application-invite
+
 Sends an application-level invitation (inviting users to the platform).
 
-```ts
+```
 await sendEmail({
   template: "application-invite",
   to: "newuser@example.com",
@@ -237,10 +249,11 @@ await sendEmail({
 });
 ```
 
-## ### delete-account
+### delete-account
+
 Sends account deletion confirmation.
 
-```ts
+```
 await sendEmail({
   template: "delete-account",
   to: "user@example.com",
@@ -254,10 +267,11 @@ await sendEmail({
 });
 ```
 
-## ### stale-account-user
+### stale-account-user
+
 Notifies a user that their dormant account was accessed.
 
-```ts
+```
 await sendEmail({
   template: "stale-account-user",
   to: "user@example.com",
@@ -274,10 +288,11 @@ await sendEmail({
 });
 ```
 
-## ### stale-account-admin
+### stale-account-admin
+
 Notifies an admin about dormant account reactivation.
 
-```ts
+```
 await sendEmail({
   template: "stale-account-admin",
   to: "admin@yourapp.com",
@@ -296,26 +311,31 @@ await sendEmail({
 });
 ```
 
-## ## Configuration
-## ### EmailConfig
-```ts
+## Configuration
+
+### EmailConfig
+
+```
 interface EmailConfig {
   apiKey?: string;   // Your Better Auth Infrastructure API key
   apiUrl?: string;   // Custom API URL (optional)
 }
 ```
 
-## ### Environment Variables
+### Environment Variables
+
 The email service automatically reads from environment variables:
 
-```dotenv
+```
 BETTER_AUTH_API_KEY=your_api_key_here
 BETTER_AUTH_API_URL=https://api.betterauth.com  # Optional
 ```
 
-## ## Response Format
-## ### SendEmailResult
-```ts
+## Response Format
+
+### SendEmailResult
+
+```
 interface SendEmailResult {
   success: boolean;
   messageId?: string;  // Email provider message ID
@@ -323,8 +343,9 @@ interface SendEmailResult {
 }
 ```
 
-## ### Example Usage
-```ts
+### Example Usage
+
+```
 const result = await sendEmail({
   template: "verify-email",
   to: "user@example.com",
@@ -341,17 +362,19 @@ if (result.success) {
 }
 ```
 
-## ## Plan Requirements
-| Feature             | Starter | Pro | Business | Enterprise |
-| ------------------- | ------- | --- | -------- | ---------- |
-| Transactional Email | -       | Yes | Yes      | Yes        |
+## Plan Requirements
+
+| Feature | Starter | Pro | Business | Enterprise |
+| --- | --- | --- | --- | --- |
+| Transactional Email | \- | Yes | Yes | Yes |
 
 Transactional email is available on Pro plans and above.
 
-## ## Integration with Better Auth
+## Integration with Better Auth
+
 The email service integrates seamlessly with Better Auth's authentication flows. Here's a complete example:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
 import { sendEmail } from "@better-auth/infra";
@@ -390,7 +413,7 @@ export const auth = betterAuth({
   plugins: [
     organization({
       async sendInvitationEmail(data) {
-        const inviteLink = `https://yourapp.com/accept-invitation/${data.id}`;
+        const inviteLink = \`https://yourapp.com/accept-invitation/${data.id}\`;
         await sendEmail({
           template: "invitation",
           to: data.email,
@@ -407,6 +430,16 @@ export const auth = betterAuth({
     }),
   ],
 });
-```
+```[Security Plugin (sentinel)](https://better-auth.com/docs/infrastructure/plugins/sentinel)
 
-> Avoid awaiting the email sending in production to prevent timing attacks. On serverless platforms, use `waitUntil` or similar to ensure the email is sent without blocking the response.
+[
+
+The \`sentinel()\` plugin provides comprehensive security and abuse protection for your authentication system. It detects and prevents various attack vectors including credential stuffing, impossible travel, free trial abuse, and more.
+
+](https://better-auth.com/docs/infrastructure/plugins/sentinel)[
+
+SMS Service
+
+Better Auth Infrastructure provides a managed SMS service for sending OTP codes for phone verification and two-factor authentication. Send verification codes without managing SMS providers.
+
+](https://better-auth.com/docs/infrastructure/services/sms)
