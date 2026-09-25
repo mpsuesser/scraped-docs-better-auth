@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-09-25T21:31:20.573Z
+current_date: 2026-09-25T21:31:20.573Z
 ---
 
 A Better Auth plugin that enables your auth server to serve as an OAuth 2.1 provider.
@@ -1005,7 +1005,24 @@ oauthProvider({
 })
 ```
 
-The plugin will redirect the user to the specified path with `client_id`, `scope`, and, when requested, `claims` query parameters. Use `scope` and `claims.userinfo` to display the complete access request on your consent screen. Once the user consents, you can call `oauth2.consent` to complete the authorization.
+The plugin will redirect the user to the specified path with `client_id`, `scope`, and, when requested, `claims` query parameters. Verify the signed query on the server before displaying the consent screen. Use the same secret that the OAuth provider uses; `auth.$context.secret` resolves the configured secret, including when using versioned `secrets`. Keep it on the server.
+
+```
+import { verifyOAuthQueryParams } from "@better-auth/oauth-provider";
+import { auth } from "@/lib/auth";
+
+export async function getVerifiedConsentQuery(request: Request) {
+  const query = new URL(request.url).search.slice(1);
+  const { secret } = await auth.$context;
+  if (!(await verifyOAuthQueryParams(query, secret))) {
+    return null;
+  }
+
+  return new URLSearchParams(query);
+}
+```
+
+Call this helper from your server-side consent route. Return an error response when it returns `null`, and use the returned parameters to render the page. The signature check rejects modified or expired queries. It does not check whether the client exists, whether the user is signed in, or whether the requested scopes are valid. Use `scope` and `claims.userinfo` to display the complete access request on your consent screen. Once the user consents, call `oauth2.consent` to complete the authorization.
 
 ```
 import { authClient } from "@/lib/auth-client"
