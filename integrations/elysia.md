@@ -2,36 +2,38 @@
 url: https://better-auth.com/llms.txt/docs/integrations/elysia
 title: "Elysia"
 description: ""
-access_date: 2026-09-28T15:55:51.958Z
-current_date: 2026-09-28T15:55:51.958Z
+access_date: 2026-09-28T16:10:44.995Z
+current_date: 2026-09-28T16:10:44.995Z
 ---
+
+# Elysia Integration (/docs/integrations/elysia)
 
 Integrate Better Auth with Elysia.
 
+
+
 This integration guide is assuming you are using Elysia with bun server.
 
-Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](https://better-auth.com/docs/installation).
+Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
-### Mount the handler
-
+## ### Mount the handler
 We need to mount the handler to Elysia endpoint.
 
-```
+```ts
 import { Elysia } from "elysia";
 import { auth } from "./auth";
 
 const app = new Elysia().mount(auth.handler).listen(3000);
 
 console.log(
-  \`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}\`,
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );
 ```
 
-### CORS
-
+## ### CORS
 To configure cors, you can use the `cors` plugin from `@elysiajs/cors`.
 
-```
+```ts
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 
@@ -50,15 +52,14 @@ const app = new Elysia()
   .listen(3000);
 
 console.log(
-  \`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}\`,
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );
 ```
 
-### Macro
-
+## ### Macro
 You can use [macro](https://elysiajs.com/patterns/macro.html#macro) with [resolve](https://elysiajs.com/essential/handler.html#resolve) to provide session and user information before pass to view.
 
-```
+```ts
 import { Elysia } from "elysia";
 import { auth } from "./auth";
 
@@ -90,7 +91,7 @@ const app = new Elysia()
   .listen(3000);
 
 console.log(
-  \`🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}\`,
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );
 ```
 
