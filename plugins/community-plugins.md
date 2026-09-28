@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-09-28T16:10:44.995Z
-current_date: 2026-09-28T16:10:44.995Z
+access_date: 2026-09-28T23:42:15.226Z
+current_date: 2026-09-28T23:42:15.226Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 37 of 37 plugins
+Showing 38 of 38 plugins
 
 |  | Description |
 | --- | --- |
@@ -57,3 +57,4 @@ Showing 37 of 37 plugins
 | [@better-geetest/better-auth-plugin-gt4](https://github.com/typed-sigterm/better-geetest/tree/main/packages/better-auth-plugin-gt4)    [![Typed SIGTERM](https://github.com/typed-sigterm.png) Typed SIGTERM](https://github.com/typed-sigterm) | Integrate GeeTest gt4 bot protection by adding captcha verification for key endpoints. |
 | [better-auth-evp](https://github.com/qamarq/better-auth-evp)    [![qamarq](https://github.com/qamarq.png) qamarq](https://github.com/qamarq) | Email Verification Protocol (Chrome origin trial) plugin - lets a supporting browser verify mailbox ownership in the background and sign the user in, with automatic fallback to any other sign-in method when unsupported. |
 | [@eusend\_dev/better-auth](https://github.com/eusend-dev/eusend-better-auth)    [![eusend](https://github.com/eusend-dev.png) eusend](https://github.com/eusend-dev) | Auth emails (verification, password reset, OTP, magic link, organization invitations) through eusend, an EU-hosted email API, with brandable templates, non-blocking sends, and optional contact sync for verified users. |
+| [@stellartools/betterauth-adapter](https://github.com/payrouteshq/stellartools)    [![Emmanuel Odii](https://github.com/devodii.png) Emmanuel Odii](https://github.com/devodii) | Integrate Stellar blockchain payments to your Better Auth setup. |
