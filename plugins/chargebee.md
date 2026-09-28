@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/chargebee
 title: "Chargebee"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-09-28T23:07:12.836Z
+current_date: 2026-09-28T23:07:12.836Z
 ---
 
 Chargebee plugin for Better Auth to manage subscriptions and payments.
@@ -1127,10 +1127,10 @@ If you see errors like `no such column: "chargebee_customer_id"` or `no such col
 
 **Solution:**
 
-1. Run `npx better-auth generate` to regenerate your schema with the Chargebee plugin fields
-2. Apply the migration to your database
-3. If manually migrating from another adapter, ensure your column names match your database adapter's conventions
-4. Refer to the [Better Auth adapter documentation](https://www.better-auth.com/docs/concepts/database) for field name mapping specific to your adapter (Prisma, Drizzle, Kysely, etc.)
+1. Run `npx auth generate` to regenerate your schema with the Chargebee plugin fields.
+2. Run `npx auth migrate` to apply the migration to your database, or use your ORM's migration tool.
+3. If manually migrating from another adapter, ensure your column names match your database adapter's conventions.
+4. Refer to the [Database documentation](https://better-auth.com/docs/concepts/database) for field name mapping specific to your adapter (Prisma, Drizzle, Kysely, etc.).
 
 ### Webhook Issues
 

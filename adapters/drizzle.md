@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/drizzle
 title: "Drizzle"
 description: ""
-access_date: 2026-09-08T18:35:10.024Z
-current_date: 2026-09-08T18:35:10.024Z
+access_date: 2026-09-28T23:07:12.836Z
+current_date: 2026-09-28T23:07:12.836Z
 ---
 
 Integrate Better Auth with Drizzle ORM.
@@ -225,7 +225,7 @@ export const auth = betterAuth({
 Then when using the Better Auth CLI, it will generate the schema that looks something like this:
 
 ```
-npx @better-auth/cli@latest generate
+npx auth@latest generate
 ```
 
 ```
