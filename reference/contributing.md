@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/contributing
 title: "Contributing"
 description: ""
-access_date: 2026-08-30T01:44:42.599Z
-current_date: 2026-08-30T01:44:42.599Z
+access_date: 2026-09-28T23:31:32.771Z
+current_date: 2026-09-28T23:31:32.771Z
 ---
 
 A concise guide to contributing to BetterAuth
@@ -129,7 +129,7 @@ We use Vitest for testing. Place test files next to the source files they test:
 
 ```
 import { describe, it, expect } from "vitest";
-import { getTestInstance } from "./test-utils/test-instance";
+import { getTestInstance } from "better-auth/test";
 
 describe("Feature", () => {
     it("should work as expected", async () => {
