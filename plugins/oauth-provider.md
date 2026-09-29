@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-09-25T21:31:20.573Z
-current_date: 2026-09-25T21:31:20.573Z
+access_date: 2026-09-29T08:48:44.765Z
+current_date: 2026-09-29T08:48:44.765Z
 ---
 
 A Better Auth plugin that enables your auth server to serve as an OAuth 2.1 provider.
@@ -1222,6 +1222,43 @@ oauthProvider({
   scopes: [ "openid", "profile", "offline_access", "read:post", "write:post" ],
 })
 ```
+
+### Custom Redirect URI Validation
+
+By default, a requested redirect URI must exactly match one registered for the client. For a native client's registered HTTP loopback URI on `localhost`, `127.0.0.1`, or `[::1]`, the port may vary; the rest of the URI must match. [RFC 8252 recommends an IP literal instead of `localhost`](https://www.rfc-editor.org/rfc/rfc8252.html#section-8.3).
+
+Use `validateRedirectUri` when a client needs a callback URI that cannot be registered in advance. The callback receives the requested URI, that client's registered URIs, and `defaultResult`, which is the result of the built-in matching. It may return a boolean or a promise. Returning `true` accepts the URI, even when `defaultResult` is `false`; returning `false` or throwing rejects it. When the option is omitted, only the built-in matching applies.
+
+To accept preview callbacks for one web client, [register the client](#create-client) with a concrete URI such as `https://app.example.com/api/auth/callback`. The callback does not change registration, and it applies to every client of this OAuth provider. This example extends the default rules only for clients registered with that URI:
+
+```
+oauthProvider({
+  validateRedirectUri: (uri, registeredUris, defaultResult) => {
+    if (defaultResult) return true;
+    if (!registeredUris.includes('https://app.example.com/api/auth/callback')) {
+      return false;
+    }
+    if (uri.includes('#')) return false;
+
+    try {
+      const url = new URL(uri);
+      return (
+        url.protocol === 'https:' &&
+        url.username === '' &&
+        url.password === '' &&
+        url.hostname.endsWith('.preview.example.com') &&
+        url.port === '' &&
+        url.pathname === '/api/auth/callback' &&
+        url.search === ''
+      );
+    } catch {
+      return false;
+    }
+  },
+})
+```
+
+The early `defaultResult` return preserves registered URI and native loopback behavior. To restrict those defaults, check `defaultResult` together with your additional policy. To replace them, return the result of your own validation without using `defaultResult`.
 
 ### Claims
 
