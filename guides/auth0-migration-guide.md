@@ -2,37 +2,58 @@
 url: https://better-auth.com/llms.txt/docs/guides/auth0-migration-guide
 title: "Auth0 Migration Guide"
 description: ""
-access_date: 2026-09-30T22:53:08.638Z
-current_date: 2026-09-30T22:53:08.638Z
+access_date: 2026-09-30T23:01:34.368Z
+current_date: 2026-09-30T23:01:34.368Z
 ---
+
+# Migrating from Auth0 to Better Auth (/docs/guides/auth0-migration-guide)
 
 A step-by-step guide to transitioning from Auth0 to Better Auth.
 
+
+
 In this guide, we'll walk through the steps to migrate a project from Auth0 to Better Auth — including email/password with proper hashing, social/external accounts, two-factor authentication, and more.
 
-## Before You Begin
+> This migration will invalidate all active sessions. When the [Organization](/docs/plugins/organization) plugin is enabled, the script will also attempt a best-effort migration of Auth0 Organizations, their members, and per-member roles. Invitations and enabled-connection configuration are not migrated and should be reconfigured manually in Better Auth.
 
-Before starting the migration process, set up Better Auth in your project. Follow the [installation guide](https://better-auth.com/docs/installation) to get started.
+## ## Before You Begin
+Before starting the migration process, set up Better Auth in your project. Follow the [installation guide](/docs/installation) to get started.
 
-### Connect to your database
 
+### ### Connect to your database
 You'll need to connect to your database to migrate the users and accounts. You can use any database you want, but for this example, we'll use PostgreSQL.
+
+
+
 
 #### npm
 
-```
+```bash
 npm install pg
 ```
 
 #### pnpm
 
+```bash
+pnpm add pg
+```
+
 #### yarn
+
+```bash
+yarn add pg
+```
 
 #### bun
 
+```bash
+bun add pg
+```
+
+
 And then you can use the following code to connect to your database.
 
-```
+```ts title="auth.ts"
 import { Pool } from "pg";
 
 export const auth = betterAuth({
@@ -42,20 +63,19 @@ export const auth = betterAuth({
 })
 ```
 
-### Enable Email and Password (Optional)
-
+### ### Enable Email and Password (Optional)
 Enable the email and password in your auth config and implement your own logic for sending verification emails, reset password emails, etc.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
     database: new Pool({ 
         connectionString: process.env.DATABASE_URL 
     }),
-    emailAndPassword: { 
-        enabled: true, 
-    }, 
+    emailAndPassword: { // [!code highlight]
+        enabled: true, // [!code highlight]
+    }, // [!code highlight]
     emailVerification: {
       sendVerificationEmail: async({ user, url })=>{
         // implement your logic here to send email verification
@@ -64,13 +84,12 @@ export const auth = betterAuth({
 })
 ```
 
-See [Email and Password](https://better-auth.com/docs/authentication/email-password) for more configuration options.
+See [Email and Password](/docs/authentication/email-password) for more configuration options.
 
-### Setup Social Providers (Optional)
-
+### ### Setup Social Providers (Optional)
 Add social providers you have enabled in your Auth0 project in your auth config.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -80,30 +99,29 @@ export const auth = betterAuth({
     emailAndPassword: { 
         enabled: true,
     },
-    socialProviders: { 
-        google: { 
-            clientId: process.env.GOOGLE_CLIENT_ID, 
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET, 
-        }, 
-        github: { 
-            clientId: process.env.GITHUB_CLIENT_ID, 
-            clientSecret: process.env.GITHUB_CLIENT_SECRET, 
-        } 
-    } 
+    socialProviders: { // [!code highlight]
+        google: { // [!code highlight]
+            clientId: process.env.GOOGLE_CLIENT_ID, // [!code highlight]
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET, // [!code highlight]
+        }, // [!code highlight]
+        github: { // [!code highlight]
+            clientId: process.env.GITHUB_CLIENT_ID, // [!code highlight]
+            clientSecret: process.env.GITHUB_CLIENT_SECRET, // [!code highlight]
+        } // [!code highlight]
+    } // [!code highlight]
 })
 ```
 
-### Add Plugins (Optional)
-
+### ### Add Plugins (Optional)
 You can add the following plugins to your auth config based on your needs.
 
-[Admin](https://better-auth.com/docs/plugins/admin) Plugin will allow you to manage users, user impersonations and app level roles and permissions.
+[Admin](/docs/plugins/admin) Plugin will allow you to manage users, user impersonations and app level roles and permissions.
 
-[Two Factor](https://better-auth.com/docs/plugins/2fa) Plugin will allow you to add two-factor authentication to your application.
+[Two Factor](/docs/plugins/2fa) Plugin will allow you to add two-factor authentication to your application.
 
-[Username](https://better-auth.com/docs/plugins/username) Plugin will allow you to add username authentication to your application.
+[Username](/docs/plugins/username) Plugin will allow you to add username authentication to your application.
 
-```
+```ts title="auth.ts"
 import { Pool } from "pg";
 import { betterAuth } from "better-auth";
 import { admin, twoFactor, username } from "better-auth/plugins";
@@ -130,37 +148,59 @@ export const auth = betterAuth({
             clientSecret: process.env.GITHUB_CLIENT_SECRET!,
         }
     },
-    plugins: [admin(), twoFactor(), username()], 
+    plugins: [admin(), twoFactor(), username()], // [!code highlight]
 })
 ```
 
-### Generate Schema
-
+### ### Generate Schema
 If you're using a custom database adapter, generate the schema:
 
-```
+```sh
 npx auth generate
 ```
 
 or if you're using the default adapter, you can use the following command:
 
-```
+```sh
 npx auth migrate
 ```
 
-### Install Dependencies
-
+### ### Install Dependencies
 Install the required dependencies for the migration:
 
-```
+```bash
 npm install auth0
 ```
 
-### Create the migration script
-
+### ### Create the migration script
 Create a new file called `migrate-auth0.ts` in the `scripts` folder and add the following code:
 
-```
+> Instead of using the Management API, you can use Auth0's bulk user export functionality and pass the exported JSON data directly to the `auth0Users` array. This is especially useful if you need to migrate password hashes and complete user data, which are not available through the Management API.
+> 
+> **Important Notes:**
+> 
+> * Password hashes export is only available for Auth0 Enterprise users
+> * Free plan users cannot export password hashes and will need to request a support ticket
+> * For detailed information about bulk user exports, see the [Auth0 Bulk User Export Documentation](https://auth0.com/docs/manage-users/user-migration/bulk-user-exports)
+> * For password hash export details, refer to [Exporting Password Hashes](https://auth0.com/docs/troubleshoot/customer-support/manage-subscriptions/export-data#user-passwords)
+> 
+> Example:
+> 
+> ```ts
+> // Replace this with your exported users JSON data
+> const auth0Users = [
+>   {
+>     "email": "helloworld@gmail.com",
+>     "email_verified": false,
+>     "name": "Hello world",
+>     // Note: password_hash is only available for Enterprise users
+>     "password_hash": "$2b$10$w4kfaZVjrcQ6ZOMiG.M8JeNvnVQkPKZV03pbDUHbxy9Ug0h/McDXi",
+>     // ... other user data
+>   }
+> ];
+> ```
+
+```ts title="scripts/migrate-auth0.ts"
 import { ManagementClient } from 'auth0';
 import { generateRandomString, symmetricEncrypt } from "better-auth/crypto";
 import { auth } from '@/lib/auth';
@@ -187,14 +227,14 @@ function safeDateConversion(timestamp?: string | number): Date {
     const date = new Date(milliseconds);
 
     if (isNaN(date.getTime())) {
-        console.warn(\`Invalid timestamp: ${timestamp}, falling back to current date\`);
+        console.warn(`Invalid timestamp: ${timestamp}, falling back to current date`);
         return new Date();
     }
 
     // Check for unreasonable dates (before 2000 or after 2100)
     const year = date.getFullYear();
     if (year < 2000 || year > 2100) {
-        console.warn(\`Suspicious date year: ${year}, falling back to current date\`);
+        console.warn(`Suspicious date year: ${year}, falling back to current date`);
         return new Date();
     }
 
@@ -207,7 +247,7 @@ async function generateBackupCodes(secret: string) {
     const backupCodes = Array.from({ length: 10 })
         .fill(null)
         .map(() => generateRandomString(10, "a-z", "0-9", "A-Z"))
-        .map((code) => \`${code.slice(0, 5)}-${code.slice(5)}\`);
+        .map((code) => `${code.slice(0, 5)}-${code.slice(5)}`);
 
     const encCodes = await symmetricEncrypt({
         data: JSON.stringify(backupCodes),
@@ -293,7 +333,7 @@ async function migrateMFAFactors(auth0User: any, userId: string | undefined, ctx
                 });
             }
         } catch (error) {
-            console.error(\`Failed to migrate MFA factor for user ${userId}:\`, error);
+            console.error(`Failed to migrate MFA factor for user ${userId}:`, error);
         }
     }
 }
@@ -312,7 +352,7 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
             await ctx.adapter.create({
                 model: "account",
                 data: {
-                    id: \`${auth0User.user_id}|${identity.provider}|${identity.user_id}\`,
+                    id: `${auth0User.user_id}|${identity.provider}|${identity.user_id}`,
                     userId: userId,
                     password: await migratePassword(auth0User),
                     providerId: providerId || identity.provider,
@@ -331,12 +371,12 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
                 },
                 forceAllowId: true
             }).catch((error: Error) => {
-                console.error(\`Failed to create OAuth account for user ${userId} with provider ${providerId}:\`, error);
+                console.error(`Failed to create OAuth account for user ${userId} with provider ${providerId}:`, error);
                 return ctx.adapter.create({
                     // Try creating without optional fields if the first attempt failed
                     model: "account",
                     data: {
-                        id: \`${auth0User.user_id}|${identity.provider}|${identity.user_id}\`,
+                        id: `${auth0User.user_id}|${identity.provider}|${identity.user_id}`,
                         userId: userId,
                         password: await migratePassword(auth0User),
                         providerId: providerId,
@@ -355,9 +395,9 @@ async function migrateOAuthAccounts(auth0User: any, userId: string | undefined, 
                 });
             });
 
-            console.log(\`Successfully migrated OAuth account for user ${userId} with provider ${providerId}\`);
+            console.log(`Successfully migrated OAuth account for user ${userId} with provider ${providerId}`);
         } catch (error) {
-            console.error(\`Failed to migrate OAuth account for user ${userId}:\`, error);
+            console.error(`Failed to migrate OAuth account for user ${userId}:`, error);
         }
     }
 }
@@ -412,7 +452,7 @@ async function migrateOrganizations(ctx: any) {
                         await ctx.adapter.create({
                             model: "member",
                             data: {
-                                id: \`${org.id}|${member.user_id}\`,
+                                id: `${org.id}|${member.user_id}`,
                                 organizationId: org.id,
                                 userId: member.user_id,
                                 role: role,
@@ -421,15 +461,15 @@ async function migrateOrganizations(ctx: any) {
                             forceAllowId: true
                         });
 
-                        console.log(\`Successfully migrated member ${member.user_id} for organization ${org.display_name || org.id}\`);
+                        console.log(`Successfully migrated member ${member.user_id} for organization ${org.display_name || org.id}`);
                     } catch (error) {
-                        console.error(\`Failed to migrate member ${member.user_id} for organization ${org.display_name || org.id}:\`, error);
+                        console.error(`Failed to migrate member ${member.user_id} for organization ${org.display_name || org.id}:`, error);
                     }
                 }
 
-                console.log(\`Successfully migrated organization: ${org.display_name || org.id}\`);
+                console.log(`Successfully migrated organization: ${org.display_name || org.id}`);
             } catch (error) {
-                console.error(\`Failed to migrate organization ${org.display_name || org.id}:\`, error);
+                console.error(`Failed to migrate organization ${org.display_name || org.id}:`, error);
             }
         }
         console.log('Organization migration completed');
@@ -461,7 +501,8 @@ async function migrateFromAuth0() {
             console.error('Error fetching users:', error);
         }
 
-        console.log(\`Found ${auth0Users.length} users to migrate\`);
+
+        console.log(`Found ${auth0Users.length} users to migrate`);
 
         for (const auth0User of auth0Users) {
             try {
@@ -499,10 +540,11 @@ async function migrateFromAuth0() {
                     throw new Error('Failed to create user');
                 }
 
+
                 await migrateOAuthAccounts(auth0User, createdUser.id, ctx)
-                console.log(\`Successfully migrated user: ${auth0User.email}\`);
+                console.log(`Successfully migrated user: ${auth0User.email}`);
             } catch (error) {
-                console.error(\`Failed to migrate user ${auth0User.email}:\`, error);
+                console.error(`Failed to migrate user ${auth0User.email}:`, error);
             }
         }
         if (isOrganizationEnabled) {
@@ -523,37 +565,43 @@ migrateFromAuth0()
     .catch((error) => {
         console.error('Migration failed:', error);
         process.exit(1);
-    });
+    }); 
 ```
 
 Make sure to replace the Auth0 environment variables with your own values:
 
-- `AUTH0_DOMAIN`
-- `AUTH0_CLIENT_ID`
-- `AUTH0_SECRET`
+* `AUTH0_DOMAIN`
+* `AUTH0_CLIENT_ID`
+* `AUTH0_SECRET`
 
-### Run the migration
-
+### ### Run the migration
 Run the migration script:
 
-```
+```sh
 bun run scripts/migrate-auth0.ts # or use your preferred runtime
 ```
 
-### Change password hashing algorithm
+> Important considerations:
+> 
+> 1. Test the migration in a development environment first
+> 2. Monitor the migration process for any errors
+> 3. Verify the migrated data in Better Auth before proceeding
+> 4. Keep Auth0 installed and configured until the migration is complete
+> 5. The script handles bcrypt password hashes by default. For custom password hashing algorithms, you'll need to modify the `migratePassword` function
 
+### ### Change password hashing algorithm
 By default, Better Auth uses the `scrypt` algorithm to hash passwords. Since Auth0 uses `bcrypt`, you'll need to configure Better Auth to use bcrypt for password verification.
 
 First, install bcrypt:
 
-```
+```bash
 npm install bcrypt
 npm install -D @types/bcrypt
 ```
 
 Then update your auth configuration:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 import bcrypt from "bcrypt";
 
@@ -571,8 +619,7 @@ export const auth = betterAuth({
 })
 ```
 
-### Verify the migration
-
+### ### Verify the migration
 After running the migration, verify that:
 
 1. All users have been properly migrated
@@ -581,11 +628,10 @@ After running the migration, verify that:
 4. Two-factor authentication settings are preserved (if enabled)
 5. User roles and permissions are correctly mapped
 
-### Update your components
-
+### ### Update your components
 Now that the data is migrated, update your components to use Better Auth. Here's an example for the sign-in component:
 
-```
+```tsx title="components/auth/sign-in.tsx"
 import { authClient } from "@/lib/auth-client";
 
 export const SignIn = () => {
@@ -610,11 +656,10 @@ export const SignIn = () => {
 };
 ```
 
-### Update the middleware
-
+### ### Update the middleware
 Replace your Auth0 middleware with Better Auth's middleware:
 
-```
+```ts title="middleware.ts"
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
@@ -638,30 +683,25 @@ export const config = {
 };
 ```
 
-### Remove Auth0 Dependencies
-
+### ### Remove Auth0 Dependencies
 Once you've verified everything is working correctly with Better Auth, remove Auth0:
 
-```
+```bash
 npm remove @auth0/auth0-react @auth0/auth0-spa-js @auth0/nextjs-auth0
 ```
 
-## Additional Considerations
 
-### Password Migration
-
+## ## Additional Considerations
+## ### Password Migration
 The migration script handles bcrypt password hashes by default. If you're using custom password hashing algorithms in Auth0, you'll need to modify the `migratePassword` function in the migration script to handle your specific case.
 
-### Role Mapping
-
+## ### Role Mapping
 The script includes a basic role mapping function (`mapAuth0RoleToBetterAuthRole`). Customize this function based on your Auth0 roles and Better Auth role requirements.
 
-### Rate Limiting
-
+## ### Rate Limiting
 The migration script includes pagination to handle large numbers of users. Adjust the `per_page` (offset pagination) and `take` (checkpoint pagination) values passed to the Auth0 `list()` calls based on your needs and Auth0's rate limits.
 
-## Wrapping Up
-
+## ## Wrapping Up
 Now! You've successfully migrated from Auth0 to Better Auth.
 
-Better Auth offers greater flexibility and more features—be sure to explore the [documentation](https://better-auth.com/docs) to unlock its full potential.
+Better Auth offers greater flexibility and more features—be sure to explore the [documentation](/docs) to unlock its full potential.
