@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/sso
 title: "Sso"
 description: ""
-access_date: 2026-09-05T23:13:13.377Z
-current_date: 2026-09-05T23:13:13.377Z
+access_date: 2026-09-30T21:19:42.414Z
+current_date: 2026-09-30T21:19:42.414Z
 ---
 
 Integrate Single Sign-On (SSO) with your application.
@@ -1357,6 +1357,8 @@ The SAML ACS endpoint (`/api/auth/sso/saml2/sp/acs/{providerId}`) handles both *
 
 - **SP-initiated**: User clicks "Sign in with SSO" in your app → redirects to IdP → IdP POSTs SAMLResponse to callback
 - **IdP-initiated**: User clicks app icon in IdP dashboard (Okta, Azure AD, etc.) → IdP POSTs SAMLResponse to callback
+
+When upgrading to purpose-prefixed verification identifiers or purpose-specific state-cookie keys, restart pending SP-initiated SAML sign-ins and upgrade participating servers together. These flows use Better Auth-generated relay state. Unsolicited IdP-initiated flows do not use that state and are not affected by its format change. See the [verification storage upgrade guidance](https://better-auth.com/docs/reference/options#verification) and [state-cookie upgrade guidance](https://better-auth.com/docs/reference/options#storestatestrategy).
 
 Better Auth derives the ACS URL automatically from your `baseURL` and `providerId`, so no SP-side configuration is required.
 

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/security
 title: "Security"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-09-30T21:19:42.414Z
+current_date: 2026-09-30T21:19:42.414Z
 ---
 
 # Security (/docs/reference/security)
@@ -18,9 +18,11 @@ This page contains information about security features of Better Auth.
 Better Auth uses the `scrypt` algorithm to hash passwords by default. This algorithm is designed to be memory-hard and CPU-intensive, making it resistant to brute-force attacks. You can customize the password hashing function by setting the `password` option in the configuration. This option should include a `hash` function to hash passwords and a `verify` function to verify them.
 
 ## ## Secret Rotation
-Better Auth supports non-destructive rotation of `BETTER_AUTH_SECRET`. When you configure versioned secrets via the `secrets` option or the `BETTER_AUTH_SECRETS` environment variable, all new encrypted data includes a key version identifier. Decryption performs a direct key lookup by version — no trial decryption.
+Better Auth supports non-destructive rotation of `BETTER_AUTH_SECRET` within the same encryption format and purpose. When you configure versioned secrets via the `secrets` option or the `BETTER_AUTH_SECRETS` environment variable, all new encrypted data includes a key version identifier. Decryption performs a direct key lookup by version, with no trial decryption.
 
-Legacy data encrypted before rotation (bare-hex format) is still decryptable using the original `BETTER_AUTH_SECRET` as a fallback. No database migrations or downtime are required. Data is lazily re-encrypted with the current key when it is next written.
+Within the same encryption purpose, legacy data encrypted before rotation (bare-hex format) remains decryptable using the original `BETTER_AUTH_SECRET` as a fallback. Ordinary key rotation requires no database migration or downtime. Data is lazily re-encrypted with the current key when it is next written.
+
+Upgrading from shared encryption keys to purpose-specific keys changes the format used for pending OAuth and SAML state cookies and OAuth Proxy payloads. Keeping the original secret does not preserve these pending flows. Upgrade participating servers together and restart sign-in and account-linking flows that began before the cutover. See the [state-cookie upgrade guidance](/docs/reference/options#storestatestrategy) and [OAuth Proxy upgrade instructions](/docs/plugins/oauth-proxy#upgrading-existing-deployments).
 
 See the [`secrets` option](/docs/reference/options#secrets) for configuration details.
 

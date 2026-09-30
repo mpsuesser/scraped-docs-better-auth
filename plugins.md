@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins
 title: "Plugins"
 description: ""
-access_date: 2026-09-26T17:07:54.303Z
-current_date: 2026-09-26T17:07:54.303Z
+access_date: 2026-09-30T21:19:42.414Z
+current_date: 2026-09-30T21:19:42.414Z
 ---
 
 # Plugins (/docs/plugins)
@@ -46,7 +46,7 @@ Better Auth ships with 50+ plugins that extend the framework with additional aut
 | [JWT](/docs/plugins/jwt)                                  | JSON Web Token authentication for services                                |
 | [Bearer](/docs/plugins/bearer)                            | Bearer token authentication for API requests                              |
 | [One-Time Token](/docs/plugins/one-time-token)            | Generate and verify single-use tokens                                     |
-| [OAuth Proxy](/docs/plugins/oauth-proxy)                  | OAuth proxy for cross-domain flows                                        |
+| [OAuth Proxy](/docs/plugins/oauth-proxy)                  | OAuth sign-in for development and preview deployments                     |
 
 ## ## OAuth & OIDC Providers
 | Plugin                                                     | Description                                                    |

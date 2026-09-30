@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/expo
 title: "Expo"
 description: ""
-access_date: 2026-09-10T07:33:30.498Z
-current_date: 2026-09-10T07:33:30.498Z
+access_date: 2026-09-30T21:19:42.414Z
+current_date: 2026-09-30T21:19:42.414Z
 ---
 
 Integrate Better Auth with Expo.
@@ -276,6 +276,8 @@ export default function SignIn() {
 #### Social Sign-In
 
 For social sign-in, you can use the `authClient.signIn.social` method with the provider name and a callback URL. When you pass a relative path like "/dashboard", the Expo plugin automatically converts it to a deep link using `Linking.createURL`.
+
+When upgrading your auth backend to purpose-prefixed verification identifiers or purpose-specific state-cookie keys, restart pending redirect-based social sign-ins. Follow the [verification storage](https://better-auth.com/docs/reference/options#verification) and [state-cookie](https://better-auth.com/docs/reference/options#storestatestrategy) cutover guidance. These format changes do not require new Expo client configuration and do not affect native [ID-token sign-in](#idtoken-sign-in), which does not use redirect state.
 
 ```
 import { Button } from "react-native";

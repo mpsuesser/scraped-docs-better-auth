@@ -2,20 +2,28 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-proxy
 title: "Oauth Proxy"
 description: ""
-access_date: 2026-09-19T03:55:11.963Z
-current_date: 2026-09-19T03:55:11.963Z
+access_date: 2026-09-30T21:19:42.414Z
+current_date: 2026-09-30T21:19:42.414Z
 ---
 
 # OAuth Proxy (/docs/plugins/oauth-proxy)
 
-OAuth Proxy plugin for Better Auth
+OAuth sign-in for development and preview deployments
 
 
 
-A proxy plugin that allows you to proxy OAuth requests. Useful for development and preview deployments where the redirect URL can't be known in advance to add to the OAuth provider.
+OAuth Proxy is intended for local development and trusted preview deployments whose callback URLs change. It lets these deployments use an OAuth client with a fixed callback URL registered on your production server.
+
+Your production server handles the provider callback, exchanges the authorization code, and returns encrypted profile data to the development or preview deployment. That deployment creates the user and session in its own database. Install the plugin on both the production callback server and each trusted development or preview deployment that participates in the flow.
+
+For ordinary production sign-ins, use the normal OAuth provider flow. When the current origin matches `productionURL`, the plugin skips proxying the sign-in request. The production server still handles proxy callbacks for participating development and preview deployments.
 
 ## ## Installation
 ### ### Add the plugin to your auth config
+Add this configuration to the production callback server and each trusted development or preview deployment, using the same `productionURL` and proxy `secret`.
+
+> Share the proxy secret only with environments and code you trust to authenticate users in every participating deployment, including production. Anyone holding this secret can assert provider identities through the proxy. Keep it out of preview deployments that run untrusted contributor code. Separate `BETTER_AUTH_SECRET` values protect other encrypted data, but do not remove this shared authentication authority.
+
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 import { oAuthProxy } from "better-auth/plugins" // [!code highlight]
@@ -36,9 +44,9 @@ export const auth = betterAuth({
 })
 ```
 
-Set `OAUTH_PROXY_SECRET` to the same value on all environments (production, preview, localhost).
+Set `OAUTH_PROXY_SECRET` to the same value on all trusted participating environments (production, preview, localhost). The plugin derives separate encryption keys for OAuth state transport, proxy packages, and provider profiles from this value.
 
-The plugin will automatically route OAuth requests through your production server.
+The plugin routes OAuth requests from participating development and preview deployments through your production callback server.
 
 ### ### Register the callback URL with your OAuth provider
 In your OAuth provider's developer console (e.g. GitHub, Google), register the callback URL using your **production** domain. For example:
@@ -65,7 +73,7 @@ export const auth = betterAuth({
 
 > **Important: Shared Secret Required**
 > 
-> All environments (production, preview, localhost) must use the same encryption key to communicate. Configure a dedicated `secret` in the plugin options:
+> All trusted participating environments (production, preview, localhost) must use the same proxy secret to communicate. Configure a dedicated `secret` in the plugin options:
 > 
 > ```ts title="auth.ts"
 > oAuthProxy({
@@ -74,7 +82,12 @@ export const auth = betterAuth({
 > })
 > ```
 > 
-> If you don't configure a shared `secret`, the plugin falls back to `BETTER_AUTH_SECRET`. Since production and preview typically have different main secrets (which is correct for security), the OAuth flow will fail with a `state_mismatch` error.
+> If you don't configure a shared `secret`, the plugin falls back to `BETTER_AUTH_SECRET`. Since production and preview typically have different main secrets (which is correct for security), the OAuth flow will fail with a `state_mismatch` error. Even when the same secret material is used for multiple features, OAuth proxy payloads and OAuth state cookies use separate derived keys.
+
+## ## Upgrading existing deployments
+The `oAuthProxy` configuration does not change. Keep the existing `productionURL` and shared `secret`. This upgrade does not require rotating the secret; any separate rotation must still keep every participating environment on the same value.
+
+Upgrade production and every preview or development deployment that participates in the same OAuth proxy flow to the same Better Auth version in one coordinated cutover. Mixed versions cannot exchange proxy state packages or provider profiles. Sign-in and account-linking flows started before the cutover must be restarted, whether they use database-backed or cookie-backed OAuth state. When using cookie-backed state, upgrade every node that serves the same auth base together because the state cookie encryption key also changes. The plugin does not fall back to the previous shared encryption key.
 
 ## ## How it works
 The plugin allows you to use a single OAuth client (registered with your production URL) across multiple environments like preview deployments or local development.
@@ -96,16 +109,14 @@ await authClient.signIn.social({
 
 The encrypted profile data is passed via URL query parameters and can only be decrypted by servers sharing the same secret. This also allows preview deployments to use separate databases from production if needed.
 
-> This plugin is intended for development and preview environments. If `baseURL` and `productionURL` are the same, the plugin will not proxy the request.
-
 ## ## Options
-**productionURL**: The URL of your production server. If this value matches the `baseURL` in your auth config, requests will not be proxied. Defaults to the `BETTER_AUTH_URL` environment variable.
+**productionURL**: The URL of the production server that handles provider callbacks for development and preview sign-ins. Sign-in requests are not proxied when the current origin matches this URL's origin. Defaults to the `BETTER_AUTH_URL` environment variable, then the auth `baseURL`.
 
 **currentURL**: The application's current URL is automatically determined by the plugin. It first checks the request URL, then vendor-specific environment variables from popular hosting providers, and finally falls back to the `baseURL` in your auth config. You only need to set this if the URL isn't being inferred correctly in your environment.
 
 **maxAge**: Maximum age in seconds for encrypted profile payloads. Payloads older than this will be rejected to prevent replay attacks. Keep this value short (e.g., 30-60 seconds) to minimize the window for potential replay attacks while still allowing normal OAuth flows. Defaults to `60` seconds.
 
-**secret**: A dedicated secret used for encrypting and decrypting data during the OAuth proxy flow. When set, this is used **instead of** the global `BETTER_AUTH_SECRET`, limiting the blast radius if the key is shared across environments — a leaked proxy secret cannot forge sessions or decrypt other data protected by the main secret. All environments participating in the proxy flow must share the same `secret` value.
+**secret**: A dedicated secret used to derive keys for the OAuth proxy flow. When set, this is used **instead of** the global `BETTER_AUTH_SECRET`, so a leaked proxy secret cannot decrypt data protected only by the main secret. Holders of the proxy secret can assert provider identities to participating deployments and obtain sessions when those identities are accepted. Share it only with trusted environments and code. All environments participating in the proxy flow must share the same `secret` value.
 
 ## ## Troubleshooting
 ## ### `state_mismatch` or "State not persisted correctly" error
@@ -127,9 +138,9 @@ oAuthProxy({
 })
 ```
 
-Make sure `OAUTH_PROXY_SECRET` has the same value on production, preview, and localhost.
+Make sure `OAUTH_PROXY_SECRET` has the same value on production and each trusted preview or localhost deployment participating in the flow. Keep it out of deployments running untrusted contributor code.
 
-> Using a dedicated proxy secret (instead of sharing `BETTER_AUTH_SECRET`) is recommended for security. If the proxy secret is compromised, attackers cannot forge sessions or access other encrypted data — they can only potentially hijack OAuth flows during the short `maxAge` window.
+> Using a dedicated proxy secret (instead of sharing `BETTER_AUTH_SECRET`) keeps data protected only by the main secret separate. It does not prevent a holder of the proxy secret from asserting provider identities through the proxy. Treat the proxy secret as an authentication credential for every participating deployment.
 
 ## ### OAuth works on production but fails on preview/localhost
 Ensure all of the following:
