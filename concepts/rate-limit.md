@@ -2,15 +2,15 @@
 url: https://better-auth.com/llms.txt/docs/concepts/rate-limit
 title: "Rate Limit"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-10-01T07:30:58.330Z
+current_date: 2026-10-01T07:30:58.330Z
 ---
 
 Learn how to configure rate limiting in Better Auth, including IP address detection, IPv6 support, custom rate limit windows, storage backends, error handling, and per-endpoint rules.
 
 Better Auth includes a built-in rate limiter to help manage traffic and prevent abuse. By default, in production mode, the rate limiter is set to:
 
-- Window: 60 seconds
+- Window: 10 seconds
 - Max Requests: 100 requests
 
 You can easily customize these settings by passing the rateLimit object to the betterAuth function.
@@ -45,7 +45,7 @@ In addition to the default settings, Better Auth provides custom rules for speci
 
 In addition, plugins also define custom rules for specific paths. For example, `twoFactor` plugin has custom rules:
 
-- `/two-factor/verify`: Is limited to 3 requests within 10 seconds.
+- `/two-factor/*`: Is limited to 3 requests within 10 seconds.
 
 These custom rules ensure that sensitive operations are protected with stricter limits.
 
