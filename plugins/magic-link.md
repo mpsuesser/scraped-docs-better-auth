@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/magic-link
 title: "Magic Link"
 description: ""
-access_date: 2026-09-30T21:19:42.414Z
-current_date: 2026-09-30T21:19:42.414Z
+access_date: 2026-10-01T07:02:09.958Z
+current_date: 2026-10-01T07:02:09.958Z
 ---
 
 # Magic link (/docs/plugins/magic-link)
@@ -61,8 +61,8 @@ const { data, error } = await authClient.signIn.magicLink({
     email: "user@email.com", // required, Email address to send the magic link.
     name: "my-name", // User display name. Only used if the user is registering for the first time.
     callbackURL: "/dashboard", // URL to redirect after magic link verification.
-    newUserCallbackURL: "/welcome", // URL to redirect after new user signup
-    errorCallbackURL: "/error", // URL to redirect if an error happen on verification If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
+    newUserCallbackURL: "/welcome", // URL to redirect after new user signup.
+    errorCallbackURL: "/error", // URL to redirect if an error happens on verification If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
     metadata: { inviteId: "123" }, // Additional metadata forwarded to the sendMagicLink callback.
 });
 ```
@@ -75,11 +75,11 @@ const data = await auth.api.signInMagicLink({
         email: "user@email.com", // required, Email address to send the magic link.
         name: "my-name", // User display name. Only used if the user is registering for the first time.
         callbackURL: "/dashboard", // URL to redirect after magic link verification.
-        newUserCallbackURL: "/welcome", // URL to redirect after new user signup
-        errorCallbackURL: "/error", // URL to redirect if an error happen on verification If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
+        newUserCallbackURL: "/welcome", // URL to redirect after new user signup.
+        errorCallbackURL: "/error", // URL to redirect if an error happens on verification If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
         metadata: { inviteId: "123" }, // Additional metadata forwarded to the sendMagicLink callback.
     },
-    // This endpoint requires session cookies.
+    // Pass the current request headers so Better Auth can read and set cookies.
     headers: await headers(),
 });
 ```
@@ -101,11 +101,11 @@ type signInMagicLink = {
      */
     callbackURL?: string = "/dashboard"
     /**
-     * URL to redirect after new user signup
+     * URL to redirect after new user signup.
      */
     newUserCallbackURL?: string = "/welcome"
     /**
-     * URL to redirect if an error happen on verification
+     * URL to redirect if an error happens on verification
      * If only callbackURL is provided but without an `errorCallbackURL` then they will be 
      * redirected to the callbackURL with an `error` query parameter.
      */
@@ -137,6 +137,8 @@ const { data, error } = await authClient.magicLink.verify({
     query: {
         token: "123456", // required, Verification token.
         callbackURL: "/dashboard", // URL to redirect after magic link verification, if not provided will return the session.
+        newUserCallbackURL: "/welcome", // URL to redirect after new user signup.
+        errorCallbackURL: "/error", // URL to redirect if an error happens on verification. If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
     },
 });
 ```
@@ -148,8 +150,10 @@ const data = await auth.api.magicLinkVerify({
     query: {
         token: "123456", // required, Verification token.
         callbackURL: "/dashboard", // URL to redirect after magic link verification, if not provided will return the session.
+        newUserCallbackURL: "/welcome", // URL to redirect after new user signup.
+        errorCallbackURL: "/error", // URL to redirect if an error happens on verification. If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
     },
-    // This endpoint requires session cookies.
+    // Pass the current request headers so Better Auth can read and set cookies.
     headers: await headers(),
 });
 ```
@@ -166,6 +170,16 @@ type magicLinkVerify = {
      * URL to redirect after magic link verification, if not provided will return the session. 
      */
     callbackURL?: string = "/dashboard"
+    /**
+     * URL to redirect after new user signup.
+     */
+    newUserCallbackURL?: string = "/welcome"
+    /**
+     * URL to redirect if an error happens on verification.
+     * If only callbackURL is provided but without an `errorCallbackURL` then they will be
+     * redirected to the callbackURL with an `error` query parameter.
+     */
+    errorCallbackURL?: string = "/error"
 }
 ```
 
@@ -184,6 +198,8 @@ and a `ctx` context object as the second parameter.
 **allowedAttempts** (deprecated): Each verification call now consumes the token atomically on the first attempt, so retries always fail with `?error=INVALID_TOKEN` regardless of this setting. The option is kept for source compatibility but ignored; multi-attempt redemption is no longer supported. Setting it to any value other than `1` emits a `console.warn` at startup (including `0`, which previously rejected immediately and now has no effect).
 
 **disableSignUp**: If set to `true`, the user will not be able to sign up using the magic link. The default value is `false`.
+
+**rateLimit**: Rate limit for the `/sign-in/magic-link` and `/magic-link/verify` endpoints. The default value is `{ window: 60, max: 5 }`. See [Rate Limit](/docs/concepts/rate-limit) for details.
 
 **generateToken**: The `generateToken` function is called to generate a token which is used to uniquely identify the user. The default value is a random string. There is one parameter:
 
