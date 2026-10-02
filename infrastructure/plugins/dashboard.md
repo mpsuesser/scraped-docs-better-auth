@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/dashboard
 title: "Dashboard"
 description: ""
-access_date: 2026-09-14T09:08:40.962Z
-current_date: 2026-09-14T09:08:40.962Z
+access_date: 2026-10-02T22:57:05.076Z
+current_date: 2026-10-02T22:57:05.076Z
 ---
 
 # Dashboard (/docs/infrastructure/plugins/dashboard)
@@ -37,17 +37,17 @@ export const auth = betterAuth({
 
 ## ## Configuration Options
 ## ### DashOptions
-| Option                 | Type     | Description                                                                                  |
-| ---------------------- | -------- | -------------------------------------------------------------------------------------------- |
-| `apiUrl`               | `string` | Better Auth Infrastructure API URL. Default: `https://dash.better-auth.com`                  |
-| `kvUrl`                | `string` | KV store URL. Default: `https://kv.better-auth.com`                                          |
-| `apiKey`               | `string` | Your API key for authentication. Falls back to `BETTER_AUTH_API_KEY` in env.                 |
-| `apiOptions`           | `object` | Dash API HTTP client options. Accepts `timeout?: number` in ms.                              |
-| `kvOptions`            | `object` | KV HTTP client options. Accepts `timeout?: number` and `retry?: { attempts?: number; ... }`. |
-| `apiTimeout`           | `number` | Deprecated alias for `apiOptions.timeout`.                                                   |
-| `kvTimeout`            | `number` | Deprecated alias for `kvOptions.timeout`.                                                    |
-| `activityTracking`     | `object` | Activity tracking configuration.                                                             |
-| `managedDirectorySync` | `object` | Managed directory-sync control-plane options.                                                |
+| Option                 | Type     | Description                                                                                                                                                                                                             |
+| ---------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apiUrl`               | `string` | Better Auth Infrastructure API URL. Default: `https://dash.better-auth.com`                                                                                                                                             |
+| `kvUrl`                | `string` | KV store URL. Default: `https://kv.better-auth.com`                                                                                                                                                                     |
+| `apiKey`               | `string` | Your API key for authentication. Falls back to `BETTER_AUTH_API_KEY` in env.                                                                                                                                            |
+| `apiOptions`           | `object` | Dash API HTTP client options. Accepts `timeout?: number` (ms, default `3000`) and `headers?: Record<string, string>`.                                                                                                   |
+| `kvOptions`            | `object` | KV HTTP client options. Accepts `timeout?: number` (ms, default `1000`), `retry?: { attempts?: number; baseDelay?: number; maxDelay?: number }` (defaults `2` / `400` / `600`), and `headers?: Record<string, string>`. |
+| `apiTimeout`           | `number` | Deprecated alias for `apiOptions.timeout`.                                                                                                                                                                              |
+| `kvTimeout`            | `number` | Deprecated alias for `kvOptions.timeout`.                                                                                                                                                                               |
+| `activityTracking`     | `object` | Activity tracking configuration.                                                                                                                                                                                        |
+| `managedDirectorySync` | `object` | Managed directory-sync control-plane options.                                                                                                                                                                           |
 
 ## ### Activity Tracking
 Track when users were last active in your application. When enabled, a `lastActiveAt` field is automatically updated on user activity.

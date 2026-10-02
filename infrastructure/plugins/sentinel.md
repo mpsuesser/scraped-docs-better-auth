@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/sentinel
 title: "Sentinel"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-10-02T22:57:05.076Z
+current_date: 2026-10-02T22:57:05.076Z
 ---
 
 # Security Plugin (sentinel) (/docs/infrastructure/plugins/sentinel)
@@ -30,16 +30,16 @@ export const auth = betterAuth({
 
 ## ## Configuration Options
 ## ### SentinelOptions
-| Option       | Type              | Description                                                                           |
-| ------------ | ----------------- | ------------------------------------------------------------------------------------- |
-| `apiUrl`     | `string`          | Better Auth infrastructure API URL. Default: `https://dash.better-auth.com`           |
-| `kvUrl`      | `string`          | Better Auth identification infrastructure URL. Default: `https://kv.better-auth.com`  |
-| `apiKey`     | `string`          | Your API key for authentication.                                                      |
-| `apiOptions` | `object`          | Dash API HTTP options. Accepts `timeout?: number` in ms.                              |
-| `kvOptions`  | `object`          | KV HTTP options. Accepts `timeout?: number` and `retry?: { attempts?: number; ... }`. |
-| `apiTimeout` | `number`          | Deprecated alias for `apiOptions.timeout`.                                            |
-| `kvTimeout`  | `number`          | Deprecated alias for `kvOptions.timeout`.                                             |
-| `security`   | `SecurityOptions` | Security feature configuration.                                                       |
+| Option       | Type              | Description                                                                                                                                                                       |
+| ------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apiUrl`     | `string`          | Better Auth infrastructure API URL. Default: `https://dash.better-auth.com`                                                                                                       |
+| `kvUrl`      | `string`          | Better Auth identification infrastructure URL. Default: `https://kv.better-auth.com`                                                                                              |
+| `apiKey`     | `string`          | Your API key for authentication. Falls back to `BETTER_AUTH_API_KEY` in env.                                                                                                      |
+| `apiOptions` | `object`          | Dash API HTTP options. Accepts `timeout?: number` (ms, default `3000`) and `headers?: Record<string, string>`.                                                                    |
+| `kvOptions`  | `object`          | KV HTTP options. Accepts `timeout?: number` (ms, default `1000`), `retry?: { attempts?: number; baseDelay?: number; maxDelay?: number }`, and `headers?: Record<string, string>`. |
+| `apiTimeout` | `number`          | Deprecated alias for `apiOptions.timeout`.                                                                                                                                        |
+| `kvTimeout`  | `number`          | Deprecated alias for `kvOptions.timeout`.                                                                                                                                         |
+| `security`   | `SecurityOptions` | Security feature configuration.                                                                                                                                                   |
 
 ## ### SecurityOptions
 ```ts
@@ -72,6 +72,7 @@ sentinel({
   security: {
     credentialStuffing: {
       enabled: true,
+      action: "challenge", // optional default action; thresholds still drive challenge vs block
       thresholds: {
         challenge: 3,  // Issue PoW challenge after 3 failures
         block: 5,      // Block after 5 failures
@@ -122,6 +123,7 @@ sentinel({
         block: 3,
       },
       maxAccountsPerVisitor: 3,
+      retentionSeconds: 90 * 24 * 60 * 60, // optional; default 90 days
       action: "block",
     },
   },
@@ -133,6 +135,8 @@ sentinel({
 1. Tracks account creations per visitor fingerprint
 2. When threshold is exceeded, blocks new account creation
 3. Useful for preventing free tier abuse
+
+`retentionSeconds` controls how long per-visitor signup ledger keys are kept (sliding window). Default is 90 days; the platform clamps values to between 1 day and 365 days.
 
 ## ### Compromised Password Detection
 Checks passwords against the HaveIBeenPwned database to detect compromised credentials.
@@ -262,6 +266,7 @@ sentinel({
       enabled: true,
       strictness: "medium",  // "low", "medium", or "high"
       action: "block",
+      domainAllowlist: ["company.com", "partner.org"], // always allow these domains
     },
   },
 }),
@@ -272,6 +277,8 @@ sentinel({
 * `low` - Block only known disposable domains
 * `medium` - Also check for valid MX records
 * `high` - Additional heuristic checks
+
+`domainAllowlist` skips disposable/heuristic checks for the listed domains (exact domain match).
 
 ## ### Email normalization
 Sentinel can normalize email addresses before sign-up and sign-in so aliases and provider quirks do not create duplicate accounts or mismatched logins. Normalization includes lowercasing, stripping plus-address tags on common providers (for example `user+tag@gmail.com` → `user@gmail.com`), removing dots in Gmail-style addresses, and mapping `googlemail.com` to `gmail.com`.
@@ -331,12 +338,15 @@ export const authClient = createAuthClient({
 ```
 
 ## ### Configuration
-| Option               | Type      | Default                                                                    | Description                                     |
-| -------------------- | --------- | -------------------------------------------------------------------------- | ----------------------------------------------- |
-| `identifyUrl`        | `string`  | `BETTER_AUTH_KV_URL` or `https://kv.better-auth.com`                       | Base URL for the identify endpoint.             |
-| `identifyOptions`    | `object`  | `{ timeout: 1000, retry: { attempts: 2, baseDelay: 400, maxDelay: 600 } }` | Identify HTTP client settings.                  |
-| `autoSolveChallenge` | `boolean` | `true`                                                                     | Automatically solve PoW challenges.             |
-| `kvTimeout`          | `number`  | `1000`                                                                     | Deprecated alias for `identifyOptions.timeout`. |
+| Option                | Type                            | Default                                                                    | Description                                     |
+| --------------------- | ------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------- |
+| `identifyUrl`         | `string`                        | `BETTER_AUTH_KV_URL` or `https://kv.better-auth.com`                       | Base URL for the identify endpoint.             |
+| `identifyOptions`     | `object`                        | `{ timeout: 1000, retry: { attempts: 2, baseDelay: 400, maxDelay: 600 } }` | Identify HTTP timeout and retry policy.         |
+| `autoSolveChallenge`  | `boolean`                       | `true`                                                                     | Automatically solve PoW challenges.             |
+| `kvTimeout`           | `number`                        | `1000`                                                                     | Deprecated alias for `identifyOptions.timeout`. |
+| `onChallengeReceived` | `(reason: string) => void`      | —                                                                          | Called when a PoW challenge is received.        |
+| `onChallengeSolved`   | `(solveTimeMs: number) => void` | —                                                                          | Called after a successful solve.                |
+| `onChallengeFailed`   | `(error: Error) => void`        | —                                                                          | Called if solving fails.                        |
 
 ## ### Browser Fingerprinting
 The client automatically includes a visitor ID in requests via the `X-Visitor-Id` header. This fingerprint is used for:
