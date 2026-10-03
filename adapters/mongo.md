@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/mongo
 title: "Mongo"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-10-03T01:42:45.321Z
+current_date: 2026-10-03T01:42:45.321Z
 ---
 
 Integrate Better Auth with MongoDB.
@@ -30,23 +30,43 @@ npm install @better-auth/mongo-adapter
 
 ## Example Usage
 
-You can use the MongoDB adapter to connect to your database as follows.
+### Replica set or sharded cluster
+
+Pass `client` so the adapter uses transactions by default. Use a connection string for your replica set or sharded cluster:
 
 ```
 import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
-import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { mongodbAdapter } from "@better-auth/mongo-adapter";
 
 const client = new MongoClient("mongodb://localhost:27017/database");
 const db = client.db();
 
 export const auth = betterAuth({
   database: mongodbAdapter(db, {
-    // Optional: if you don't provide a client, database transactions won't be enabled.
-    client
+    client,
   }),
 });
 ```
+
+### Standalone server
+
+A standalone MongoDB server does not support transactions. Create `db` with `MongoClient` and pass it to the adapter without the `client` option:
+
+```
+import { betterAuth } from "better-auth";
+import { MongoClient } from "mongodb";
+import { mongodbAdapter } from "@better-auth/mongo-adapter";
+
+const client = new MongoClient("mongodb://localhost:27017/database");
+const db = client.db();
+
+export const auth = betterAuth({
+  database: mongodbAdapter(db),
+});
+```
+
+Without transactions, an earlier write may remain if a later write fails. When you move to a replica set or sharded cluster, pass `client` to enable transactions. See [MongoDB's transaction requirements](https://www.mongodb.com/docs/manual/core/transactions-production-consideration/#availability).
 
 ## Schema generation & migration
 
