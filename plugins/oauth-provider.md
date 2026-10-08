@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-09-29T08:48:44.765Z
-current_date: 2026-09-29T08:48:44.765Z
+access_date: 2026-10-08T16:49:27.363Z
+current_date: 2026-10-08T16:49:27.363Z
 ---
 
 A Better Auth plugin that enables your auth server to serve as an OAuth 2.1 provider.
@@ -2421,7 +2421,7 @@ Timestamp of when the consent was last updated
 
 Table Name: `oauthClientAssertion`
 
-Records each `private_key_jwt` client assertion `jti` so it can only be used once. The row id is a digest of the per-client assertion identifier, so a replayed or concurrent assertion collides on the primary key and the database rejects it atomically, even across multiple server processes. A row keeps blocking its id until deleted; `expiresAt` marks when removal is safe, because the assertion it guards has already expired. No scheduled job prunes these rows, so remove expired rows with your own cleanup if the table grows.
+Records each `private_key_jwt` client assertion `jti` so it can only be used once. The row id is a digest of the per-client assertion identifier, so a replayed or concurrent assertion collides on the primary key and the database rejects it atomically, even across multiple server processes. With `advanced.database.generateId: "uuid"` the digest is formatted as a UUID. This check needs string ids: with `"serial"`, the digest cannot be stored as the id and Better Auth logs a warning. A row keeps blocking its id until deleted; `expiresAt` marks when removal is safe, because the assertion it guards has already expired. No scheduled job prunes these rows, so remove expired rows with your own cleanup if the table grows.
 
 Table
 
