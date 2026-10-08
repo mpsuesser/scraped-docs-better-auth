@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/scim
 title: "Scim"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-10-08T21:34:08.464Z
+current_date: 2026-10-08T21:34:08.464Z
 ---
 
 Provision users and groups from a directory into Better Auth.
@@ -266,4 +266,9 @@ The callback runs in the same database transaction as the SCIM change. Make it i
 
 When the final active source is deactivated or deleted, Better Auth deletes the User's sessions. Reactivating a source updates the lifecycle state but does not create a session.
 
-Deleting a SCIM resource preserves its Better Auth User. If the resource has an `externalId`, recreating the same `externalId` through the same connection links the new SCIM resource to that User. Without an `externalId`, the next create follows your resolver or creates another Better Auth User.
+A directory can create a user again after deactivating or deleting them. Okta, for example, creates the user again when its `userName` lookup finds no match. When the create carries the same `externalId` through the same connection, Better Auth keeps the existing Better Auth User:
+
+- If the earlier SCIM User is inactive, the create reprovisions it. The resource keeps its SCIM ID, takes the submitted profile and `active` value, and the response is `201`.
+- If the earlier SCIM User was deleted, the create links a new SCIM resource to the same Better Auth User.
+
+Neither case calls `identity.resolveUser`, because the `externalId` already identifies the user. A create that reuses an active SCIM User's `externalId`, or another SCIM User's `userName`, still returns `409`. Better Auth never reprovisions a user by `userName` or email. Without an `externalId`, the next create follows your resolver or creates another Better Auth User.
