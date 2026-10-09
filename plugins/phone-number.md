@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/phone-number
 title: "Phone Number"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-10-09T07:31:59.706Z
+current_date: 2026-10-09T07:31:59.706Z
 ---
 
 Phone number plugin
@@ -287,6 +287,8 @@ The phone number to the account which intends to reset the password for.
 `newPassword` stringrequired
 
 The new password.
+
+If the new password is rejected, for example by the [Have I Been Pwned](https://better-auth.com/docs/plugins/have-i-been-pwned) plugin, the OTP isn't consumed and can be used again. If a later step of the reset fails, such as revoking sessions or saving the password, the OTP stays usable only when transactions are enabled for your database adapter and verification values are stored in the database. That is the default without secondary storage; with [secondary storage](https://better-auth.com/docs/concepts/database#secondary-storage), set [`verification.storeInDatabase: true`](https://better-auth.com/docs/reference/options#verification). A wrong OTP still counts toward `allowedAttempts`.
 
 ## Options
 

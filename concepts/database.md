@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/database
 title: "Database"
 description: ""
-access_date: 2026-09-24T14:54:32.060Z
-current_date: 2026-09-24T14:54:32.060Z
+access_date: 2026-10-09T07:31:59.706Z
+current_date: 2026-10-09T07:31:59.706Z
 ---
 
 Learn about database adapters, migrations, secondary storage with Redis, core schema (user, session, account, verification), custom tables, extending schemas, ID generation, database hooks, and plugin schemas.
@@ -833,7 +833,7 @@ There are two types of hooks you can define:
 #### 2\. After Hook
 
 - **Purpose**: This hook is called after the respective entity is created or updated.
-- **Behavior**: You can perform additional actions or modifications after the entity has been successfully created or updated.
+- **Behavior**: You can perform additional actions or modifications after the entity has been successfully created or updated. When the operation is part of a transaction, the hook runs after it commits and is skipped if it rolls back. If transactions aren't enabled for your database adapter, the hook also runs when a later step of the same request fails, because the database change was already applied.
 
 **Example Usage**
 

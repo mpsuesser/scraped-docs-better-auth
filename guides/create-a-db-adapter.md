@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/create-a-db-adapter
 title: "Create A Db Adapter"
 description: ""
-access_date: 2026-09-24T14:54:32.060Z
-current_date: 2026-09-24T14:54:32.060Z
+access_date: 2026-10-09T07:31:59.706Z
+current_date: 2026-10-09T07:31:59.706Z
 ---
 
 Learn how to create a custom database adapter for Better-Auth
@@ -492,6 +492,8 @@ const adapter = myAdapter({
 ### transaction
 
 Whether the adapter supports transactions. If `false`, operations run sequentially; otherwise provide a function that executes a callback with a `TransactionAdapter`.
+
+With `false`, a write is kept even when a later step in the same request fails, so Better Auth still runs that write's `after` [database hooks](https://better-auth.com/docs/concepts/database#database-hooks) and its secondary-storage cleanup before returning the error.
 
 ### debugLogs
 

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/email-otp
 title: "Email Otp"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-10-09T07:31:59.706Z
+current_date: 2026-10-09T07:31:59.706Z
 ---
 
 # Email OTP (/docs/plugins/email-otp)
@@ -439,6 +439,8 @@ type resetPasswordEmailOTP = {
     password: string = "new-secure-password"
 }
 ```
+
+If the new password is rejected, for example by the [Have I Been Pwned](/docs/plugins/have-i-been-pwned) plugin, the OTP isn't consumed and can be used again. If a later step of the reset fails, such as revoking sessions or saving the password, the OTP stays usable only when transactions are enabled for your database adapter and verification values are stored in the database. That is the default without secondary storage; with [secondary storage](/docs/concepts/database#secondary-storage), set [`verification.storeInDatabase: true`](/docs/reference/options#verification). A wrong OTP still counts toward [`allowedAttempts`](#options).
 
 ## ### Change Email with OTP
 To allow users to change their email with OTP, first enable the `changeEmail` feature, which is disabled by default. Set `changeEmail.enabled` to `true`:

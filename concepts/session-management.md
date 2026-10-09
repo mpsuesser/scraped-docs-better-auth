@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/session-management
 title: "Session Management"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-10-09T07:31:59.706Z
+current_date: 2026-10-09T07:31:59.706Z
 ---
 
 # Session Management (/docs/concepts/session-management)
@@ -201,6 +201,8 @@ await authClient.changePassword({
     revokeOtherSessions: true,
 })
 ```
+
+For sessions stored in the database, the password change and the session revocation run in one transaction when transactions are enabled for your adapter, and the sessions are revoked first. If revocation fails, the request returns an error and the current password stays in place. Without transactions, a failure while saving the new password leaves the current password in place with the sessions already revoked. With [secondary storage](/docs/concepts/database#secondary-storage), sessions are removed from it after commit. A failure there is logged, the new password is kept, and those sessions can stay valid until they expire.
 
 ## ## Session Caching
 ## ### Cookie Cache
