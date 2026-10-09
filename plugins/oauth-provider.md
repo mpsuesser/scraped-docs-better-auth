@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-10-08T16:49:27.363Z
-current_date: 2026-10-08T16:49:27.363Z
+access_date: 2026-10-09T14:35:16.244Z
+current_date: 2026-10-09T14:35:16.244Z
 ---
 
 A Better Auth plugin that enables your auth server to serve as an OAuth 2.1 provider.
@@ -445,11 +445,37 @@ const client = await authClient.oauth2.register({
 
 For all endpoint parameters, see [RFC 7591 Registration](https://datatracker.ietf.org/doc/html/rfc7591#section-2).
 
-`application_type` ([OIDC Registration §2](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata)) defaults to `web` when omitted. A `web` client requires `https` redirect URIs on non-loopback hosts. A `native` client may use a claimed `https` URI, an `http` loopback URI on exactly `localhost`, `127.0.0.1`, or `[::1]` with any port, or an authority-free private-use URI with a reverse-domain scheme such as `com.example.app:/callback` ([RFC 8252 §7](https://datatracker.ietf.org/doc/html/rfc8252#section-7)). Loopback host matching uses the raw URI authority, so alternative numeric IPv4 spellings such as `127.1` are rejected before URL normalization. Better Auth also rejects credentials, fragments, malformed or reserved schemes such as `file:` and `mailto:`, loopback `https`, and routable-host `http` redirects.
+`application_type` ([OIDC Registration §2](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata)) defaults to `web` when omitted. A `web` client requires `https` redirect URIs on non-loopback hosts. A `native` client may use any of these redirect URI forms:
+
+- A claimed `https` URI on a non-loopback host.
+- An `http` loopback URI on exactly `localhost`, `127.0.0.1`, or `[::1]`, with any port.
+- An authority-free private-use URI with a reverse-domain scheme, such as `com.example.app:/callback`. This is the form [RFC 8252 §7.1](https://datatracker.ietf.org/doc/html/rfc8252#section-7.1) recommends.
+- A custom-scheme URI with a host and a path, such as `cursor://anysphere.cursor-mcp/oauth/callback`. The scheme does not need to contain a period. A URI without a path, such as `cursor://anysphere.cursor-mcp`, is rejected.
+
+Loopback host matching uses the raw URI authority, so alternative numeric IPv4 spellings such as `127.1` are rejected before URL normalization. Better Auth also rejects credentials, fragments, malformed URIs, loopback `https`, and routable-host `http` redirects. Native clients cannot use the reserved schemes `ws:`, `wss:`, `file:`, `ftp:`, `mailto:`, `javascript:`, `data:`, `vbscript:`, `blob:`, `about:`, or `view-source:`. Any other scheme is accepted in the host-and-path form; an authority-free URI such as `myapp:/callback` still needs a reverse-domain scheme.
 
 Application type is independent of client authentication. For example, a native client may use `client_secret_post`, while a web client may use `token_endpoint_auth_method: "none"`. Authentication capability is derived only from `token_endpoint_auth_method`; the removed `type` and `public` metadata fields are not accepted or returned.
 
 The [MCP 2026-07-28 spec](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration#application-type-and-redirect-uri-constraints) requires MCP clients to send an appropriate `application_type`. A [Client ID Metadata Document](https://better-auth.com/docs/plugins/cimd) may omit it; Better Auth stores that omission as `null` and validates redirects against the safe union of web and native forms.
+
+Some native MCP clients omit `application_type` during dynamic registration. Cursor, for example, registers `cursor://anysphere.cursor-mcp/oauth/callback`, an `https` callback, and `http://localhost:8787/callback` without it, so the `web` default rejects the registration. `clientRegistrationDefaultApplicationType` sets the type that a dynamic registration gets when it omits the field:
+
+| Value | Omitted `application_type` becomes |
+| --- | --- |
+| `"web"` (default) | `web`, as OIDC Registration §2 specifies |
+| `"native"` | `native` |
+| `"infer"` | `native` when any redirect URI uses a non-http(s) scheme, otherwise `web` |
+
+Every redirect URI is then validated against the rules for the resulting type. Under `"infer"`, a client that lists a custom scheme becomes `native`, so its `http` URIs must still be loopback. A client that lists only `http` and `https` URIs stays `web`. An `application_type` the client sends is never overridden. The option applies only to dynamic registration; managed clients and Client ID Metadata Documents are unaffected.
+
+```
+oauthProvider({
+  allowDynamicClientRegistration: true,
+  allowUnauthenticatedClientRegistration: true,
+  clientRegistrationDefaultApplicationType: "infer",
+  // ... other options
+})
+```
 
 Note the following parameters are not yet supported:
 
