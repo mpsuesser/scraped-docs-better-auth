@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-09-28T23:42:15.226Z
-current_date: 2026-09-28T23:42:15.226Z
+access_date: 2026-10-10T08:57:02.279Z
+current_date: 2026-10-10T08:57:02.279Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 38 of 38 plugins
+Showing 39 of 39 plugins
 
 |  | Description |
 | --- | --- |
@@ -58,3 +58,4 @@ Showing 38 of 38 plugins
 | [better-auth-evp](https://github.com/qamarq/better-auth-evp)    [![qamarq](https://github.com/qamarq.png) qamarq](https://github.com/qamarq) | Email Verification Protocol (Chrome origin trial) plugin - lets a supporting browser verify mailbox ownership in the background and sign the user in, with automatic fallback to any other sign-in method when unsupported. |
 | [@eusend\_dev/better-auth](https://github.com/eusend-dev/eusend-better-auth)    [![eusend](https://github.com/eusend-dev.png) eusend](https://github.com/eusend-dev) | Auth emails (verification, password reset, OTP, magic link, organization invitations) through eusend, an EU-hosted email API, with brandable templates, non-blocking sends, and optional contact sync for verified users. |
 | [@stellartools/betterauth-adapter](https://github.com/payrouteshq/stellartools)    [![Emmanuel Odii](https://github.com/devodii.png) Emmanuel Odii](https://github.com/devodii) | Integrate Stellar blockchain payments to your Better Auth setup. |
+| [@octopi-ai/better-enrollment](https://github.com/OctopiAI/better-enrollment)    [![Talat Mahmud](https://github.com/FalconiZzare.png) Talat Mahmud](https://github.com/FalconiZzare) | Invite-only sign-ups, role-merging invite links, and organization invites. Supports private (email-bound) and public (shareable, capped, revocable) invites, organization seat limits, and an append-only audit trail. |

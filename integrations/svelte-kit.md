@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/svelte-kit
 title: "Svelte Kit"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-10-10T08:57:02.279Z
+current_date: 2026-10-10T08:57:02.279Z
 ---
 
 # SvelteKit Integration (/docs/integrations/svelte-kit)
@@ -14,13 +14,17 @@ Integrate Better Auth with SvelteKit.
 
 Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
 
+> The examples use SvelteKit 3 imports. On SvelteKit 2, import your files from
+> `$lib/...` instead of `#lib/...` and `building` from `$app/environment`
+> instead of `$app/env`.
+
 ## ### Mount the handler
 We need to mount the handler to SvelteKit server hook.
 
 ```ts title="hooks.server.ts"
-import { auth } from "$lib/auth";
+import { auth } from "#lib/auth.js";
 import { svelteKitHandler } from "better-auth/svelte-kit";
-import { building } from "$app/environment";
+import { building } from "$app/env";
 
 export async function handle({ event, resolve }) {
   return svelteKitHandler({ event, resolve, auth, building });
@@ -31,9 +35,9 @@ export async function handle({ event, resolve }) {
 The `svelteKitHandler` does not automatically populate `event.locals.user` or `event.locals.session`. If you want to access the current session in your server code (e.g., in `+layout.server.ts`, actions, or endpoints), populate `event.locals` in your `handle` hook:
 
 ```ts title="hooks.server.ts"
-import { auth } from "$lib/auth";
+import { auth } from "#lib/auth.js";
 import { svelteKitHandler } from "better-auth/svelte-kit";
-import { building } from "$app/environment";
+import { building } from "$app/env";
 
 export async function handle({ event, resolve }) {
   // Fetch current session from Better Auth
@@ -87,7 +91,7 @@ Some of the actions are reactive. The client use [nano-store](https://github.com
 ## ### Example usage
 ```svelte
 <script lang="ts">
-  import { authClient } from "$lib/client";
+  import { authClient } from "#lib/client.js";
   const session = authClient.useSession();
 </script>
     <div>

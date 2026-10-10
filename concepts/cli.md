@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/cli
 title: "Cli"
 description: ""
-access_date: 2026-09-24T14:54:32.060Z
-current_date: 2026-09-24T14:54:32.060Z
+access_date: 2026-10-10T08:57:02.279Z
+current_date: 2026-10-10T08:57:02.279Z
 ---
 
 Learn about the Better Auth CLI commands for generating, migrating, and checking database schemas, creating initial admins, initializing projects, generating secret keys, and gathering diagnostic info.
@@ -242,7 +242,7 @@ npx auth@latest secret
 
 **Error: Cannot find module X**
 
-The CLI resolves most imports for you: `tsconfig.json` path aliases (including SvelteKit's `$lib`) and stubbed framework virtual modules (`$env/*`, `$app/*`, `cloudflare:workers`, Vite assets like `?raw`). For SvelteKit, run `svelte-kit sync` first so `.svelte-kit/tsconfig.json` exists.
+The CLI resolves most imports for you: `tsconfig.json` path aliases, `package.json` subpath imports (including SvelteKit 3's `#lib`), and stubbed framework virtual modules (`$env/*`, `$app/*`, `cloudflare:workers`, Vite assets like `?raw`). On SvelteKit 2, run `svelte-kit sync` first so `.svelte-kit/tsconfig.json` exists and `$lib` resolves.
 
 A few module types can't load outside their bundler (e.g. `.svelte` components or `import.meta.glob`). Keep those out of your config file's import graph.[Client](https://better-auth.com/docs/concepts/client)
 
