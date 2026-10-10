@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-10-09T14:35:16.244Z
-current_date: 2026-10-09T14:35:16.244Z
+access_date: 2026-10-10T15:02:27.025Z
+current_date: 2026-10-10T15:02:27.025Z
 ---
 
 A Better Auth plugin that enables your auth server to serve as an OAuth 2.1 provider.
@@ -291,6 +291,17 @@ await auth.api.adminUpdateOAuthClient({
   }
 });
 ```
+
+To pause token issuance without deleting a client, set `disabled` through the server-only update API:
+
+```
+await auth.api.adminUpdateOAuthClient({
+  headers,
+  body: { client_id, update: { disabled: true } },
+});
+```
+
+Set `disabled: false` to resume issuance. A disabled client cannot obtain new tokens, and introspection reports its existing tokens as inactive. A resource server that verifies an existing JWT locally must still check current client or application authorization if it needs immediate disconnection; the JWT signature remains valid until expiry. The session-bound `updateOAuthClient` endpoint cannot change `disabled`.
 
 #### Rotate Client Secret
 
