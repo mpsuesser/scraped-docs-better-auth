@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/polar
 title: "Polar"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-10-12T23:40:28.419Z
+current_date: 2026-10-12T23:40:28.419Z
 ---
 
 # Polar (/docs/plugins/polar)
@@ -202,7 +202,7 @@ If `authenticatedUsersOnly` is `false` - then it will be possible to trigger che
 This plugin supports the Organization plugin. If you pass the organization ID to the Checkout referenceId, you will be able to keep track of purchases made from organization members.
 
 ```typescript
-const organizationId = (await authClient.organization.list())?.data?.[0]?.id,
+const organizationId = (await authClient.organization.list())?.data?.[0]?.id;
 
 await authClient.checkout({
     // Any Polar Product ID can be passed here
@@ -314,7 +314,7 @@ However, you can pass a `referenceId` to this method. This will return all subsc
 So in order to figure out if a user should have access, pass the user's organization ID to see if there is an active subscription for that organization.
 
 ```typescript
-const organizationId = (await authClient.organization.list())?.data?.[0]?.id,
+const organizationId = (await authClient.organization.list())?.data?.[0]?.id;
 
 const { data: subscriptions } = await authClient.customer.orders.list({
     query: {

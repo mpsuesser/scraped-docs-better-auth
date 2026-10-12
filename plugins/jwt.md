@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/jwt
 title: "Jwt"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-10-12T23:40:28.419Z
+current_date: 2026-10-12T23:40:28.419Z
 ---
 
 Authenticate users with JWT tokens in services that can't use the session
@@ -396,6 +396,22 @@ string
 \-
 
 The private part of the web key
+
+alg?
+
+string
+
+\-
+
+The JWS algorithm this web key signs with
+
+crv?
+
+string
+
+\-
+
+The elliptic curve this web key was generated on
 
 createdAt
 

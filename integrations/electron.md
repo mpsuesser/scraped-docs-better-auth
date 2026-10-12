@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/electron
 title: "Electron"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-10-12T23:40:28.419Z
+current_date: 2026-10-12T23:40:28.419Z
 ---
 
 # Electron Integration (/docs/integrations/electron)
@@ -327,7 +327,7 @@ function SignIn({
         authClient.signIn.social({
           provider: "google",
           fetchOptions: { query }, // preserve PKCE/state
-        });
+        })
       }
     >
       Sign in with Google
@@ -368,7 +368,7 @@ function Auth() {
         onClick={() =>
           window.requestAuth({
             provider: "google", // sign in with social provider, redirecting directly to the provider
-          });
+          })
         }
       >
         Sign in with Google

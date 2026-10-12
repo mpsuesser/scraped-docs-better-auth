@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-10T08:57:02.279Z
-current_date: 2026-10-10T08:57:02.279Z
+access_date: 2026-10-12T23:40:28.419Z
+current_date: 2026-10-12T23:40:28.419Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 39 of 39 plugins
+Showing 40 of 40 plugins
 
 |  | Description |
 | --- | --- |
@@ -59,3 +59,4 @@ Showing 39 of 39 plugins
 | [@eusend\_dev/better-auth](https://github.com/eusend-dev/eusend-better-auth)    [![eusend](https://github.com/eusend-dev.png) eusend](https://github.com/eusend-dev) | Auth emails (verification, password reset, OTP, magic link, organization invitations) through eusend, an EU-hosted email API, with brandable templates, non-blocking sends, and optional contact sync for verified users. |
 | [@stellartools/betterauth-adapter](https://github.com/payrouteshq/stellartools)    [![Emmanuel Odii](https://github.com/devodii.png) Emmanuel Odii](https://github.com/devodii) | Integrate Stellar blockchain payments to your Better Auth setup. |
 | [@octopi-ai/better-enrollment](https://github.com/OctopiAI/better-enrollment)    [![Talat Mahmud](https://github.com/FalconiZzare.png) Talat Mahmud](https://github.com/FalconiZzare) | Invite-only sign-ups, role-merging invite links, and organization invites. Supports private (email-bound) and public (shareable, capped, revocable) invites, organization seat limits, and an append-only audit trail. |
+| [good-webhooks](https://github.com/pplytas/good-webhooks)    [![Panagiotis Plytas](https://github.com/pplytas.png) Panagiotis Plytas](https://github.com/pplytas) | Authenticated webhook endpoint management with typed client APIs, scoped permissions, signing-secret rotation, and optional self-hosted delivery. Currently in beta with a frozen public API. |
