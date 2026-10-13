@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/session-management
 title: "Session Management"
 description: ""
-access_date: 2026-10-09T07:31:59.706Z
-current_date: 2026-10-09T07:31:59.706Z
+access_date: 2026-10-13T03:52:53.467Z
+current_date: 2026-10-13T03:52:53.467Z
 ---
 
 # Session Management (/docs/concepts/session-management)
@@ -335,8 +335,8 @@ betterAuth({
 By default, Better Auth already stores sessions in the database, however if you provide a secondary storage,
 Better Auth will store sessions in the secondary storage instead of the database.
 
-You can choose to store sessions in the database instead of secondary storage by passing
-`storeSessionInDatabase: true` in the session configuration.
+Set `storeSessionInDatabase: true` to store sessions in both the database and secondary storage.
+Session token lookups check secondary storage first, then fall back to the database for missing entries unless `preserveSessionInDatabase` is enabled.
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth";
