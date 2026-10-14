@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/oauth
 title: "Oauth"
 description: ""
-access_date: 2026-09-05T23:13:13.377Z
-current_date: 2026-09-05T23:13:13.377Z
+access_date: 2026-10-14T17:19:42.455Z
+current_date: 2026-10-14T17:19:42.455Z
 ---
 
 # OAuth (/docs/concepts/oauth)
@@ -522,7 +522,7 @@ Disables the use of the ID token for sign-in. By default, it's enabled for some 
 ## ### verifyIdToken
 A custom function to verify the ID token. Receives the token, an optional nonce, and the request endpoint context so you can branch on headers or other request data.
 
-> Providing `verifyIdToken` **replaces** the provider's built-in verification (signature, issuer, audience, and expiry). Your callback must perform those checks itself. Client-supplied headers such as `x-platform` are attacker-controlled — use them only to select which audience (or other claim) to verify against, not as proof of identity on their own.
+> Providing `verifyIdToken` **replaces** the provider's built-in verification (signature, issuer, audience, and the `exp`, `nbf`, and `iat` time checks, which allow 30 seconds of clock skew). Your callback must perform those checks itself, including any clock tolerance. Client-supplied headers such as `x-platform` are attacker-controlled — use them only to select which audience (or other claim) to verify against, not as proof of identity on their own.
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth";
@@ -548,6 +548,7 @@ export const auth = betterAuth({
             issuer: "https://appleid.apple.com",
             audience,
             maxTokenAge: "1h",
+            clockTolerance: 30,
           });
           if (nonce && payload.nonce !== nonce) {
             return false;

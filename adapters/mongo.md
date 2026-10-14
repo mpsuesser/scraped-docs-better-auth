@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/mongo
 title: "Mongo"
 description: ""
-access_date: 2026-10-03T01:42:45.321Z
-current_date: 2026-10-03T01:42:45.321Z
+access_date: 2026-10-14T17:19:42.455Z
+current_date: 2026-10-14T17:19:42.455Z
 ---
 
 Integrate Better Auth with MongoDB.
@@ -48,6 +48,10 @@ export const auth = betterAuth({
   }),
 });
 ```
+
+When two requests write the same document at the same time, MongoDB aborts one of the transactions with a write conflict and expects the application to retry it. The adapter retries such a transaction for up to 120 seconds, so a request under heavy contention can take longer instead of failing. To lower that limit, set the `timeoutMS` option on your `MongoClient`. It also applies to every other operation on that client.
+
+A retry runs the whole operation again, including `before` [database hooks](https://better-auth.com/docs/concepts/database#database-hooks) and plugin callbacks that receive the transaction. Send emails and call other services from `after` hooks, which run once, after the commit.
 
 ### Standalone server
 

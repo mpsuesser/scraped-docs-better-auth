@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/database
 title: "Database"
 description: ""
-access_date: 2026-10-09T07:31:59.706Z
-current_date: 2026-10-09T07:31:59.706Z
+access_date: 2026-10-14T17:19:42.455Z
+current_date: 2026-10-14T17:19:42.455Z
 ---
 
 Learn about database adapters, migrations, secondary storage with Redis, core schema (user, session, account, verification), custom tables, extending schemas, ID generation, database hooks, and plugin schemas.
@@ -828,7 +828,7 @@ There are two types of hooks you can define:
 #### 1\. Before Hook
 
 - **Purpose**: This hook is called before the respective entity (user, session, or account) is created, updated, or deleted.
-- **Behavior**: If the hook returns `false`, the operation will be aborted. And If it returns a data object, it'll replace the original payload.
+- **Behavior**: If the hook returns `false`, the operation will be aborted. And If it returns a data object, it'll replace the original payload. On MongoDB with transactions, a before hook can run more than once for one operation: when MongoDB aborts the transaction because of a concurrent write, the adapter runs it again. Send emails and call other services from an after hook instead.
 
 #### 2\. After Hook
 
