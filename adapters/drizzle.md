@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/drizzle
 title: "Drizzle"
 description: ""
-access_date: 2026-09-28T23:07:12.836Z
-current_date: 2026-09-28T23:07:12.836Z
+access_date: 2026-10-14T12:17:49.521Z
+current_date: 2026-10-14T12:17:49.521Z
 ---
 
 Integrate Better Auth with Drizzle ORM.
@@ -193,6 +193,12 @@ export const auth = betterAuth({
   }
 });
 ```
+
+## Date Columns
+
+The schema the CLI generates stores dates with Drizzle's date mode, such as `timestamp()` on PostgreSQL and MySQL, and `integer({ mode: "timestamp_ms" })` on SQLite. Date columns that hold strings also work: `timestamp({ mode: "string" })`, MySQL `datetime({ mode: "string" })`, and SQLite `text()`.
+
+For a string column, Better Auth writes the date in UTC: ISO 8601 (`2026-01-16T16:50:54.888Z`), or `2026-01-16 16:50:54.888` on MySQL. It reads a value without a time zone as UTC. On PostgreSQL, `timestamp({ mode: "string", withTimezone: true })` stores an absolute instant, and the values it returns carry an offset, so reading them does not depend on that rule.
 
 ## Using Plural Table Names
 

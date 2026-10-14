@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/mcp
 title: "Mcp"
 description: ""
-access_date: 2026-08-18T00:08:46.984Z
-current_date: 2026-08-18T00:08:46.984Z
+access_date: 2026-10-14T12:17:49.521Z
+current_date: 2026-10-14T12:17:49.521Z
 ---
 
 Turn your Better Auth server into an OAuth provider for MCP clients
@@ -141,6 +141,8 @@ mcp({
 ```
 
 `resource` must be an HTTPS URL with no query, fragment, or credentials; HTTP is accepted only on loopback hosts for local development. A resource whose URL requires a query component cannot use `mcp()`, `requireMcpAuth`, or `createMcpProtectedRequestHandler`. Verify its tokens with `verifyAccessTokenRequest` from `better-auth/oauth2`, and build challenges with `createResourceServerChallenge` from `@better-auth/oauth-provider`.
+
+With Prisma on PostgreSQL, CockroachDB, or MongoDB, also declare this resource in `resources` with explicit `allowedScopes`; see [Resources](https://better-auth.com/docs/plugins/oauth-provider#resources).
 
 `mcp()` also registers this identifier as a default client-registration resource. A dynamically registered client is linked to the MCP resource even when its registration request omits the non-standard `resources` field. Any `clientRegistrationDefaultResources` you provide are preserved, and the MCP resource is appended once.
 
