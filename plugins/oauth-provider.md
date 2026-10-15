@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-10-14T20:46:57.165Z
-current_date: 2026-10-14T20:46:57.165Z
+access_date: 2026-10-15T11:54:56.981Z
+current_date: 2026-10-15T11:54:56.981Z
 ---
 
 A Better Auth plugin that enables your auth server to serve as an OAuth 2.1 provider.
@@ -456,6 +456,8 @@ const client = await authClient.oauth2.register({
 
 For all endpoint parameters, see [RFC 7591 Registration](https://datatracker.ietf.org/doc/html/rfc7591#section-2).
 
+Dynamic registration keeps only the requested `grant_types` this server supports, and the registration response lists the grants that were registered ([RFC 7591 §3.2.1](https://datatracker.ietf.org/doc/html/rfc7591#section-3.2.1)). For example, Claude's MCP connector requests `urn:ietf:params:oauth:grant-type:jwt-bearer` alongside `authorization_code` and `refresh_token`, and registers with the last two. When `authorization_code` is dropped, so is the `code` response type. A registration that shares no grant with the server is rejected with `invalid_client_metadata`. Clients created with `createOAuthClient` or `adminCreateOAuthClient` are not narrowed: an unsupported grant is rejected.
+
 `application_type` ([OIDC Registration §2](https://openid.net/specs/openid-connect-registration-1_0.html#ClientMetadata)) defaults to `web` when omitted. A `web` client requires `https` redirect URIs on non-loopback hosts. A `native` client may use any of these redirect URI forms:
 
 - A claimed `https` URI on a non-loopback host.
@@ -469,15 +471,15 @@ Application type is independent of client authentication. For example, a native 
 
 The [MCP 2026-07-28 spec](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration#application-type-and-redirect-uri-constraints) requires MCP clients to send an appropriate `application_type`. A [Client ID Metadata Document](https://better-auth.com/docs/plugins/cimd) may omit it; Better Auth stores that omission as `null` and validates redirects against the safe union of web and native forms.
 
-Some native MCP clients omit `application_type` during dynamic registration. Cursor, for example, registers `cursor://anysphere.cursor-mcp/oauth/callback`, an `https` callback, and `http://localhost:8787/callback` without it, so the `web` default rejects the registration. `clientRegistrationDefaultApplicationType` sets the type that a dynamic registration gets when it omits the field:
+Some native MCP clients omit `application_type` during dynamic registration. Cursor, for example, registers `cursor://anysphere.cursor-mcp/oauth/callback`, an `https` callback, and `http://localhost:8787/callback` without it, and older Claude Code releases register a single `http://127.0.0.1:<port>/callback`, so the `web` default rejects both registrations. Current Claude Code releases send `application_type: "native"` and register without this option. `clientRegistrationDefaultApplicationType` sets the type that a dynamic registration gets when it omits the field:
 
 | Value | Omitted `application_type` becomes |
 | --- | --- |
 | `"web"` (default) | `web`, as OIDC Registration §2 specifies |
 | `"native"` | `native` |
-| `"infer"` | `native` when any redirect URI uses a non-http(s) scheme, otherwise `web` |
+| `"infer"` | `native` when any redirect URI uses a non-http(s) scheme or `http` on `localhost`, `127.0.0.1`, or `[::1]`; otherwise `web` |
 
-Every redirect URI is then validated against the rules for the resulting type. Under `"infer"`, a client that lists a custom scheme becomes `native`, so its `http` URIs must still be loopback. A client that lists only `http` and `https` URIs stays `web`. An `application_type` the client sends is never overridden. The option applies only to dynamic registration; managed clients and Client ID Metadata Documents are unaffected.
+Every redirect URI is then validated against the rules for the resulting type. Under `"infer"`, a client that lists a custom scheme or an `http` loopback URI becomes `native`, so its other `http` URIs must still be loopback. A client that lists only `https` URIs stays `web`. An `application_type` the client sends is never overridden. The option applies only to dynamic registration; managed clients and Client ID Metadata Documents are unaffected.
 
 ```
 oauthProvider({
@@ -550,7 +552,7 @@ Better Auth supports Demonstrating Proof of Possession (DPoP) as defined by [RFC
 When a token is DPoP-bound:
 
 - The token endpoint requires a valid `DPoP` proof JWT.
-- The proof's `htu` must be the endpoint's public URL built from `baseURL`, such as `https://auth.example.com/api/auth/oauth2/token`. This holds even when a proxy or dev server rewrites the request host.
+- The proof's `htu` must be the endpoint's public URL: the origin and base path of `baseURL`, followed by the path the client requested, such as `https://auth.example.com/api/auth/oauth2/token`. Set `baseURL` to the public URL clients call, not an internal one, because the expected `htu` ignores the request host, which a proxy or dev server can rewrite.
 - The token response returns `token_type: "DPoP"`.
 - JWT access tokens include `cnf.jkt`; opaque access tokens and refresh tokens persist the same JWK thumbprint.
 - Refresh token rotation requires a DPoP proof from the same key.
@@ -627,6 +629,40 @@ The assertion JWT must contain:
 | `iat` | Optional, but if present must not be older than `assertionMaxLifetime` |
 
 Supported signing algorithms: `RS256`, `RS384`, `RS512`, `PS256`, `PS384`, `PS512`, `ES256`, `ES384`, `ES512`, `EdDSA`.
+
+##### Rotating client keys
+
+A client with inline `jwks` can replace its own keys without a user session. This is how a service rotates its signing key on a schedule. Enable it on the provider:
+
+```
+oauthProvider({
+  allowClientKeyRotation: true,
+})
+```
+
+The client generates a new key pair, then calls the endpoint with a client assertion signed by one of its current keys:
+
+```
+POST /api/auth/oauth2/client/rotate-keys
+Content-Type: application/json
+
+{
+  "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+  "client_assertion": "eyJhbGciOiJFUzI1NiIs...",
+  "jwks": { "keys": [{ "kty": "EC", "crv": "P-256", "kid": "key-2", "x": "...", "y": "..." }] }
+}
+```
+
+The assertion follows the claims in the table above, with one difference: `aud` must include the URL of the rotation endpoint. The token endpoint and the issuer do not count as audiences here, so an assertion minted only for them cannot be redirected to take over a client's keys.
+
+`jwks` is the client's complete new key set. A key left out of it stops verifying at once, so leaving out a leaked key retires it with that request. The response returns `client_id` and the stored `jwks`.
+
+To replace a key without breaking instances that still sign with the old one, roll it in two steps, the way a client that publishes a `jwks_uri` does:
+
+1. Send both the old and the new key, signed by the old key.
+2. Once every instance signs with the new key, send only the new key, signed by the new key.
+
+If the keys change while a rotation is in flight, the losing request fails with `409`, or with `401` if its signing key was already removed. Sign a fresh assertion with a current key and retry.
 
 #### Authorization code grant
 
@@ -1187,6 +1223,8 @@ oauthProvider({
   }
 })
 ```
+
+Consent is stored per reference. An authorization reuses only the consent the user gave for the same `consentReferenceId` value, and returning `undefined` or an empty string uses only the consent given without a reference.
 
 The plugin will redirect the user to the `postLogin.page` to provide a prompt for account selection. Upon completion, call `authClient.oauth2.continue`.
 
@@ -1757,6 +1795,7 @@ The OAuth Provider includes built-in rate limiting for all OAuth endpoints to pr
 | `/oauth2/introspect` | 60s | 100 |
 | `/oauth2/revoke` | 60s | 30 |
 | `/oauth2/register` | 60s | 5 |
+| `/oauth2/client/rotate-keys` | 60s | 5 |
 | `/oauth2/userinfo` | 60s | 60 |
 
 You can customize the rate limits for each endpoint:
@@ -1769,6 +1808,7 @@ oauthProvider({
     introspect: { window: 60, max: 100 },  // 100 requests per minute
     revoke: { window: 60, max: 30 },       // 30 requests per minute
     register: { window: 60, max: 5 },      // 5 requests per minute
+    rotateClientKeys: { window: 60, max: 5 }, // 5 requests per minute
     userinfo: { window: 60, max: 60 },     // 60 requests per minute
   },
 })
@@ -2185,6 +2225,22 @@ string
 \-
 
 OIDC application type used to classify redirect URI policy. Supports: \['web', 'native'\]
+
+jwks?
+
+string
+
+\-
+
+The client's public JWK Set as JSON, for \`private\_key\_jwt\` authentication. Mutually exclusive with \`jwksUri\`
+
+jwksUri?
+
+string
+
+\-
+
+HTTPS URI of the client's public JWK Set. Mutually exclusive with \`jwks\`
 
 clientDiscoveryId?
 

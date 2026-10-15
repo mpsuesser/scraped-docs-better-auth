@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/mcp
 title: "Mcp"
 description: ""
-access_date: 2026-10-14T12:17:49.521Z
-current_date: 2026-10-14T12:17:49.521Z
+access_date: 2026-10-15T11:54:56.981Z
+current_date: 2026-10-15T11:54:56.981Z
 ---
 
 Turn your Better Auth server into an OAuth provider for MCP clients
@@ -157,8 +157,11 @@ mcp({
   resource: "https://api.example.com/mcp",
   allowDynamicClientRegistration: true,
   allowUnauthenticatedClientRegistration: true,
+  clientRegistrationDefaultApplicationType: "infer",
 })
 ```
+
+Some MCP clients, such as Cursor and older Claude Code releases, omit `application_type` and register custom-scheme callbacks or `http` callbacks on `localhost`, `127.0.0.1`, or `[::1]`, which the `web` default rejects. `clientRegistrationDefaultApplicationType: "infer"` registers those clients as `native`; see [application type](https://better-auth.com/docs/plugins/oauth-provider#dynamic-registration-endpoint).
 
 The registration endpoint is absent from discovery unless DCR is enabled. A DCR request does not need Better Auth's `resources` extension: `mcp()` adds its canonical resource as a server-owned default.
 
