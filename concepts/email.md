@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/email
 title: "Email"
 description: ""
-access_date: 2026-09-28T16:10:44.995Z
-current_date: 2026-09-28T16:10:44.995Z
+access_date: 2026-10-16T19:08:56.642Z
+current_date: 2026-10-16T19:08:56.642Z
 ---
 
 # Email (/docs/concepts/email)
@@ -20,7 +20,7 @@ Better Auth works with any transactional email provider, giving you full control
 For example, you might consider the following email provider:
 
 * [Resend](https://resend.com/better-auth)
-* [SuperSend TX](https://docs.supersendtx.com/guides/better-auth)
+* [Groundmail](https://docs.groundmail.dev/guides/better-auth)
 * [Mailtrap](https://docs.mailtrap.io/guides/integrations/better-auth)
 * [Wraps](https://wraps.dev/docs/guides/better-auth)
 * [eusend](https://eusend.dev/docs/integrations/better-auth)
