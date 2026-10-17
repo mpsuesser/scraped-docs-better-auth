@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-12T23:40:28.419Z
-current_date: 2026-10-12T23:40:28.419Z
+access_date: 2026-10-17T09:56:10.031Z
+current_date: 2026-10-17T09:56:10.031Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -59,4 +59,4 @@ Showing 40 of 40 plugins
 | [@eusend\_dev/better-auth](https://github.com/eusend-dev/eusend-better-auth)    [![eusend](https://github.com/eusend-dev.png) eusend](https://github.com/eusend-dev) | Auth emails (verification, password reset, OTP, magic link, organization invitations) through eusend, an EU-hosted email API, with brandable templates, non-blocking sends, and optional contact sync for verified users. |
 | [@stellartools/betterauth-adapter](https://github.com/payrouteshq/stellartools)    [![Emmanuel Odii](https://github.com/devodii.png) Emmanuel Odii](https://github.com/devodii) | Integrate Stellar blockchain payments to your Better Auth setup. |
 | [@octopi-ai/better-enrollment](https://github.com/OctopiAI/better-enrollment)    [![Talat Mahmud](https://github.com/FalconiZzare.png) Talat Mahmud](https://github.com/FalconiZzare) | Invite-only sign-ups, role-merging invite links, and organization invites. Supports private (email-bound) and public (shareable, capped, revocable) invites, organization seat limits, and an append-only audit trail. |
-| [good-webhooks](https://github.com/pplytas/good-webhooks)    [![Panagiotis Plytas](https://github.com/pplytas.png) Panagiotis Plytas](https://github.com/pplytas) | Authenticated webhook endpoint management with typed client APIs, scoped permissions, signing-secret rotation, and optional self-hosted delivery. Currently in beta with a frozen public API. |
+| [good-webhooks](https://github.com/pplytas/good-webhooks)    [![Panagiotis Plytas](https://github.com/pplytas.png) Panagiotis Plytas](https://github.com/pplytas) | Authenticated webhook endpoint management with typed client APIs, scoped permissions, signing-secret rotation, and optional self-hosted delivery. |
