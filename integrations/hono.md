@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/hono
 title: "Hono"
 description: ""
-access_date: 2026-09-14T18:07:43.919Z
-current_date: 2026-09-14T18:07:43.919Z
+access_date: 2026-10-17T09:39:56.823Z
+current_date: 2026-10-17T09:39:56.823Z
 ---
 
 # Hono Integration (/docs/integrations/hono)
@@ -71,8 +71,8 @@ If you're using another runtime, keep your existing entry point and add the same
 `app.all()` forwards every HTTP method to Better Auth using the raw Web Standard `Request` from `c.req.raw`. Better Auth validates the method and returns a `Response` that Hono sends directly. Register the auth route before any catch-all route that could handle the request first.
 
 > The resulting Hono route must match your Better Auth `basePath`, which
-> defaults to `/api/auth`. If your app already uses `new
->           Hono().basePath("/api")`, mount Better Auth at `/auth/*`:
+> defaults to `/api/auth`. If your app already uses
+> `new Hono().basePath("/api")`, mount Better Auth at `/auth/*`:
 > 
 > ```ts
 > const app = new Hono().basePath("/api");
