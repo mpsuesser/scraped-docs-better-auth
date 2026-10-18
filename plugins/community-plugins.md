@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-17T09:56:10.031Z
-current_date: 2026-10-17T09:56:10.031Z
+access_date: 2026-10-18T23:11:18.347Z
+current_date: 2026-10-18T23:11:18.347Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 40 of 40 plugins
+Showing 41 of 41 plugins
 
 |  | Description |
 | --- | --- |
@@ -60,3 +60,4 @@ Showing 40 of 40 plugins
 | [@stellartools/betterauth-adapter](https://github.com/payrouteshq/stellartools)    [![Emmanuel Odii](https://github.com/devodii.png) Emmanuel Odii](https://github.com/devodii) | Integrate Stellar blockchain payments to your Better Auth setup. |
 | [@octopi-ai/better-enrollment](https://github.com/OctopiAI/better-enrollment)    [![Talat Mahmud](https://github.com/FalconiZzare.png) Talat Mahmud](https://github.com/FalconiZzare) | Invite-only sign-ups, role-merging invite links, and organization invites. Supports private (email-bound) and public (shareable, capped, revocable) invites, organization seat limits, and an append-only audit trail. |
 | [good-webhooks](https://github.com/pplytas/good-webhooks)    [![Panagiotis Plytas](https://github.com/pplytas.png) Panagiotis Plytas](https://github.com/pplytas) | Authenticated webhook endpoint management with typed client APIs, scoped permissions, signing-secret rotation, and optional self-hosted delivery. |
+| [better-auth-saml-idp](https://github.com/mmcintosh/better-auth-saml-idp)    [![Mark McIntosh](https://github.com/mmcintosh.png) Mark McIntosh](https://github.com/mmcintosh) | Turn Better Auth into a SAML 2.0 identity provider for Microsoft 365, Google Workspace, Okta, Salesforce, AWS and other service providers. SP registry with metadata import, signed and encrypted assertions, Single Logout, and step-up MFA. |
