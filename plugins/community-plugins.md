@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-18T23:11:18.347Z
-current_date: 2026-10-18T23:11:18.347Z
+access_date: 2026-10-18T23:19:58.232Z
+current_date: 2026-10-18T23:19:58.232Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 41 of 41 plugins
+Showing 42 of 42 plugins
 
 |  | Description |
 | --- | --- |
@@ -41,6 +41,7 @@ Showing 41 of 41 plugins
 | [@ramiras123/better-auth-strapi](https://github.com/Ramiras123/better-auth-strapi)    [![Ramiras123](https://github.com/ramiras123.png) Ramiras123](https://github.com/ramiras123) | Plugin for authorization via strapi |
 | [better-auth-razorpay](https://github.com/iamjasonkendrick/better-auth-razorpay)    [![iamjasonkendrick](https://github.com/iamjasonkendrick.png) iamjasonkendrick](https://github.com/iamjasonkendrick) | Razorpay payment plugin for Better Auth — integrates Razorpay payments, webhooks, and subscription flows. |
 | [better-auth-payu](https://github.com/iamjasonkendrick/better-auth-payu)    [![iamjasonkendrick](https://github.com/iamjasonkendrick.png) iamjasonkendrick](https://github.com/iamjasonkendrick) | PayU payment plugin for Better Auth — integrates PayU payments, webhooks, and subscription flows. |
+| [@agentaos/better-auth](https://github.com/AgentaOS/agentaos/tree/main/packages/better-auth)    [![AgentaOS](https://github.com/AgentaOS.png) AgentaOS](https://github.com/AgentaOS) | Better Auth plugin for AgentaOS merchant-of-record checkouts, subscriptions, and verified webhooks. |
 | [better-invite](https://github.com/better-invite/better-invite)    [![Sandy](https://github.com/0-Sandy.png) Sandy](https://github.com/0-Sandy) | Easily create and manage user invitations, allowing you to invite users with customizable settings and track usage. |
 | [better-auth-usos](https://github.com/qamarq/better-auth-usos)    [![qamarq](https://github.com/qamarq.png) qamarq](https://github.com/qamarq) | USOS plugin for Better Auth - allows students to authenticate using their university credentials via the USOS API. Using oauth 1a. |
 | [better-auth-devtools](https://github.com/C-W-D-Harshit/better-auth-devtools)    [![C-W-D-Harshit](https://github.com/C-W-D-Harshit.png) C-W-D-Harshit](https://github.com/C-W-D-Harshit) | A devtools panel for Better Auth that lets you create managed test users from templates, switch between sessions instantly, inspect live session data, and edit fields like roles on the fly. All from a floating React UI that only runs in development. |

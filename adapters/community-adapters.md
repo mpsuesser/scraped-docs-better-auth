@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/community-adapters
 title: "Community Adapters"
 description: ""
-access_date: 2026-09-02T12:04:16.047Z
-current_date: 2026-09-02T12:04:16.047Z
+access_date: 2026-10-18T23:19:58.232Z
+current_date: 2026-10-18T23:19:58.232Z
 ---
 
 Community-built database adapters that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom adapter, get started by reading our [Create a Database
 
 ## Browse Community Adapters
 
-Showing 23 of 23 adapters
+Showing 24 of 24 adapters
 
 |  |  |  |
 | --- | --- | --- |
@@ -43,3 +43,4 @@ Showing 23 of 23 adapters
 | [`better-auth-mongoose`](https://github.com/AshwinSathian/better-auth-mongoose) | [Mongoose](https://mongoosejs.com/) | [![Ashwin Sathian](https://github.com/AshwinSathian.png) Ashwin Sathian](https://github.com/AshwinSathian) |
 | [`@ilbertt/better-auth-bun-sql`](https://github.com/ilbertt/better-auth-bun-sql) | [Bun SQL](https://bun.com/docs/api/sql) | [![ilbertt](https://github.com/ilbertt.png) ilbertt](https://github.com/ilbertt) |
 | [`@a77ay/better-auth-mikro-orm`](https://github.com/a77ay/better-auth-mikro-orm) | [MikroORM](https://mikro-orm.io/) | [![A77AY](https://github.com/a77ay.png) A77AY](https://github.com/a77ay) |
+| [`better-auth-arcadedb`](https://github.com/DevSnap/better-auth-arcadedb) | [ArcadeDB](https://arcadedb.com/) | [![DevSnap](https://github.com/DevSnap.png) DevSnap](https://github.com/DevSnap) |

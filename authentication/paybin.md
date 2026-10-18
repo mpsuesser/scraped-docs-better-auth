@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/paybin
 title: "Paybin"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-10-18T23:19:58.232Z
+current_date: 2026-10-18T23:19:58.232Z
 ---
 
 # Paybin (/docs/authentication/paybin)
@@ -85,3 +85,6 @@ Paybin returns user information in the ID token following OpenID Connect standar
 * `email` from `email` claim
 * `image` from `picture` claim
 * `emailVerified` from `email_verified` claim
+
+## ### ID Token Validation
+The built-in provider checks the ID token's signature, issuer, audience, and expiration using signing keys from `<issuer>/.well-known/jwks.json`. Custom `getUserInfo` overrides replace these checks.
