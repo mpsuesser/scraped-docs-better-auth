@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/jwt
 title: "Jwt"
 description: ""
-access_date: 2026-10-12T23:40:28.419Z
-current_date: 2026-10-12T23:40:28.419Z
+access_date: 2026-10-19T23:04:47.814Z
+current_date: 2026-10-19T23:04:47.814Z
 ---
 
 Authenticate users with JWT tokens in services that can't use the session
@@ -542,6 +542,8 @@ jwt({
 ### Modify Issuer, Audience, Subject or Expiration time
 
 If none is given, the `BASE_URL` is used as the issuer and the audience is set to the `BASE_URL`. The expiration time is set to 15 minutes.
+
+Without a configured `baseURL`, direct `auth.api` calls have no issuer or audience to use, and the plugin logs a warning. Set `baseURL`, or set `issuer` and `audience` here.
 
 ```
 jwt({
