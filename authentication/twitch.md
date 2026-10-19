@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/twitch
 title: "Twitch"
 description: ""
-access_date: 2026-10-18T23:19:58.232Z
-current_date: 2026-10-18T23:19:58.232Z
+access_date: 2026-10-19T20:34:43.903Z
+current_date: 2026-10-19T20:34:43.903Z
 ---
 
 # Twitch (/docs/authentication/twitch)
@@ -52,7 +52,3 @@ const signIn = async () => {
 ```
 
 > Twitch users who do not have an email address will not be able to sign in.
-
-
-## ### ID Token Validation
-The built-in provider checks the ID token's signature, issuer, audience, and expiration before mapping the profile. Custom `getUserInfo` overrides replace these checks.
