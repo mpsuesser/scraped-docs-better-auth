@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-18T23:19:58.232Z
-current_date: 2026-10-18T23:19:58.232Z
+access_date: 2026-10-19T21:17:41.618Z
+current_date: 2026-10-19T21:17:41.618Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 42 of 42 plugins
+Showing 43 of 43 plugins
 
 |  | Description |
 | --- | --- |
@@ -50,6 +50,7 @@ Showing 42 of 42 plugins
 | [ton-better-auth](https://github.com/mhbdev/ton-better-auth)    [![mhbdev](https://github.com/mhbdev.png) mhbdev](https://github.com/mhbdev) |  |
 | [@dbsc-toolkit/better-auth](https://www.npmjs.com/package/@dbsc-toolkit/better-auth)    [![SulimanAbdulrazzaq](https://github.com/SulimanAbdulrazzaq.png) SulimanAbdulrazzaq](https://github.com/SulimanAbdulrazzaq) | Device Bound Session Credentials (DBSC) — binds sessions to a device-resident key so a stolen cookie can't be replayed from another machine. Native binding via TPM or Secure Enclave on Chromium 145+, with a Web Crypto polyfill for Firefox, Safari, and older Chromium. |
 | [@marinedotsh/better-auth-referral](https://github.com/marinedotsh/better-auth-referral)    [![Shivam Gupta](https://github.com/shivamrun.png) Shivam Gupta](https://github.com/shivamrun) | A Better Auth plugin for adding user referrals to your app. |
+| [@amank-root/better-auth-razorpay](https://github.com/Amank-root/better-auth-razorpay)    [![Aman Kushwaha](https://github.com/Amank-root.png) Aman Kushwaha](https://github.com/Amank-root) | Full Razorpay integration plugin for Better Auth — subscriptions, one-time payments, invoices, refunds, customers, add-ons, items, and webhook handling. |
 | [better-auth-instagram](https://github.com/rajatsandeepsen/better-auth-instagram)    [![Rajat Sandeep](https://github.com/rajatsandeepsen.png) Rajat Sandeep](https://github.com/rajatsandeepsen) | Instagram Provider for Better Auth |
 | [better-auth-zoho](https://github.com/rajatsandeepsen/better-auth-zoho)    [![Rajat Sandeep](https://github.com/rajatsandeepsen.png) Rajat Sandeep](https://github.com/rajatsandeepsen) | Zoho Provider for Better Auth |
 | [better-auth-snapchat](https://github.com/rajatsandeepsen/better-auth-snapchat)    [![Rajat Sandeep](https://github.com/rajatsandeepsen.png) Rajat Sandeep](https://github.com/rajatsandeepsen) | Snapchat Provider for Better Auth |
