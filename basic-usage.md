@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/basic-usage
 title: "Basic Usage"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-10-20T09:53:31.599Z
+current_date: 2026-10-20T09:53:31.599Z
 ---
 
 Getting started with Better Auth
@@ -345,7 +345,7 @@ const signInWith2Factor = async() => {
 }
 
 const verifyTOTP = async() => {
-    const data = await authClient.twoFactor.verifyTOTP({
+    const data = await authClient.twoFactor.verifyTotp({
         code: "123456", // the code entered by the user 
         /**
          * If the device is trusted, the user won't
