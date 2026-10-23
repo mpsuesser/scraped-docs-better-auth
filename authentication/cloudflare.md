@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/cloudflare
 title: "Cloudflare"
 description: ""
-access_date: 2026-09-06T05:37:10.752Z
-current_date: 2026-09-06T05:37:10.752Z
+access_date: 2026-10-23T04:17:11.874Z
+current_date: 2026-10-23T04:17:11.874Z
 ---
 
 # Cloudflare (/docs/authentication/cloudflare)
@@ -89,7 +89,7 @@ export const auth = betterAuth({
 > The authorization request must not include scopes that are missing from the Cloudflare OAuth client configuration. Cloudflare's docs say exact OAuth scope IDs are available from `GET https://api.cloudflare.com/client/v4/oauth/scopes`.
 
 ## ### Token authentication method
-Use `client_secret_basic` for regular server-side Better Auth applications. This is the default used by the Cloudflare provider when `clientSecret` is configured.
+Use `tokenEndpointAuth` to configure the authentication method, which defaults to `client_secret_basic` when `clientSecret` is set.
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
@@ -99,13 +99,13 @@ export const auth = betterAuth({
         cloudflare: {
             clientId: process.env.CLOUDFLARE_CLIENT_ID as string,
             clientSecret: process.env.CLOUDFLARE_CLIENT_SECRET as string,
-            // tokenEndpointAuthMethod: "client_secret_basic", // default // [!code highlight]
+            // tokenEndpointAuth: { method: "client_secret_basic" }, // default // [!code highlight]
         },
     },
 })
 ```
 
-If your Cloudflare OAuth client is configured with `client_secret_post`, set `tokenEndpointAuthMethod` to `client_secret_post`:
+If your Cloudflare OAuth client is configured with `client_secret_post`, set `tokenEndpointAuth` to `{ method: "client_secret_post" }`:
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
@@ -115,14 +115,14 @@ export const auth = betterAuth({
         cloudflare: {
             clientId: process.env.CLOUDFLARE_CLIENT_ID as string,
             clientSecret: process.env.CLOUDFLARE_CLIENT_SECRET as string,
-            tokenEndpointAuthMethod: "client_secret_post", // [!code highlight]
+            tokenEndpointAuth: { method: "client_secret_post" }, // [!code highlight]
         },
     },
 })
 ```
 
 ## ### Clients without a secret
-Cloudflare's [OAuth flow guidance](https://developers.cloudflare.com/fundamentals/oauth/create-an-oauth-client/#choose-a-flow) requires clients that cannot securely store a secret, such as browser-based, mobile, desktop, or CLI applications, to use the Authorization Code flow with PKCE (`S256`) and `token_endpoint_auth_method` set to `none`. For one of these clients, omit `clientSecret` and set `tokenEndpointAuthMethod` to `none`. Better Auth supplies the PKCE challenge and verifier during the authorization flow.
+Cloudflare's [OAuth flow guidance](https://developers.cloudflare.com/fundamentals/oauth/create-an-oauth-client/#choose-a-flow) requires clients that cannot securely store a secret, such as browser-based, mobile, desktop, or CLI applications, to use the Authorization Code flow with PKCE (`S256`) and `token_endpoint_auth_method` set to `none`. For one of these clients, omit `clientSecret` and set `tokenEndpointAuth` to `{ method: "none" }`. Better Auth supplies the PKCE challenge and verifier during the authorization flow.
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
@@ -131,11 +131,13 @@ export const auth = betterAuth({
     socialProviders: {
         cloudflare: {
             clientId: process.env.CLOUDFLARE_CLIENT_ID as string,
-            tokenEndpointAuthMethod: "none", // [!code highlight]
+            tokenEndpointAuth: { method: "none" }, // [!code highlight]
         },
     },
 })
 ```
+
+> If you use `tokenEndpointAuthMethod: "..."`, replace it with `tokenEndpointAuth: { method: "..." }`.
 
 ## ### Client visibility
 Cloudflare [client visibility](https://developers.cloudflare.com/fundamentals/oauth/create-an-oauth-client/#private-and-public-clients) is separate from token endpoint authentication. New OAuth clients are private, so only members of the parent Cloudflare account can authorize them. To allow any Cloudflare user to authorize your application, promote the client to public.
