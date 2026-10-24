@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/2fa
 title: "2fa"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-10-24T16:10:49.699Z
+current_date: 2026-10-24T16:10:49.699Z
 ---
 
 Enhance your app's security with two-factor authentication.
@@ -396,16 +396,16 @@ To display the backup codes to the user, you can call `viewBackupCodes` on the s
 ```
 const data = await auth.api.viewBackupCodes({
     body: {
-        userId: "user-id", // The user ID to view all backup codes.
+        userId: "user-id", // required, The ID of the user whose backup codes to return.
     },
 });
 ```
 
 Parameters
 
-`userId` string | null
+`userId` stringrequired
 
-The user ID to view all backup codes.
+The ID of the user whose backup codes to return.
 
 ### Trusted Devices
 
