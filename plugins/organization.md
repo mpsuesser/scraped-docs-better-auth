@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/organization
 title: "Organization"
 description: ""
-access_date: 2026-10-24T15:25:25.877Z
-current_date: 2026-10-24T15:25:25.877Z
+access_date: 2026-10-24T15:34:48.491Z
+current_date: 2026-10-24T15:34:48.491Z
 ---
 
 The organization plugin allows you to manage your organization's members and teams.
@@ -1114,7 +1114,7 @@ If you want to add a member directly to an organization without sending an invit
 ```
 const data = await auth.api.addMember({
     body: {
-        userId: "user-id", // The user ID which represents the user to be added as a member. If \`null\` is provided, then it's expected to provide session headers.
+        userId: "user-id", // required, The ID of the user to add as a member.
         role: ["admin", "sale"], // required, The role(s) to assign to the new member.
         organizationId: "org-id", // An optional organization ID to pass. If not provided, will default to the user's active organization.
         teamId: "team-id", // An optional team ID to add the member to.
@@ -1124,9 +1124,9 @@ const data = await auth.api.addMember({
 
 Parameters
 
-`userId` string | null
+`userId` stringrequired
 
-The user ID which represents the user to be added as a member. If `null` is provided, then it's expected to provide session headers.
+The ID of the user to add as a member.
 
 `role` string | string\[\]required
 
