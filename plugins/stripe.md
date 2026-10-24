@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/stripe
 title: "Stripe"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-10-24T12:19:08.316Z
+current_date: 2026-10-24T12:19:08.316Z
 ---
 
 Stripe plugin for Better Auth to manage subscriptions and payments.
@@ -47,7 +47,7 @@ Next, install the Stripe SDK on your server:
 #### npm
 
 ```
-npm install stripe@^22.0.0
+npm install stripe@^23.0.0
 ```
 
 #### pnpm
@@ -64,7 +64,7 @@ import { stripe } from "@better-auth/stripe"
 import Stripe from "stripe"
 
 const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2026-06-24.dahlia", // Latest API version as of Stripe SDK v22.0.0
+    apiVersion: "2026-09-30.endive", // Latest API version as of Stripe SDK v23.0.0
 })
 
 export const auth = betterAuth({
