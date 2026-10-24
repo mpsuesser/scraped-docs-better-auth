@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/organization
 title: "Organization"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-10-24T15:25:25.877Z
+current_date: 2026-10-24T15:25:25.877Z
 ---
 
 The organization plugin allows you to manage your organization's members and teams.
@@ -712,7 +712,7 @@ The slug of the organization.
 
 The logo of the organization.
 
-`metadata` Record<string, any> | null
+`metadata` Record<string, any>
 
 The metadata of the organization.
 
