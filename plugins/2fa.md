@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/2fa
 title: "2fa"
 description: ""
-access_date: 2026-10-24T16:10:49.699Z
-current_date: 2026-10-24T16:10:49.699Z
+access_date: 2026-10-25T17:29:52.315Z
+current_date: 2026-10-25T17:29:52.315Z
 ---
 
 Enhance your app's security with two-factor authentication.
@@ -35,7 +35,7 @@ import { twoFactor } from "better-auth/plugins"
 
 export const auth = betterAuth({
     // ... other config options
-    appName: "My App", // provide your app name. It'll be used as an issuer.
+    appName: "My App", // provide your app name. It'll be used as an issuer. // [!code highlight]
     plugins: [
         twoFactor() 
     ]
