@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-21T22:38:49.320Z
-current_date: 2026-10-21T22:38:49.320Z
+access_date: 2026-10-25T23:26:16.721Z
+current_date: 2026-10-25T23:26:16.721Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 44 of 44 plugins
+Showing 45 of 45 plugins
 
 |  | Description |
 | --- | --- |
@@ -64,3 +64,4 @@ Showing 44 of 44 plugins
 | [good-webhooks](https://github.com/pplytas/good-webhooks)    [![Panagiotis Plytas](https://github.com/pplytas.png) Panagiotis Plytas](https://github.com/pplytas) | Authenticated webhook endpoint management with typed client APIs, scoped permissions, signing-secret rotation, and optional self-hosted delivery. |
 | [better-auth-saml-idp](https://github.com/mmcintosh/better-auth-saml-idp)    [![Mark McIntosh](https://github.com/mmcintosh.png) Mark McIntosh](https://github.com/mmcintosh) | Turn Better Auth into a SAML 2.0 identity provider for Microsoft 365, Google Workspace, Okta, Salesforce, AWS and other service providers. SP registry with metadata import, signed and encrypted assertions, Single Logout, and step-up MFA. |
 | [better-auth-multi-tenant](https://github.com/Weesofficial/better-auth-multi-tenant)    [![Weesofficial](https://github.com/Weesofficial.png) Weesofficial](https://github.com/Weesofficial) | Subdomain-based multi-tenancy: resolves the tenant from the request host, binds each session to its tenant, and rejects cross-tenant requests and unbound sessions. |
+| [better-auth-captcha](https://github.com/klynglabs/better-auth-captcha)    [![aarmful](https://github.com/aarmful.png) aarmful](https://github.com/aarmful) | Client half of the captcha plugin. Solves Cloudflare Turnstile, reCAPTCHA v3, hCaptcha, or CaptchaFox challenges in the background and attaches the token to protected requests automatically. Requires better-auth 1.7+. |
