@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/auth0-migration-guide
 title: "Auth0 Migration Guide"
 description: ""
-access_date: 2026-09-30T23:01:34.368Z
-current_date: 2026-09-30T23:01:34.368Z
+access_date: 2026-10-26T20:20:24.943Z
+current_date: 2026-10-26T20:20:24.943Z
 ---
 
 # Migrating from Auth0 to Better Auth (/docs/guides/auth0-migration-guide)
@@ -183,6 +183,7 @@ Create a new file called `migrate-auth0.ts` in the `scripts` folder and add the 
 > * Free plan users cannot export password hashes and will need to request a support ticket
 > * For detailed information about bulk user exports, see the [Auth0 Bulk User Export Documentation](https://auth0.com/docs/manage-users/user-migration/bulk-user-exports)
 > * For password hash export details, refer to [Exporting Password Hashes](https://auth0.com/docs/troubleshoot/customer-support/manage-subscriptions/export-data#user-passwords)
+> * TOTP secrets are not available through the Management API. Auth0 provides them only through a [support request](https://auth0.com/docs/manage-users/user-migration/export-password-hashes-and-mfa-secrets)
 > 
 > Example:
 > 
@@ -203,6 +204,7 @@ Create a new file called `migrate-auth0.ts` in the `scripts` folder and add the 
 ```ts title="scripts/migrate-auth0.ts"
 import { ManagementClient } from 'auth0';
 import { generateRandomString, symmetricEncrypt } from "better-auth/crypto";
+import type { SecretConfig } from "better-auth/crypto";
 import { auth } from '@/lib/auth';
 
 const auth0Client = new ManagementClient({
@@ -242,8 +244,7 @@ function safeDateConversion(timestamp?: string | number): Date {
 }
 
 // Helper function to generate backup codes for 2FA
-async function generateBackupCodes(secret: string) {
-    const key = secret;
+async function generateBackupCodes(key: string | SecretConfig) {
     const backupCodes = Array.from({ length: 10 })
         .fill(null)
         .map(() => generateRandomString(10, "a-z", "0-9", "A-Z"))
@@ -321,19 +322,19 @@ async function migrateMFAFactors(auth0User: any, userId: string | undefined, ctx
     }
 
     for (const factor of auth0User.mfa_factors) {
-        try {
-            if (factor.totp && factor.totp.secret) {
-                await ctx.adapter.create({
-                    model: "twoFactor",
-                    data: {
-                        userId: userId,
-                        secret: factor.totp.secret,
-                        backupCodes: await generateBackupCodes(factor.totp.secret)
-                    }
-                });
-            }
-        } catch (error) {
-            console.error(`Failed to migrate MFA factor for user ${userId}:`, error);
+        if (factor.totp && factor.totp.secret) {
+            await ctx.adapter.create({
+                model: "twoFactor",
+                data: {
+                    userId: userId,
+                    // TOTP secrets are Base32, so mark them for decoding
+                    secret: await symmetricEncrypt({
+                        key: ctx.secretConfig,
+                        data: `base32:${factor.totp.secret}`,
+                    }),
+                    backupCodes: await generateBackupCodes(ctx.secretConfig)
+                }
+            });
         }
     }
 }
@@ -483,6 +484,7 @@ async function migrateFromAuth0() {
         const ctx = await auth.$context;
         const isAdminEnabled = ctx.options?.plugins?.find(plugin => plugin.id === "admin");
         const isUsernameEnabled = ctx.options?.plugins?.find(plugin => plugin.id === "username");
+        const isTwoFactorEnabled = ctx.options?.plugins?.find(plugin => plugin.id === "two-factor");
         const isOrganizationEnabled = ctx.options?.plugins?.find(plugin => plugin.id === "organization");
         const auth0Users: any[] = [];
 
@@ -526,6 +528,10 @@ async function migrateFromAuth0() {
                         username: auth0User.username || auth0User.nickname,
                     } : {}),
 
+                    ...(isTwoFactorEnabled ? {
+                        twoFactorEnabled: auth0User.mfa_factors?.some((factor: any) => factor.totp?.secret) ?? false,
+                    } : {}),
+
                 };
 
                 const createdUser = await ctx.adapter.create({
@@ -542,6 +548,9 @@ async function migrateFromAuth0() {
 
 
                 await migrateOAuthAccounts(auth0User, createdUser.id, ctx)
+                if (isTwoFactorEnabled) {
+                    await migrateMFAFactors(auth0User, createdUser.id, ctx)
+                }
                 console.log(`Successfully migrated user: ${auth0User.email}`);
             } catch (error) {
                 console.error(`Failed to migrate user ${auth0User.email}:`, error);

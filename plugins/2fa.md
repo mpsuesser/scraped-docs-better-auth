@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/2fa
 title: "2fa"
 description: ""
-access_date: 2026-10-25T23:26:16.721Z
-current_date: 2026-10-25T23:26:16.721Z
+access_date: 2026-10-26T20:20:24.943Z
+current_date: 2026-10-26T20:20:24.943Z
 ---
 
 Enhance your app's security with two-factor authentication.
@@ -272,6 +272,22 @@ The otp code to verify.
 `trustDevice` boolean
 
 If true, the device will be trusted for 30 days. It'll be refreshed on every sign in request within this time.
+
+#### Importing Existing TOTP Secrets
+
+To import TOTP secrets from another provider, prefix each Base32 secret with `base32:`, encrypt it with your auth secret, and store it in the `twoFactor` table. Then set `twoFactorEnabled: true` on the user.
+
+```
+import { symmetricEncrypt } from "better-auth/crypto";
+
+const ctx = await auth.$context;
+const secret = await symmetricEncrypt({
+    key: ctx.secretConfig,
+    data: \`base32:${importedSecret}\`,
+});
+```
+
+Remove any spaces from the secret before storing it. Imported secrets must use SHA-1 and the same `digits` and `period` as your TOTP options.
 
 ### OTP
 
