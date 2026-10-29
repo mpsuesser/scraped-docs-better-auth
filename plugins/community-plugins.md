@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-29T13:33:01.211Z
-current_date: 2026-10-29T13:33:01.211Z
+access_date: 2026-10-29T23:44:56.164Z
+current_date: 2026-10-29T23:44:56.164Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 47 of 47 plugins
+Showing 48 of 48 plugins
 
 |  | Description |
 | --- | --- |
@@ -67,3 +67,4 @@ Showing 47 of 47 plugins
 | [better-auth-captcha](https://github.com/klynglabs/better-auth-captcha)    [![aarmful](https://github.com/aarmful.png) aarmful](https://github.com/aarmful) | Client half of the captcha plugin. Solves Cloudflare Turnstile, reCAPTCHA v3, hCaptcha, or CaptchaFox challenges in the background and attaches the token to protected requests automatically. Requires better-auth 1.7+. |
 | [tauri-plugin-better-auth](https://github.com/laakal/tauri-plugin-better-auth)    [![Enes Koç](https://github.com/laakal.png) Enes Koç](https://github.com/laakal) | Better Auth for Tauri desktop apps: browser sign-in with PKCE handed back by deep link or loopback, a session held in Rust (OS keychain), and a webview that never sees a token. Tauri 2 (0.1) and Tauri 3 alpha (0.2). |
 | [better-auth-loginllama](https://github.com/joshghent/better-auth-loginllama)    [![Josh Ghent](https://github.com/joshghent.png) Josh Ghent](https://github.com/joshghent) | Scores each email/password sign-in for account takeover risk (Tor, VPN, impossible travel, bots) with LoginLlama and blocks risky ones before the session is created. Fails open if the API is slow or down. |
+| [better-auth-waitlist](https://github.com/slargat/better-auth-waitlist)    [![Seifeddine Largat](https://github.com/slargat.png) Seifeddine Largat](https://github.com/slargat) | A complete waitlist: a live queue with positions, status links, referrals, single-use invites, manager tools, and invite-only sign-up across every sign-up method. |
