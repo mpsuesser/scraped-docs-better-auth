@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-29T23:44:56.164Z
-current_date: 2026-10-29T23:44:56.164Z
+access_date: 2026-10-29T23:51:52.590Z
+current_date: 2026-10-29T23:51:52.590Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -63,7 +63,7 @@ Showing 48 of 48 plugins
 | [@octopi-ai/better-enrollment](https://github.com/OctopiAI/better-enrollment)    [![Talat Mahmud](https://github.com/FalconiZzare.png) Talat Mahmud](https://github.com/FalconiZzare) | Invite-only sign-ups, role-merging invite links, and organization invites. Supports private (email-bound) and public (shareable, capped, revocable) invites, organization seat limits, and an append-only audit trail. |
 | [good-webhooks](https://github.com/pplytas/good-webhooks)    [![Panagiotis Plytas](https://github.com/pplytas.png) Panagiotis Plytas](https://github.com/pplytas) | Authenticated webhook endpoint management with typed client APIs, scoped permissions, signing-secret rotation, and optional self-hosted delivery. |
 | [better-auth-saml-idp](https://github.com/mmcintosh/better-auth-saml-idp)    [![Mark McIntosh](https://github.com/mmcintosh.png) Mark McIntosh](https://github.com/mmcintosh) | Turn Better Auth into a SAML 2.0 identity provider for Microsoft 365, Google Workspace, Okta, Salesforce, AWS and other service providers. SP registry with metadata import, signed and encrypted assertions, Single Logout, and step-up MFA. |
-| [better-auth-multi-tenant](https://github.com/Weesofficial/better-auth-multi-tenant)    [![Weesofficial](https://github.com/Weesofficial.png) Weesofficial](https://github.com/Weesofficial) | Subdomain-based multi-tenancy: resolves the tenant from the request host, binds each session to its tenant, and rejects cross-tenant requests and unbound sessions. |
+| [better-auth-multi-tenant](https://github.com/Weesofficial/better-auth-multi-tenant)    [![Weesofficial](https://github.com/Weesofficial.png) Weesofficial](https://github.com/Weesofficial) | Multi-tenancy by subdomain, custom domain or path: resolves the tenant from the request, binds each session to its tenant, rejects cross-tenant requests and unbound sessions, and scopes the organization, admin, SSO and API key plugins to the tenant. |
 | [better-auth-captcha](https://github.com/klynglabs/better-auth-captcha)    [![aarmful](https://github.com/aarmful.png) aarmful](https://github.com/aarmful) | Client half of the captcha plugin. Solves Cloudflare Turnstile, reCAPTCHA v3, hCaptcha, or CaptchaFox challenges in the background and attaches the token to protected requests automatically. Requires better-auth 1.7+. |
 | [tauri-plugin-better-auth](https://github.com/laakal/tauri-plugin-better-auth)    [![Enes Koç](https://github.com/laakal.png) Enes Koç](https://github.com/laakal) | Better Auth for Tauri desktop apps: browser sign-in with PKCE handed back by deep link or loopback, a session held in Rust (OS keychain), and a webview that never sees a token. Tauri 2 (0.1) and Tauri 3 alpha (0.2). |
 | [better-auth-loginllama](https://github.com/joshghent/better-auth-loginllama)    [![Josh Ghent](https://github.com/joshghent.png) Josh Ghent](https://github.com/joshghent) | Scores each email/password sign-in for account takeover risk (Tor, VPN, impossible travel, bots) with LoginLlama and blocks risky ones before the session is created. Fails open if the API is slow or down. |
