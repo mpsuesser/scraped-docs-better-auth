@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/email-password
 title: "Email Password"
 description: ""
-access_date: 2026-10-30T15:13:08.418Z
-current_date: 2026-10-30T15:13:08.418Z
+access_date: 2026-10-30T15:51:33.459Z
+current_date: 2026-10-30T15:51:33.459Z
 ---
 
 Implementing email and password authentication with Better Auth.
@@ -18,9 +18,9 @@ To enable email and password authentication, you need to set the `emailAndPasswo
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
-  emailAndPassword: { // [!code highlight]
-    enabled: true, // [!code highlight]
-  }, // [!code highlight]
+  emailAndPassword: { 
+    enabled: true, 
+  }, 
 });
 ```
 
