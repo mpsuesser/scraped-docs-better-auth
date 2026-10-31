@@ -2,194 +2,132 @@
 url: https://better-auth.com/llms.txt/docs/plugins/magic-link
 title: "Magic Link"
 description: ""
-access_date: 2026-10-01T07:02:09.958Z
-current_date: 2026-10-01T07:02:09.958Z
+access_date: 2026-10-31T02:43:05.860Z
+current_date: 2026-10-31T02:43:05.860Z
 ---
-
-# Magic link (/docs/plugins/magic-link)
 
 Magic link plugin
 
-
-
 Magic link or email link is a way to authenticate users without a password. When a user enters their email, a link is sent to their email. When the user clicks on the link, they are authenticated.
 
-## ## Installation
-### ### Add the server Plugin
+## Installation
+
+### Add the server Plugin
+
 Add the magic link plugin to your server:
 
-```ts title="server.ts"
+```
 import { betterAuth } from "better-auth";
-import { magicLink } from "better-auth/plugins";  // [!code highlight]
+import { magicLink } from "better-auth/plugins";  
 
 export const auth = betterAuth({
     plugins: [
-        magicLink({ // [!code highlight]
-            sendMagicLink: async ({ email, token, url, metadata }, ctx) => { // [!code highlight]
-                // send email to user // [!code highlight]
-            } // [!code highlight]
-        }) // [!code highlight]
+        magicLink({ 
+            sendMagicLink: async ({ email, token, url, metadata }, ctx) => { 
+                // send email to user
+            } 
+        }) 
     ]
 })
 ```
 
-### ### Add the client Plugin
+### Add the client Plugin
+
 Add the magic link plugin to your client:
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client";
-import { magicLinkClient } from "better-auth/client/plugins"; // [!code highlight]
+import { magicLinkClient } from "better-auth/client/plugins"; 
 
 export const authClient = createAuthClient({
     plugins: [
-        magicLinkClient() // [!code highlight]
+        magicLinkClient() 
     ]
 });
 ```
 
+## Usage
 
-## ## Usage
-## ### Sign In with Magic Link
+### Sign In with Magic Link
+
 To sign in with a magic link, you need to call `signIn.magicLink` with the user's email address. The `sendMagicLink` function is called to send the magic link to the user's email.
 
-**Endpoint:** `POST /sign-in/magic-link`
+POST/sign-in/magic-link
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.signIn.magicLink({
     email: "user@email.com", // required, Email address to send the magic link.
     name: "my-name", // User display name. Only used if the user is registering for the first time.
     callbackURL: "/dashboard", // URL to redirect after magic link verification.
     newUserCallbackURL: "/welcome", // URL to redirect after new user signup.
-    errorCallbackURL: "/error", // URL to redirect if an error happens on verification If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
+    errorCallbackURL: "/error", // URL to redirect if an error happens on verification If only callbackURL is provided but without an \`errorCallbackURL\` then they will be redirected to the callbackURL with an \`error\` query parameter.
     metadata: { inviteId: "123" }, // Additional metadata forwarded to the sendMagicLink callback.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.signInMagicLink({
-    body: {
-        email: "user@email.com", // required, Email address to send the magic link.
-        name: "my-name", // User display name. Only used if the user is registering for the first time.
-        callbackURL: "/dashboard", // URL to redirect after magic link verification.
-        newUserCallbackURL: "/welcome", // URL to redirect after new user signup.
-        errorCallbackURL: "/error", // URL to redirect if an error happens on verification If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
-        metadata: { inviteId: "123" }, // Additional metadata forwarded to the sendMagicLink callback.
-    },
-    // Pass the current request headers so Better Auth can read and set cookies.
-    headers: await headers(),
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to send the magic link.
 
-```ts
-type signInMagicLink = {
-    /**
-     * Email address to send the magic link. 
-     */
-    email: string = "user@email.com"
-    /**
-     * User display name. Only used if the user is registering for the first time. 
-     */
-    name?: string = "my-name"
-    /**
-     * URL to redirect after magic link verification. 
-     */
-    callbackURL?: string = "/dashboard"
-    /**
-     * URL to redirect after new user signup.
-     */
-    newUserCallbackURL?: string = "/welcome"
-    /**
-     * URL to redirect if an error happens on verification
-     * If only callbackURL is provided but without an `errorCallbackURL` then they will be 
-     * redirected to the callbackURL with an `error` query parameter.
-     */
-    errorCallbackURL?: string = "/error"
-    /**
-     * Additional metadata forwarded to the sendMagicLink callback.
-     */
-    metadata?: Record<string, any> = { inviteId: "123" }
-}
-```
+`name` string
 
-> If the user has not signed up, unless `disableSignUp` is set to `true`, the user will be signed up automatically.
+User display name. Only used if the user is registering for the first time.
 
-## ### Verify Magic Link
+`callbackURL` string
+
+URL to redirect after magic link verification.
+
+`errorCallbackURL` string
+
+URL to redirect if an error happens on verification If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
+
+`metadata` Record<string, any>
+
+Additional metadata forwarded to the sendMagicLink callback.
+
+### Verify Magic Link
+
 When you send the URL generated by the `sendMagicLink` function to a user, clicking the link will authenticate them and redirect them to the `callbackURL` specified in the `signIn.magicLink` function. If an error occurs, the user will be redirected to the `callbackURL` with an error query parameter.
-
-> If no `callbackURL` is provided, the user will be redirected to the root URL.
-
-> When the link verifies a pre-existing account whose email was never confirmed, any existing password on that account is removed and its sessions are revoked. The user is signed in through the link and can set a new password through password reset. This keeps email ownership, proven by the link, as the source of truth for the account.
 
 If you want to handle the verification manually, (e.g, if you send the user a different URL), you can use the `verify` function.
 
-**Endpoint:** `GET /magic-link/verify`
+GET/magic-link/verify
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.magicLink.verify({
     query: {
         token: "123456", // required, Verification token.
         callbackURL: "/dashboard", // URL to redirect after magic link verification, if not provided will return the session.
         newUserCallbackURL: "/welcome", // URL to redirect after new user signup.
-        errorCallbackURL: "/error", // URL to redirect if an error happens on verification. If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
+        errorCallbackURL: "/error", // URL to redirect if an error happens on verification. If only callbackURL is provided but without an \`errorCallbackURL\` then they will be redirected to the callbackURL with an \`error\` query parameter.
     },
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.magicLinkVerify({
-    query: {
-        token: "123456", // required, Verification token.
-        callbackURL: "/dashboard", // URL to redirect after magic link verification, if not provided will return the session.
-        newUserCallbackURL: "/welcome", // URL to redirect after new user signup.
-        errorCallbackURL: "/error", // URL to redirect if an error happens on verification. If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
-    },
-    // Pass the current request headers so Better Auth can read and set cookies.
-    headers: await headers(),
-});
-```
+`token` stringrequired
 
-### Type Definition
+Verification token.
 
-```ts
-type magicLinkVerify = {
-    /**
-     * Verification token. 
-     */
-    token: string = "123456"
-    /**
-     * URL to redirect after magic link verification, if not provided will return the session. 
-     */
-    callbackURL?: string = "/dashboard"
-    /**
-     * URL to redirect after new user signup.
-     */
-    newUserCallbackURL?: string = "/welcome"
-    /**
-     * URL to redirect if an error happens on verification.
-     * If only callbackURL is provided but without an `errorCallbackURL` then they will be
-     * redirected to the callbackURL with an `error` query parameter.
-     */
-    errorCallbackURL?: string = "/error"
-}
-```
+`callbackURL` string
 
-## ## Configuration Options
+URL to redirect after magic link verification, if not provided will return the session.
+
+`errorCallbackURL` string
+
+URL to redirect if an error happens on verification. If only callbackURL is provided but without an `errorCallbackURL` then they will be redirected to the callbackURL with an `error` query parameter.
+
+## Configuration Options
+
 **sendMagicLink**: The `sendMagicLink` function is called when a user requests a magic link. It takes an object with the following properties:
 
-* `email`: The email address of the user.
-* `url`: The URL to be sent to the user. This URL contains the token.
-* `token`: The token if you want to send the token with custom URL.
-* `metadata`: Additional request metadata passed from `signIn.magicLink`.
+- `email`: The email address of the user.
+- `url`: The URL to be sent to the user. This URL contains the token.
+- `token`: The token if you want to send the token with custom URL.
+- `metadata`: Additional request metadata passed from `signIn.magicLink`.
 
 and a `ctx` context object as the second parameter.
 
@@ -199,28 +137,22 @@ and a `ctx` context object as the second parameter.
 
 **disableSignUp**: If set to `true`, the user will not be able to sign up using the magic link. The default value is `false`.
 
-**rateLimit**: Rate limit for the `/sign-in/magic-link` and `/magic-link/verify` endpoints. The default value is `{ window: 60, max: 5 }`. See [Rate Limit](/docs/concepts/rate-limit) for details.
+**rateLimit**: Rate limit for the `/sign-in/magic-link` and `/magic-link/verify` endpoints. The default value is `{ window: 60, max: 5 }`. See [Rate Limit](https://better-auth.com/docs/concepts/rate-limit) for details.
 
 **generateToken**: The `generateToken` function is called to generate a token which is used to uniquely identify the user. The default value is a random string. There is one parameter:
 
-* `email`: The email address of the user.
-
-> When using `generateToken`, ensure that the returned string is hard to guess
-> because it is used to verify who someone actually is in a confidential way. By
-> default, we return a long and cryptographically secure string.
+- `email`: The email address of the user.
 
 **storeToken**: Controls how Better Auth transforms the Magic Link token before creating its verification identifier. The default value is `"plain"`.
 
 The `storeToken` option can be one of the following:
 
-* `"plain"`: The token is not transformed before Better Auth creates its verification identifier.
-* `"hashed"`: The token is hashed using the default hasher before the identifier is created.
-* `{ type: "custom-hasher", hash: (token: string) => Promise<string> }`: Your hasher transforms the token before the identifier is created.
+- `"plain"`: The token is not transformed before Better Auth creates its verification identifier.
+- `"hashed"`: The token is hashed using the default hasher before the identifier is created.
+- `{ type: "custom-hasher", hash: (token: string) => Promise<string> }`: Your hasher transforms the token before the identifier is created.
 
-Better Auth adds `magic-link:` to the transformed token before applying the global [`verification.storeIdentifier`](/docs/reference/options#verification) setting. The token value sent in the link and to `sendMagicLink` is unchanged. Custom `storeToken` hashers receive the original token; they do not need to add the prefix.
+Better Auth adds `magic-link:` to the transformed token before applying the global [`verification.storeIdentifier`](https://better-auth.com/docs/reference/options#verification) setting. The token value sent in the link and to `sendMagicLink` is unchanged. Custom `storeToken` hashers receive the original token; they do not need to add the prefix.
 
-The storage backend itself is controlled by the global [`verification`](/docs/reference/options#verification) config. If you configure `secondaryStorage`, magic link verification records can be stored there instead of the database.
+The storage backend itself is controlled by the global [`verification`](https://better-auth.com/docs/reference/options#verification) config. If you configure `secondaryStorage`, magic link verification records can be stored there instead of the database.
 
 When upgrading to purpose-prefixed verification identifiers, request new Magic Links for any links issued before the upgrade. Previously issued links cannot be redeemed by the new version and fail with `INVALID_TOKEN`. Existing users and accounts do not need a data migration. Upgrade all servers that share verification storage together so they agree on which links can be redeemed.
-
-> When `secondaryStorage` backs verification (`verification.storeInDatabase: false`), the atomic single-use guarantee requires your secondary storage to expose `getAndDelete` (Redis `GETDEL`, KV `getAndDelete`). Better Auth does not fall back to separate `get` and `delete` operations for verification consumes. Multi-instance deployments using secondary-storage verification must configure a backend that implements `getAndDelete`.
