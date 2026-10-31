@@ -2,25 +2,21 @@
 url: https://better-auth.com/llms.txt/docs/plugins/siwe
 title: "Siwe"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-10-31T22:51:02.801Z
+current_date: 2026-10-31T22:51:02.801Z
 ---
-
-# Sign In With Ethereum (SIWE) (/docs/plugins/siwe)
-
-Sign in with Ethereum plugin for Better Auth
-
-
 
 The Sign in with Ethereum (SIWE) plugin allows users to authenticate using their Ethereum wallets following the [ERC-4361 standard](https://eips.ethereum.org/EIPS/eip-4361). This plugin provides flexibility by allowing you to implement your own message verification and nonce generation logic.
 
-## ## Installation
-### ### Add the Server Plugin
+## Installation
+
+### Add the Server Plugin
+
 Add the SIWE plugin to your auth configuration:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
-import { siwe } from "better-auth/plugins"; // [!code highlight]
+import { siwe } from "better-auth/plugins"; 
 
 export const auth = betterAuth({
     plugins: [
@@ -49,91 +45,48 @@ export const auth = betterAuth({
 });
 ```
 
-### ### Migrate the database
-Run the migration or generate the schema to add the necessary fields and tables to the database.
+### Migrate the database
 
+Run the migration or generate the schema to add the necessary fields and tables to the database.
 
 #### migrate
 
-
-
-
 #### npm
 
-```bash
+#### generate
+
+```
 npx auth migrate
 ```
 
 #### pnpm
 
-```bash
-pnpm dlx auth migrate
-```
-
 #### yarn
 
-```bash
-yarn dlx auth migrate
-```
-
 #### bun
-
-```bash
-bun x auth migrate
-```
-
-
-#### generate
-
-
-
-
-#### npm
-
-```bash
-npx auth generate
-```
-
-#### pnpm
-
-```bash
-pnpm dlx auth generate
-```
-
-#### yarn
-
-```bash
-yarn dlx auth generate
-```
-
-#### bun
-
-```bash
-bun x auth generate
-```
-
-
 
 See the [Schema](#schema) section to add the fields manually.
 
-### ### Add the Client Plugin
-```ts title="auth-client.ts"
+### Add the Client Plugin
+
+```
 import { createAuthClient } from "better-auth/client";
-import { siweClient } from "better-auth/client/plugins"; // [!code highlight]
+import { siweClient } from "better-auth/client/plugins"; 
 
 export const authClient = createAuthClient({
 plugins: [
-    siweClient() // [!code highlight]
+    siweClient() 
 ]
 });
 ```
 
+## Usage
 
-## ## Usage
-## ### Generate a Nonce
+### Generate a Nonce
+
 Before asking the wallet to sign, issue a nonce for the sign-in attempt. The nonce is not bound to a wallet address or Chain ID because one-step wallet flows may not know either value until the wallet signs the SIWE message.
 
-```ts
+```
 import { authClient } from "@/lib/auth-client";
 
 const { data, error } = await authClient.siwe.nonce();
@@ -143,10 +96,11 @@ if (data) {
 }
 ```
 
-## ### Sign In with Ethereum
+### Sign In with Ethereum
+
 After generating a nonce and creating a SIWE message, verify the signature to authenticate:
 
-```ts
+```
 import { authClient } from "@/lib/auth-client";
 
 const { data, error } = await authClient.siwe.verify({
@@ -160,14 +114,11 @@ if (data) {
 }
 ```
 
-> `message` must be a valid [ERC-4361](https://eips.ethereum.org/EIPS/eip-4361) message (which every standard SIWE client produces). Before accepting the signature, the plugin parses the message, consumes the matching server-issued **nonce**, derives the **address** and **Chain ID** from the signed message, requires the signed **domain** to match your configured `domain`, and honors the message's `Expiration Time` / `Not Before` bounds. Signature recovery alone is **not** sufficient — this binding ensures a signature is only accepted together with the message it was produced for, bound to the current server-issued nonce. Verification fails with a 401 (`UNAUTHORIZED_SIWE_MESSAGE_MISMATCH`) if any signed field is invalid.
+### Chain-Specific Messages
 
-> A SIWE signature proves control of the wallet, not ownership of the `email` you pass. The plugin stores that email unverified and only binds it to the new account when it is not already in use. When `anonymous` is `false` and the supplied email already belongs to another account, the new wallet account is created with a wallet-derived address instead, so a sign-in cannot attach an email another account owns.
-
-## ### Chain-Specific Messages
 Chain selection belongs in the ERC-4361 message, not in the verification request body. Generate a nonce, build the SIWE message with the wallet address and target Chain ID, ask the wallet to sign that exact message, and then verify the signed message:
 
-```ts
+```
 import { authClient } from "@/lib/auth-client";
 
 const nonce = await authClient.siwe.nonce();
@@ -180,23 +131,24 @@ const { data, error } = await authClient.siwe.verify({
 });
 ```
 
-> The signed SIWE message must include a positive Chain ID. Verification derives the wallet identity from that signed Chain ID and fails with a 401 error if the message is missing a valid Chain ID.
+## Configuration Options
 
-## ## Configuration Options
-## ### Server Options
+### Server Options
+
 The SIWE plugin accepts the following configuration options:
 
-* **domain**: The domain name of your application (required for SIWE message generation)
-* **emailDomainName**: A custom email domain for wallet-derived addresses. If omitted, the plugin uses `{walletAddress}@siwe.placeholder.invalid`
-* **anonymous**: Whether to allow anonymous sign-ins without requiring an email. Default is `true`
-* **getNonce**: Function to generate a globally unique nonce for each sign-in attempt. You must implement this function to return a cryptographically secure ERC-4361 nonce: 8-250 alphanumeric characters. Must return a `Promise<string>`
-* **verifyMessage**: Function to verify the signature over the SIWE message. It only needs to perform signature recovery for the supplied address (e.g. viem's `verifyMessage`) and return `Promise<boolean>` — the plugin independently validates the message's nonce, domain, address, Chain ID, and time bounds before creating a session
-* **ensLookup**: Optional function to lookup ENS names and avatars for Ethereum addresses
+- **domain**: The domain name of your application (required for SIWE message generation)
+- **emailDomainName**: A custom email domain for wallet-derived addresses. If omitted, the plugin uses `{walletAddress}@siwe.placeholder.invalid`
+- **anonymous**: Whether to allow anonymous sign-ins without requiring an email. Default is `true`
+- **getNonce**: Function to generate a globally unique nonce for each sign-in attempt. You must implement this function to return a cryptographically secure ERC-4361 nonce: 8-250 alphanumeric characters. Must return a `Promise<string>`
+- **verifyMessage**: Function to verify the signature over the SIWE message. It only needs to perform signature recovery for the supplied address (e.g. viem's `verifyMessage`) and return `Promise<boolean>` — the plugin independently validates the message's nonce, domain, address, Chain ID, and time bounds before creating a session
+- **ensLookup**: Optional function to lookup ENS names and avatars for Ethereum addresses
 
-## ### Client Options
+### Client Options
+
 The SIWE client plugin doesn't require any configuration options:
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/client";
 import { siweClient } from "better-auth/client/plugins";
 
@@ -207,22 +159,24 @@ export const authClient = createAuthClient({
 });
 ```
 
-## ## Schema
+## Schema
+
 The SIWE plugin adds a `walletAddress` table to store user wallet associations:
 
-| Field     | Type    | Description                               |
-| --------- | ------- | ----------------------------------------- |
-| id        | string  | Primary key                               |
-| userId    | string  | Reference to user.id                      |
-| address   | string  | Ethereum wallet address                   |
-| chainId   | number  | Chain ID (e.g., 1 for Ethereum mainnet)   |
+| Field | Type | Description |
+| --- | --- | --- |
+| id | string | Primary key |
+| userId | string | Reference to user.id |
+| address | string | Ethereum wallet address |
+| chainId | number | Chain ID (e.g., 1 for Ethereum mainnet) |
 | isPrimary | boolean | Whether this is the user's primary wallet |
-| createdAt | date    | Creation timestamp                        |
+| createdAt | date | Creation timestamp |
 
-## ## Example Implementation
+## Example Implementation
+
 Here's a complete example showing how to implement SIWE authentication:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { siwe } from "better-auth/plugins";
 import { generateRandomString } from "better-auth/crypto";
@@ -246,9 +200,9 @@ export const auth = betterAuth({
         try {
           // Verify the signature using viem (recommended)
           const isValid = await verifyMessage({
-            address: address as `0x${string}`,
+            address: address as \`0x${string}\`,
             message,
-            signature: signature as `0x${string}`,
+            signature: signature as \`0x${string}\`,
           });
           return isValid;
         } catch (error) {
@@ -266,7 +220,7 @@ export const auth = betterAuth({
           });
 
           const ensName = await client.getEnsName({
-            address: walletAddress as `0x${string}`,
+            address: walletAddress as \`0x${string}\`,
           });
 
           const ensAvatar = ensName
