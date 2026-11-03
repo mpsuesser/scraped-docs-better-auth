@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/organization
 title: "Organization"
 description: ""
-access_date: 2026-10-24T15:34:48.491Z
-current_date: 2026-10-24T15:34:48.491Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 The organization plugin allows you to manage your organization's members and teams.
@@ -676,6 +676,8 @@ The organization slug to get.
 
 The limit of members to get. By default, it uses the membershipLimit option which defaults to 100.
 
+The `invitations` array follows the same rule as [listing invitations](#list-invitations) and is empty for members who cannot list them.
+
 ### Update Organization
 
 To update organization info, you can use `organization.update`
@@ -954,6 +956,8 @@ Parameters
 `organizationId` string
 
 An optional ID of the organization to list invitations for. If not provided, will default to the user's active organization.
+
+Only members whose role has the `invitation` `create` permission can list invitations. Other members get a `403`. Invitations for the creator role are only listed for members who hold it.
 
 The response includes invitation IDs. Treat those IDs as action-capable invitation links. If users who can list organization invitations should not be able to use those IDs with unverified recipient sessions, enable `requireEmailVerificationOnInvitation` or add app-level permission checks around this endpoint.
 

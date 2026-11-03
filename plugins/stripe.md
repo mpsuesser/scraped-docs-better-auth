@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/stripe
 title: "Stripe"
 description: ""
-access_date: 2026-10-24T12:19:08.316Z
-current_date: 2026-10-24T12:19:08.316Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 Stripe plugin for Better Auth to manage subscriptions and payments.
@@ -680,7 +680,7 @@ string
 
 \-
 
-The Stripe customer ID
+The Stripe customer ID, set by the server
 
 ### Organization
 
@@ -702,7 +702,7 @@ string
 
 \-
 
-The Stripe customer ID for the organization
+The Stripe customer ID for the organization, set by the server
 
 ### Subscription
 

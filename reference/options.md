@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/options
 title: "Options"
 description: ""
-access_date: 2026-10-31T02:50:03.653Z
-current_date: 2026-10-31T02:50:03.653Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 # Options (/docs/reference/options)
@@ -148,8 +148,9 @@ export const auth = betterAuth({
 > **Notes**
 > 
 > * For `http://` and `https://` URLs, patterns match the full origin. Paths and query strings are ignored.
-> * For custom schemes (like `exp://` or `myapp://`), wildcard patterns match against the full URL including paths. A non-wildcard pattern matches by scheme and authority: a host-less entry such as `myapp://` or `exp://` trusts every host of that scheme, while a host-bearing entry such as `myapp://callback` must match that host exactly (so it is not satisfied by `myapp://callback.attacker.tld`).
+> * For custom schemes (like `exp://` or `myapp://`), a wildcard pattern matches the host and path separately, and a URL with user info never matches. `myapp://*` trusts every host and path of `myapp://`. A scheme wildcard such as `*://example.com` does not match custom schemes. A non-wildcard pattern matches by scheme and authority: a host-less entry such as `myapp://` or `exp://` trusts every host of that scheme, while a host-bearing entry such as `myapp://callback` must match that host exactly (so it is not satisfied by `myapp://callback.attacker.tld`).
 > * The separator is `/` (forward slash). This means `http://*.example.com` matches both `http://api.example.com` and `http://api.app.example.com`.
+> * A wildcard host made only of digits, dots, and wildcards, such as `192.168.*.*`, matches only IPv4 addresses in that range.
 
 ## ## `secret`
 The secret used for encryption, signing, and hashing.

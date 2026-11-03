@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/passkey
 title: "Passkey"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 Passkey
@@ -130,6 +130,8 @@ await authClient.passkey.addPasskey({
 ```
 
 When `createSession` is `true`, successful verification sets the session cookie and returns the `session` and `user` with the registered passkey. If you want to avoid creating a user before the WebAuthn ceremony succeeds, create or load the user in `registration.afterVerification` and return its `userId`.
+
+With `registration.requireSession: false`, a registration started with a session must be verified with that same active session. A registration started without a session uses `resolveUser`.
 
 ## Usage
 
@@ -480,7 +482,13 @@ Authenticator's Attestation GUID indicating the type of the authenticator
 
 **rpName**: Human-readable title for your website.
 
-**origin**: The origin URL at which your better-auth server is hosted. `http://localhost` and `http://localhost:PORT` are also valid. Do NOT include any trailing /.
+**origin**: The origin, or list of origins, where passkey registration and authentication run, without a trailing `/`. Defaults to the origin of `baseURL`, plus a frontend origin listed exactly in `trustedOrigins`. Set it when `rpID` is set and a wildcard in `baseURL.allowedHosts` covers it.
+
+```
+passkey({
+  origin: ["https://app.example.com", "https://admin.example.com"],
+});
+```
 
 **authenticatorSelection**: Allows customization of WebAuthn authenticator selection criteria. Leave unspecified for default settings.
 
@@ -493,7 +501,7 @@ Authenticator's Attestation GUID indicating the type of the authenticator
 		- `preferred`: Encourages credential storage but not mandatory
 		- `discouraged`: No credential storage required (fastest experience)
 		- Default: `preferred`
-- `userVerification`: Controls biometric/PIN verification during authentication:
+- `userVerification`: Controls biometric/PIN verification during registration and authentication. With `required`, responses without user verification are rejected.
 	- `required`: User MUST verify identity (highest security)
 		- `preferred`: Verification encouraged but not mandatory
 		- `discouraged`: No verification required (fastest experience)

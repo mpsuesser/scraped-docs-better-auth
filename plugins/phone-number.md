@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/phone-number
 title: "Phone Number"
 description: ""
-access_date: 2026-10-14T12:17:49.521Z
-current_date: 2026-10-14T12:17:49.521Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 Phone number plugin
@@ -228,7 +228,7 @@ await authClient.updateUser({
 })
 ```
 
-For security, non-null phone number updates through `updateUser` remain blocked. Changing to a different phone number always requires OTP verification via `verify` with `updatePhoneNumber: true`.
+For security, a phone number is only set by verifying it. Non-null updates through `updateUser` and a `phoneNumber` sent to a sign-up or sign-in route are rejected, and a number mapped from a social profile is not stored, including on account linking. Changing to a different phone number always requires OTP verification via `verify` with `updatePhoneNumber: true`.
 
 ### Disable Session Creation
 
@@ -376,6 +376,8 @@ An object with the following properties:
 ### requireVerification
 
 When enabled, users cannot sign in with their phone number until it has been verified. If an unverified user attempts to sign in, the server will respond with a 401 error (PHONE\_NUMBER\_NOT\_VERIFIED) and automatically trigger an OTP send to start the verification process.
+
+Password reset also needs a verified number. No reset code is sent to an unverified number, and `resetPassword` returns a 400 error (PHONE\_NUMBER\_PENDING\_VERIFICATION) without adding or changing a password.
 
 ## Schema
 

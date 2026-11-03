@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/expo
 title: "Expo"
 description: ""
-access_date: 2026-09-30T21:19:42.414Z
-current_date: 2026-09-30T21:19:42.414Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 Integrate Better Auth with Expo.
@@ -205,6 +205,8 @@ export const auth = betterAuth({
 ```
 
 For more information about trusted origins, see the [trusted origins documentation](https://better-auth.com/docs/reference/options#trustedorigins).
+
+The authorization proxy only redirects to the authorization endpoint of a configured social or generic OAuth provider, or of an SSO provider on a trusted origin. To sign in through an SSO identity provider, add its origin to `trustedOrigins`.
 
 ## Configure Metro Bundler
 

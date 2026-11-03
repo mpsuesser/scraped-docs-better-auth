@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/email-otp
 title: "Email Otp"
 description: ""
-access_date: 2026-10-09T07:31:59.706Z
-current_date: 2026-10-09T07:31:59.706Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 # Email OTP (/docs/plugins/email-otp)
@@ -95,7 +95,7 @@ type sendVerificationOTP = {
 ```
 
 ## ### Check an OTP (optional)
-Use the `checkVerificationOtp()` method to check if an OTP is valid.
+Use the `checkVerificationOtp()` method to check if an OTP is valid. A wrong OTP counts toward `allowedAttempts`, and a correct one stays usable for the matching sign-in, email verification, or password reset call.
 
 **Endpoint:** `POST /email-otp/check-verification-otp`
 

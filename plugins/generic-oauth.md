@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/generic-oauth
 title: "Generic Oauth"
 description: ""
-access_date: 2026-10-14T17:19:42.455Z
-current_date: 2026-10-14T17:19:42.455Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 # Generic OAuth (/docs/plugins/generic-oauth)
@@ -88,6 +88,8 @@ await authClient.signIn.social({
     },
 })
 ```
+
+The ID token must include `email` unless a custom `getUserInfo` provides it. An `accessToken` or `refreshToken` sent with it is ignored.
 
 Providers configured with explicit endpoints instead of `discoveryUrl` do not support this path and return `ID_TOKEN_NOT_SUPPORTED`.
 
@@ -293,7 +295,7 @@ Better Auth builds the standard grant parameters, while `customizeRequest` adds 
 
 **getToken**: (Optional) A custom function to exchange authorization code for tokens. If provided, this function will be used instead of the default token exchange logic. This is useful for providers with non-standard token endpoints that use GET requests or custom parameters.
 
-**getUserInfo**: (Optional) A custom function to fetch user info from the provider, given the OAuth tokens. If not provided, a default fetch is used.
+**getUserInfo**: (Optional) A custom function to fetch user info from the provider, given the OAuth tokens. If not provided, a default fetch is used. When the discovery document has a `jwks_uri`, the default fetch requires the UserInfo `sub` to match the `sub` of the `id_token`, or sign-in fails. A profile from a custom `getUserInfo` must match too when it includes `sub`. For sign-in or linking with a client-submitted `idToken`, it receives only that `idToken`, and the default fetch reads the profile from its claims, which must include `email`.
 
 **mapProfileToUser**: (Optional) A function to map the provider profile to mutable fields on your app's user. It cannot set provider identity; use `accountSubject` for a non-standard immutable identifier.
 

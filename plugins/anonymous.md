@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/anonymous
 title: "Anonymous"
 description: ""
-access_date: 2026-08-25T08:38:55.162Z
-current_date: 2026-08-25T08:38:55.162Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 Anonymous plugin for Better Auth.
@@ -98,6 +98,8 @@ export const auth = betterAuth({
 ```
 
 Then when you call `signIn` or `signUp` with another method, the `onLinkAccount` callback will be called. And the `anonymousUser` will be deleted by default.
+
+With the [two-factor plugin](https://better-auth.com/docs/plugins/2fa), a sign-in that still waits for a second factor does not link: `onLinkAccount` is not called and the anonymous user is kept.
 
 ```
 import { authClient } from "@/lib/auth-client";

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/admin
 title: "Admin"
 description: ""
-access_date: 2026-09-22T19:45:58.740Z
-current_date: 2026-09-22T19:45:58.740Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 Admin plugin for Better Auth
@@ -514,7 +514,7 @@ By default, there are two roles:
 
 By default, there are two resources with the following permissions.
 
-**user**: `create` `list` `set-role` `ban` `impersonate` `impersonate-admins` `delete` `set-password` `set-email` `get` `update`
+**user**: `create` `list` `set-role` `ban` `impersonate` `impersonate-admins` `delete` `set-password` `set-email` `set-phone` `get` `update`
 
 **session**: `list` `revoke` `delete`
 

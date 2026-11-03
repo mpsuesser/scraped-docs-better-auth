@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/session-management
 title: "Session Management"
 description: ""
-access_date: 2026-10-13T03:52:53.467Z
-current_date: 2026-10-13T03:52:53.467Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 # Session Management (/docs/concepts/session-management)
@@ -238,6 +238,8 @@ export const auth = betterAuth({
 > * Disable `cookieCache` entirely, or
 > * Set a shorter `maxAge` (e.g. 60 seconds), or
 > * Use `disableCookieCache: true` for sensitive operations
+
+When sessions are stored in a database or secondary storage, passkey registration, device authorization, two-factor verification, social account linking, and phone number changes always check the session there, so a revoked session can't use them even while its cookie cache is valid.
 
 ## #### Cookie Cache Strategies
 Better Auth supports three different encoding strategies for cookie cache:

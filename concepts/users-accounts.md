@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/users-accounts
 title: "Users Accounts"
 description: ""
-access_date: 2026-09-05T23:13:13.377Z
-current_date: 2026-09-05T23:13:13.377Z
+access_date: 2026-11-03T21:16:19.098Z
+current_date: 2026-11-03T21:16:19.098Z
 ---
 
 # User & Accounts (/docs/concepts/users-accounts)
@@ -60,6 +60,8 @@ export const auth = betterAuth({
 
 By default, when a user requests to change their email, a verification email is sent to the **new** email address.
 The email is only updated after the user verifies the new email.
+
+A change email link only works for the account that requested it and does not sign the user in. The new email is marked as verified only if the current email was verified.
 
 ## #### Confirming with Current Email
 For added security, you can require users to confirm the change via their **current** email before
@@ -527,6 +529,8 @@ Users already signed in can manually link their account to additional social pro
       callbackURL: "/callback" // Callback URL after linking completes
   });
   ```
+
+  When sessions are stored server-side, the session must still be active when linking starts and when the provider redirects back.
 
   You can also request specific scopes when linking a social account, which can be different from the scopes used during the initial authentication:
 
