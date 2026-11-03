@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-10-29T23:51:52.590Z
-current_date: 2026-10-29T23:51:52.590Z
+access_date: 2026-11-03T22:37:03.918Z
+current_date: 2026-11-03T22:37:03.918Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 48 of 48 plugins
+Showing 49 of 49 plugins
 
 |  | Description |
 | --- | --- |
@@ -68,3 +68,4 @@ Showing 48 of 48 plugins
 | [tauri-plugin-better-auth](https://github.com/laakal/tauri-plugin-better-auth)    [![Enes Koç](https://github.com/laakal.png) Enes Koç](https://github.com/laakal) | Better Auth for Tauri desktop apps: browser sign-in with PKCE handed back by deep link or loopback, a session held in Rust (OS keychain), and a webview that never sees a token. Tauri 2 (0.1) and Tauri 3 alpha (0.2). |
 | [better-auth-loginllama](https://github.com/joshghent/better-auth-loginllama)    [![Josh Ghent](https://github.com/joshghent.png) Josh Ghent](https://github.com/joshghent) | Scores each email/password sign-in for account takeover risk (Tor, VPN, impossible travel, bots) with LoginLlama and blocks risky ones before the session is created. Fails open if the API is slow or down. |
 | [better-auth-waitlist](https://github.com/slargat/better-auth-waitlist)    [![Seifeddine Largat](https://github.com/slargat.png) Seifeddine Largat](https://github.com/slargat) | A complete waitlist: a live queue with positions, status links, referrals, single-use invites, manager tools, and invite-only sign-up across every sign-up method. |
+| [better-auth-trustware](https://github.com/danielmerja/better-auth-trustware)    [![Daniel Merja](https://github.com/danielmerja.png) Daniel Merja](https://github.com/danielmerja) | Crypto billing for Better Auth, settled through Trustware: subscriptions with renewal invoices and grace periods, one-time purchases, prorated plan changes, trials, organization billing, and feature and limit access control. |
