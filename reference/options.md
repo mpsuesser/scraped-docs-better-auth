@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/options
 title: "Options"
 description: ""
-access_date: 2026-11-03T21:16:19.098Z
-current_date: 2026-11-03T21:16:19.098Z
+access_date: 2026-11-04T15:06:48.663Z
+current_date: 2026-11-04T15:06:48.663Z
 ---
 
 # Options (/docs/reference/options)
@@ -589,7 +589,7 @@ import { betterAuth } from "better-auth";
 export const auth = betterAuth({
 	advanced: {
 		ipAddress: {
-			ipAddressHeaders: ["x-client-ip", "x-real-ip"],
+			ipAddressHeaders: ["cf-connecting-ip"],
 			disableIpTracking: false
 		},
 		useSecureCookies: true,
@@ -639,8 +639,8 @@ export const auth = betterAuth({
 ```
 
 * `ipAddress`: IP address configuration for rate limiting and session tracking
-  * `disableIpTracking`: Disable IP address tracking.
-  * `ipAddressHeaders`: Trusted header names to read client IP addresses from.
+  * `disableIpTracking`: Disable IP address tracking. This also turns off the built-in rate limiter for HTTP requests.
+  * `ipAddressHeaders`: Header names to read the client IP address from, in order. Defaults to `["x-forwarded-for"]`. List only headers written by your proxy or server code; see [Connecting IP Address](/docs/concepts/rate-limit#connecting-ip-address).
   * `trustedProxies`: Reverse-proxy IPs or CIDR ranges. The forwarded chain is walked right to left, trusted hops are skipped, and the first untrusted address is used as the client IP.
 * `useSecureCookies`: By default, cookies are secure in production environments. Set this to `true` to force the `Secure` cookie attribute in all environments.
 * `disableCSRFCheck`: Disable all CSRF protection including origin header validation and Fetch Metadata checks (⚠️ security risk)
