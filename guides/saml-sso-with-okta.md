@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/saml-sso-with-okta
 title: "Saml Sso With Okta"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-11-04T23:37:22.575Z
+current_date: 2026-11-04T23:37:22.575Z
 ---
 
 # SAML SSO with Okta (/docs/guides/saml-sso-with-okta)
@@ -12,7 +12,7 @@ A guide to integrating SAML Single Sign-On (SSO) with Better Auth, featuring Okt
 
 
 
-This guide walks you through setting up SAML Single Sign-On (SSO) with your Identity Provider (IdP), using Okta as an example. For advanced configuration details and the full API reference, check out the [SSO Plugin Documentation](/docs/plugins/sso).
+This guide walks you through setting up SAML Single Sign-On (SSO) with your Identity Provider (IdP), using Okta as an example. For every SAML option, see [SAML providers](/docs/plugins/sso/saml) and the [SSO reference](/docs/plugins/sso/reference).
 
 ## ## What is SAML?
 SAML (Security Assertion Markup Language) is an XML-based standard for exchanging authentication and authorization data between an Identity Provider (IdP) (e.g., Okta, Azure AD, OneLogin) and a Service Provider (SP) (in this case, Better Auth).
@@ -39,7 +39,7 @@ In this setup:
 
 6. Download the IdP metadata XML file and certificate
 
-> **IdP-Initiated SSO**: If you want users to access your app from the Okta dashboard, make sure the **Single Sign-on URL** points to the callback endpoint (`/api/auth/sso/saml2/sp/acs/{providerId}`). Better Auth automatically handles both SP-initiated and IdP-initiated flows.
+> **IdP-initiated SSO**: To let users start from the IdP dashboard, point the **Single Sign-on URL** at `/api/auth/sso/saml2/sp/acs/{providerId}` and set `saml: { allowIdpInitiated: true }` in the `sso()` options. It is off by default, because anyone with an account at the IdP could then sign a victim into the attacker's account. The setting applies to every SAML provider. Enable it only when the IdP requires it; see [IdP-initiated SSO](/docs/plugins/sso/saml#idp-initiated-sso).
 
 ## ### Step 2: Configure Better Auth
 Here’s an example configuration for Okta in a dev environment:
@@ -67,16 +67,8 @@ MIIDqjCCApKgAwIBAgIGAZhVGMeUMA0GCSqGSIb3DQEBCwUAMIGVMQswCQYDVQQGEwJVUzETMBEG
 [Your Okta Certificate]
 ...
 -----END CERTIFICATE-----`,
-      
-      // SP Metadata
-      spMetadata: {
-        metadata: `<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" 
-          entityID="http://localhost:3000/api/sso/saml2/sp/metadata">
-          ...
-          [Your SP Metadata XML]
-          ...
-        </md:EntityDescriptor>`
-      }
+      // Better Auth generates the SP metadata from `issuer` and the ACS URL.
+      // If you supply your own `spMetadata.metadata`, its entityID becomes the SP entity ID and the default audience.
     }
   }]
 }
@@ -151,14 +143,12 @@ await authClient.signIn.sso({
 
 **Important Notes**:
 
-* DummyIDP should ONLY be used for development and testing
-* Never use these certificates in production
 * The example uses `localhost:3000` - adjust URLs for your environment
 * For production, always use proper IdP providers like Okta, Azure AD, or OneLogin
 * The ACS URL is derived automatically from `{baseURL}/sso/saml2/sp/acs/{providerId}`. The post-login destination is controlled by `callbackURL` in `signIn.sso()`
 
 ## ### Step 5: Dynamically Registering SAML Providers
-For dynamic registration, you should register SAML providers using the API. See the [SSO Plugin Documentation](/docs/plugins/sso#register-a-saml-provider) for detailed registration instructions.
+For dynamic registration, you should register SAML providers using the API. See the [SSO Plugin Documentation](/docs/plugins/sso/saml#register-a-saml-provider) for detailed registration instructions.
 
 Example registration:
 
@@ -175,5 +165,7 @@ await authClient.sso.register({
 
 ## ## Additional Resources
 * [SSO Plugin Documentation](/docs/plugins/sso)
+* [SAML providers](/docs/plugins/sso/saml)
+* [SSO reference](/docs/plugins/sso/reference)
 * [Okta SAML Documentation](https://developer.okta.com/docs/concepts/saml/)
 * [SAML 2.0 Specification](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)

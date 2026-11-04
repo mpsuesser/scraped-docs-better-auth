@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-08-28T22:27:55.614Z
-current_date: 2026-08-28T22:27:55.614Z
+access_date: 2026-11-04T23:37:22.575Z
+current_date: 2026-11-04T23:37:22.575Z
 ---
 
 OAuth 2.0 Device Authorization Grant for limited-input devices
@@ -217,7 +217,7 @@ const response = await fetch(\`${authBaseURL}/oauth2/token\`, {
 const tokens = await response.json();
 ```
 
-The access token is a signed JWT whose `aud` identifies `https://api.example.com`. Send it to that API as `Authorization: Bearer <access_token>`, then verify its signature, issuer, audience, expiry, and required scopes at the API. See [API Server verification](https://better-auth.com/docs/plugins/oauth-provider#api-server). If the CLI requests `offline_access`, store the returned refresh token in the operating system's secure credential store and use it to renew short-lived access tokens.
+The access token is a signed JWT whose `aud` identifies `https://api.example.com`. Send it to that API as `Authorization: Bearer <access_token>`, then verify its signature, issuer, audience, expiry, and required scopes at the API. See [Protect your API](https://better-auth.com/docs/plugins/oauth-provider/resource-server#verify-access-tokens). If the CLI requests `offline_access`, store the returned refresh token in the operating system's secure credential store and use it to renew short-lived access tokens.
 
 `oauthDeviceAuthorization()` owns the Device Authorization endpoints and registers the `urn:ietf:params:oauth:grant-type:device_code` grant with OAuth Provider. The provider validates the registered client, scopes, and [RFC 8707](https://datatracker.ietf.org/doc/html/rfc8707) resource before creating the request. The approval page can show the client, scopes, and resource to the signed-in user.
 

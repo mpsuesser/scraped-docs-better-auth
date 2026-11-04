@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins
 title: "Plugins"
 description: ""
-access_date: 2026-09-30T21:19:42.414Z
-current_date: 2026-09-30T21:19:42.414Z
+access_date: 2026-11-04T23:37:22.575Z
+current_date: 2026-11-04T23:37:22.575Z
 ---
 
 # Plugins (/docs/plugins)
@@ -30,15 +30,13 @@ Better Auth ships with 50+ plugins that extend the framework with additional aut
 | [Multi Session](/docs/plugins/multi-session)         | Multiple concurrent sessions per user                      |
 | [Last Login Method](/docs/plugins/last-login-method) | Track the last authentication method used                  |
 
-## ## Authorization & Management
-| Plugin                                     | Description                                         |
-| ------------------------------------------ | --------------------------------------------------- |
-| [Admin](/docs/plugins/admin)               | Administrative functions for user management        |
-| [Organization](/docs/plugins/organization) | Organization, team, and member management           |
-| [SSO](/docs/plugins/sso)                   | Single Sign-On with SAML 2.0                        |
-| [SCIM](/docs/plugins/scim)                 | Cross-domain identity management and directory sync |
+## ## Authorization
+| Plugin                                     | Description                                  |
+| ------------------------------------------ | -------------------------------------------- |
+| [Admin](/docs/plugins/admin)               | Administrative functions for user management |
+| [Organization](/docs/plugins/organization) | Organization, team, and member management    |
 
-## ## API & Tokens
+## ## API and tokens
 | Plugin                                                    | Description                                                               |
 | --------------------------------------------------------- | ------------------------------------------------------------------------- |
 | [Agent Auth](/docs/plugins/agent-auth) <small>New</small> | Discovery, registration, and capability-based authorization for AI agents |
@@ -48,14 +46,21 @@ Better Auth ships with 50+ plugins that extend the framework with additional aut
 | [One-Time Token](/docs/plugins/one-time-token)            | Generate and verify single-use tokens                                     |
 | [OAuth Proxy](/docs/plugins/oauth-proxy)                  | OAuth sign-in for development and preview deployments                     |
 
-## ## OAuth & OIDC Providers
+## ## OAuth and OIDC providers
 | Plugin                                                     | Description                                                    |
 | ---------------------------------------------------------- | -------------------------------------------------------------- |
-| [OAuth 2.1 Provider](/docs/plugins/oauth-provider)         | Turn your auth server into an OAuth 2.1 provider               |
-| [MCP](/docs/plugins/mcp)                                   | MCP provider authentication                                    |
+| [OAuth 2.1 Provider](/docs/plugins/oauth-provider)         | Make your app an OAuth 2.1 and OpenID Connect provider         |
+| [MCP](/docs/plugins/mcp)                                   | Make your app the OAuth provider for MCP clients               |
 | [Device Authorization](/docs/plugins/device-authorization) | OAuth 2.0 Device Authorization Grant for limited-input devices |
+| [CIMD](/docs/plugins/cimd)                                 | Identify OAuth clients by a metadata document URL              |
 
-## ## Payments & Billing
+## ## Enterprise
+| Plugin                     | Description                                         |
+| -------------------------- | --------------------------------------------------- |
+| [SSO](/docs/plugins/sso)   | Single Sign-On with OIDC and SAML 2.0               |
+| [SCIM](/docs/plugins/scim) | Cross-domain identity management and directory sync |
+
+## ## Payments and billing
 | Plugin                                      | Description                                     |
 | ------------------------------------------- | ----------------------------------------------- |
 | [Stripe](/docs/plugins/stripe)              | Subscription and payment management with Stripe |
@@ -65,7 +70,7 @@ Better Auth ships with 50+ plugins that extend the framework with additional aut
 | [Dodo Payments](/docs/plugins/dodopayments) | Payments with Dodo                              |
 | [Commet](/docs/plugins/commet)              | Billing, subscriptions and usage-based pricing  |
 
-## ## Security & Utilities
+## ## Security and utilities
 | Plugin                                               | Description                                       |
 | ---------------------------------------------------- | ------------------------------------------------- |
 | [Captcha](/docs/plugins/captcha)                     | Captcha verification for auth flows               |
@@ -74,10 +79,10 @@ Better Auth ships with 50+ plugins that extend the framework with additional aut
 | [Open API](/docs/plugins/open-api)                   | OpenAPI reference generation                      |
 | [Test Utils](/docs/plugins/test-utils)               | Testing utilities for integration and E2E testing |
 
-## ## Analytics & Tracking
+## ## Analytics and tracking
 | Plugin                   | Description                                     |
 | ------------------------ | ----------------------------------------------- |
 | [Dub](/docs/plugins/dub) | Lead tracking using Dub links and OAuth linking |
 
-## ## Community Plugins
+## ## Community plugins
 Looking for more? Check out [community plugins](/docs/plugins/community-plugins) built by the Better Auth community.

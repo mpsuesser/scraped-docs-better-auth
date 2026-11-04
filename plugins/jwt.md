@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/jwt
 title: "Jwt"
 description: ""
-access_date: 2026-10-19T23:04:47.814Z
-current_date: 2026-10-19T23:04:47.814Z
+access_date: 2026-11-04T23:37:22.575Z
+current_date: 2026-11-04T23:37:22.575Z
 ---
 
 Authenticate users with JWT tokens in services that can't use the session
@@ -205,10 +205,13 @@ const payload = await validateToken(token)
 
 ### OAuth Provider Mode
 
-If you are making your system oAuth compliant (such as when utilizing the OIDC or MCP plugins), you **MUST** disable the `/token` endpoint (oAuth equivalent `/oauth2/token`) and disable setting the jwt header (oAuth equivalent `/oauth2/userinfo`).
+When you use the [OAuth Provider](https://better-auth.com/docs/plugins/oauth-provider) or [MCP](https://better-auth.com/docs/plugins/mcp) plugin, disable both ways the JWT plugin hands session JWTs to the browser: the `/token` endpoint and the `set-auth-jwt` header. OAuth clients get tokens from `/oauth2/token` and claims from `/oauth2/userinfo`, so they need neither.
+
+Session JWTs are signed with the same keys as OAuth access tokens, and by default they carry the auth server's URL as both `iss` and `aud`. A resource server that checks only signature, issuer, and audience can therefore accept a signed-in user's session JWT as an access token, without any client, consent, or scope. Disabling both paths removes that token from the browser. Resource servers should also reject tokens that are not OAuth access tokens; see [Protect your API](https://better-auth.com/docs/plugins/oauth-provider/resource-server#verify-access-tokens).
 
 ```
 import { betterAuth } from "better-auth";
+import { jwt } from "better-auth/plugins";
 
 betterAuth({
   disabledPaths: [

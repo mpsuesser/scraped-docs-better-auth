@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/mcp
 title: "Mcp"
 description: ""
-access_date: 2026-10-15T11:54:56.981Z
-current_date: 2026-10-15T11:54:56.981Z
+access_date: 2026-11-04T23:37:22.575Z
+current_date: 2026-11-04T23:37:22.575Z
 ---
 
 Turn your Better Auth server into an OAuth provider for MCP clients
@@ -32,7 +32,7 @@ npm install @better-auth/mcp @better-auth/cimd @modelcontextprotocol/server zod
 
 ### Configure authorization
 
-Add the MCP plugin to your auth configuration alongside the [JWT plugin](https://better-auth.com/docs/plugins/jwt). The JWT plugin is required: it provides the stable signing key used for ID tokens and access tokens, and exposes the `/jwks` endpoint that resource servers use to verify them.
+Add the MCP plugin to your auth configuration alongside the [JWT plugin](https://better-auth.com/docs/plugins/jwt). The JWT plugin is required: it provides the stable signing key used for ID tokens and access tokens, and exposes the `/jwks` endpoint that resource servers use to verify them. Disable the JWT plugin's `/token` route and its `set-auth-jwt` header. Session JWTs share the access tokens' signing key, so a resource server that checks only issuer and audience could accept one; see [OAuth Provider Mode](https://better-auth.com/docs/plugins/jwt#oauth-provider-mode).
 
 ```
 import { betterAuth } from "better-auth";
@@ -42,8 +42,9 @@ import { mcp } from "@better-auth/mcp";
 import { fetchClientMetadataResource } from "@better-auth/cimd/node"; 
 
 export const auth = betterAuth({
+    disabledPaths: ["/token"], 
     plugins: [
-        jwt(), 
+        jwt({ disableSettingJwtHeader: true }), 
         mcp({ 
             loginPage: "/sign-in", // path to your login page
             consentPage: "/consent", // path to your consent page
@@ -79,7 +80,7 @@ npx auth migrate
 
 #### bun
 
-The MCP plugin uses the same schema as the OAuth Provider plugin (`oauthClient`, `oauthAccessToken`, `oauthRefreshToken`, `oauthConsent`, `oauthClientAssertion`). See the [OAuth Provider Schema](https://better-auth.com/docs/plugins/oauth-provider#schema) section for details.
+The MCP plugin uses the same schema as the OAuth Provider plugin (`oauthClient`, `oauthAccessToken`, `oauthRefreshToken`, `oauthConsent`, `oauthClientAssertion`, `oauthResource`, `oauthClientResource`). See the [OAuth Provider schema](https://better-auth.com/docs/plugins/oauth-provider/reference#schema) for details.
 
 ## Endpoints
 
@@ -142,7 +143,7 @@ mcp({
 
 `resource` must be an HTTPS URL with no query, fragment, or credentials; HTTP is accepted only on loopback hosts for local development. A resource whose URL requires a query component cannot use `mcp()`, `requireMcpAuth`, or `createMcpProtectedRequestHandler`. Verify its tokens with `verifyAccessTokenRequest` from `better-auth/oauth2`, and build challenges with `createResourceServerChallenge` from `@better-auth/oauth-provider`.
 
-With Prisma on PostgreSQL, CockroachDB, or MongoDB, also declare this resource in `resources` with explicit `allowedScopes`; see [Resources](https://better-auth.com/docs/plugins/oauth-provider#resources).
+With Prisma on PostgreSQL, CockroachDB, or MongoDB, also declare this resource in `resources` with explicit `allowedScopes`; see [Resources](https://better-auth.com/docs/plugins/oauth-provider/tokens#resources).
 
 `mcp()` also registers this identifier as a default client-registration resource. A dynamically registered client is linked to the MCP resource even when its registration request omits the non-standard `resources` field. Any `clientRegistrationDefaultResources` you provide are preserved, and the MCP resource is appended once.
 
@@ -161,7 +162,7 @@ mcp({
 })
 ```
 
-Some MCP clients, such as Cursor and older Claude Code releases, omit `application_type` and register custom-scheme callbacks or `http` callbacks on `localhost`, `127.0.0.1`, or `[::1]`, which the `web` default rejects. `clientRegistrationDefaultApplicationType: "infer"` registers those clients as `native`; see [application type](https://better-auth.com/docs/plugins/oauth-provider#dynamic-registration-endpoint).
+Some MCP clients omit `application_type` and register custom-scheme callbacks or `http` callbacks on `localhost`, `127.0.0.1`, or `[::1]`, which the `web` default rejects. `clientRegistrationDefaultApplicationType: "infer"` registers those clients as `native`; see [dynamic client registration](https://better-auth.com/docs/plugins/oauth-provider/clients#dynamic-client-registration).
 
 The registration endpoint is absent from discovery unless DCR is enabled. A DCR request does not need Better Auth's `resources` extension: `mcp()` adds its canonical resource as a server-owned default.
 
@@ -258,13 +259,13 @@ requireMcpAuth(auth, async (request, accessTokenClaims) => {
 
 ## Configuration
 
-`mcp()` extends the [OAuth Provider](https://better-auth.com/docs/plugins/oauth-provider#configuration) options. All OAuth provider options are passed flat (there is no nested `oidcConfig`). The required MCP-specific option is `resource`.
+`mcp()` extends the [OAuth Provider](https://better-auth.com/docs/plugins/oauth-provider/reference#plugin-options) options. All OAuth provider options are passed flat (there is no nested `oidcConfig`). The required MCP-specific option is `resource`.
 
 For every client configured through `mcp()`, the plugin defaults `refreshTokenReuseInterval` to 30 seconds. This lets a client retry a refresh with the old token and receive the same rotated token response when another request already consumed that refresh token. OAuth Provider itself remains strict by default; set `refreshTokenReuseInterval: 0` on `mcp()` to disable the overlap window.
 
 Prop
 
-The most commonly tuned OAuth provider options are below. See the [OAuth Provider Configuration](https://better-auth.com/docs/plugins/oauth-provider#configuration) for the full list.
+The most commonly tuned OAuth provider options are below. See the [OAuth Provider Configuration](https://better-auth.com/docs/plugins/oauth-provider/reference#plugin-options) for the full list.
 
 Prop
 
@@ -277,9 +278,10 @@ import { createMcpProtectedRequestHandler } from "@better-auth/mcp";
 
 const handler = createMcpProtectedRequestHandler( 
     {
-        issuer: "https://auth.example.com",
+        issuer: "https://auth.example.com/api/auth",
         audience: "https://api.example.com/mcp",
         jwksUrl: "https://auth.example.com/api/auth/jwks",
+        jwtVerifyOptions: { typ: "at+jwt", requiredClaims: ["azp"] }, 
     },
     async (request, accessTokenClaims) => { 
         // accessTokenClaims holds the verified access-token claims

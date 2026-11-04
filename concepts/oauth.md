@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/oauth
 title: "Oauth"
 description: ""
-access_date: 2026-10-14T17:19:42.455Z
-current_date: 2026-10-14T17:19:42.455Z
+access_date: 2026-11-04T23:37:22.575Z
+current_date: 2026-11-04T23:37:22.575Z
 ---
 
 # OAuth (/docs/concepts/oauth)
@@ -15,6 +15,8 @@ Learn how to configure social OAuth providers, sign in and link accounts, reques
 Better Auth comes with built-in support for OAuth 2.0 and OpenID Connect. This allows you to authenticate users via popular OAuth providers like Google, Facebook, GitHub, and more.
 
 If your desired provider isn't directly supported, you can use the [Generic OAuth Plugin](/docs/plugins/generic-oauth) for custom integrations.
+
+> This page covers signing users in with another provider. To connect each organization to its own OIDC or SAML identity provider, use [SSO](/docs/plugins/sso). To let other apps sign in with your app, use the [OAuth Provider](/docs/plugins/oauth-provider) plugin.
 
 ## ## Configuring Social Providers
 To enable a social provider, you need to provide `clientId` and `clientSecret` for the provider.

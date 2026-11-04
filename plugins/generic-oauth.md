@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/generic-oauth
 title: "Generic Oauth"
 description: ""
-access_date: 2026-11-03T21:16:19.098Z
-current_date: 2026-11-03T21:16:19.098Z
+access_date: 2026-11-04T23:37:22.575Z
+current_date: 2026-11-04T23:37:22.575Z
 ---
 
 # Generic OAuth (/docs/plugins/generic-oauth)
@@ -13,6 +13,8 @@ Authenticate users with any OAuth provider
 
 
 The Generic OAuth plugin lets you add any OAuth 2.0 or OpenID Connect (OIDC) provider to your application. Providers are registered as first-class social providers and use the standard `signIn.social` flow, with PKCE and issuer validation enabled by default.
+
+> Use [SSO](/docs/plugins/sso) instead when each organization brings its own identity provider or needs SAML. To let other apps sign in with your app, use the [OAuth Provider](/docs/plugins/oauth-provider) plugin.
 
 ## ## When to Use This Plugin
 Use the Generic OAuth plugin when:
