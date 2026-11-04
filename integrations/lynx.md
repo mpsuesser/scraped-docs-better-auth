@@ -2,37 +2,55 @@
 url: https://better-auth.com/llms.txt/docs/integrations/lynx
 title: "Lynx"
 description: ""
-access_date: 2026-11-04T16:40:26.626Z
-current_date: 2026-11-04T16:40:26.626Z
+access_date: 2026-11-04T16:47:30.217Z
+current_date: 2026-11-04T16:47:30.217Z
 ---
+
+# Lynx Integration (/docs/integrations/lynx)
 
 Integrate Better Auth with Lynx cross-platform framework.
 
-This integration guide is for using Better Auth with [Lynx](https://lynxjs.org/), a cross-platform rendering framework that enables developers to build applications for Android, iOS, and Web platforms with native rendering performance.
 
-Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](https://better-auth.com/docs/installation).
 
-## Installation
+This integration guide is for using Better Auth with [Lynx](https://lynxjs.org), a cross-platform rendering framework that enables developers to build applications for Android, iOS, and Web platforms with native rendering performance.
 
+Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
+
+## ## Installation
 Install Better Auth and the Lynx React dependency:
+
+
+
 
 #### npm
 
-```
+```bash
 npm install better-auth @lynx-js/react
 ```
 
 #### pnpm
 
+```bash
+pnpm add better-auth @lynx-js/react
+```
+
 #### yarn
+
+```bash
+yarn add better-auth @lynx-js/react
+```
 
 #### bun
 
-## Create Client Instance
+```bash
+bun add better-auth @lynx-js/react
+```
 
+
+## ## Create Client Instance
 Import `createAuthClient` from `better-auth/lynx` to create your client instance:
 
-```
+```ts title="lib/auth-client.ts"
 import { createAuthClient } from "better-auth/lynx"
 
 export const authClient = createAuthClient({
@@ -40,13 +58,11 @@ export const authClient = createAuthClient({
 })
 ```
 
-## Usage
-
+## ## Usage
 The Lynx client provides the same API as other Better Auth clients, with optimized integration for Lynx's reactive system.
 
-### Authentication Methods
-
-```
+## ### Authentication Methods
+```ts
 import { authClient } from "./lib/auth-client"
 
 // Sign in with email and password
@@ -66,13 +82,11 @@ await authClient.signUp.email({
 await authClient.signOut()
 ```
 
-### Hooks
-
+## ### Hooks
 The Lynx client includes reactive hooks that integrate seamlessly with Lynx's component system:
 
-#### useSession
-
-```
+## #### useSession
+```tsx title="components/user.tsx"
 import { authClient } from "../lib/auth-client"
 
 export function User() {
@@ -106,11 +120,10 @@ export function User() {
 }
 ```
 
-### Store Integration
-
+## ### Store Integration
 The Lynx client uses [nanostores](https://github.com/nanostores/nanostores) for state management and provides a `useStore` hook for accessing reactive state:
 
-```
+```tsx title="components/session-info.tsx"
 import { useStore } from "better-auth/lynx"
 import { authClient } from "../lib/auth-client"
 
@@ -128,11 +141,10 @@ export function SessionInfo() {
 }
 ```
 
-### Advanced Store Usage
-
+## ### Advanced Store Usage
 You can use the store with selective key watching for optimized re-renders:
 
-```
+```tsx title="components/optimized-user.tsx"
 import { useStore } from "better-auth/lynx"
 import { authClient } from "../lib/auth-client"
 
@@ -155,11 +167,10 @@ export function OptimizedUser() {
 }
 ```
 
-## Plugin Support
-
+## ## Plugin Support
 The Lynx client supports all Better Auth plugins:
 
-```
+```ts title="lib/auth-client.ts"
 import { createAuthClient } from "better-auth/lynx"
 import { magicLinkClient } from "better-auth/client/plugins"
 
@@ -175,11 +186,10 @@ await authClient.signIn.magicLink({
 })
 ```
 
-## Error Handling
-
+## ## Error Handling
 Error handling works the same as other Better Auth clients:
 
-```
+```tsx title="components/login-form.tsx"
 import { authClient } from "../lib/auth-client"
 
 export function LoginForm() {
@@ -211,15 +221,14 @@ export function LoginForm() {
 }
 ```
 
-## Features
-
+## ## Features
 The Lynx client provides:
 
-- **Cross-Platform Support**: Works across Android, iOS, and Web platforms
-- **Optimized Performance**: Built specifically for Lynx's reactive system
-- **Nanostores Integration**: Uses nanostores for efficient state management
-- **Selective Re-rendering**: Watch specific store keys to minimize unnecessary updates
-- **Full API Compatibility**: All Better Auth methods and plugins work seamlessly
-- **TypeScript Support**: Full type safety with TypeScript inference
+* **Cross-Platform Support**: Works across Android, iOS, and Web platforms
+* **Optimized Performance**: Built specifically for Lynx's reactive system
+* **Nanostores Integration**: Uses nanostores for efficient state management
+* **Selective Re-rendering**: Watch specific store keys to minimize unnecessary updates
+* **Full API Compatibility**: All Better Auth methods and plugins work seamlessly
+* **TypeScript Support**: Full type safety with TypeScript inference
 
 The Lynx integration maintains all the features and benefits of Better Auth while providing optimal performance and developer experience within Lynx's cross-platform ecosystem.

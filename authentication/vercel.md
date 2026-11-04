@@ -2,42 +2,48 @@
 url: https://better-auth.com/llms.txt/docs/authentication/vercel
 title: "Vercel"
 description: ""
-access_date: 2026-11-04T16:40:26.626Z
-current_date: 2026-11-04T16:40:26.626Z
+access_date: 2026-11-04T16:47:30.217Z
+current_date: 2026-11-04T16:47:30.217Z
 ---
 
-### Get your Vercel credentials
+# Vercel (/docs/authentication/vercel)
 
+Vercel provider setup and usage.
+
+
+
+
+### ### Get your Vercel credentials
 To use Sign in with Vercel, [create a Vercel App](https://vercel.com/docs/sign-in-with-vercel/manage-from-dashboard) to obtain its client ID. The default configuration also requires a client secret. Applications deployed on Vercel can instead use [OIDC client authentication](#oidc-client-authentication) without a client secret.
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/vercel` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
-### Configure the provider
+> Vercel requires PKCE (Proof Key for Code Exchange) for enhanced security. This is automatically handled by Better Auth.
 
+### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
 
-```
+```ts title="auth.ts" 
 import { betterAuth } from "better-auth"
 
 export const auth = betterAuth({ 
     socialProviders: {
-        vercel: { 
-            clientId: process.env.VERCEL_CLIENT_ID as string, 
-            clientSecret: process.env.VERCEL_CLIENT_SECRET as string, 
-        }, 
+        vercel: { // [!code highlight]
+            clientId: process.env.VERCEL_CLIENT_ID as string, // [!code highlight]
+            clientSecret: process.env.VERCEL_CLIENT_SECRET as string, // [!code highlight]
+        }, // [!code highlight]
     },
 })
 ```
 
-## Usage
 
-### Sign in with Vercel
-
+## ## Usage
+## ### Sign in with Vercel
 To sign in with Vercel, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
 
-- `provider`: The provider to use. It should be set to `vercel`.
+* `provider`: The provider to use. It should be set to `vercel`.
 
-```
+```ts title="auth-client.ts"
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
 
@@ -48,27 +54,24 @@ const signIn = async () => {
 }
 ```
 
-## Options
-
+## ## Options
 To use Sign in with Vercel with the default configuration, you need a client ID and client secret. You can get them from the [Vercel Dashboard](https://vercel.com/dashboard) by [creating a Vercel App](https://vercel.com/docs/sign-in-with-vercel/manage-from-dashboard). For applications deployed on Vercel, you can instead use [OIDC client authentication](#oidc-client-authentication) without a client secret.
 
-For the full list of options supported by all social providers, check the [Provider Options](https://better-auth.com/docs/concepts/oauth#provider-options).
+For the full list of options supported by all social providers, check the [Provider Options](/docs/concepts/oauth#provider-options).
 
-### Token endpoint authentication
-
+## ### Token endpoint authentication
 Set `tokenEndpointAuth` to choose how the application authenticates when exchanging an authorization code. It accepts the shared OAuth authentication strategies: `client_secret_basic`, `client_secret_post`, `none`, `private_key_jwt`, and `custom`. Enable the corresponding method on your Vercel App. When omitted, Better Auth sends `clientSecret` in the request body if it is configured.
 
 The `custom` strategy owns client authentication: it must set `client_id` and the required credential parameters or headers. Better Auth continues to handle the authorization code, redirect URI, PKCE, token response, and user profile. The hook runs on the server for each exchange; it does not change the browser callback URL.
 
-#### OIDC client authentication
-
+## #### OIDC client authentication
 For an application deployed on Vercel, use its workload OIDC token instead of a long-lived client secret:
 
-1. In your Vercel App's **Authentication** settings, enable **OpenID Connect (`oidc_token`)** and configure the trusted issuer and claims. Match the deployment token's issuer and audience, and restrict access to the intended team, project, and environments. See [Vercel's OIDC client authentication guide](https://vercel.com/docs/sign-in-with-vercel/authorization-server-api#authenticate-with-an-oidc-token) and [OIDC claim reference](https://vercel.com/docs/oidc/reference).
+1. In your Vercel App's **Authentication** settings, enable &#x2A;*OpenID Connect (`oidc_token`)** and configure the trusted issuer and claims. Match the deployment token's issuer and audience, and restrict access to the intended team, project, and environments. See [Vercel's OIDC client authentication guide](https://vercel.com/docs/sign-in-with-vercel/authorization-server-api#authenticate-with-an-oidc-token) and [OIDC claim reference](https://vercel.com/docs/oidc/reference).
 2. Install `@vercel/oidc` in your application.
 3. Configure an async token request hook:
 
-```
+```ts title="auth.ts"
 import { getVercelOidcToken } from "@vercel/oidc"
 import { betterAuth } from "better-auth"
 
@@ -97,10 +100,11 @@ export const auth = betterAuth({
 
 Retrieve the OIDC token inside the hook so each exchange uses the current token. Do not store a token at module initialization or pass it as `clientSecret`. If the hook throws, Better Auth stops the exchange. Local development also needs a valid workload token and matching trust configuration to use this method.
 
+> When using [OAuth Proxy](/docs/plugins/oauth-proxy) with `productionURL`, preview sign-ins exchange their authorization code on the production deployment. The OIDC token therefore identifies that production deployment. Configure trust for its team, project, and `production` environment; trusting only `preview` will reject these exchanges.
+
 This authenticates your application's workload. The person signing in still uses the normal Sign in with Vercel flow, and Better Auth still needs its session secret.
 
-#### Private key JWT client authentication
-
+## #### Private key JWT client authentication
 Enable `private_key_jwt` on your Vercel App and configure its **JWKS URL**. Better Auth calls `getClientAssertion` for each token exchange with the client ID, token endpoint, and grant type. Omit `clientSecret` when using this strategy. See [Vercel's private key JWT guide](https://vercel.com/docs/sign-in-with-vercel/authorization-server-api#authenticate-with-a-jwt-assertion).
 
 For an application running on Vercel, [Vercel KMS](https://vercel.com/docs/kms) can sign assertions without storing a private key in the deployment:
@@ -110,7 +114,7 @@ For an application running on Vercel, [Vercel KMS](https://vercel.com/docs/kms) 
 3. Set the Vercel App's JWKS URL to `https://kms.vercel.com/<issuerId>/jwks.json` and install `@vercel/kms`.
 4. Sign a fresh assertion inside `getClientAssertion`:
 
-```
+```ts title="auth.ts"
 import { signJWT } from "@vercel/kms"
 import { betterAuth } from "better-auth"
 
@@ -143,7 +147,7 @@ export const auth = betterAuth({
 
 If you manage your own signing key, use Better Auth's `createPrivateKeyJwtClientAssertionGetter` instead. This helper accepts local key material; it does not call KMS. Set `expiresIn: 60` to override its 120-second default, and set `kid` to the matching public key's ID in your JWKS:
 
-```
+```ts
 import { betterAuth } from "better-auth"
 import { createPrivateKeyJwtClientAssertionGetter } from "better-auth/oauth2"
 
@@ -169,20 +173,19 @@ export const auth = betterAuth({
 
 Always include a matching `kid`; Vercel requires it when the JWKS contains more than one key. Keep private keys on the server and publish only public keys in the JWKS.
 
-### Available Scopes
-
+## ### Available Scopes
 Vercel supports the following OpenID Connect scopes:
 
-- `openid` (default): Returns the user's unique identifier in the ID token
-- `email`: Returns the user's email address
-- `profile`: Returns the user's profile information (name, picture)
-- `offline_access`: Returns a refresh token for offline access
+* `openid` (default): Returns the user's unique identifier in the ID token
+* `email`: Returns the user's email address
+* `profile`: Returns the user's profile information (name, picture)
+* `offline_access`: Returns a refresh token for offline access
 
 Scopes are configured on the Vercel App, and so it is not necessary to pass a `scope` parameter to the provider and it is more convenient to omit it.
 
 If you do pass a `scope` parameter, it has the effect of requesting a subset of the configured scopes:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth"
 
 export const auth = betterAuth({
@@ -190,8 +193,10 @@ export const auth = betterAuth({
         vercel: {
             clientId: process.env.VERCEL_CLIENT_ID as string,
             clientSecret: process.env.VERCEL_CLIENT_SECRET as string,
-            scope: ["openid", "email", "profile"], 
+            scope: ["openid", "email", "profile"], // [!code highlight]
         },
     },
 })
 ```
+
+> For more information about Vercel's scopes and API capabilities, refer to the [official Vercel documentation](https://vercel.com/docs/sign-in-with-vercel).
