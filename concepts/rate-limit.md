@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/rate-limit
 title: "Rate Limit"
 description: ""
-access_date: 2026-11-04T15:06:48.663Z
-current_date: 2026-11-04T15:06:48.663Z
+access_date: 2026-11-04T18:14:49.666Z
+current_date: 2026-11-04T18:14:49.666Z
 ---
 
 Learn how to configure rate limiting in Better Auth, including IP address detection, IPv6 support, custom rate limit windows, storage backends, error handling, and per-endpoint rules.
@@ -53,9 +53,17 @@ These custom rules ensure that sensitive operations are protected with stricter 
 
 ### Connecting IP Address
 
-Better Auth limits requests per client IP address, which it reads from `X-Forwarded-For` by default. Any client can set that header, so per-client limits only hold when a proxy or server code you control writes the address and clients cannot bypass it.
+Better Auth counts requests per client IP address. By default, it reads the address from the `X-Forwarded-For` header. Clients can send this header themselves, so set up Better Auth for how requests reach your server:
 
-If your proxy sets the client address in a header, replacing any value the client sent, list that header:
+| How requests reach your server | What to set |
+| --- | --- |
+| A proxy puts the client address in its own header | `ipAddressHeaders` with only that header |
+| Proxies add addresses to `X-Forwarded-For` | `trustedProxies` with your proxies' addresses |
+| Clients connect directly | `ipAddressHeaders: []`, or a header that your server code sets |
+
+#### A proxy sets the client address
+
+List only the header that your proxy sets. Your proxy must replace any value that the client sent. A client could set any other header in the list.
 
 ```
 import { betterAuth } from "better-auth";
@@ -63,26 +71,32 @@ import { betterAuth } from "better-auth";
 export const auth = betterAuth({
     advanced: {
         ipAddress: {
+            // Replace this with the header your proxy sets.
             ipAddressHeaders: ["cf-connecting-ip"],
         },
     },
 })
 ```
 
-If your proxies append to `X-Forwarded-For` instead, list them in `trustedProxies`. Better Auth reads the chain from right to left and uses the first address that is not one of your proxies. Without `trustedProxies`, a header with more than one address is ignored.
+#### Proxies add to X-Forwarded-For
+
+List the exact addresses of your proxies. Better Auth skips these addresses in the header and uses the client address. Do not use a wide range that also includes clients.
 
 ```
 export const auth = betterAuth({
     advanced: {
         ipAddress: {
-            // your proxies' addresses, not a broad private range that also covers clients
             trustedProxies: ["192.0.2.10", "10.0.0.0/24"],
         },
     },
 })
 ```
 
-If clients connect to your server directly, set `ipAddressHeaders: []` to share one counter per path across all clients. To keep per-client limits, write the connection address into a header before the request reaches Better Auth, and list that header in `ipAddressHeaders`:
+#### Clients connect directly
+
+Better Auth cannot read the connection address. If you set `ipAddressHeaders: []`, all clients share one counter for each path.
+
+To count each client separately, set a header in your server code and list it in `ipAddressHeaders`. This is safe because your code replaces any value that the client sent:
 
 ```
 import express from "express";
@@ -94,13 +108,18 @@ const authHandler = toNodeHandler(auth);
 
 // Express v4 route. For Express v5, use "/api/auth/*splat" instead.
 app.all("/api/auth/*", (req, res) => {
-    // Overwrite any client value, and list "x-client-ip" in ipAddressHeaders.
+    // Replace any value that the client sent.
+    // Also set ipAddressHeaders: ["x-client-ip"] in your auth config.
     req.headers["x-client-ip"] = req.socket.remoteAddress ?? "";
     return authHandler(req, res);
 });
 ```
 
-When no address is found, Better Auth uses one shared counter per path and logs a warning once. In development and test, it uses `127.0.0.1` instead. Setting `disableIpTracking: true` turns off this rate limiter for HTTP requests.
+#### When no address is found
+
+Some requests have no valid address. For example, `X-Forwarded-For` can contain several addresses while `trustedProxies` is not set. These requests share one counter for each path, and Better Auth logs a warning the first time this happens.
+
+In development and test, Better Auth uses `127.0.0.1` instead. To turn off this rate limiter for HTTP requests, set `disableIpTracking: true`.
 
 #### IPv6 Address Support
 

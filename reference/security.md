@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/security
 title: "Security"
 description: ""
-access_date: 2026-11-04T15:06:48.663Z
-current_date: 2026-11-04T15:06:48.663Z
+access_date: 2026-11-04T18:14:49.666Z
+current_date: 2026-11-04T18:14:49.666Z
 ---
 
 # Security (/docs/reference/security)
@@ -136,7 +136,12 @@ Plugins can also set custom cookie options to align with specific security needs
 Better Auth includes built-in rate limiting to safeguard against brute-force attacks. Rate limits are applied across all routes by default, with specific routes subject to stricter limits based on potential risk.
 
 ## ## IP Address Headers
-Better Auth uses client IP addresses for rate limiting and security monitoring. By default, it reads the address from `X-Forwarded-For`, which clients can set themselves, so per-client limits only hold when a proxy or server code you control writes the address. [Connecting IP Address](/docs/concepts/rate-limit#connecting-ip-address) explains how to set `ipAddressHeaders` or `trustedProxies` for your deployment.
+Better Auth uses client IP addresses for rate limiting and security monitoring. By default, it reads the address from the `X-Forwarded-For` header. Clients can set this header themselves. Per-client limits only work in one of these setups:
+
+* Your proxy or server code sets the address in a header on every request and replaces any value the client sent.
+* Your proxies append to `X-Forwarded-For`, and you list them in `trustedProxies`.
+
+[Connecting IP Address](/docs/concepts/rate-limit#connecting-ip-address) explains how to configure each setup.
 
 ## ## Trusted Proxy Headers
 If your application runs behind a reverse proxy or load balancer, Better Auth can derive the base URL from the inbound request's `X-Forwarded-Host` and `X-Forwarded-Proto` headers. This is useful when your app is accessible from multiple domains (e.g. `example.com` and `app.example.dev`) and you don't want to hardcode a single `baseURL` in the configuration.
