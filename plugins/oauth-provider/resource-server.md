@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/resource-server
 title: "Resource Server"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-04T23:50:31.135Z
+current_date: 2026-11-04T23:50:31.135Z
 ---
 
 # Protect your API (/docs/plugins/oauth-provider/resource-server)
@@ -127,13 +127,14 @@ If your API also receives opaque tokens, have it introspect them:
 2. [Link it to the resource](#introspection).
 3. Pass its credentials as `remoteVerify`.
 
-With `remoteVerify` set, every token is introspected after the local JWT check. Introspection also confirms the session is still active. Set `force: true` to skip the local check. Leave `typ` out of `verifyOptions` here. The introspection result has no JWT header, so a `typ` check rejects every token. Introspection reports a JWT as active only when it has `azp`, so session JWTs still fail.
+With `remoteVerify` set, every token is introspected after the local JWT check. Introspection also confirms the session is still active. The `typ` check reads the JWT header, which the introspection result does not have, so only the local check applies it. Set `force: true` to skip the local check, including `typ`. Introspection reports a JWT as active only when it has `azp`, so session JWTs still fail with `force: true`.
 
 ```ts title="api/posts.ts"
 const payload = await verifyAccessTokenRequest(requestToResourceInput(req), {
   verifyOptions: {
     issuer: "https://auth.example.com/api/auth",
     audience: "https://api.example.com",
+    typ: "at+jwt",
     requiredClaims: ["azp"],
   },
   jwksUrl: "https://auth.example.com/api/auth/jwks",
