@@ -2,15 +2,15 @@
 url: https://better-auth.com/llms.txt/docs/adapters/prisma
 title: "Prisma"
 description: ""
-access_date: 2026-08-23T16:07:07.064Z
-current_date: 2026-08-23T16:07:07.064Z
+access_date: 2026-11-05T19:36:04.032Z
+current_date: 2026-11-05T19:36:04.032Z
 ---
 
 Integrate Better Auth with Prisma.
 
 Prisma ORM is an open-source database toolkit that simplifies database access and management in applications by providing a type-safe query builder and an intuitive data modeling interface.
 
-For an introduction to Prisma ORM, see [Prisma getting started](https://www.prisma.io/docs/getting-started).
+For an introduction to Prisma ORM, see [Prisma getting started](https://www.prisma.io/docs/v7/getting-started).
 
 ## Installation
 
@@ -28,7 +28,7 @@ npm install @better-auth/prisma-adapter
 
 #### bun
 
-The example below uses Prisma 7 and PostgreSQL. If Prisma is not already configured, follow [Prisma's PostgreSQL quickstart](https://www.prisma.io/docs/prisma-orm/quickstart/postgresql) before continuing.
+The example below uses Prisma 7 and PostgreSQL. If Prisma is not already configured, follow [Prisma's PostgreSQL quickstart for Prisma 7](https://www.prisma.io/docs/v7/prisma-orm/quickstart/postgresql) before continuing.
 
 ## Setup
 
@@ -36,7 +36,7 @@ The examples below use the following project structure:
 
 .env
 
-prisma.config.ts
+prisma7.config.ts
 
 schema.prisma
 
@@ -48,7 +48,35 @@ auth.ts
 
 ### Configure Prisma
 
-If you are starting a new Prisma project, initialize it with PostgreSQL and an explicit Prisma Client output path:
+If you are starting a new Prisma project, install the Prisma 7 CLI, Prisma Client, and the PostgreSQL driver adapter:
+
+#### npm
+
+```
+npm install -D prisma@7
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+#### npm
+
+Install Prisma Client and the PostgreSQL adapter
+
+```
+npm install @prisma/client@7 @prisma/adapter-pg@7
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+Then initialize Prisma with PostgreSQL and an explicit Prisma Client output path:
 
 #### npm
 
@@ -62,7 +90,7 @@ npx prisma init --datasource-provider postgresql --output ../src/generated/prism
 
 #### bun
 
-This creates `prisma/schema.prisma`, `prisma.config.ts`, and `.env`. Set `DATABASE_URL` in `.env` to your PostgreSQL connection string.
+This creates `prisma/schema.prisma`, `prisma7.config.ts`, and `.env`. Prisma versions before 7.10 name the config file `prisma.config.ts`. Set `DATABASE_URL` in `.env` to your PostgreSQL connection string.
 
 If Prisma is already configured in your project, keep your existing datasource and output path and skip this initialization command.
 
