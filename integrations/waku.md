@@ -2,131 +2,61 @@
 url: https://better-auth.com/llms.txt/docs/integrations/waku
 title: "Waku"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-11-06T22:41:26.774Z
+current_date: 2026-11-06T22:41:26.774Z
 ---
-
-# Waku Integration (/docs/integrations/waku)
 
 Integrate Better Auth with Waku.
 
+Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](https://better-auth.com/docs/installation). The examples on this page use the APIs of Waku `1.0.0-rc.4`.
 
+## Installation
 
-Better Auth can be easily integrated with Waku. Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
+## Mount the handler
 
-## ## Create auth instance
-Create a file named `auth.ts` in your application. Import Better Auth and create your instance.
+Create a catch-all API route at `src/pages/_api/api/auth/[...route].ts`:
 
-> Make sure to export the auth instance with the variable name `auth` or as a `default` export.
-
-```ts title="src/auth.ts"
-import { betterAuth } from "better-auth"
-
-export const auth = betterAuth({
-    database: {
-        provider: "postgres", //change this to your database provider
-        url: process.env.DATABASE_URL, // path to your database or connection string
-    }
-})
 ```
-
-## ## Create API Route
-We need to mount the handler to a API route. Create a directory for Waku's file system router at `src/pages/api/auth`. Create a catch-all route file `[...route].ts` inside the `src/pages/api/auth` directory. And add the following code:
-
-```ts title="src/pages/_api/api/auth/[...route].ts"
 import { auth } from "../../../../auth" // Adjust the path as necessary
 
-export const GET = async (request: Request): Promise<Response> => {
-  return auth.handler(request)
-}
-
-export const POST = async (request: Request): Promise<Response> => {
+export default function handler(request: Request): Promise<Response> {
   return auth.handler(request)
 }
 ```
 
-> You can change the path on your better-auth configuration but it's recommended to keep it as `src/pages/_api/api/auth/[...route].ts`
+## Create a client
 
-## ## Create a client
-Create a client instance. Here we are creating `auth-client.ts` file inside the `lib/` directory.
+Create a client with `better-auth/react`:
 
-```ts title="src/lib/auth-client.ts"
-import { createAuthClient } from "better-auth/react" // make sure to import from better-auth/react
+```
+import { createAuthClient } from "better-auth/react"
 
-export const authClient = createAuthClient({
-    //you can pass client configuration here
-})
-
-export type Session = typeof authClient.$Infer.Session // you can infer typescript types from the authClient
+export const authClient = createAuthClient()
 ```
 
-Once you have created the client, you can use it to sign up, sign in, and perform other actions.
-Some of the actions are reactive. The client uses [nano-store](https://github.com/nanostores/nanostores) to store the state and re-render the components when the state changes.
+## Collect cookies from server code
 
-The client also uses [better-fetch](https://github.com/bekacru/better-fetch) to make the requests. You can pass the fetch configuration to the client.
+Server actions and server components can't set cookies on Waku's response. Add a plugin that collects the cookies Better Auth sets, and a `getSession()` helper that reads them, so pages rendered later in the same request see the change:
 
-## ## RSC and Server actions
-The `api` object exported from the auth instance contains all the actions that you can perform on the server. Every endpoint made inside Better Auth is invocable as a function. Including plugins endpoints.
-
-**Example: Getting Session on a server action**
-
-```tsx title="server.ts"
-"use server" // Waku currently only supports file-level "use server"
-
-import { auth } from "./auth"
-import { unstable_getHeaders as getHeaders } from "waku/server"
-
-export const someAuthenticatedAction = async () => {
-  "use server"
-  const headers = getHeaders()
-  const session = await auth.api.getSession({
-      headers,
-  })
-};
 ```
-
-**Example: Getting Session on a RSC**
-
-```tsx
-import { auth } from "../auth"
-import { unstable_getHeaders as getHeaders } from "waku/server"
-
-export async function ServerComponent() {
-  const headers = getHeaders()
-  const session = await auth.api.getSession({
-      headers,
-  })
-  if(!session) {
-      return <div>Not authenticated</div>
-  }
-  return (
-      <div>
-          <h1>Welcome {session.user.name}</h1>
-      </div>
-  )
-}
-```
-
-> RSCs that run after the response has started streaming cannot set cookies. The 
-> 
-> [cookie cache](/docs/concepts/session-management#cookie-cache)
-> 
->  will not be refreshed until the server is interacted with from the client via Server Actions or Route Handlers.
-
-## ### Server Action Cookies
-When you call a function that needs to set cookies, like `signInEmail` or `signUpEmail` in a server action, cookies won’t be set.
-
-We can create a plugin that works together with our middleware to set cookies.
-
-```ts title="auth.ts"
-import { betterAuth } from "better-auth";
-import { createAuthMiddleware } from "better-auth/api";
-import { unstable_getContextData as getContextData } from "waku/server"
+import { betterAuth, type BetterAuthPlugin } from "better-auth"
+import { createAuthMiddleware } from "better-auth/api"
+import { applySetCookies } from "better-auth/cookies"
+import { getContext } from "hono/context-storage"
 
 export const auth = betterAuth({
-    //...your config
-    plugins: [wakuCookies()] // make sure this is the last plugin in the array // [!code highlight]
+  //...your config
+  plugins: [wakuCookies()] // make sure this is the last plugin in the array
 })
+
+type Session = typeof auth.$Infer.Session
+
+export type AuthEnv = {
+  Variables: {
+    betterAuthSetCookie: string[]
+    sessionPromise?: Promise<Session | null>
+  }
+}
 
 function wakuCookies() {
   return {
@@ -134,313 +64,221 @@ function wakuCookies() {
     hooks: {
       after: [
         {
-          matcher(ctx) {
-            return true;
-          },
+          matcher: () => true,
           handler: createAuthMiddleware(async (ctx) => {
-            const returned = ctx.context.responseHeaders;
-            if ("_flag" in ctx && ctx._flag === "router") {
-              return;
-            }
-            if (returned instanceof Headers) {
-              const setCookieHeader = returned?.get("set-cookie");
-              if (!setCookieHeader) return;
-              const contextData = getContextData();
-              contextData.betterAuthSetCookie = setCookieHeader;
-            }
+            // Requests to the auth handler set cookies on their own response
+            if ("_flag" in ctx && ctx._flag === "router") return
+            const setCookies = ctx.context.responseHeaders?.getSetCookie() ?? []
+            if (!setCookies.length) return
+            const c = getContext<AuthEnv>()
+            // A single request can make several auth calls
+            c.set("betterAuthSetCookie", [...c.var.betterAuthSetCookie, ...setCookies])
+            // The cookies changed, so the next read fetches the session again
+            c.set("sessionPromise", undefined)
           }),
         },
       ],
     },
-  } satisfies BetterAuthPlugin;
+  } satisfies BetterAuthPlugin
+}
+
+/**
+ * Returns the current session, fetched once per request until cookies change.
+ * Cookies set earlier in the request take precedence over the incoming ones.
+ */
+export function getSession() {
+  const c = getContext<AuthEnv>()
+  if (c.var.sessionPromise) return c.var.sessionPromise
+  const headers = new Headers(c.req.raw.headers)
+  applySetCookies(headers, c.var.betterAuthSetCookie)
+  const sessionPromise = auth.api.getSession({ headers })
+  c.set("sessionPromise", sessionPromise)
+  return sessionPromise
 }
 ```
 
-See below for the middleware to create to add the `contextData.betterAuthSetCookie` cookies to the response.
-Now, when you call functions that set cookies, they will be automatically set.
+## Write cookies to the response
 
-```ts
-"use server";
-import { auth } from "../auth"
+Waku loads files in `src/middleware` automatically. This middleware provides the request context for the plugin, and adds the collected cookies once Waku's `Response` exists:
 
-const signIn = async () => {
-    await auth.api.signInEmail({
-        body: {
-            email: "user@email.com",
-            password: "password",
-        }
-    })
-}
 ```
+import { every } from "hono/combine"
+import { contextStorage } from "hono/context-storage"
+import { createMiddleware } from "hono/factory"
+import type { AuthEnv } from "../auth"
 
-## ### Middleware
-In Waku middleware, it's recommended to only check for the existence of a session cookie to handle redirection. This avoids blocking requests by making API or database calls.
-
-You can use the `getSessionCookie` helper from Better Auth for this purpose:
-
-> The <code>getSessionCookie()</code> function does not automatically reference the auth config specified in <code>auth.ts</code>. Therefore, if you customized the cookie name or prefix, you need to ensure that the configuration in <code>getSessionCookie()</code> matches the config defined in your <code>auth.ts</code>.
-
-```ts title="src/middleware/auth.ts"
-import type { MiddlewareHandler } from "hono"
-import { getSession } from "../auth"
-import { getSessionCookie } from "better-auth/cookies"
-import type { MiddlewareHandler } from "hono";
-import { unstable_getContextData as getContextData } from "waku/server";
-
-const authMiddleware: () => MiddlewareHandler = () => {
-  return async (c, next) => {
-    const reqUrl = new URL(c.req.url);
-    const sessionCookie = getSessionCookie(c.req.raw);
-    // THIS IS NOT SECURE!
-    // This is the recommended approach to optimistically redirect users
-    // We recommend handling auth checks in each page/route
-    if (
-      !sessionCookie &&
-      reqUrl.pathname !== "/" &&
-      !reqUrl.pathname.startsWith("/api")
-    ) {
-      if (!reqUrl.pathname.endsWith(".txt")) {
-        // Currently RSC requests end in .txt and don't handle redirect responses
-        // The redirect needs to be encoded in the React flight stream somehow
-        // There is some functionality in Waku to do this from a server component
-        // but not from middleware.
-        return c.redirect("/", 302);
+const authMiddleware = () =>
+  every(
+    contextStorage(),
+    createMiddleware<AuthEnv>(async (c, next) => {
+      c.set("betterAuthSetCookie", [])
+      await next()
+      for (const cookie of c.var.betterAuthSetCookie) {
+        c.header("set-cookie", cookie, { append: true })
       }
-    }
+    }),
+  )
 
-    // TODO possible to inspect c.req.url and not do this on every request
-    // Or skip starting the promise here and just invoke from server components and functions
-    getSession();
-    await next();
-    const contextData = getContextData();
-    const betterAuthSetCookie = contextData.betterAuthSetCookie as
-      | string
-      | undefined;
-    if (betterAuthSetCookie) {
-      c.header("set-cookie", betterAuthSetCookie, { append: true });
-    }
-  };
-};
-
-export default authMiddleware;
+export default authMiddleware
 ```
 
-> **Security Warning:** The `getSessionCookie` function only checks for the
-> existence of a session cookie; it does **not** validate it. Relying solely
-> on this check for security is dangerous, as anyone can manually create a
-> cookie to bypass it. You must always validate the session on your server for
-> any protected actions or pages.
+## Resolve the session before rendering
 
-> If you have a custom cookie name or prefix, you can pass it to the `getSessionCookie` function.
-> 
-> ```ts
-> const sessionCookie = getSessionCookie(request, {
->     cookieName: "my_session_cookie",
->     cookiePrefix: "my_prefix"
-> })
-> ```
+Waku streams server component responses, so headers are sent before components finish rendering. A [cookie cache](https://better-auth.com/docs/concepts/session-management#cookie-cache) or expiry refresh inside a layout or page would lose its cookies. Resolve the session in a handler interceptor, before rendering starts:
 
-Alternatively, you can use the `getCookieCache` helper to get the session object from the cookie cache.
+```
+import { tryGetContext } from "hono/context-storage"
+import { getRequest, type HandlerInterceptor } from "waku/router/server"
+import { getSession } from "../../auth"
 
-```ts
-import { getCookieCache } from "better-auth/cookies"
-
-const authMiddleware: () => MiddlewareHandler = () => {
-    return async (c, next) => {
-        const reqUrl = new URL(c.req.url);
-        const session = await getCookieCache(c.req.raw)
-        if (!session && reqUrl.pathname !== "/") {
-            if (!reqUrl.pathname.endsWith(".txt")) {
-                ctx.res.status = 302
-                ctx.res.headers = {
-                    Location: new URL("/", reqUrl).toString(),
-                }
-            }
-        }
-    }
-    await next();
-  }
+const sessionInterceptor: HandlerInterceptor = async (next) => {
+  // Static renders at build time have no Hono context, and no session.
+  if (!tryGetContext()) return next()
+  // API routes are not streamed. Under \`/api/auth\`, a refreshed session
+  // cookie would also override the one sign-out expires.
+  const { pathname } = new URL(getRequest().url)
+  if (pathname.startsWith("/api/")) return next()
+  await getSession()
+  return next()
 }
 
-export default authMiddleware;
+export default sessionInterceptor
 ```
 
-If you place your middleware file in `./src/middleware`, it will automatically get loaded by Waku's default server adapter.
+## Read the session
 
-## ### How to handle auth checks in each page/route
-In this example, we are using the `auth.api.getSession` function within a server component to get the session object,
-then we are checking if the session is valid. If it's not, we are redirecting the user to the sign-in page.
-Waku has `getContext` to get the request headers and `getContextData()` to store data per request. We can use this
-to avoid fetching the session more than once per request.
+Call `getSession()` in pages, server actions, and API routes. Pages that read the session must use `render: "dynamic"`:
 
-```ts title="auth.ts"
-import { unstable_getContext as getContext, unstable_getContextData as getContextData } from "waku/server";
-
-// Code from above to create the server auth config
-// export const auth = ...
-
-export function getSession(): Promise<Session | null> {
-  const contextData = getContextData();
-  const ctx = getContext();
-  const existingSessionPromise = contextData.sessionPromise as
-    | Promise<Session | null>
-    | undefined;
-  if (existingSessionPromise) {
-    return existingSessionPromise;
-  }
-  const sessionPromise = auth.api.getSession({
-    headers: new Headers(ctx.req.headers),
-  });
-  contextData.sessionPromise = sessionPromise;
-  return sessionPromise;
-}
 ```
-
-```tsx title="src/pages/dashboard.tsx"
-import { getSession } from "../auth";
-import { unstable_redirect as redirect } from 'waku/router/server';
+import { unstable_redirect as redirect } from "waku/router/server"
+import { getSession } from "../auth"
 
 export default async function DashboardPage() {
-    const session = await getSession()
+  const session = await getSession()
 
-    if (!session) {
-        redirect("/sign-in")
+  if (!session) {
+    redirect("/sign-in")
+  }
+
+  return (
+    <div>
+      <h1>Welcome {session.user.name}</h1>
+    </div>
+  )
+}
+
+export const getConfig = async () => {
+  return { render: "dynamic" } as const
+}
+```
+
+## Usage
+
+### Sign in from the client
+
+Sign users in with `authClient`, so the request goes through the auth handler and its [rate limiting](https://better-auth.com/docs/concepts/rate-limit):
+
+```
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "waku"
+import { authClient } from "../lib/auth-client"
+
+export function SignInForm() {
+  const router = useRouter()
+  const [error, setError] = useState<string>()
+  return (
+    <form
+      onSubmit={async (event) => {
+        event.preventDefault()
+        const form = new FormData(event.currentTarget)
+        const { error } = await authClient.signIn.email({
+          email: String(form.get("email")),
+          password: String(form.get("password")),
+        })
+        if (error) return setError(error.message)
+        router.push("/dashboard")
+      }}
+    >
+      <input name="email" type="email" />
+      <input name="password" type="password" />
+      <button type="submit">Sign in</button>
+      {error && <p>{error}</p>}
+    </form>
+  )
+}
+```
+
+### Sign out from a server action
+
+Call endpoints through `auth.api` with the request headers. The middleware adds the cookies they set to the response, and pages rendered later in the same request see the change:
+
+```
+"use server"
+
+import { getRequest, unstable_redirect as redirect } from "waku/router/server"
+import { auth } from "./auth"
+
+export async function signOut() {
+  await auth.api.signOut({ headers: getRequest().headers })
+  redirect("/sign-in")
+}
+```
+
+Use it as a form action, such as `<form action={signOut}>`. Calls through `auth.api` skip rate limiting, so keep sign-in and sign-up on the client.
+
+### Redirect optimistically in middleware
+
+To redirect before rendering, check for the session cookie in middleware. A client-side navigation requests `/RSC/R/dashboard.txt` instead of `/dashboard`, so match the route and build the redirect with Waku's router helpers:
+
+```
+import type { MiddlewareHandler } from "hono"
+import { getSessionCookie } from "better-auth/cookies"
+import {
+  unstable_formatRouterRequest as formatRouterRequest,
+  unstable_parseRouterRequest as parseRouterRequest,
+} from "waku/router/server"
+
+const redirectMiddleware = (): MiddlewareHandler => {
+  return async (c, next) => {
+    const route = parseRouterRequest(c.req.raw)
+    const isProtected =
+      route?.type === "route" &&
+      (route.path === "/dashboard" || route.path.startsWith("/dashboard/"))
+    // Only checks that the cookie exists. Pages still verify the session.
+    if (isProtected && !getSessionCookie(c.req.raw)) {
+      const location = formatRouterRequest(c.req.raw, "/sign-in")
+      if (location) {
+        // 303, so a form posted without JavaScript is not resent
+        return c.redirect(location.pathname + location.search, 303)
+      }
     }
-
-    return (
-        <div>
-            <h1>Welcome {session.user.name}</h1>
-        </div>
-    )
-}
-```
-
-## ### Example usage
-## #### Sign Up
-```ts title="src/components/signup.tsx"
-"use client"
-
-import { useState } from "react"
-import { authClient } from "../lib/auth-client"
-
-export default function SignUp() {
-  const [email, setEmail] = useState("")
-  const [name, setName] = useState("")
-  const [password, setPassword] = useState("")
-
-  const signUp = async () => {
-    await authClient.signUp.email(
-      {
-        email,
-        password,
-        name,
-      },
-      {
-        onRequest: (ctx) => {
-          // show loading state
-        },
-        onSuccess: (ctx) => {
-          // redirect to home
-        },
-        onError: (ctx) => {
-          alert(ctx.error)
-        },
-      },
-    )
+    await next()
   }
-
-  return (
-    <div>
-      <h2>
-        Sign Up
-      </h2>
-      <form
-        onSubmit={signUp}
-      >
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Name"
-        />
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-        <button
-          type="submit"
-        >
-          Sign Up
-        </button>
-      </form>
-    </div>
-  )
 }
 
+export default redirectMiddleware
 ```
 
-## #### Sign In
-```ts title="src/components/signin.tsx"
-"use client"
+In production, pages rendered as `static` are served before middleware runs, so protected pages must use `render: "dynamic"`.
 
-import { useState } from "react"
-import { authClient } from "../lib/auth-client"
+### Show the session on static pages
 
-export default function SignIn() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+To keep a page static, move session-dependent UI into a lazy dynamic [slice](https://waku.gg/#slices) and render it with `<Slice id="account-menu" lazy fallback={<span />} />`. The page is built once, and the slice is rendered per request:
 
-  const signIn = async () => {
-    await authClient.signIn.email(
-      {
-        email,
-        password,
-      },
-      {
-        onRequest: (ctx) => {
-          // show loading state
-        },
-        onSuccess: (ctx) => {
-          // redirect to home
-        },
-        onError: (ctx) => {
-          alert(ctx.error)
-        },
-      },
-    )
+```
+import { getSession } from "../../auth"
+
+export default async function AccountMenu() {
+  const session = await getSession()
+  if (!session) {
+    return <a href="/sign-in">Sign in</a>
   }
+  return <a href="/dashboard">{session.user.name}</a>
+}
 
-  return (
-    <div>
-      <h2>
-        Sign In
-      </h2>
-      <form onSubmit={signIn}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-        >
-          Sign In
-        </button>
-      </form>
-    </div>
-  )
+export const getConfig = async () => {
+  return { render: "dynamic" } as const
 }
 ```
