@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/agent-auth
 title: "Agent Auth"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-11-06T20:36:58.927Z
+current_date: 2026-11-06T20:36:58.927Z
 ---
 
 Agent identity, registration, discovery, and capability-based authorization for AI agents.
@@ -93,8 +93,8 @@ export const auth = betterAuth({
         } 
       }, 
     }), 
-  ], 
-});
+  ], // [!code highlight]
+}); // [!code highlight]
 ```
 
 ### Expose the discovery document
