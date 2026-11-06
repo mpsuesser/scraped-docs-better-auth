@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/cli
 title: "Cli"
 description: ""
-access_date: 2026-10-10T08:57:02.279Z
-current_date: 2026-10-10T08:57:02.279Z
+access_date: 2026-11-06T22:03:33.471Z
+current_date: 2026-11-06T22:03:33.471Z
 ---
 
 Learn about the Better Auth CLI commands for generating, migrating, and checking database schemas, creating initial admins, initializing projects, generating secret keys, and gathering diagnostic info.
@@ -237,6 +237,24 @@ npx auth@latest secret
 #### yarn
 
 #### bun
+
+## Scripts and CI
+
+Without an interactive terminal, such as in CI, the CLI can't prompt. Pass the answers as flags instead, such as `--yes` to confirm:
+
+#### npm
+
+```
+npx auth@latest migrate --yes
+```
+
+#### pnpm
+
+#### yarn
+
+#### bun
+
+When a command can't continue, it fails and names what it needs, such as a flag or a terminal.
 
 ## Common Issues
 
