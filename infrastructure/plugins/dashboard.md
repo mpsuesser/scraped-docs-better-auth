@@ -2,29 +2,27 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/dashboard
 title: "Dashboard"
 description: ""
-access_date: 2026-11-04T21:10:15.419Z
-current_date: 2026-11-04T21:10:15.419Z
+access_date: 2026-11-07T22:13:17.265Z
+current_date: 2026-11-07T22:13:17.265Z
 ---
 
-# Dashboard (/docs/infrastructure/plugins/dashboard)
-
-The `dash()` plugin connects your Better Auth instance to Better Auth Infrastructure, enabling analytics tracking, activity monitoring, event logging, and admin dashboard APIs.
-
-
+The \`dash()\` plugin connects your Better Auth instance to Better Auth Infrastructure, enabling analytics tracking, activity monitoring, event logging, and admin dashboard APIs.
 
 The Dashboard plugin is the core connection between your Better Auth instance and Better Auth Infrastructure. It powers the web dashboard with real-time data, tracks user activity, and enables admin APIs.
 
-## ## What the Dashboard Plugin Enables
+## What the Dashboard Plugin Enables
+
 Once `dash()` is active, the Better Auth Infrastructure dashboard gives you:
 
-* **User management** — view, search, ban, and delete users
-* **Session monitoring** — see active sessions and revoke them
-* **Organization overview** — manage organizations and members
-* **Analytics** — track sign-ups, sign-ins, and active users over time
-* **Audit logs** — query event history ([learn more](/docs/infrastructure/plugins/audit-logs))
+- **User management** — view, search, ban, and delete users
+- **Session monitoring** — see active sessions and revoke them
+- **Organization overview** — manage organizations and members
+- **Analytics** — track sign-ups, sign-ins, and active users over time
+- **Audit logs** — query event history ([learn more](https://better-auth.com/docs/infrastructure/plugins/audit-logs))
 
-## ## Installation
-```ts
+## Installation
+
+```
 import { betterAuth } from "better-auth";
 import { dash } from "@better-auth/infra";
 
@@ -35,24 +33,27 @@ export const auth = betterAuth({
 });
 ```
 
-## ## Configuration Options
-## ### DashOptions
-| Option                 | Type     | Description                                                                                                                                                                                                             |
-| ---------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apiUrl`               | `string` | Better Auth Infrastructure API URL. Default: `https://dash.better-auth.com`                                                                                                                                             |
-| `kvUrl`                | `string` | KV store URL. Default: `https://kv.better-auth.com`                                                                                                                                                                     |
-| `apiKey`               | `string` | Your API key for authentication. Falls back to `BETTER_AUTH_API_KEY` in env.                                                                                                                                            |
-| `apiOptions`           | `object` | Dash API HTTP client options. Accepts `timeout?: number` (ms, default `3000`) and `headers?: Record<string, string>`.                                                                                                   |
-| `kvOptions`            | `object` | KV HTTP client options. Accepts `timeout?: number` (ms, default `1000`), `retry?: { attempts?: number; baseDelay?: number; maxDelay?: number }` (defaults `2` / `400` / `600`), and `headers?: Record<string, string>`. |
-| `apiTimeout`           | `number` | Deprecated alias for `apiOptions.timeout`.                                                                                                                                                                              |
-| `kvTimeout`            | `number` | Deprecated alias for `kvOptions.timeout`.                                                                                                                                                                               |
-| `activityTracking`     | `object` | Activity tracking configuration.                                                                                                                                                                                        |
-| `managedDirectorySync` | `object` | Managed directory-sync control-plane options.                                                                                                                                                                           |
+## Configuration Options
 
-## ### Activity Tracking
+### DashOptions
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `apiUrl` | `string` | Better Auth Infrastructure API URL. Default: `https://dash.better-auth.com` |
+| `kvUrl` | `string` | KV store URL. Default: `https://kv.better-auth.com` |
+| `apiKey` | `string` | Your API key for authentication. Falls back to `BETTER_AUTH_API_KEY` in env. |
+| `apiOptions` | `object` | Dash API HTTP client options. Accepts `timeout?: number` (ms, default `3000`) and `headers?: Record<string, string>`. |
+| `kvOptions` | `object` | KV HTTP client options. Accepts `timeout?: number` (ms, default `1000`), `retry?: { attempts?: number; baseDelay?: number; maxDelay?: number }` (defaults `2` / `400` / `600`), and `headers?: Record<string, string>`. |
+| `apiTimeout` | `number` | Deprecated alias for `apiOptions.timeout`. |
+| `kvTimeout` | `number` | Deprecated alias for `kvOptions.timeout`. |
+| `activityTracking` | `object` | Activity tracking configuration. |
+| `managedDirectorySync` | `object` | Managed directory-sync control-plane options. |
+
+### Activity Tracking
+
 Track when users were last active in your application. When enabled, a `lastActiveAt` field is automatically updated on user activity.
 
-```ts
+```
 dash({
   apiKey: process.env.BETTER_AUTH_API_KEY,
   activityTracking: {
@@ -62,10 +63,11 @@ dash({
 }),
 ```
 
-## #### Schema Changes
+#### Schema Changes
+
 When activity tracking is enabled, the plugin adds a field to your user schema:
 
-```ts
+```
 user: {
   fields: {
     lastActiveAt: {
@@ -75,60 +77,44 @@ user: {
 }
 ```
 
-> Enabling activity tracking requires a database migration for the `lastActiveAt` user field. Run the migration step before relying on activity data.
-
-
-
-
 #### npm
 
-```bash
+```
 npx auth@latest migrate
 ```
 
 #### pnpm
 
-```bash
-pnpm dlx auth@latest migrate
-```
-
 #### yarn
-
-```bash
-yarn dlx auth@latest migrate
-```
 
 #### bun
 
-```bash
-bun x auth@latest migrate
-```
-
-
 If your app manages schema generation separately, run `npx auth@latest generate` and apply the generated migration with your preferred tool.
 
-## ## Managed Directory Sync
-Managed directory sync is the dashboard-side companion to the [SCIM plugin-managed connections](/docs/plugins/scim/reference#managed-connection-catalog). Use it when each organization (tenant) should get a directory connection from the dashboard — without hard-coding every tenant in application config.
+## Managed Directory Sync
+
+Managed directory sync is the dashboard-side companion to the [SCIM plugin-managed connections](https://better-auth.com/docs/plugins/scim/reference#managed-connection-catalog). Use it when each organization (tenant) should get a directory connection from the dashboard — without hard-coding every tenant in application config.
 
 In Better Auth 1.7, SCIM supports three connection modes:
 
-* static code-defined connections
-* application-owned runtime verification
-* plugin-managed runtime connections via `managedConnections`
+- static code-defined connections
+- application-owned runtime verification
+- plugin-managed runtime connections via `managedConnections`
 
 Managed directory sync is built for that third mode. Responsibilities split cleanly:
 
-| Layer                            | Owns                                                                                |
-| -------------------------------- | ----------------------------------------------------------------------------------- |
-| `scim({ managedConnections })`   | SCIM protocol, credential catalog, user/group provisioning                          |
+| Layer | Owns |
+| --- | --- |
+| `scim({ managedConnections })` | SCIM protocol, credential catalog, user/group provisioning |
 | `dash({ managedDirectorySync })` | Per-organization connection lifecycle, dashboard APIs, and projection into your app |
 
 Once the control plane is on, you can layer optional behaviors: project users into organization memberships and pair the directory with SSO for sign-in, map SCIM attributes onto custom fields.
 
-## ### Enable managed directory sync
-You need the [organization](/docs/plugins/organization), [SCIM](/docs/plugins/scim), and `dash` plugins. SCIM must use `managedConnections` so Infrastructure can reserve and issue per-tenant credentials.
+### Enable managed directory sync
 
-```ts title="auth.ts"
+You need the [organization](https://better-auth.com/docs/plugins/organization), [SCIM](https://better-auth.com/docs/plugins/scim), and `dash` plugins. SCIM must use `managedConnections` so Infrastructure can reserve and issue per-tenant credentials.
+
+```
 import { betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
 import { sso } from "@better-auth/sso";
@@ -155,46 +141,29 @@ export const auth = betterAuth({
 });
 ```
 
-> Enabling `managedDirectorySync` adds reservation tables. Run a migration before creating directories from the dashboard.
-
-
-
-
 #### npm
 
-```bash
+```
 npx auth@latest migrate
 ```
 
 #### pnpm
 
-```bash
-pnpm dlx auth@latest migrate
-```
-
 #### yarn
 
-```bash
-yarn dlx auth@latest migrate
-```
-
 #### bun
-
-```bash
-bun x auth@latest migrate
-```
-
 
 If your app manages schema generation separately, run `npx auth@latest generate` and apply the generated migration with your preferred tool.
 
 After setup, create and manage directories in the Infrastructure dashboard (or via the [directory sync endpoints](#directory-sync)).
 
-## ### Membership projection
+### Membership projection
+
 Membership projection is the usual next step after a directory is connected: when SCIM provisions or deactivates a user, dash reconciles that user into the organization that owns the directory.
 
 It is **enabled by default** whenever managed directory sync is on.
 
-```ts
+```
 dash({
   apiKey: process.env.BETTER_AUTH_API_KEY,
   managedDirectorySync: {
@@ -207,31 +176,32 @@ dash({
 })
 ```
 
-| Option                         | Type      | Description                                                                   |
-| ------------------------------ | --------- | ----------------------------------------------------------------------------- |
+| Option | Type | Description |
+| --- | --- | --- |
 | `membershipProjection.enabled` | `boolean` | Installs SCIM `projection.reconcileUser` for org membership. Default: `true`. |
-| `membershipProjection.role`    | `string`  | Role assigned when projection **creates** a membership. Default: `"member"`.  |
+| `membershipProjection.role` | `string` | Role assigned when projection **creates** a membership. Default: `"member"`. |
 
 Behavior:
 
-* Active directory users are added to the organization (or linked if they are already members).
-* Deactivated users have directory-owned memberships removed.
-* Provenance tracks whether the membership was **created** by the directory or only **observed** (already existed). Projection only mutates memberships it owns.
+- Active directory users are added to the organization (or linked if they are already members).
+- Deactivated users have directory-owned memberships removed.
+- Provenance tracks whether the membership was **created** by the directory or only **observed** (already existed). Projection only mutates memberships it owns.
 
 Turn it off only when SCIM should provision users without touching organization membership:
 
-```ts
+```
 membershipProjection: {
   enabled: false,
 }
 ```
 
-## ### SSO pairing
+### SSO pairing
+
 SSO pairing links a managed directory to an SSO provider so a provisioned user can sign in with the same identity the directory manages.
 
 It is **enabled by default**. You only need it when directories are created as **paired** with SSO.
 
-```ts
+```
 plugins: [
   sso({}),
   dash({
@@ -244,21 +214,22 @@ plugins: [
 ]
 ```
 
-| Option       | Type      | Description                                  |
-| ------------ | --------- | -------------------------------------------- |
+| Option | Type | Description |
+| --- | --- | --- |
 | `ssoPairing` | `boolean` | Installs SSO pairing hooks. Default: `true`. |
 
 Notes:
 
-* Paired sign-in resolves the Better Auth user from the SCIM external id configured on the directory.
-* Set `ssoPairing: false` when you only need provisioning and never create paired directories.
+- Paired sign-in resolves the Better Auth user from the SCIM external id configured on the directory.
+- Set `ssoPairing: false` when you only need provisioning and never create paired directories.
 
-## ### Field projection
+### Field projection
+
 Field projection maps SCIM User attributes onto Better Auth fields during directory-sync reconcile. Mappings are configured **per directory connection** in the Infrastructure dashboard (or via the field-mapping endpoints).
 
 It is **opt-in** and adds its own tables — enable it, migrate, then configure mappings.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
 import { scim } from "@better-auth/scim";
@@ -305,333 +276,363 @@ export const auth = betterAuth({
 2. Run migrations for the field-mapping tables.
 3. In the Infrastructure dashboard, open the directory connection and map SCIM paths → target fields.
 
-| Option                    | Type      | Description                                                                        |
-| ------------------------- | --------- | ---------------------------------------------------------------------------------- |
+| Option | Type | Description |
+| --- | --- | --- |
 | `fieldProjection.enabled` | `boolean` | Adds field-mapping schema and projects fields on SCIM reconcile. Default: `false`. |
 
-## #### Projectable fields
-| Entity   | Projectable targets                                                   | Not projectable                                                                                                                                     |
-| -------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `user`   | Writable `user.additionalFields`, plus allowlisted core field `image` | Identity fields managed by SCIM (`email`, `name`); sensitive keys (`role`, `password`, ban fields, 2FA secrets); `input: false` or reference fields |
-| `member` | Writable `organization.schema.member.additionalFields` only           | Membership-owned keys (`role`, user/org ids). Member maps require membership projection (default on)                                                |
+#### Projectable fields
+
+| Entity | Projectable targets | Not projectable |
+| --- | --- | --- |
+| `user` | Writable `user.additionalFields`, plus allowlisted core field `image` | Identity fields managed by SCIM (`email`, `name`); sensitive keys (`role`, `password`, ban fields, 2FA secrets); `input: false` or reference fields |
+| `member` | Writable `organization.schema.member.additionalFields` only | Membership-owned keys (`role`, user/org ids). Member maps require membership projection (default on) |
 
 Only **directory-created** memberships (`ownership: "created"`) receive member field projection. Observed memberships are left unchanged.
 
-## #### SCIM attribute catalog
+#### SCIM attribute catalog
+
 Mappings read from a curated SCIM **User** attribute catalog:
 
-| Path                                                                                                  | Typical use                               |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| `userName`                                                                                            | Login / username                          |
-| `primaryEmail` / `emails.primary`                                                                     | Email-shaped additional fields            |
-| `displayName`                                                                                         | Display name                              |
-| `externalId`                                                                                          | IdP stable id                             |
-| `name.formatted` / `name.givenName` / `name.familyName`                                               | Name parts                                |
-| `title`                                                                                               | Job title                                 |
-| `userType`                                                                                            | User classification                       |
-| `preferredLanguage` / `locale` / `timezone`                                                           | Locale preferences                        |
-| `photos.primary`                                                                                      | Avatar URL → often mapped to `user.image` |
-| `enterprise.employeeNumber`                                                                           | Employee id                               |
-| `enterprise.costCenter` / `enterprise.organization` / `enterprise.division` / `enterprise.department` | Enterprise extension attributes           |
+| Path | Typical use |
+| --- | --- |
+| `userName` | Login / username |
+| `primaryEmail` / `emails.primary` | Email-shaped additional fields |
+| `displayName` | Display name |
+| `externalId` | IdP stable id |
+| `name.formatted` / `name.givenName` / `name.familyName` | Name parts |
+| `title` | Job title |
+| `userType` | User classification |
+| `preferredLanguage` / `locale` / `timezone` | Locale preferences |
+| `photos.primary` | Avatar URL → often mapped to `user.image` |
+| `enterprise.employeeNumber` | Employee id |
+| `enterprise.costCenter` / `enterprise.organization` / `enterprise.division` / `enterprise.department` | Enterprise extension attributes |
 
 Values are resolved as strings from the persisted SCIM user row, then coerced to the Better Auth field type (`string`, `number`, `boolean`, or `date`).
 
-## #### Projection modes
-Each connection stores a mode per entity (`user` and `member&#x60;). Default mode is &#x2A;*`create-only`**.
+#### Projection modes
 
-| Mode          | Behavior                                                                                                                                                                                                                                                              |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+Each connection stores a mode per entity (`user` and `member`). Default mode is **`create-only`**.
+
+| Mode | Behavior |
+| --- | --- |
 | `create-only` | Fills empty targets (and values that still match a static schema default) on first provision. Once every productive mapped target is set, projection freezes for that row so later operator edits are preserved. Delayed SCIM attributes can still land until freeze. |
-| `reconcile`   | Rewrites mapped fields on every SCIM reconcile while the directory owns the profile / membership. Use when the IdP should remain the source of truth for those fields.                                                                                                |
+| `reconcile` | Rewrites mapped fields on every SCIM reconcile while the directory owns the profile / membership. Use when the IdP should remain the source of truth for those fields. |
 
-## ### Options reference
+### Options reference
+
 Full `managedDirectorySync` shape:
 
-| Option                         | Type      | Description                                                                |
-| ------------------------------ | --------- | -------------------------------------------------------------------------- |
-| `enabled`                      | `boolean` | Enables the control plane and reservation tables / APIs. Default: `false`. |
-| `ssoPairing`                   | `boolean` | SSO pairing hooks for paired directories. Default: `true`.                 |
-| `membershipProjection`         | `object`  | SCIM → organization membership projection.                                 |
-| `membershipProjection.enabled` | `boolean` | Default: `true`.                                                           |
-| `membershipProjection.role`    | `string`  | Role when projection creates a membership. Default: `"member"`.            |
-| `fieldProjection`              | `object`  | Opt-in SCIM → custom field projection.                                     |
-| `fieldProjection.enabled`      | `boolean` | Default: `false`.                                                          |
+| Option | Type | Description |
+| --- | --- | --- |
+| `enabled` | `boolean` | Enables the control plane and reservation tables / APIs. Default: `false`. |
+| `ssoPairing` | `boolean` | SSO pairing hooks for paired directories. Default: `true`. |
+| `membershipProjection` | `object` | SCIM → organization membership projection. |
+| `membershipProjection.enabled` | `boolean` | Default: `true`. |
+| `membershipProjection.role` | `string` | Role when projection creates a membership. Default: `"member"`. |
+| `fieldProjection` | `object` | Opt-in SCIM → custom field projection. |
+| `fieldProjection.enabled` | `boolean` | Default: `false`. |
 
-## ### Database schema
+### Database schema
+
 When `managedDirectorySync.enabled` is `true`, the dash plugin adds the models below. Better Auth supplies the primary `id` field for each model. Some tables are only installed when an opt-in feature is enabled.
 
-## #### `directorySyncConnection`
+#### directorySyncConnection
+
 Always present when managed directory sync is enabled. Stores the managed directory's organization, SCIM connection, SSO pairing, lifecycle, and decommission state.
 
-| Column                  | Type      | Constraints                   | Description                                      |
-| ----------------------- | --------- | ----------------------------- | ------------------------------------------------ |
-| `organizationId`        | `string`  | Required, indexed             | Organization that owns the directory.            |
-| `providerId`            | `string`  | Required                      | SSO provider identifier.                         |
-| `aliasKey`              | `string`  | Required, unique, hidden      | Internal directory alias.                        |
-| `provisioningDomainId`  | `string`  | Required, unique              | SCIM provisioning domain.                        |
-| `activeOrganizationKey` | `string`  | Required, unique, hidden      | Active organization key for reconciliation.      |
-| `connectionId`          | `string`  | Optional, unique              | Managed SCIM connection identifier.              |
-| `creationRequestId`     | `string`  | Required, unique, hidden      | Immutable ownership correlation value.           |
-| `status`                | `string`  | Required                      | Current directory lifecycle status.              |
-| `revision`              | `number`  | Required, default `0`, hidden | Mutation revision used for concurrency control.  |
-| `createdAt`             | `date`    | Required                      | Creation timestamp.                              |
-| `createdByActorId`      | `string`  | Required                      | Actor that created the directory.                |
-| `updatedAt`             | `date`    | Required                      | Last update timestamp.                           |
-| `lastActorId`           | `string`  | Required                      | Actor responsible for the latest mutation.       |
-| `ssoProviderId`         | `string`  | Optional                      | Paired SSO provider ID.                          |
-| `ssoProviderRecordId`   | `string`  | Optional, indexed             | Paired SSO provider record.                      |
-| `activeSsoProviderKey`  | `string`  | Required, unique, hidden      | Active SSO provider key.                         |
-| `serializedSsoPairing`  | `string`  | Optional, hidden              | Serialized SSO pairing metadata.                 |
-| `pairingEnforced`       | `boolean` | Required, default `false`     | Whether the SSO pairing requirement is enforced. |
-| `unpairedAt`            | `date`    | Optional                      | Time at which the directory was unpaired.        |
-| `unpairedBy`            | `string`  | Optional                      | Actor that removed the pairing.                  |
-| `decommissionStartedAt` | `date`    | Optional                      | Time decommissioning started.                    |
-| `decommissionedAt`      | `date`    | Optional                      | Time decommissioning completed.                  |
-| `lastError`             | `string`  | Optional, hidden              | Most recent reconciliation error.                |
+| Column | Type | Constraints | Description |
+| --- | --- | --- | --- |
+| `organizationId` | `string` | Required, indexed | Organization that owns the directory. |
+| `providerId` | `string` | Required | SSO provider identifier. |
+| `aliasKey` | `string` | Required, unique, hidden | Internal directory alias. |
+| `provisioningDomainId` | `string` | Required, unique | SCIM provisioning domain. |
+| `activeOrganizationKey` | `string` | Required, unique, hidden | Active organization key for reconciliation. |
+| `connectionId` | `string` | Optional, unique | Managed SCIM connection identifier. |
+| `creationRequestId` | `string` | Required, unique, hidden | Immutable ownership correlation value. |
+| `status` | `string` | Required | Current directory lifecycle status. |
+| `revision` | `number` | Required, default `0`, hidden | Mutation revision used for concurrency control. |
+| `createdAt` | `date` | Required | Creation timestamp. |
+| `createdByActorId` | `string` | Required | Actor that created the directory. |
+| `updatedAt` | `date` | Required | Last update timestamp. |
+| `lastActorId` | `string` | Required | Actor responsible for the latest mutation. |
+| `ssoProviderId` | `string` | Optional | Paired SSO provider ID. |
+| `ssoProviderRecordId` | `string` | Optional, indexed | Paired SSO provider record. |
+| `activeSsoProviderKey` | `string` | Required, unique, hidden | Active SSO provider key. |
+| `serializedSsoPairing` | `string` | Optional, hidden | Serialized SSO pairing metadata. |
+| `pairingEnforced` | `boolean` | Required, default `false` | Whether the SSO pairing requirement is enforced. |
+| `unpairedAt` | `date` | Optional | Time at which the directory was unpaired. |
+| `unpairedBy` | `string` | Optional | Actor that removed the pairing. |
+| `decommissionStartedAt` | `date` | Optional | Time decommissioning started. |
+| `decommissionedAt` | `date` | Optional | Time decommissioning completed. |
+| `lastError` | `string` | Optional, hidden | Most recent reconciliation error. |
 
-## #### `directorySyncMembershipProvenance`
+#### directorySyncMembershipProvenance
+
 Always present when managed directory sync is enabled. Tracks organization memberships created or managed by membership projection.
 
-| Column                 | Type     | Constraints              | Description                                |
-| ---------------------- | -------- | ------------------------ | ------------------------------------------ |
-| `membershipKey`        | `string` | Required, unique, hidden | Stable key for the projected membership.   |
-| `organizationId`       | `string` | Required, indexed        | Organization containing the membership.    |
-| `userId`               | `string` | Required, indexed        | Better Auth user receiving the membership. |
-| `memberId`             | `string` | Required, unique         | Organization `member` record identifier.   |
-| `ownership`            | `string` | Required, hidden         | `created` or `observed`.                   |
-| `provisioningDomainId` | `string` | Required, indexed        | SCIM provisioning domain that produced it. |
-| `createdAt`            | `date`   | Required                 | Creation timestamp.                        |
-| `updatedAt`            | `date`   | Required                 | Last update timestamp.                     |
+| Column | Type | Constraints | Description |
+| --- | --- | --- | --- |
+| `membershipKey` | `string` | Required, unique, hidden | Stable key for the projected membership. |
+| `organizationId` | `string` | Required, indexed | Organization containing the membership. |
+| `userId` | `string` | Required, indexed | Better Auth user receiving the membership. |
+| `memberId` | `string` | Required, unique | Organization `member` record identifier. |
+| `ownership` | `string` | Required, hidden | `created` or `observed`. |
+| `provisioningDomainId` | `string` | Required, indexed | SCIM provisioning domain that produced it. |
+| `createdAt` | `date` | Required | Creation timestamp. |
+| `updatedAt` | `date` | Required | Last update timestamp. |
 
-## #### `directorySyncFieldMapping`
+#### directorySyncFieldMapping
+
 Only when `fieldProjection.enabled` is `true`. Per-connection mapping from SCIM attributes (and/or static defaults) onto Better Auth fields.
 
-| Column                 | Type      | Constraints              | Description                                          |
-| ---------------------- | --------- | ------------------------ | ---------------------------------------------------- |
-| `mappingKey`           | `string`  | Required, unique, hidden | Stable key for the mapping row.                      |
-| `provisioningDomainId` | `string`  | Required, indexed        | SCIM provisioning domain.                            |
-| `organizationId`       | `string`  | Required, indexed        | Organization that owns the directory.                |
-| `entity`               | `string`  | Required                 | Target entity (`user` or `member`).                  |
-| `targetField`          | `string`  | Required                 | Better Auth field name on that entity.               |
-| `scimSource`           | `string`  | Optional                 | SCIM resource for `scimPath` (defaults from entity). |
-| `scimPath`             | `string`  | Optional                 | Allowlisted SCIM attribute path.                     |
-| `defaultValue`         | `string`  | Optional                 | Fallback when SCIM value is empty.                   |
-| `enabled`              | `boolean` | Required, default `true` | Whether the mapping is applied at runtime.           |
-| `createdAt`            | `date`    | Required                 | Creation timestamp.                                  |
-| `updatedAt`            | `date`    | Required                 | Last update timestamp.                               |
-| `createdByActorId`     | `string`  | Required                 | Actor that created the mapping.                      |
-| `lastActorId`          | `string`  | Required                 | Actor responsible for the latest mutation.           |
+| Column | Type | Constraints | Description |
+| --- | --- | --- | --- |
+| `mappingKey` | `string` | Required, unique, hidden | Stable key for the mapping row. |
+| `provisioningDomainId` | `string` | Required, indexed | SCIM provisioning domain. |
+| `organizationId` | `string` | Required, indexed | Organization that owns the directory. |
+| `entity` | `string` | Required | Target entity (`user` or `member`). |
+| `targetField` | `string` | Required | Better Auth field name on that entity. |
+| `scimSource` | `string` | Optional | SCIM resource for `scimPath` (defaults from entity). |
+| `scimPath` | `string` | Optional | Allowlisted SCIM attribute path. |
+| `defaultValue` | `string` | Optional | Fallback when SCIM value is empty. |
+| `enabled` | `boolean` | Required, default `true` | Whether the mapping is applied at runtime. |
+| `createdAt` | `date` | Required | Creation timestamp. |
+| `updatedAt` | `date` | Required | Last update timestamp. |
+| `createdByActorId` | `string` | Required | Actor that created the mapping. |
+| `lastActorId` | `string` | Required | Actor responsible for the latest mutation. |
 
-## #### `directorySyncFieldProjectionMode`
+#### directorySyncFieldProjectionMode
+
 Only when `fieldProjection.enabled` is `true`. Per-connection, per-entity write cadence (`create-only` or `reconcile`).
 
-| Column                 | Type     | Constraints                     | Description                                |
-| ---------------------- | -------- | ------------------------------- | ------------------------------------------ |
-| `modeKey`              | `string` | Required, unique, hidden        | Stable key for the mode row.               |
-| `provisioningDomainId` | `string` | Required, indexed               | SCIM provisioning domain.                  |
-| `organizationId`       | `string` | Required, indexed               | Organization that owns the directory.      |
-| `entity`               | `string` | Required                        | Entity the mode applies to.                |
-| `mode`                 | `string` | Required, default `create-only` | Projection mode.                           |
-| `createdAt`            | `date`   | Required                        | Creation timestamp.                        |
-| `updatedAt`            | `date`   | Required                        | Last update timestamp.                     |
-| `lastActorId`          | `string` | Required                        | Actor responsible for the latest mutation. |
+| Column | Type | Constraints | Description |
+| --- | --- | --- | --- |
+| `modeKey` | `string` | Required, unique, hidden | Stable key for the mode row. |
+| `provisioningDomainId` | `string` | Required, indexed | SCIM provisioning domain. |
+| `organizationId` | `string` | Required, indexed | Organization that owns the directory. |
+| `entity` | `string` | Required | Entity the mode applies to. |
+| `mode` | `string` | Required, default `create-only` | Projection mode. |
+| `createdAt` | `date` | Required | Creation timestamp. |
+| `updatedAt` | `date` | Required | Last update timestamp. |
+| `lastActorId` | `string` | Required | Actor responsible for the latest mutation. |
 
-## #### `directorySyncFieldProvenance`
+#### directorySyncFieldProvenance
+
 Only when `fieldProjection.enabled` is `true`. Marks that create-only fields were applied for a provisioning domain + entity + target row.
 
-| Column                 | Type     | Constraints              | Description                                                 |
-| ---------------------- | -------- | ------------------------ | ----------------------------------------------------------- |
-| `provenanceKey`        | `string` | Required, unique, hidden | Stable key for the provenance row.                          |
-| `provisioningDomainId` | `string` | Required, indexed        | SCIM provisioning domain.                                   |
-| `entity`               | `string` | Required                 | Entity that was projected.                                  |
-| `targetId`             | `string` | Required, indexed        | Primary key of the projected row (`userId`, `memberId`, …). |
-| `appliedAt`            | `date`   | Required                 | When create-only fields were frozen.                        |
-| `createdAt`            | `date`   | Required                 | Creation timestamp.                                         |
-| `updatedAt`            | `date`   | Required                 | Last update timestamp.                                      |
+| Column | Type | Constraints | Description |
+| --- | --- | --- | --- |
+| `provenanceKey` | `string` | Required, unique, hidden | Stable key for the provenance row. |
+| `provisioningDomainId` | `string` | Required, indexed | SCIM provisioning domain. |
+| `entity` | `string` | Required | Entity that was projected. |
+| `targetId` | `string` | Required, indexed | Primary key of the projected row (`userId`, `memberId`, …). |
+| `appliedAt` | `date` | Required | When create-only fields were frozen. |
+| `createdAt` | `date` | Required | Creation timestamp. |
+| `updatedAt` | `date` | Required | Last update timestamp. |
 
-For the full SCIM model and migration guidance, see the [SCIM plugin reference](/docs/plugins/scim/reference) and the [1.7 upgrade guide](/docs/guides/1-7-upgrade-guide).
+For the full SCIM model and migration guidance, see the [SCIM plugin reference](https://better-auth.com/docs/plugins/scim/reference) and the [1.7 upgrade guide](https://better-auth.com/docs/guides/1-7-upgrade-guide).
 
-## ## Event Tracking
+## Event Tracking
+
 The dash plugin automatically tracks the following events:
 
-## ### User Events
-| Event                      | Trigger                                       |
-| -------------------------- | --------------------------------------------- |
-| `user_created`             | New user registration                         |
-| `profile_updated`          | User updates their profile                    |
-| `profile_image_updated`    | User changes their avatar                     |
-| `email_verified`           | Email verification completed                  |
-| `email_changed`            | User email address changed                    |
-| `user_banned`              | User is banned                                |
-| `user_unbanned`            | User is unbanned                              |
-| `user_role_updated`        | App-level user role changed                   |
-| `user_deleted`             | User account deleted                          |
+### User Events
+
+| Event | Trigger |
+| --- | --- |
+| `user_created` | New user registration |
+| `profile_updated` | User updates their profile |
+| `profile_image_updated` | User changes their avatar |
+| `email_verified` | Email verification completed |
+| `email_changed` | User email address changed |
+| `user_banned` | User is banned |
+| `user_unbanned` | User is unbanned |
+| `user_role_updated` | App-level user role changed |
+| `user_deleted` | User account deleted |
 | `anonymous_user_converted` | Anonymous guest linked to a permanent account |
-| `two_factor_enabled`       | Two-factor authentication enabled             |
-| `two_factor_disabled`      | Two-factor authentication disabled            |
-| `two_factor_verified`      | Two-factor verification succeeded             |
+| `two_factor_enabled` | Two-factor authentication enabled |
+| `two_factor_disabled` | Two-factor authentication disabled |
+| `two_factor_verified` | Two-factor verification succeeded |
 
-## ### Session Events
-| Event                       | Trigger                         |
-| --------------------------- | ------------------------------- |
-| `user_signed_in`            | Successful sign-in              |
-| `user_signed_out`           | User signs out                  |
-| `user_sign_in_failed`       | Failed sign-in attempt          |
-| `session_created`           | New session created             |
-| `session_revoked`           | Single session revoked          |
-| `all_sessions_revoked`      | All sessions revoked            |
-| `user_impersonated`         | Admin starts impersonating user |
-| `user_impersonated_stopped` | Admin stops impersonating       |
+### Session Events
 
-## ### Account Events
-| Event              | Trigger                 |
-| ------------------ | ----------------------- |
-| `account_linked`   | Social account linked   |
+| Event | Trigger |
+| --- | --- |
+| `user_signed_in` | Successful sign-in |
+| `user_signed_out` | User signs out |
+| `user_sign_in_failed` | Failed sign-in attempt |
+| `session_created` | New session created |
+| `session_revoked` | Single session revoked |
+| `all_sessions_revoked` | All sessions revoked |
+| `user_impersonated` | Admin starts impersonating user |
+| `user_impersonated_stopped` | Admin stops impersonating |
+
+### Account Events
+
+| Event | Trigger |
+| --- | --- |
+| `account_linked` | Social account linked |
 | `account_unlinked` | Social account unlinked |
-| `password_changed` | Password updated        |
+| `password_changed` | Password updated |
 
-## ### Verification Events
-| Event                      | Trigger                  |
-| -------------------------- | ------------------------ |
+### Verification Events
+
+| Event | Trigger |
+| --- | --- |
 | `password_reset_requested` | Password reset initiated |
-| `password_reset_completed` | Password reset finished  |
-| `email_verification_sent`  | Verification email sent  |
+| `password_reset_completed` | Password reset finished |
+| `email_verification_sent` | Verification email sent |
 
-## ### Organization Events
+### Organization Events
+
 If you're using the organization plugin, these events are also tracked:
 
-| Event                                 | Trigger                          |
-| ------------------------------------- | -------------------------------- |
-| `organization_created`                | New organization created         |
-| `organization_updated`                | Organization settings changed    |
-| `organization_deleted`                | Organization deleted             |
-| `organization_member_added`           | Member added to organization     |
-| `organization_member_removed`         | Member removed from organization |
-| `organization_member_role_updated`    | Member role changed              |
-| `organization_member_invited`         | Invitation sent                  |
-| `organization_member_invite_accepted` | Invitation accepted              |
-| `organization_member_invite_rejected` | Invitation rejected              |
-| `organization_member_invite_canceled` | Invitation cancelled             |
-| `organization_team_created`           | Team created                     |
-| `organization_team_updated`           | Team updated                     |
-| `organization_team_deleted`           | Team deleted                     |
-| `organization_team_member_added`      | Member added to team             |
-| `organization_team_member_removed`    | Member removed from team         |
+| Event | Trigger |
+| --- | --- |
+| `organization_created` | New organization created |
+| `organization_updated` | Organization settings changed |
+| `organization_deleted` | Organization deleted |
+| `organization_member_added` | Member added to organization |
+| `organization_member_removed` | Member removed from organization |
+| `organization_member_role_updated` | Member role changed |
+| `organization_member_invited` | Invitation sent |
+| `organization_member_invite_accepted` | Invitation accepted |
+| `organization_member_invite_rejected` | Invitation rejected |
+| `organization_member_invite_canceled` | Invitation cancelled |
+| `organization_team_created` | Team created |
+| `organization_team_updated` | Team updated |
+| `organization_team_deleted` | Team deleted |
+| `organization_team_member_added` | Member added to team |
+| `organization_team_member_removed` | Member removed from team |
 
-## ## Dashboard Endpoints
+## Dashboard Endpoints
+
 The dash plugin registers numerous admin endpoints for the dashboard:
 
-## ### User Management
-| Endpoint                   | Method | Description                |
-| -------------------------- | ------ | -------------------------- |
-| `/dash/users`              | GET    | List users with pagination |
-| `/dash/users/online-count` | GET    | Get online users count     |
-| `/dash/user`               | GET    | Get user details           |
-| `/dash/user`               | POST   | Create a new user          |
-| `/dash/user`               | PATCH  | Update user                |
-| `/dash/user`               | DELETE | Delete user                |
-| `/dash/user/ban`           | POST   | Ban user                   |
-| `/dash/user/unban`         | POST   | Unban user                 |
-| `/dash/user/password`      | POST   | Set user password          |
-| `/dash/user/impersonate`   | POST   | Impersonate user           |
+### User Management
 
-## ### Session Management
-| Endpoint                    | Method | Description              |
-| --------------------------- | ------ | ------------------------ |
-| `/dash/sessions`            | GET    | List all sessions        |
-| `/dash/sessions`            | DELETE | Delete sessions          |
-| `/dash/session/revoke`      | POST   | Revoke single session    |
-| `/dash/sessions/revoke-all` | POST   | Revoke all user sessions |
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/users` | GET | List users with pagination |
+| `/dash/users/online-count` | GET | Get online users count |
+| `/dash/user` | GET | Get user details |
+| `/dash/user` | POST | Create a new user |
+| `/dash/user` | PATCH | Update user |
+| `/dash/user` | DELETE | Delete user |
+| `/dash/user/ban` | POST | Ban user |
+| `/dash/user/unban` | POST | Unban user |
+| `/dash/user/password` | POST | Set user password |
+| `/dash/user/impersonate` | POST | Impersonate user |
 
-## ### Organization Management
-| Endpoint                         | Method | Description              |
-| -------------------------------- | ------ | ------------------------ |
-| `/dash/organizations`            | GET    | List organizations       |
-| `/dash/organization`             | GET    | Get organization details |
-| `/dash/organization`             | POST   | Create organization      |
-| `/dash/organization`             | PATCH  | Update organization      |
-| `/dash/organization`             | DELETE | Delete organization      |
-| `/dash/organization/members`     | GET    | List members             |
-| `/dash/organization/member`      | POST   | Add member               |
-| `/dash/organization/member`      | DELETE | Remove member            |
-| `/dash/organization/member/role` | PATCH  | Update member role       |
+### Session Management
 
-## ### Team Management
-| Endpoint                         | Method | Description        |
-| -------------------------------- | ------ | ------------------ |
-| `/dash/organization/teams`       | GET    | List teams         |
-| `/dash/organization/team`        | POST   | Create team        |
-| `/dash/organization/team`        | PATCH  | Update team        |
-| `/dash/organization/team`        | DELETE | Delete team        |
-| `/dash/organization/team/member` | POST   | Add team member    |
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/sessions` | GET | List all sessions |
+| `/dash/sessions` | DELETE | Delete sessions |
+| `/dash/session/revoke` | POST | Revoke single session |
+| `/dash/sessions/revoke-all` | POST | Revoke all user sessions |
+
+### Organization Management
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/organizations` | GET | List organizations |
+| `/dash/organization` | GET | Get organization details |
+| `/dash/organization` | POST | Create organization |
+| `/dash/organization` | PATCH | Update organization |
+| `/dash/organization` | DELETE | Delete organization |
+| `/dash/organization/members` | GET | List members |
+| `/dash/organization/member` | POST | Add member |
+| `/dash/organization/member` | DELETE | Remove member |
+| `/dash/organization/member/role` | PATCH | Update member role |
+
+### Team Management
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/organization/teams` | GET | List teams |
+| `/dash/organization/team` | POST | Create team |
+| `/dash/organization/team` | PATCH | Update team |
+| `/dash/organization/team` | DELETE | Delete team |
+| `/dash/organization/team/member` | POST | Add team member |
 | `/dash/organization/team/member` | DELETE | Remove team member |
 
-## ### Invitation Management
-| Endpoint                           | Method | Description       |
-| ---------------------------------- | ------ | ----------------- |
-| `/dash/organization/invitations`   | GET    | List invitations  |
-| `/dash/organization/invite`        | POST   | Send invitation   |
-| `/dash/organization/invite/cancel` | POST   | Cancel invitation |
-| `/dash/organization/invite/resend` | POST   | Resend invitation |
+### Invitation Management
 
-## ### SSO Management
-| Endpoint                                        | Method | Description         |
-| ----------------------------------------------- | ------ | ------------------- |
-| `/dash/organization/sso-providers`              | GET    | List SSO providers  |
-| `/dash/organization/sso-provider`               | POST   | Create SSO provider |
-| `/dash/organization/sso-provider`               | PATCH  | Update SSO provider |
-| `/dash/organization/sso-provider`               | DELETE | Delete SSO provider |
-| `/dash/organization/sso-provider/verify-domain` | POST   | Verify domain       |
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/organization/invitations` | GET | List invitations |
+| `/dash/organization/invite` | POST | Send invitation |
+| `/dash/organization/invite/cancel` | POST | Cancel invitation |
+| `/dash/organization/invite/resend` | POST | Resend invitation |
 
-## ### Directory Sync
-| Endpoint                                                        | Method | Description                                                             |
-| --------------------------------------------------------------- | ------ | ----------------------------------------------------------------------- |
-| `/dash/organization/directories`                                | GET    | List directories                                                        |
-| `/dash/organization/directory`                                  | POST   | Create directory (optional `fieldMappings` when field projection is on) |
-| `/dash/organization/directory`                                  | DELETE | Delete directory                                                        |
-| `/dash/organization/directory/token`                            | POST   | Regenerate token                                                        |
-| `/dash/organization/:id/directory-field-mapping-options`        | GET    | Field-mapping catalog (available fields, SCIM paths, coverage warnings) |
-| `/dash/organization/:id/directories/:providerId/field-mappings` | GET    | Get field mappings and modes for a directory connection                 |
-| `/dash/organization/:id/directories/:providerId/field-mappings` | PUT    | Replace field mappings and modes for a directory connection             |
+### SSO Management
 
-## ### Log Drains
-| Endpoint                            | Method | Description      |
-| ----------------------------------- | ------ | ---------------- |
-| `/dash/organization/log-drains`     | GET    | List log drains  |
-| `/dash/organization/log-drain`      | POST   | Create log drain |
-| `/dash/organization/log-drain`      | PATCH  | Update log drain |
-| `/dash/organization/log-drain`      | DELETE | Delete log drain |
-| `/dash/organization/log-drain/test` | POST   | Test log drain   |
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/organization/sso-providers` | GET | List SSO providers |
+| `/dash/organization/sso-provider` | POST | Create SSO provider |
+| `/dash/organization/sso-provider` | PATCH | Update SSO provider |
+| `/dash/organization/sso-provider` | DELETE | Delete SSO provider |
+| `/dash/organization/sso-provider/verify-domain` | POST | Verify domain |
 
-## ### Events & Audit Logs
-| Endpoint             | Method | Description     |
-| -------------------- | ------ | --------------- |
-| `/events/list`       | GET    | Get user events |
-| `/events/audit-logs` | GET    | Get audit logs  |
-| `/events/types`      | GET    | Get event types |
+### Directory Sync
 
-## ### Analytics
-| Endpoint          | Method | Description         |
-| ----------------- | ------ | ------------------- |
-| `/dash/stats`     | GET    | Get user statistics |
-| `/dash/graph`     | GET    | Get graph data      |
-| `/dash/retention` | GET    | Get retention data  |
-| `/dash/map`       | GET    | Get geographic data |
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/organization/directories` | GET | List directories |
+| `/dash/organization/directory` | POST | Create directory (optional `fieldMappings` when field projection is on) |
+| `/dash/organization/directory` | DELETE | Delete directory |
+| `/dash/organization/directory/token` | POST | Regenerate token |
+| `/dash/organization/:id/directory-field-mapping-options` | GET | Field-mapping catalog (available fields, SCIM paths, coverage warnings) |
+| `/dash/organization/:id/directories/:providerId/field-mappings` | GET | Get field mappings and modes for a directory connection |
+| `/dash/organization/:id/directories/:providerId/field-mappings` | PUT | Replace field mappings and modes for a directory connection |
 
-## ### Two-Factor Management
-| Endpoint                               | Method | Description          |
-| -------------------------------------- | ------ | -------------------- |
-| `/dash/user/2fa/enable`                | POST   | Enable 2FA for user  |
-| `/dash/user/2fa/disable`               | POST   | Disable 2FA for user |
-| `/dash/user/2fa/totp-uri`              | GET    | Get TOTP URI         |
-| `/dash/user/2fa/backup-codes`          | GET    | View backup codes    |
-| `/dash/user/2fa/backup-codes/generate` | POST   | Generate new codes   |
+### Log Drains
 
-## ## Client Integration
-## ### dashClient()
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/organization/log-drains` | GET | List log drains |
+| `/dash/organization/log-drain` | POST | Create log drain |
+| `/dash/organization/log-drain` | PATCH | Update log drain |
+| `/dash/organization/log-drain` | DELETE | Delete log drain |
+| `/dash/organization/log-drain/test` | POST | Test log drain |
+
+### Events & Audit Logs
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/events/list` | GET | Get user events |
+| `/events/audit-logs` | GET | Get audit logs |
+| `/events/types` | GET | Get event types |
+
+### Analytics
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/stats` | GET | Get user statistics |
+| `/dash/graph` | GET | Get graph data |
+| `/dash/retention` | GET | Get retention data |
+| `/dash/map` | GET | Get geographic data |
+
+### Two-Factor Management
+
+| Endpoint | Method | Description |
+| --- | --- | --- |
+| `/dash/user/2fa/enable` | POST | Enable 2FA for user |
+| `/dash/user/2fa/disable` | POST | Disable 2FA for user |
+| `/dash/user/2fa/totp-uri` | GET | Get TOTP URI |
+| `/dash/user/2fa/backup-codes` | GET | View backup codes |
+| `/dash/user/2fa/backup-codes/generate` | POST | Generate new codes |
+
+## Client Integration
+
+### dashClient()
+
 The client plugin provides access to audit log queries:
 
-```ts
+```
 import { createAuthClient } from "better-auth/client";
 import { dashClient } from "@better-auth/infra/client";
 
@@ -640,10 +641,11 @@ export const authClient = createAuthClient({
 });
 ```
 
-**Note**: For **Expo** or **React Native**, import `dashClient` from `@better-auth/infra/native` (same API) and pair it with `sentinelNativeClient` as described in [Sentinel — Expo and React Native](/docs/infrastructure/plugins/sentinel#expo-and-react-native).
+**Note**: For **Expo** or **React Native**, import `dashClient` from `@better-auth/infra/native` (same API) and pair it with `sentinelNativeClient` as described in [Sentinel — Expo and React Native](https://better-auth.com/docs/infrastructure/plugins/sentinel#expo-and-react-native).
 
-## ### Configuration
-```ts
+### Configuration
+
+```
 dashClient({
   resolveUserId: ({ userId, user, session }) => {
     return userId || user?.id || session?.user?.id;
@@ -651,11 +653,13 @@ dashClient({
 }),
 ```
 
-## ### Get the current user's audit logs
+### Get the current user's audit logs
+
 Returns audit events for the **current user**, or organization-scoped events when you pass `organizationId` as a member.
 
-## #### Basic query
-```ts
+#### Basic query
+
+```
 const session = await authClient.getSession();
 
 const logs = await authClient.dash.getAuditLogs({
@@ -671,13 +675,15 @@ console.log(logs.data?.limit);   // Page size
 console.log(logs.data?.offset);  // Current offset
 ```
 
-See [Get current user's audit logs](/docs/infrastructure/plugins/audit-logs#get-current-users-audit-logs) for more information.
+See [Get current user's audit logs](https://better-auth.com/docs/infrastructure/plugins/audit-logs#get-current-users-audit-logs) for more information.
 
-## ### Get all audit logs
-Returns all audit events for organizations the current user has **admin** or **owner** access to. Requires the [organization plugin](/docs/plugins/organization) for role checks.
+### Get all audit logs
 
-## #### Basic query
-```ts
+Returns all audit events for organizations the current user has **admin** or **owner** access to. Requires the [organization plugin](https://better-auth.com/docs/plugins/organization) for role checks.
+
+#### Basic query
+
+```
 const session = await authClient.getSession();
 
 const activity = await authClient.dash.getAllAuditLogs({
@@ -690,13 +696,11 @@ console.log(activity.data?.events);
 console.log(activity.data?.total);
 ```
 
-See [Get all audit logs](/docs/infrastructure/plugins/audit-logs#get-all-audit-logs) for more information.
+See [Get all audit logs](https://better-auth.com/docs/infrastructure/plugins/audit-logs#get-all-audit-logs) for more information.
 
-## ## Best Practices
+## Best Practices
+
 1. **Always set an API key** — without it, the plugin cannot communicate with the infrastructure API.
-
 2. **Use activity tracking wisely** — the update interval affects database writes. For high-traffic apps, consider a longer interval.
-
 3. **Monitor audit log retention** — different plans have different retention periods. Check your plan limits.
-
 4. **Secure your endpoints** — dashboard endpoints require authentication. Make sure your dashboard users have appropriate permissions.
