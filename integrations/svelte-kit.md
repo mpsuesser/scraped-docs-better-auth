@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/svelte-kit
 title: "Svelte Kit"
 description: ""
-access_date: 2026-10-31T01:36:42.853Z
-current_date: 2026-10-31T01:36:42.853Z
+access_date: 2026-11-07T23:03:14.765Z
+current_date: 2026-11-07T23:03:14.765Z
 ---
 
 # SvelteKit Integration (/docs/integrations/svelte-kit)
@@ -56,7 +56,7 @@ export async function handle({ event, resolve }) {
 ```
 
 ## ### Server Action Cookies
-To ensure cookies are properly set when you call functions like `signInEmail` or `signUpEmail` in a server action, you should use the `sveltekitCookies` plugin. This plugin will automatically handle setting cookies for you in SvelteKit.
+To ensure cookies are properly set when you call functions like `signOut` in a server action, you should use the `sveltekitCookies` plugin. This plugin will automatically handle setting cookies for you in SvelteKit.
 
 You need to add it as a plugin to your Better Auth instance.
 

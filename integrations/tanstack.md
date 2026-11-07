@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/tanstack
 title: "Tanstack"
 description: ""
-access_date: 2026-08-03T19:43:07.705Z
-current_date: 2026-08-03T19:43:07.705Z
+access_date: 2026-11-07T23:03:14.765Z
+current_date: 2026-11-07T23:03:14.765Z
 ---
 
 Integrate Better Auth with TanStack Start.
@@ -58,9 +58,9 @@ export const Route = createFileRoute('/api/auth/$')({
 ### Usage tips
 
 - We recommend using the client SDK or `authClient` to handle authentication, rather than server actions with `auth.api`.
-- When you call functions that need to set cookies (like `signInEmail` or `signUpEmail`), you'll need to handle cookie setting for TanStack Start. Better Auth provides a `tanstackStartCookies` plugin to automatically handle this for you.
+- When you call functions that need to set cookies (like `signOut`) on the server, you'll need to handle cookie setting for TanStack Start. Better Auth provides a `tanstackStartCookies` plugin to automatically handle this for you.
 
-For React (TanStack Start with React):
+#### React
 
 ```
 import { betterAuth } from "better-auth";
@@ -72,32 +72,21 @@ export const auth = betterAuth({
 })
 ```
 
-For Solid.js (TanStack Start with Solid):
-
-```
-import { betterAuth } from "better-auth";
-import { tanstackStartCookies } from "better-auth/tanstack-start/solid";
-
-export const auth = betterAuth({
-    //...your config
-    plugins: [tanstackStartCookies()] // make sure this is the last plugin in the array
-})
-```
-
 Now, when you call functions that set cookies, they will be automatically set using TanStack Start's cookie handling system.
 
 ```
+import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeaders } from "@tanstack/react-start/server";
 import { auth } from "@/lib/auth"
 
-const signIn = async () => {
-    await auth.api.signInEmail({
-        body: {
-            email: "user@email.com",
-            password: "password",
-        }
+export const signOut = createServerFn({ method: "POST" }).handler(async () => {
+    await auth.api.signOut({
+        headers: getRequestHeaders()
     })
-}
+})
 ```
+
+#### Solid
 
 ### Protecting Resources
 

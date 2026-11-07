@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/next
 title: "Next"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-11-07T23:03:14.765Z
+current_date: 2026-11-07T23:03:14.765Z
 ---
 
 # Next.js integration (/docs/integrations/next)
@@ -99,7 +99,7 @@ export async function ServerComponent() {
 >  will not be refreshed until the server is interacted with from the client via Server Actions or Route Handlers.
 
 ## ### Server Action Cookies
-When you call a function that needs to set cookies, like `signInEmail` or `signUpEmail` in a server action, cookies won’t be set. This is because server actions need to use the `cookies` helper from Next.js to set cookies.
+When you call a function that needs to set cookies, like `signOut` in a server action, cookies won’t be set. This is because server actions need to use the `cookies` helper from Next.js to set cookies.
 
 To simplify this, you can use the `nextCookies` plugin, which will automatically set cookies for you whenever a `Set-Cookie` header is present in the response.
 
@@ -117,14 +117,12 @@ Now, when you call functions that set cookies, they will be automatically set.
 
 ```ts
 "use server";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
 
-const signIn = async () => {
-    await auth.api.signInEmail({
-        body: {
-            email: "user@email.com",
-            password: "password",
-        }
+export const signOut = async () => {
+    await auth.api.signOut({
+        headers: await headers()
     })
 }
 ```
