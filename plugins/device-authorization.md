@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-08T01:22:34.925Z
+current_date: 2026-11-08T01:22:34.925Z
 ---
 
 OAuth 2.0 Device Authorization Grant for limited-input devices
@@ -539,24 +539,19 @@ export default function DeviceApprovalPage() {
 
 ### Client Validation
 
-You can validate client IDs to ensure only authorized applications can use the device flow:
-
-When the OAuth Provider integration is enabled, an unknown OAuth client ID reaches the standalone flow only when `validateClient` explicitly accepts it. Otherwise, the request returns `invalid_client`.
+Use `validateClient` to apply your own validation rules to client IDs in the standalone session flow. For example, check the ID against a list of known clients:
 
 ```
+import { deviceAuthorization } from "better-auth/plugins";
+
+const knownClientIds = new Set(["my-cli", "my-tv-app"]);
+
 deviceAuthorization({
-  validateClient: async (clientId) => {
-    // Check if client is authorized
-    const client = await db.oauth_clients.findOne({ id: clientId });
-    return client && client.allowDeviceFlow;
-  },
-  
-  onDeviceAuthRequest: async (clientId, scope) => {
-    // Log device authorization requests
-    await logDeviceAuthRequest(clientId, scope);
-  },
-})
+  validateClient: (clientId) => knownClientIds.has(clientId),
+});
 ```
+
+The callback runs on both `/device/code` and `/device/token`. Return `true` to accept the client ID or `false` to reject the request with `invalid_client`. If `validateClient` is omitted, the standalone flow skips this custom validation.
 
 ### Custom Code Generation
 
@@ -589,7 +584,7 @@ Device-code issuance makes up to 3 attempts to overcome unique-key collisions. I
 
 ## Error Handling
 
-The device flow defines specific error codes:
+Common errors returned by the standalone device flow:
 
 | Error Code | Description |
 | --- | --- |
@@ -597,7 +592,8 @@ The device flow defines specific error codes:
 | `slow_down` | Polling too frequently (increase interval) |
 | `expired_token` | Device code has expired |
 | `access_denied` | User denied the authorization |
-| `invalid_grant` | Invalid device code or client ID |
+| `invalid_client` | Client ID is not accepted |
+| `invalid_grant` | Device code is invalid or belongs to another client |
 
 ## Example: CLI Application
 
@@ -755,7 +751,7 @@ authenticateCLI().catch((err) => {
 
 **generateUserCode**: Custom function to generate user codes. Returns a string or `Promise<string>` with at most 191 characters.
 
-**validateClient**: Function to validate client IDs. Takes a clientId and returns boolean or `Promise<boolean>`.
+**validateClient**: Optional `(clientId: string) => boolean | Promise<boolean>` callback for custom client ID validation in the first-party session flow.
 
 **onDeviceAuthRequest**: Hook called when device authorization is requested. Takes clientId and optional scope.
 
