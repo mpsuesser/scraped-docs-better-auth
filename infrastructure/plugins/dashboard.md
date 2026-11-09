@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/plugins/dashboard
 title: "Dashboard"
 description: ""
-access_date: 2026-11-09T20:23:01.284Z
-current_date: 2026-11-09T20:23:01.284Z
+access_date: 2026-11-09T20:50:56.450Z
+current_date: 2026-11-09T20:50:56.450Z
 ---
 
 # Dashboard (/docs/infrastructure/plugins/dashboard)
@@ -34,6 +34,19 @@ export const auth = betterAuth({
   ],
 });
 ```
+
+## ## Compatibility
+`@better-auth/infra` requires [Better Auth](/docs/installation) **1.4 or later**. Actively supported `@better-auth/infra` releases start at **0.3**.
+
+| `@better-auth/infra` | Better Auth 1.4 | 1.5 | 1.6 | 1.7 |
+| -------------------- | --------------- | --- | --- | --- |
+| **0.3.x**            | ✓               | ✓   | ✓   | ✓   |
+| **0.4.x**            | ✓               | ✓   | ✓   | ✓   |
+
+Use the latest **0.4.x** release with the latest stable Better Auth **1.7.x**.
+
+> Managed directory sync (Better Auth 1.7+) requires `@better-auth/infra`
+> **0.4.x**.
 
 ## ## Configuration Options
 ## ### DashOptions
