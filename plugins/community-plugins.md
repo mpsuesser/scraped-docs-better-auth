@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-11-06T05:41:59.614Z
-current_date: 2026-11-06T05:41:59.614Z
+access_date: 2026-11-09T01:35:29.989Z
+current_date: 2026-11-09T01:35:29.989Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom plugin, get started by reading our [Create your first 
 
 ## Browse Community Plugins
 
-Showing 50 of 50 plugins
+Showing 51 of 51 plugins
 
 |  | Description |
 | --- | --- |
@@ -70,3 +70,4 @@ Showing 50 of 50 plugins
 | [better-auth-waitlist](https://github.com/slargat/better-auth-waitlist)    [![Seifeddine Largat](https://github.com/slargat.png) Seifeddine Largat](https://github.com/slargat) | A complete waitlist: a live queue with positions, status links, referrals, single-use invites, manager tools, and invite-only sign-up across every sign-up method. |
 | [better-auth-trustware](https://github.com/danielmerja/better-auth-trustware)    [![Daniel Merja](https://github.com/danielmerja.png) Daniel Merja](https://github.com/danielmerja) | Crypto billing for Better Auth, settled through Trustware: subscriptions with renewal invoices and grace periods, one-time purchases, prorated plan changes, trials, organization billing, and feature and limit access control. |
 |  | Hosted mock OAuth provider for development, E2E tests, CI and coding agents. Drop-in mocks of the Google, GitHub, Microsoft, Apple, Discord, LinkedIn, X and Facebook providers, so app code and the real token exchange stay unchanged, with no app registration or real accounts. |
+| [@mailkite/better-auth-inbox](https://github.com/mailkite/mailkite-better-auth-inbox)    [![MailKite](https://github.com/mailkite.png) MailKite](https://github.com/mailkite) | Give your app a real mailbox. Receive inbound email as signature-verified webhooks, then list, read, thread and reply through session-scoped endpoints — scoped per user or per organization. |
