@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/sign-in-flow
 title: "Sign In Flow"
 description: ""
-access_date: 2026-11-10T12:21:24.470Z
-current_date: 2026-11-10T12:21:24.470Z
+access_date: 2026-11-10T18:45:11.854Z
+current_date: 2026-11-10T18:45:11.854Z
 ---
 
 # Sign-in and consent screens (/docs/plugins/oauth-provider/sign-in-flow)
@@ -139,7 +139,7 @@ type oauth2Consent = {
 
 The response is `{ redirect: true, url }`. By default, the auth client sends the browser to `url`. If you call the endpoint another way, send the browser to `url` yourself.
 
-With `accept: false`, the user returns to the client with `access_denied`, and any consent given earlier stays unchanged. To remove consent, see [Manage consents](#manage-consents).
+With `accept: false`, the user returns to the client with `access_denied`, and any consent given earlier stays unchanged. This redirect happens only while the client is enabled and the `redirect_uri` is still valid for it. If the client was disabled or deleted, the `redirect_uri` was removed from its registration, or your redirect policy no longer accepts it, the `url` points to the server error page instead. To remove consent, see [Manage consents](#manage-consents).
 
 ## ## Sign-up account screen
 To send `prompt=create` requests ([OpenID Connect Prompt Create](https://openid.net/specs/openid-connect-prompt-create-1_0.html)) to a separate sign-up page, set `signup.page`. Without it, Better Auth redirects to `loginPage`.
