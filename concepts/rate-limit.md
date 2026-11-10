@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/rate-limit
 title: "Rate Limit"
 description: ""
-access_date: 2026-11-04T18:14:49.666Z
-current_date: 2026-11-04T18:14:49.666Z
+access_date: 2026-11-10T12:07:46.846Z
+current_date: 2026-11-10T12:07:46.846Z
 ---
 
 Learn how to configure rate limiting in Better Auth, including IP address detection, IPv6 support, custom rate limit windows, storage backends, error handling, and per-endpoint rules.
@@ -119,7 +119,9 @@ app.all("/api/auth/*", (req, res) => {
 
 Some requests have no valid address. For example, `X-Forwarded-For` can contain several addresses while `trustedProxies` is not set. These requests share one counter for each path, and Better Auth logs a warning the first time this happens.
 
-In development and test, Better Auth uses `127.0.0.1` instead. To turn off this rate limiter for HTTP requests, set `disableIpTracking: true`.
+In development and test, Better Auth uses `127.0.0.1` instead.
+
+Setting `advanced.ipAddress.disableIpTracking: true` turns off the rate limiter for every HTTP request, not only for requests without an address. Better Auth also stops recording the client address on new sessions.
 
 #### IPv6 Address Support
 

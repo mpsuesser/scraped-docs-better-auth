@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider
 title: "Oauth Provider"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-10T12:07:46.846Z
+current_date: 2026-11-10T12:07:46.846Z
 ---
 
 Make your app an OAuth 2.1 and OpenID Connect provider that other apps sign in with.
@@ -58,7 +58,7 @@ npm install @better-auth/oauth-provider
 
 ### Add the plugin to the server
 
-Your provider signs tokens with the [JWT plugin](https://better-auth.com/docs/plugins/jwt). Disable the JWT plugin's `/token` route, because clients call `/oauth2/token` instead.
+Your provider signs tokens with the [JWT plugin](https://better-auth.com/docs/plugins/jwt). Disable the JWT plugin's `/token` route and its `set-auth-jwt` header. Both give the browser session JWTs signed with the same key as access tokens. Clients get tokens from `/oauth2/token` instead. See [OAuth Provider Mode](https://better-auth.com/docs/plugins/jwt#oauth-provider-mode).
 
 ```
 import { betterAuth } from "better-auth";
@@ -68,7 +68,7 @@ import { oauthProvider } from "@better-auth/oauth-provider";
 export const auth = betterAuth({
   disabledPaths: ["/token"], 
   plugins: [
-    jwt(),
+    jwt({ disableSettingJwtHeader: true }), 
     oauthProvider({ 
       loginPage: "/sign-in", 
       consentPage: "/consent", 

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/sso/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-10T12:07:46.846Z
+current_date: 2026-11-10T12:07:46.846Z
 ---
 
 SSO plugin options, provider configuration, endpoints, and database schema.
@@ -242,7 +242,7 @@ Sends a PKCE challenge ([RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636
 
 `overrideUserInfo` `boolean`
 
-Where the top-level `overrideUserInfo` is stored. Ignored at registration, where you set the top-level field. Set it here on update.
+The stored value that sign-in reads. Registration ignores a value sent here. Instead, it stores `true` when the top-level `overrideUserInfo` or `defaultOverrideUserInfo` is `true`, and `false` otherwise. To change it later, set it here on update.
 
 `mapping` `object`
 

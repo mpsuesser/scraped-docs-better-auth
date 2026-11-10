@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/sso/saml
 title: "Saml"
 description: ""
-access_date: 2026-11-09T23:41:20.657Z
-current_date: 2026-11-09T23:41:20.657Z
+access_date: 2026-11-10T12:07:46.846Z
+current_date: 2026-11-10T12:07:46.846Z
 ---
 
 # SAML providers (/docs/plugins/sso/saml)
@@ -146,13 +146,13 @@ If you set `idpMetadata.metadata`, Better Auth reads the certificates from that 
 ## ## Attribute mapping
 To choose which SAML attributes fill the user's profile, set `mapping`:
 
-| Field         | Default attribute                                                                              |
-| ------------- | ---------------------------------------------------------------------------------------------- |
-| `email`       | `email`, then the `NameID`                                                                     |
-| `name`        | `displayName`, read only when neither `firstName` nor `lastName` is present; else the `NameID` |
-| `firstName`   | `givenName`, joined with `lastName` to build `name`                                            |
-| `lastName`    | `surname`, joined with `firstName` to build `name`                                             |
-| `extraFields` | The attribute named in each entry                                                              |
+| Field         | Default attribute                                                        |
+| ------------- | ------------------------------------------------------------------------ |
+| `email`       | `email`, then the `NameID`                                               |
+| `name`        | `firstName` and `lastName` joined, then `displayName`, then the `NameID` |
+| `firstName`   | `givenName`, joined with `lastName` to build `name`                      |
+| `lastName`    | `surname`, joined with `firstName` to build `name`                       |
+| `extraFields` | The attribute named in each entry                                        |
 
 ```ts
 samlConfig: {

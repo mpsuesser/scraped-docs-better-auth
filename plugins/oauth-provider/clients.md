@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/clients
 title: "Clients"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-10T12:07:46.846Z
+current_date: 2026-11-10T12:07:46.846Z
 ---
 
 # Clients and registration (/docs/plugins/oauth-provider/clients)
@@ -35,7 +35,7 @@ const { data, error } = await authClient.oauth2.createClient({
     client_name: "My Client", // Display name shown on the consent screen.
     token_endpoint_auth_method: "client_secret_basic", // How the client authenticates at the token endpoint. Use `"none"` for a public client.
     application_type: "web", // Controls redirect URI validation.
-    scope: "openid profile email", // Space-separated scopes the client may request.
+    scope: "openid profile email", // Space-separated scopes the client may request. When omitted, the client may request every scope the server defines.
 });
 ```
 
@@ -48,7 +48,7 @@ const data = await auth.api.createOAuthClient({
         client_name: "My Client", // Display name shown on the consent screen.
         token_endpoint_auth_method: "client_secret_basic", // How the client authenticates at the token endpoint. Use `"none"` for a public client.
         application_type: "web", // Controls redirect URI validation.
-        scope: "openid profile email", // Space-separated scopes the client may request.
+        scope: "openid profile email", // Space-separated scopes the client may request. When omitted, the client may request every scope the server defines.
     },
     // This endpoint requires session cookies.
     headers: await headers(),
@@ -76,7 +76,7 @@ type createOAuthClient = {
    */
   application_type?: "web" | "native" = "web"
   /**
-   * Space-separated scopes the client may request.
+   * Space-separated scopes the client may request. When omitted, the client may request every scope the server defines.
    */
   scope?: string = "openid profile email"
 }
@@ -287,7 +287,7 @@ Any key left out of the new set stops working at once. To roll a key without dow
 ## ## Trusted clients
 To skip database lookups for first-party apps whose redirect URIs you control, list their client IDs in `cachedTrustedClients`. To also skip the consent screen, set `skip_consent` on each client.
 
-> A `skip_consent` client gets authorization codes for any signed-in user without asking them, so whoever controls its redirect URIs controls those codes. The client's owner can still change `redirect_uris` through `updateOAuthClient`. With `clientReference`, that owner is an organization, and any member of it can make the change. Set `skip_consent` only on clients in `cachedTrustedClients`, which the client endpoints cannot change, or deny `update` for those clients in [`clientPrivileges`](#client-crud-privileges). Do not set it on a public native client. Any app on the device can start the flow and receive the redirect, and PKCE does not help when the attacker starts the flow.
+> A `skip_consent` client gets authorization codes for any signed-in user without asking them, unless the authorization request sets `prompt=consent`. Whoever starts the flow chooses `prompt`, so whoever controls the client's redirect URIs controls those codes. The client's owner can still change `redirect_uris` through `updateOAuthClient`. With `clientReference`, that owner is an organization, and any member of it can make the change. Set `skip_consent` only on clients in `cachedTrustedClients`, which the client endpoints cannot change, or deny `update` for those clients in [`clientPrivileges`](#client-crud-privileges). Do not set it on a public native client. Any app on the device can start the flow and receive the redirect, and PKCE does not help when the attacker starts the flow.
 
 * Each server keeps the listed clients in memory until it restarts.
 * The client endpoints, including the admin methods, cannot change them.
