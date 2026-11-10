@@ -2,191 +2,136 @@
 url: https://better-auth.com/llms.txt/docs/plugins/email-otp
 title: "Email Otp"
 description: ""
-access_date: 2026-11-03T21:16:19.098Z
-current_date: 2026-11-03T21:16:19.098Z
+access_date: 2026-11-10T07:27:19.038Z
+current_date: 2026-11-10T07:27:19.038Z
 ---
-
-# Email OTP (/docs/plugins/email-otp)
 
 Email OTP plugin for Better Auth.
 
-
-
 The Email OTP plugin allows user to sign in, verify their email, or reset their password using a one-time password (OTP) sent to their email address.
 
-## ## Installation
-### ### Add the plugin to your auth config
+## Installation
+
+### Add the plugin to your auth config
+
 Add the `emailOTP` plugin to your auth config and implement the `sendVerificationOTP()` method.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
-import { emailOTP } from "better-auth/plugins" // [!code highlight]
+import { emailOTP } from "better-auth/plugins"
 
 export const auth = betterAuth({
     // ... other config options
     plugins: [
-        emailOTP({ // [!code highlight]
-            async sendVerificationOTP({ email, otp, type }) { // [!code highlight]
-                if (type === "sign-in") { // [!code highlight]
-                    // Send the OTP for sign in // [!code highlight]
-                } else if (type === "email-verification") { // [!code highlight]
-                    // Send the OTP for email verification // [!code highlight]
-                } else { // [!code highlight]
-                    // Send the OTP for password reset // [!code highlight]
-                } // [!code highlight]
-            }, // [!code highlight]
-        }) // [!code highlight]
+        emailOTP({ 
+            async sendVerificationOTP({ email, otp, type }) { 
+                if (type === "sign-in") { 
+                    // Send the OTP for sign in
+                } else if (type === "email-verification") { 
+                    // Send the OTP for email verification
+                } else { 
+                    // Send the OTP for password reset
+                } 
+            }, 
+        }) 
     ]
 })
 ```
 
-### ### Add the client plugin
-```ts title="auth-client.ts"
+### Add the client plugin
+
+```
 import { createAuthClient } from "better-auth/client"
-import { emailOTPClient } from "better-auth/client/plugins" // [!code highlight]
+import { emailOTPClient } from "better-auth/client/plugins"
 
 export const authClient = createAuthClient({
     plugins: [
-        emailOTPClient() // [!code highlight]
+        emailOTPClient() 
     ]
 })
 ```
 
+## Usage
 
-## ## Usage
-## ### Send an OTP
+### Send an OTP
+
 Use the `sendVerificationOtp()` method to send an OTP to the user's email address.
 
-**Endpoint:** `POST /email-otp/send-verification-otp`
+POST/email-otp/send-verification-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
     email: "user@example.com", // required, Email address to send the OTP.
-    type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+    type: "sign-in", // required, Type of the OTP. \`sign-in\`, \`email-verification\`, or \`forget-password\`.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.sendVerificationOTP({
-    body: {
-        email: "user@example.com", // required, Email address to send the OTP.
-        type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to send the OTP.
 
-```ts
-type sendVerificationOTP = {
-    /**
-     * Email address to send the OTP. 
-     */
-    email: string = "user@example.com"
-    /**
-     * Type of the OTP. `sign-in`, `email-verification`, or `forget-password`. 
-     */
-    type: "email-verification" | "sign-in" | "forget-password" = "sign-in"
-}
-```
+`type` "email-verification" | "sign-in" | "forget-password"required
 
-## ### Check an OTP (optional)
+Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+
+### Check an OTP (optional)
+
 Use the `checkVerificationOtp()` method to check if an OTP is valid. A wrong OTP counts toward `allowedAttempts`, and a correct one stays usable for the matching sign-in, email verification, or password reset call.
 
-**Endpoint:** `POST /email-otp/check-verification-otp`
+POST/email-otp/check-verification-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.checkVerificationOtp({
     email: "user@example.com", // required, Email address to send the OTP.
-    type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+    type: "sign-in", // required, Type of the OTP. \`sign-in\`, \`email-verification\`, or \`forget-password\`.
     otp: "123456", // required, OTP sent to the email.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.checkVerificationOTP({
-    body: {
-        email: "user@example.com", // required, Email address to send the OTP.
-        type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
-        otp: "123456", // required, OTP sent to the email.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to send the OTP.
 
-```ts
-type checkVerificationOTP = {
-    /**
-     * Email address to send the OTP. 
-     */
-    email: string = "user@example.com"
-    /**
-     * Type of the OTP. `sign-in`, `email-verification`, or `forget-password`. 
-     */
-    type: "email-verification" | "sign-in" | "forget-password" = "sign-in"
-    /**
-     * OTP sent to the email. 
-     */
-    otp: string = "123456"
-}
-```
+`type` "email-verification" | "sign-in" | "forget-password"required
 
-## ### Sign In with OTP
+Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+
+`otp` stringrequired
+
+OTP sent to the email.
+
+### Sign In with OTP
+
 To sign in with OTP, use the `sendVerificationOtp()` method to send a "sign-in" OTP to the user's email address.
 
-**Endpoint:** `POST /email-otp/send-verification-otp`
+POST/email-otp/send-verification-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
     email: "user@example.com", // required, Email address to send the OTP.
     type: "sign-in", // required, Type of the OTP.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.sendVerificationOTP({
-    body: {
-        email: "user@example.com", // required, Email address to send the OTP.
-        type: "sign-in", // required, Type of the OTP.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to send the OTP.
 
-```ts
-type sendVerificationOTP = {
-    /**
-     * Email address to send the OTP. 
-     */
-    email: string = "user@example.com"
-    /**
-     * Type of the OTP.
-     */
-    type: "sign-in" = "sign-in"
-}
-```
+`type` "sign-in"required
+
+Type of the OTP.
 
 Once the user provides the OTP, you can sign in the user using the `signIn.emailOtp()` method.
 
-**Endpoint:** `POST /sign-in/email-otp`
+POST/sign-in/email-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.signIn.emailOtp({
     email: "user@example.com", // required, Email address to sign in.
     otp: "123456", // required, OTP sent to the email.
@@ -195,168 +140,87 @@ const { data, error } = await authClient.signIn.emailOtp({
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.signInEmailOTP({
-    body: {
-        email: "user@example.com", // required, Email address to sign in.
-        otp: "123456", // required, OTP sent to the email.
-        name: "John Doe", // User display name. Only used when the user is registering for the first time.
-        image: "https://example.com/image.png", // User profile image URL. Only used when the user is registering for the first time.
-    },
-});
-```
+`otp` stringrequired
 
-### Type Definition
+OTP sent to the email.
 
-```ts
-type signInEmailOTP = {
-    /**
-     * Email address to sign in.
-     */
-    email: string = "user@example.com"
-    /**
-     * OTP sent to the email.
-     */
-    otp: string = "123456"
-    /**
-     * User display name. Only used when the user is registering for the first time.
-     */
-    name?: string = "John Doe"
-    /**
-     * User profile image URL. Only used when the user is registering for the first time.
-     */
-    image?: string = "https://example.com/image.png"
-}
-```
+`name` string
 
-> If the user is not registered, they'll be automatically registered. Configured [additional fields](/docs/concepts/typescript#additional-fields) are also accepted for new users. To prevent automatic sign-up, pass `disableSignUp` as `true` in the [options](#options).
+User display name. Only used when the user is registering for the first time.
 
-> When a sign-in OTP confirms a pre-existing account whose email was never verified, any existing password on that account is removed and its sessions are revoked. The user is signed in through the OTP and can set a new password through password reset. This keeps email ownership, proven by the OTP, as the source of truth for the account.
+`image` string
 
-## ### Verify Email with OTP
+User profile image URL. Only used when the user is registering for the first time.
+
+### Verify Email with OTP
+
 To verify the user's email address with OTP, use the `sendVerificationOtp()` method to send an "email-verification" OTP to the user's email address.
 
-**Endpoint:** `POST /email-otp/send-verification-otp`
+POST/email-otp/send-verification-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
     email: "user@example.com", // required, Email address to send the OTP.
     type: "email-verification", // required, Type of the OTP.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.sendVerificationOTP({
-    body: {
-        email: "user@example.com", // required, Email address to send the OTP.
-        type: "email-verification", // required, Type of the OTP.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to send the OTP.
 
-```ts
-type sendVerificationOTP = {
-    /**
-     * Email address to send the OTP. 
-     */
-    email: string = "user@example.com"
-    /**
-     * Type of the OTP.
-     */
-    type: "email-verification" = "email-verification"
-}
-```
+`type` "email-verification"required
+
+Type of the OTP.
 
 Once the user provides the OTP, use the `verifyEmail()` method to complete email verification.
 
-**Endpoint:** `POST /email-otp/verify-email`
+POST/email-otp/verify-email
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.verifyEmail({
     email: "user@example.com", // required, Email address to verify.
     otp: "123456", // required, OTP to verify.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.verifyEmailOTP({
-    body: {
-        email: "user@example.com", // required, Email address to verify.
-        otp: "123456", // required, OTP to verify.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to verify.
 
-```ts
-type verifyEmailOTP = {
-    /**
-     * Email address to verify. 
-     */
-    email: string = "user@example.com"
-    /**
-     * OTP to verify. 
-     */
-    otp: string = "123456"
-}
-```
+`otp` stringrequired
 
-## ### Reset Password with OTP
+OTP to verify.
+
+### Reset Password with OTP
+
 To reset the user's password with OTP, use the `emailOtp.requestPasswordReset()` method to send a "forget-password" OTP to the user's email address.
 
-**Endpoint:** `POST /email-otp/request-password-reset`
+POST/email-otp/request-password-reset
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.requestPasswordReset({
     email: "user@example.com", // required, Email address to send the OTP.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.requestPasswordResetEmailOTP({
-    body: {
-        email: "user@example.com", // required, Email address to send the OTP.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
-
-```ts
-type requestPasswordResetEmailOTP = {
-    /**
-     * Email address to send the OTP.
-     */
-    email: string = "user@example.com"
-}
-```
-
-> The `/forget-password/email-otp` endpoint is deprecated. Please use `/email-otp/request-password-reset` instead.
+Email address to send the OTP.
 
 Once the user provides the OTP, use the `checkVerificationOtp()` method to check if it's valid (optional).
 
-**Endpoint:** `POST /email-otp/check-verification-otp`
+POST/email-otp/check-verification-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.checkVerificationOtp({
     email: "user@example.com", // required, Email address to send the OTP.
     type: "forget-password", // required, Type of the OTP.
@@ -364,44 +228,25 @@ const { data, error } = await authClient.emailOtp.checkVerificationOtp({
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.checkVerificationOTP({
-    body: {
-        email: "user@example.com", // required, Email address to send the OTP.
-        type: "forget-password", // required, Type of the OTP.
-        otp: "123456", // required, OTP sent to the email.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to send the OTP.
 
-```ts
-type checkVerificationOTP = {
-    /**
-     * Email address to send the OTP. 
-     */
-    email: string = "user@example.com"
-    /**
-     * Type of the OTP.
-     */
-    type: "forget-password" = "forget-password"
-    /**
-     * OTP sent to the email. 
-     */
-    otp: string = "123456"
-}
-```
+`type` "forget-password"required
+
+Type of the OTP.
+
+`otp` stringrequired
+
+OTP sent to the email.
 
 Then, use the `resetPassword()` method to reset the user's password.
 
-**Endpoint:** `POST /email-otp/reset-password`
+POST/email-otp/reset-password
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.resetPassword({
     email: "user@example.com", // required, Email address to reset the password.
     otp: "123456", // required, OTP sent to the email.
@@ -409,147 +254,91 @@ const { data, error } = await authClient.emailOtp.resetPassword({
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.resetPasswordEmailOTP({
-    body: {
-        email: "user@example.com", // required, Email address to reset the password.
-        otp: "123456", // required, OTP sent to the email.
-        password: "new-secure-password", // required, New password.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to reset the password.
 
-```ts
-type resetPasswordEmailOTP = {
-    /**
-     * Email address to reset the password. 
-     */
-    email: string = "user@example.com"
-    /**
-     * OTP sent to the email. 
-     */
-    otp: string = "123456"
-    /**
-     * New password. 
-     */
-    password: string = "new-secure-password"
-}
-```
+`otp` stringrequired
 
-If the new password is rejected, for example by the [Have I Been Pwned](/docs/plugins/have-i-been-pwned) plugin, the OTP isn't consumed and can be used again. If a later step of the reset fails, such as revoking sessions or saving the password, the OTP stays usable only when transactions are enabled for your database adapter and verification values are stored in the database. That is the default without secondary storage; with [secondary storage](/docs/concepts/database#secondary-storage), set [`verification.storeInDatabase: true`](/docs/reference/options#verification). A wrong OTP still counts toward [`allowedAttempts`](#options).
+OTP sent to the email.
 
-## ### Change Email with OTP
+`password` stringrequired
+
+New password.
+
+If the new password is rejected, for example by the [Have I Been Pwned](https://better-auth.com/docs/plugins/have-i-been-pwned) plugin, the OTP isn't consumed and can be used again. If a later step of the reset fails, such as revoking sessions or saving the password, the OTP stays usable only when transactions are enabled for your database adapter and verification values are stored in the database. That is the default without secondary storage; with [secondary storage](https://better-auth.com/docs/concepts/database#secondary-storage), set [`verification.storeInDatabase: true`](https://better-auth.com/docs/reference/options#verification). A wrong OTP still counts toward [`allowedAttempts`](#options).
+
+### Change Email with OTP
+
 To allow users to change their email with OTP, first enable the `changeEmail` feature, which is disabled by default. Set `changeEmail.enabled` to `true`:
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
     plugins: [
         emailOTP({
             changeEmail: {
-                enabled: true, // [!code highlight]
+                enabled: true, 
             }
         })
     ]
 })
 ```
 
-By default, when a user requests to change their email, an OTP is sent to the **new** email address.
-The email is only updated after the user verifies the new email.
+By default, when a user requests to change their email, an OTP is sent to the **new** email address. The email is only updated after the user verifies the new email.
 
-## #### Usage
+#### Usage
+
 To change the user's email address with OTP, use the `emailOtp.requestEmailChange()` method to send a "change-email" OTP to the user's new email address.
 
-**Endpoint:** `POST /email-otp/request-email-change`
+POST/email-otp/request-email-change
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.requestEmailChange({
     newEmail: "user@example.com", // required, New email address to send the OTP.
-    otp: "123456", // OTP sent to the current email. This is required when the `changeEmail.verifyCurrentEmail` option is set to `true`.
+    otp: "123456", // OTP sent to the current email. This is required when the \`changeEmail.verifyCurrentEmail\` option is set to \`true\`.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.requestEmailChangeEmailOTP({
-    body: {
-        newEmail: "user@example.com", // required, New email address to send the OTP.
-        otp: "123456", // OTP sent to the current email. This is required when the `changeEmail.verifyCurrentEmail` option is set to `true`.
-    },
-    // This endpoint requires session cookies.
-    headers: await headers(),
-});
-```
+`newEmail` stringrequired
 
-### Type Definition
+New email address to send the OTP.
 
-```ts
-type requestEmailChangeEmailOTP = {
-    /**
-     * New email address to send the OTP.
-     */
-    newEmail: string = "user@example.com"
-    /**
-     * OTP sent to the current email. This is required when the `changeEmail.verifyCurrentEmail` option is set to `true`.
-     */
-    otp?: string = "123456"
-}
-```
+`otp` string
+
+OTP sent to the current email. This is required when the `changeEmail.verifyCurrentEmail` option is set to `true`.
 
 Once the user provides the OTP, use the `changeEmail()` method to change the user's email address.
 
-**Endpoint:** `POST /email-otp/change-email`
+POST/email-otp/change-email
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.changeEmail({
     newEmail: "user@example.com", // required, New email address to change to.
     otp: "123456", // required, OTP sent to the new email.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.changeEmailEmailOTP({
-    body: {
-        newEmail: "user@example.com", // required, New email address to change to.
-        otp: "123456", // required, OTP sent to the new email.
-    },
-    // This endpoint requires session cookies.
-    headers: await headers(),
-});
+`newEmail` stringrequired
+
+New email address to change to.
+
+`otp` stringrequired
+
+OTP sent to the new email.
+
+#### Confirming with Current Email
+
+For added security, you can require users to confirm the change with an OTP sent to their **current** email before sending an OTP to the new email address. To enable this, set `changeEmail.verifyCurrentEmail` to `true` in the plugin options.
+
 ```
-
-### Type Definition
-
-```ts
-type changeEmailEmailOTP = {
-    /**
-     * New email address to change to. 
-     */
-    newEmail: string = "user@example.com"
-    /**
-     * OTP sent to the new email. 
-     */
-    otp: string = "123456"
-}
-```
-
-## #### Confirming with Current Email
-For added security, you can require users to confirm the change with an OTP sent to their **current** email before
-sending an OTP to the new email address. To enable this, set `changeEmail.verifyCurrentEmail` to `true` in the plugin options.
-
-```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -557,7 +346,7 @@ export const auth = betterAuth({
         emailOTP({
             changeEmail: {
                 enabled: true,
-                verifyCurrentEmail: true, // [!code highlight]
+                verifyCurrentEmail: true, 
             }
         })
     ]
@@ -566,56 +355,39 @@ export const auth = betterAuth({
 
 Before requesting the email change, use the `sendVerificationOtp()` method with type `email-verification` to send an OTP to the user's email address.
 
-**Endpoint:** `POST /email-otp/send-verification-otp`
+POST/email-otp/send-verification-otp
 
-### Client Side
-
-```ts
+```
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
     email: "user@example.com", // required, Email address to send the OTP.
-    type: "email-verification", // required, Type of the OTP. Must be `email-verification` for confirming email change.
+    type: "email-verification", // required, Type of the OTP. Must be \`email-verification\` for confirming email change.
 });
 ```
 
-### Server Side
+Parameters
 
-```ts
-const data = await auth.api.sendVerificationOTP({
-    body: {
-        email: "user@example.com", // required, Email address to send the OTP.
-        type: "email-verification", // required, Type of the OTP. Must be `email-verification` for confirming email change.
-    },
-});
-```
+`email` stringrequired
 
-### Type Definition
+Email address to send the OTP.
 
-```ts
-type sendVerificationOTP = {
-    /**
-     * Email address to send the OTP. 
-     */
-    email: string = "user@example.com"
-    /**
-     * Type of the OTP. Must be `email-verification` for confirming email change.
-     */
-    type: string = "email-verification"
-}
-```
+`type` stringrequired
+
+Type of the OTP. Must be `email-verification` for confirming email change.
 
 Then, the user can provide the OTP when calling `requestEmailChange()`. The system will first verify the OTP sent to the current email before sending an OTP to the new email.
 
-## ### Override Default Email Verification
+### Override Default Email Verification
+
 To override the default email verification, pass `overrideDefaultEmailVerification: true` in the options. This will make the system use an email OTP instead of the default verification link whenever email verification is triggered. In other words, the user will verify their email using an OTP rather than clicking a link.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { emailOTP } from "better-auth/plugins"
 
 export const auth = betterAuth({
   plugins: [
     emailOTP({
-      overrideDefaultEmailVerification: true, // [!code highlight]
+      overrideDefaultEmailVerification: true, 
       async sendVerificationOTP({ email, otp, type }) {
         // Implement the sendVerificationOTP method to send the OTP to the user's email address
       },
@@ -624,20 +396,16 @@ export const auth = betterAuth({
 });
 ```
 
-## ## Options
-* `sendVerificationOTP`: A function that sends the OTP to the user's email address. The function receives an object with the following properties:
+## Options
 
-  * `email`: The user's email address.
-  * `otp`: The OTP to send.
-  * `type`: The type of OTP to send. Can be "sign-in", "email-verification", or "forget-password".
+- `sendVerificationOTP`: A function that sends the OTP to the user's email address. The function receives an object with the following properties:
+	- `email`: The user's email address.
+		- `otp`: The OTP to send.
+		- `type`: The type of OTP to send. Can be "sign-in", "email-verification", or "forget-password".
+- `otpLength`: The length of the OTP. Defaults to `6`.
+- `expiresIn`: The expiry time of the OTP in seconds. Defaults to `300` seconds.
 
-> It is recommended to not await the email sending to avoid timing attacks. On serverless platforms, use `waitUntil` or similar to ensure the email is sent.
-
-* `otpLength`: The length of the OTP. Defaults to `6`.
-
-* `expiresIn`: The expiry time of the OTP in seconds. Defaults to `300` seconds.
-
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { emailOTP } from "better-auth/plugins"
 
@@ -651,15 +419,12 @@ export const auth = betterAuth({
 })
 ```
 
-* `sendVerificationOnSignUp`: A boolean value that determines whether to send the OTP when a user signs up. Defaults to `false`.
+- `sendVerificationOnSignUp`: A boolean value that determines whether to send the OTP when a user signs up. Defaults to `false`.
+- `disableSignUp`: A boolean value that determines whether to prevent automatic sign-up when the user is not registered. Defaults to `false`.
+- `generateOTP`: A function that generates the OTP. Defaults to a random 6-digit number.
+- `allowedAttempts`: The maximum number of attempts allowed for verifying an OTP. Defaults to `3`. After exceeding this limit, the OTP becomes invalid and the user needs to request a new one.
 
-* `disableSignUp`: A boolean value that determines whether to prevent automatic sign-up when the user is not registered. Defaults to `false`.
-
-* `generateOTP`: A function that generates the OTP. Defaults to a random 6-digit number.
-
-* `allowedAttempts`: The maximum number of attempts allowed for verifying an OTP. Defaults to `3`. After exceeding this limit, the OTP becomes invalid and the user needs to request a new one.
-
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { emailOTP } from "better-auth/plugins"
 
@@ -675,18 +440,18 @@ export const auth = betterAuth({
 
 When the maximum attempts are exceeded, the `verifyOTP`, `signIn.emailOtp`, `verifyEmail`, and `resetPassword` methods will return an error with code `TOO_MANY_ATTEMPTS`.
 
-* `resendStrategy`: Controls what happens when a user requests a new OTP while an existing one is still valid. Defaults to `"rotate"`.
-  * `"rotate"`: Always generates a new OTP (default behavior).
-  * `"reuse"`: Resends the same OTP and extends its expiry. This prevents multiple valid codes from existing simultaneously when emails are delayed. Only works when the OTP is recoverable (`plain`, `encrypted`, or custom encrypt/decrypt). Falls back to `"rotate"` when the OTP is hashed. If the allowed attempts have been exhausted, a fresh OTP is generated instead of reusing the exhausted one.
+- `resendStrategy`: Controls what happens when a user requests a new OTP while an existing one is still valid. Defaults to `"rotate"`.
+	- `"rotate"`: Always generates a new OTP (default behavior).
+		- `"reuse"`: Resends the same OTP and extends its expiry. This prevents multiple valid codes from existing simultaneously when emails are delayed. Only works when the OTP is recoverable (`plain`, `encrypted`, or custom encrypt/decrypt). Falls back to `"rotate"` when the OTP is hashed. If the allowed attempts have been exhausted, a fresh OTP is generated instead of reusing the exhausted one.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth"
 import { emailOTP } from "better-auth/plugins"
 
 export const auth = betterAuth({
     plugins: [
         emailOTP({
-            resendStrategy: "reuse", // [!code highlight]
+            resendStrategy: "reuse", 
             async sendVerificationOTP({ email, otp, type }) {
                 // send the OTP
             },
@@ -695,15 +460,13 @@ export const auth = betterAuth({
 })
 ```
 
-* `storeOTP`: The method used to transform the OTP before it is stored by Better Auth's verification layer, whether `encrypted`, `hashed` or `plain` text. Default is `plain` text.
-
-> Note: This will not affect the OTP sent to the user. It only affects the stored OTP value. The storage backend itself is controlled by the global [`verification`](/docs/reference/options#verification) config, so if you configure `secondaryStorage`, these verification records can live there instead of the database.
+- `storeOTP`: The method used to transform the OTP before it is stored by Better Auth's verification layer, whether `encrypted`, `hashed` or `plain` text. Default is `plain` text.
 
 Alternatively, you can pass a custom encryptor or hasher to control how the stored OTP value is persisted.
 
 **Custom encryptor**
 
-```ts title="auth.ts"
+```
 emailOTP({
     storeOTP: { 
         encrypt: async (otp) => {
@@ -718,7 +481,7 @@ emailOTP({
 
 **Custom hasher**
 
-```ts title="auth.ts"
+```
 emailOTP({
     storeOTP: {
         hash: async (otp) => {
