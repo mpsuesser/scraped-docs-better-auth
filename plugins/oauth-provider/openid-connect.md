@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/openid-connect
 title: "Openid Connect"
 description: ""
-access_date: 2026-11-10T12:21:24.470Z
-current_date: 2026-11-10T12:21:24.470Z
+access_date: 2026-11-10T13:11:51.999Z
+current_date: 2026-11-10T13:11:51.999Z
 ---
 
 # OpenID Connect and logout (/docs/plugins/oauth-provider/openid-connect)
@@ -18,6 +18,8 @@ Your OAuth provider is also an [OpenID Connect](https://openid.net/specs/openid-
 Better Auth serves [OpenID Provider metadata](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig) at `{issuer}/.well-known/openid-configuration` and [authorization server metadata](https://datatracker.ietf.org/doc/html/rfc8414#section-3) at `{issuer}/.well-known/oauth-authorization-server`. If your framework does not forward these routes to `auth.handler`, see [Expose the well-known metadata](/docs/plugins/oauth-provider#expose-the-well-known-metadata).
 
 The OpenID configuration returns 404 when you set `scopes` without `openid`. To serve it, add `openid` to `scopes`.
+
+The issuer keeps the scheme of your `baseURL`, or of `jwt.issuer` when you set it, so discovery, the authorization response `iss` parameter, and issued tokens report the same value. If a proxy terminates TLS in front of Better Auth, set `baseURL` to the public `https` URL.
 
 To publish fewer scopes, or more claims, than the server supports, set `advertisedMetadata`:
 

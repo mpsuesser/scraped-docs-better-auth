@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-10T12:21:24.470Z
-current_date: 2026-11-10T12:21:24.470Z
+access_date: 2026-11-10T13:11:51.999Z
+current_date: 2026-11-10T13:11:51.999Z
 ---
 
 OAuth provider options, endpoints, errors, rate limits, extensions, and database schema.
@@ -77,6 +77,10 @@ Grants the token endpoint accepts. `refresh_token` requires `authorization_code`
 `validateRedirectUri` `(uri, registeredUris, defaultResult) => Awaitable<boolean>`
 
 Replaces exact redirect URI matching. See [Custom redirect URI validation](https://better-auth.com/docs/plugins/oauth-provider/clients#custom-redirect-uri-validation).
+
+`allowInsecureRedirectUri` `(url: URL) => boolean`
+
+Accepts `http` redirect and post-logout redirect URIs that the default policy rejects. See [HTTP redirect URIs](https://better-auth.com/docs/plugins/oauth-provider/clients#http-redirect-uris).
 
 `cachedTrustedClients` `Set<string>`
 
