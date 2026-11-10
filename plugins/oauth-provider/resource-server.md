@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/resource-server
 title: "Resource Server"
 description: ""
-access_date: 2026-11-10T12:21:24.470Z
-current_date: 2026-11-10T12:21:24.470Z
+access_date: 2026-11-10T19:57:23.440Z
+current_date: 2026-11-10T19:57:23.440Z
 ---
 
 # Protect your API (/docs/plugins/oauth-provider/resource-server)
@@ -67,11 +67,13 @@ export const serverClient = createAuthClient({
 });
 ```
 
-Pass `issuer`, `jwksUrl`, and `audience` explicitly. The defaults come from the options you pass to `betterAuth()`. With an origin-only `baseURL`, such as `https://auth.example.com`, they can miss your base path:
+The defaults come from your auth server's resolved base URL. That URL includes `basePath`, such as `https://auth.example.com/api/auth`:
 
-* `issuer` defaults to `baseURL` unless the JWT plugin sets `jwt.issuer`. It never adds the base path, but the provider's issuer includes it, such as `https://auth.example.com/api/auth`.
-* `jwksUrl` adds `basePath` only when you set that option. With the default base path, `/api/auth`, it points to `https://auth.example.com/jwks`.
-* `audience` defaults to `baseURL`. See the warning below.
+* `issuer` defaults to `jwt.issuer` when the JWT plugin sets it. Otherwise, it defaults to the base URL, which matches the issuer the provider signs.
+* `jwksUrl` defaults to `jwks.remoteUrl` when the JWT plugin sets it. Otherwise, it defaults to the base URL followed by `jwks.jwksPath`, which is `/jwks` by default.
+* `audience` defaults to the base URL. See the warning below.
+
+With a dynamic `baseURL`, the base URL is known only per request, so the defaults that use it are empty. Pass `issuer`, `jwksUrl`, and `audience` explicitly.
 
 > Do not rely on the default audience. It is the auth server's URL, not your API's identifier, and it is also the default `aud` of [JWT plugin](/docs/plugins/jwt#oauth-provider-mode) session JWTs. With the defaults, a signed-in user's session JWT can pass as an access token. Set `audience` to your API's resource identifier, and add `typ: "at+jwt"` and `requiredClaims: ["azp"]`.
 
@@ -181,7 +183,7 @@ Scopes describe what a client may request on a user's behalf. Permissions descri
 The simplest setup maps each scope to exactly one permission, such as `read:post`. If you need finer control, map each scope to several permissions in your API, and pass `isScopeSatisfied` to change how `requiredScopes` are matched.
 
 ## ## Protected resource metadata
-To advertise which authorization server protects your API, serve an [RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728#section-3) document at `/.well-known/oauth-protected-resource`. `serverClient.getProtectedResourceMetadata()` builds it for you. Its default `authorization_servers` entry has the same origin-only `baseURL` problem as the default issuer, so pass your provider's issuer. The [MCP plugin](/docs/plugins/mcp) serves this document automatically.
+To advertise which authorization server protects your API, serve an [RFC 9728](https://datatracker.ietf.org/doc/html/rfc9728#section-3) document at `/.well-known/oauth-protected-resource`. `serverClient.getProtectedResourceMetadata()` builds it for you. Its default `authorization_servers` entry is the same issuer that the resource client verifies by default. With a dynamic `baseURL` and no `jwt.issuer`, it has no default entry, so pass `authorization_servers`. The [MCP plugin](/docs/plugins/mcp) serves this document automatically.
 
 ```ts title="app/.well-known/oauth-protected-resource/route.ts"
 import { serverClient } from "@/lib/server-client";
