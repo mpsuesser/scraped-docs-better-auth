@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-11-08T01:22:34.925Z
-current_date: 2026-11-08T01:22:34.925Z
+access_date: 2026-11-10T17:37:07.497Z
+current_date: 2026-11-10T17:37:07.497Z
 ---
 
 OAuth 2.0 Device Authorization Grant for limited-input devices
@@ -457,77 +457,74 @@ The user code to deny
 
 #### Example Approval Page
 
+This page meets the [approval UI requirements](#production-security-requirements). `client_id` is the identifier the device sent, not a verified name. Show a name from your own client registry instead, and accept only registered IDs in [`validateClient`](#client-validation). Keep Approve disabled until `GET /device` returns the client and scopes.
+
 ```
+// Client IDs you accept in \`validateClient\`, mapped to names your users recognize.
+const knownClients = new Map([["acme-cli", "Acme CLI"]]);
+
+type DeviceRequest = {
+  user_code: string;
+  client_id?: string;
+  scope?: string;
+  resource?: string | string[];
+};
+
 export default function DeviceApprovalPage() {
   const { user } = useAuth(); // Must be authenticated
-  const searchParams = useSearchParams();
-  const userCode = searchParams.get("user_code");
+  const userCode = useSearchParams().get("user_code") ?? "";
+  const [request, setRequest] = useState<DeviceRequest | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [request, setRequest] = useState<{
-    client_id?: string;
-    scope?: string;
-    resource?: string | string[];
-  } | null>(null);
 
   useEffect(() => {
     if (!user || !userCode) return;
     authClient.device({ query: { user_code: userCode } }).then(({ data }) => {
-      setRequest(data);
+      // Client details are missing when another session claimed the code.
+      if (data?.client_id) setRequest(data);
     });
   }, [user, userCode]);
-  
-  const handleApprove = async () => {
+
+  // Ignore details that belong to an earlier code.
+  const details = request?.user_code === userCode ? request : null;
+
+  const decide = async (action: "approve" | "deny") => {
     setIsProcessing(true);
-    try {
-      await authClient.device.approve({
-        userCode: userCode,
-      });
-      // Show success message
-      alert("Device approved successfully!");
-      window.location.href = "/";
-    } catch (error) {
-      alert("Failed to approve device");
-    }
+    const { error } = await authClient.device[action]({ userCode });
     setIsProcessing(false);
-  };
-  
-  const handleDeny = async () => {
-    setIsProcessing(true);
-    try {
-      await authClient.device.deny({
-        userCode: userCode,
-      });
-      alert("Device denied");
-      window.location.href = "/";
-    } catch (error) {
-      alert("Failed to deny device");
+    if (error) {
+      alert(\`Failed to ${action} device\`);
+      return;
     }
-    setIsProcessing(false);
+    window.location.href = "/";
   };
 
   if (!user) {
-    // Redirect to login if not authenticated
-    const verificationPath = \`/device?user_code=${encodeURIComponent(userCode || "")}\`;
+    const verificationPath = \`/device?user_code=${encodeURIComponent(userCode)}\`;
     window.location.href = \`/login?redirect=${encodeURIComponent(verificationPath)}\`;
     return null;
   }
-  
+
   return (
     <div>
       <h2>Device Authorization Request</h2>
-      <p>Client: {request?.client_id}</p>
-      <p>Scopes: {request?.scope || "None"}</p>
       <p>
-        Resources: {Array.isArray(request?.resource)
-          ? request.resource.join(", ")
-          : request?.resource || "None"}
+        Client: {details?.client_id
+          ? knownClients.get(details.client_id) ?? \`Unrecognized client (${details.client_id})\`
+          : "Loading..."}
+      </p>
+      <p>Scopes: {details?.scope || "None"}</p>
+      <p>
+        Resources: {Array.isArray(details?.resource)
+          ? details.resource.join(", ")
+          : details?.resource || "None"}
       </p>
       <p>Code: {userCode}</p>
-      
-      <button onClick={handleApprove} disabled={isProcessing}>
+      <p>Approve only if this code is showing right now on a device you have.</p>
+
+      <button onClick={() => decide("approve")} disabled={isProcessing || !details}>
         Approve
       </button>
-      <button onClick={handleDeny} disabled={isProcessing}>
+      <button onClick={() => decide("deny")} disabled={isProcessing}>
         Deny
       </button>
     </div>
