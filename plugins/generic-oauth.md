@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/generic-oauth
 title: "Generic Oauth"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-10T23:05:20.928Z
+current_date: 2026-11-10T23:05:20.928Z
 ---
 
 # Generic OAuth (/docs/plugins/generic-oauth)
@@ -383,7 +383,7 @@ genericOAuth({
 
 **discoveryHeaders**: (Optional) Custom headers to include in the discovery request. Useful for providers that require special headers.
 
-**authorizationHeaders**: (Optional) Custom headers to include in the authorization request. Useful for providers that require special headers.
+**authorizationHeaders**: (Optional) Custom headers to include in requests to the token endpoint, both the authorization code exchange and token refresh. A custom `getToken` replaces the default code exchange, so it must add these headers itself. Useful for providers that require special headers.
 
 **overrideUserInfo**: (Optional) If true, the user's info in your database will be updated with the provider's info every time they sign in. Defaults to `false`.
 
