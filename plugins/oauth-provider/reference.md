@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-10T13:11:51.999Z
-current_date: 2026-11-10T13:11:51.999Z
+access_date: 2026-11-10T15:42:54.528Z
+current_date: 2026-11-10T15:42:54.528Z
 ---
 
 OAuth provider options, endpoints, errors, rate limits, extensions, and database schema.
@@ -36,7 +36,7 @@ A step between login and consent, such as choosing an organization. See [Post-lo
 
 `allowPublicClientPrelogin` `boolean`
 
-Lets `/oauth2/public-client-prelogin` answer before sign-in when the request carries a valid signed `oauth_query`. The signed query does not limit which `client_id` is read, so every enabled client's public fields, including `contacts`, become readable without an account. Defaults to `false`.
+Lets `/oauth2/public-client-prelogin` answer before sign-in when the request carries a valid signed `oauth_query`. The requested `client_id` must match the client in the signed query. Defaults to `false`.
 
 ### Scopes and claims
 
