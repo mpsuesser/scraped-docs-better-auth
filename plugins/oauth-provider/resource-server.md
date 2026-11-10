@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/resource-server
 title: "Resource Server"
 description: ""
-access_date: 2026-11-10T12:07:46.846Z
-current_date: 2026-11-10T12:07:46.846Z
+access_date: 2026-11-10T12:21:24.470Z
+current_date: 2026-11-10T12:21:24.470Z
 ---
 
 # Protect your API (/docs/plugins/oauth-provider/resource-server)
@@ -169,7 +169,11 @@ An authenticated client can introspect an access token only when:
 
 To set up the second case, [register your API as a resource](/docs/plugins/oauth-provider/tokens#resources) and link the client to it. Any other caller gets `{ active: false }`, the same response as for an unknown or expired token. Only the client that requested a refresh token can introspect it.
 
-If a token is tied to a session, introspection also checks that the session is still active. JWT and opaque tokens return the same claims for the same grant in the [introspection response](https://datatracker.ietf.org/doc/html/rfc7662#section-2.2): extension access token claims, `customAccessTokenClaims`, per-resource `customClaims`, and the reserved claims the server owns (`iss`, `sub`, `aud`, `scope`, and similar). A callback that returns a reserved claim name has that claim dropped. See [Custom claims](/docs/plugins/oauth-provider/tokens#custom-claims).
+An access token tied to a session is reported inactive once that session ends. When a session is deleted, such as at sign-out, Better Auth also revokes its refresh tokens that lack `offline_access`. A refresh token can lose `offline_access` when a refresh narrows its scopes. Any other refresh token stays active after its session ends, until it expires or is revoked, and its response omits `sid`.
+
+For an access token, the [introspection response](https://datatracker.ietf.org/doc/html/rfc7662#section-2.2) includes extension access token claims, `customAccessTokenClaims`, per-resource `customClaims`, and the reserved claims the server owns (`iss`, `sub`, `aud`, `scope`, and similar). A JWT access token returns the claims signed at issuance. An opaque access token returns claims recomputed at introspection. Per-issuance claims and claims that depend on the grant type therefore appear only for JWT access tokens. A refresh token response omits `aud`, extension claims, `customAccessTokenClaims`, and per-resource `customClaims`. See [Claim precedence](/docs/plugins/oauth-provider/reference#claim-precedence).
+
+A callback that returns a reserved claim name has that claim dropped. See [Custom claims](/docs/plugins/oauth-provider/tokens#custom-claims).
 
 ## ## Scopes and permissions
 Scopes describe what a client may request on a user's behalf. Permissions describe what a user is allowed to do, and your API enforces them.

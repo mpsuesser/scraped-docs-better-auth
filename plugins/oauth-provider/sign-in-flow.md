@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/sign-in-flow
 title: "Sign In Flow"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-10T12:21:24.470Z
+current_date: 2026-11-10T12:21:24.470Z
 ---
 
 # Sign-in and consent screens (/docs/plugins/oauth-provider/sign-in-flow)
@@ -193,7 +193,7 @@ await authClient.oauth2.continue({ selected: true });
 To add a step after sign-in and before consent, such as picking an organization, set `postLogin` with a `page` and these callbacks:
 
 * `shouldRedirect` receives `headers`, `user`, `session`, `scopes`, and `isContinuation`. It returns `true` to redirect to `page`.
-* `consentReferenceId` receives `user`, `session`, and `scopes`. It returns the user's choice, such as an organization ID. Better Auth stores consent separately for each reference. When `consentReferenceId` returns `undefined` or an empty string, the consent given without a reference applies.
+* `consentReferenceId` receives `user`, `session`, and `scopes`. Until the user accepts, `scopes` holds the requested scopes. Once the user accepts, it holds the scopes they accepted. `consentReferenceId` returns the user's choice, such as an organization ID. Better Auth stores consent separately for each reference. When `consentReferenceId` returns `undefined` or an empty string, the consent given without a reference applies.
 
 ```ts title="auth.ts"
 oauthProvider({
@@ -222,7 +222,7 @@ await authClient.oauth2.continue({ postLogin: true });
 If some scopes need a reference, throw an `APIError` from `consentReferenceId` when none is set. Better Auth does not check this for you. For how references reach token claims, see [Organizations](/docs/plugins/oauth-provider/clients#organizations).
 
 ## ## Continue endpoint
-To resume authorization from an account page, call this endpoint with the flag that matches the page. Better Auth runs the authorize steps again and responds with `{ redirect: true, url }`. The `url` can be another account page, the consent page, or the client's `redirect_uri`. By default, the auth client sends the browser there.
+To resume authorization from an account page, call this endpoint with the flag that matches the page. Better Auth runs the authorize steps again and responds with `{ redirect: true, url }`. The `url` can be another account page, the consent page, or the client's `redirect_uri`. By default, the auth client sends the browser there. Account selection does not run again: it runs only on the request to `/oauth2/authorize` itself.
 
 Without a flag or the signed query, the call returns a 400 `invalid_request` error. Call it from the page that Better Auth redirected to, where the URL still carries the signed query. Without `oauthProviderClient`, send that query as `oauth_query`.
 

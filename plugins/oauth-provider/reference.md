@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-10T12:21:24.470Z
+current_date: 2026-11-10T12:21:24.470Z
 ---
 
 OAuth provider options, endpoints, errors, rate limits, extensions, and database schema.
@@ -260,8 +260,8 @@ Paths are relative to your auth base path. "Server-only" endpoints are callable 
 
 | Method | Path | Server method | Auth | Server-only |
 | --- | --- | --- | --- | --- |
-| `GET` | `/.well-known/oauth-authorization-server` | `getOAuthServerConfig` | None | No |
-| `GET` | `/.well-known/openid-configuration` | `getOpenIdConfig` | None | No |
+| `GET` | `/.well-known/oauth-authorization-server` | `getOAuthServerConfig` | None | Yes |
+| `GET` | `/.well-known/openid-configuration` | `getOpenIdConfig` | None | Yes |
 | `GET` `POST` | `/oauth2/authorize` | `oauth2Authorize` | Session, or redirect to `loginPage` | No |
 | `POST` | `/oauth2/consent` | `oauth2Consent` | Session and signed `oauth_query` | No |
 | `POST` | `/oauth2/continue` | `oauth2Continue` | Session and signed `oauth_query` | No |
@@ -307,6 +307,7 @@ Errors use the [RFC 6749 §5.2](https://datatracker.ietf.org/doc/html/rfc6749#se
 | `invalid_client` | 400 | Client authentication failed, or the client used a method other than its registered `token_endpoint_auth_method`. |
 | `invalid_client` | 401 | `client_secret_basic` authentication failed. The response carries a `WWW-Authenticate: Basic` challenge. |
 | `invalid_grant` | 400 | The code, refresh token, or PKCE verifier is invalid, expired, or issued to another client. |
+| `invalid_user` | 400 | The user who approved an authorization code was deleted before the code was exchanged. |
 | `unauthorized_client` | 400 | The client is not registered for the grant, a public client used `client_credentials`, or the client has no `client_credentials` scopes. |
 | `unsupported_grant_type` | 400 | The grant is not in `grantTypes` and no extension handles it. |
 | `invalid_scope` | 400 | A requested scope is not allowed for the client, or none are allowed for a requested resource. |

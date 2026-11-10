@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/openid-connect
 title: "Openid Connect"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-10T12:21:24.470Z
+current_date: 2026-11-10T12:21:24.470Z
 ---
 
 # OpenID Connect and logout (/docs/plugins/oauth-provider/openid-connect)
@@ -76,7 +76,7 @@ Claims follow the granted [scopes](https://openid.net/specs/openid-connect-core-
 | `profile` | `name`, `picture`, `given_name`, `family_name` |
 | `email`   | `email`, `email_verified`                      |
 
-Claims requested through the [`claims.userinfo` parameter](https://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests) are added when they appear in `claims_supported` and a value exists. Missing values are omitted, not returned as `null`. This per-claim selection works only with opaque access tokens. With a JWT access token, UserInfo returns only the claims its scopes cover.
+When a claim from the table above is requested through the [`claims.userinfo` parameter](https://openid.net/specs/openid-connect-core-1_0.html#IndividualClaimsRequests) and appears in `claims_supported`, Better Auth returns it if a value exists, even when its scope was not granted. Better Auth does not fill in other requested names, such as `locale`. To return them, read `requestedClaims` in `customUserInfoClaims`, described below. Missing values are omitted, not returned as `null`. This per-claim selection works only with opaque access tokens. With a JWT access token, UserInfo returns only the claims its scopes cover.
 
 To add claims to the [UserInfo response](https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse), set `customUserInfoClaims`. It receives the `user`, the access token's `scopes`, the access token payload as `jwt`, and `requestedClaims`. `requestedClaims` lists the claim names requested through `claims.userinfo`. It returns an object of claims to add:
 
@@ -109,7 +109,7 @@ Better Auth computes the value with HMAC-SHA256 over the host of the client's fi
 
 > `pairwiseSecret` must be at least 32 characters. Changing it changes every pairwise `sub` and breaks existing client accounts. Treat it as permanent.
 
-`sector_identifier_uri` is not supported. All `redirect_uris` of a pairwise client must therefore share one host. Pairwise clients also cannot use custom-scheme redirect URIs with a host, such as `app://rp.example.com/callback`. Any app can claim a custom scheme, and that app would receive the same `sub` as a pairwise web client that redirects to `rp.example.com`. Registration fails with `invalid_client_metadata` in either case.
+`sector_identifier_uri` is not supported. All `redirect_uris` of a pairwise client must therefore share one host and port. Pairwise clients also cannot use custom-scheme redirect URIs with a host, such as `app://rp.example.com/callback`. Any app can claim a custom scheme, and that app would receive the same `sub` as a pairwise web client that redirects to `rp.example.com`. Registration fails with `invalid_client_metadata` in either case.
 
 ## ## RP-initiated logout
 To let a client end the user's session, register it with `enable_end_session: true`. The `/oauth2/end-session` endpoint then implements [RP-Initiated Logout](https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RPLogout) for it:
@@ -119,14 +119,15 @@ await auth.api.adminCreateOAuthClient({
   headers,
   body: {
     redirect_uris: ["https://app.example.com/callback"],
+    post_logout_redirect_uris: ["https://app.example.com/logout"],
     enable_end_session: true, // [!code highlight]
   },
 });
 ```
 
-* It accepts GET query parameters or a form-encoded POST body.
+* It accepts GET query parameters, a form-encoded POST body, or a JSON POST body. `authClient.oauth2.endSession()` sends a JSON body when you pass the fields directly.
 * A valid `id_token_hint` for the current browser session ends it immediately. Without one, or with a hint for a different session, the user must confirm first. In a browser, Better Auth serves the confirmation page.
-* Better Auth [redirects after logout](https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RedirectionAfterLogout) only when `post_logout_redirect_uri` exactly matches a registered URI, and adds `state` only to that redirect. For example, `https://app.example.com/logout/` does not match a registered `https://app.example.com/logout`. Without a matching URI, a browser shows a logged-out page from Better Auth.
+* Better Auth [redirects after logout](https://openid.net/specs/openid-connect-rpinitiated-1_0.html#RedirectionAfterLogout) only when `post_logout_redirect_uri` exactly matches one of the client's registered `post_logout_redirect_uris`, and adds `state` only to that redirect. For example, `https://app.example.com/logout/` does not match a registered `https://app.example.com/logout`. Without a matching URI, a browser shows a logged-out page from Better Auth.
 
 Enable this only for clients you trust. The client, or anyone holding an ID token it received, can end that token's session without confirmation, for these reasons:
 
