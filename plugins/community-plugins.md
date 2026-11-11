@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/community-plugins
 title: "Community Plugins"
 description: ""
-access_date: 2026-11-09T01:35:29.989Z
-current_date: 2026-11-09T01:35:29.989Z
+access_date: 2026-11-11T07:16:50.536Z
+current_date: 2026-11-11T07:16:50.536Z
 ---
 
 Community-built plugins that extend Better Auth.
@@ -54,7 +54,7 @@ Showing 51 of 51 plugins
 | [better-auth-instagram](https://github.com/rajatsandeepsen/better-auth-instagram)    [![Rajat Sandeep](https://github.com/rajatsandeepsen.png) Rajat Sandeep](https://github.com/rajatsandeepsen) | Instagram Provider for Better Auth |
 | [better-auth-zoho](https://github.com/rajatsandeepsen/better-auth-zoho)    [![Rajat Sandeep](https://github.com/rajatsandeepsen.png) Rajat Sandeep](https://github.com/rajatsandeepsen) | Zoho Provider for Better Auth |
 | [better-auth-snapchat](https://github.com/rajatsandeepsen/better-auth-snapchat)    [![Rajat Sandeep](https://github.com/rajatsandeepsen.png) Rajat Sandeep](https://github.com/rajatsandeepsen) | Snapchat Provider for Better Auth |
-| [better-inbox](https://github.com/better-inbox/better-inbox)    [![stewartjarod](https://github.com/stewartjarod.png) stewartjarod](https://github.com/stewartjarod) | In-app notifications for Better Auth apps. One plugin, one migration, one component — notifications live in your database, addressed to your users. |
+| [BYO (byo-oss)](https://byo.dev/)    [![byo-oss](https://github.com/byo-oss.png) byo-oss](https://github.com/byo-oss) | Open-source packages for better-auth apps. |
 | [better-auth-email-challenge](https://github.com/lapluviosilla/better-auth-email-challenge)    [![lapluviosilla](https://github.com/lapluviosilla.png) lapluviosilla](https://github.com/lapluviosilla) | Passwordless, multi-device email challenge — one challenge completable by an approval link or OTP, with browser-bound session issuance for safe cross-device sign-in. |
 | [@better-geetest/better-auth-plugin-gt4](https://github.com/typed-sigterm/better-geetest/tree/main/packages/better-auth-plugin-gt4)    [![Typed SIGTERM](https://github.com/typed-sigterm.png) Typed SIGTERM](https://github.com/typed-sigterm) | Integrate GeeTest gt4 bot protection by adding captcha verification for key endpoints. |
 | [better-auth-evp](https://github.com/qamarq/better-auth-evp)    [![qamarq](https://github.com/qamarq.png) qamarq](https://github.com/qamarq) | Email Verification Protocol (Chrome origin trial) plugin - lets a supporting browser verify mailbox ownership in the background and sign the user in, with automatic fallback to any other sign-in method when unsupported. |
