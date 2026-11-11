@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-11-10T17:37:07.497Z
-current_date: 2026-11-10T17:37:07.497Z
+access_date: 2026-11-11T12:56:05.812Z
+current_date: 2026-11-11T12:56:05.812Z
 ---
 
 OAuth 2.0 Device Authorization Grant for limited-input devices
@@ -461,7 +461,10 @@ This page meets the [approval UI requirements](#production-security-requirements
 
 ```
 // Client IDs you accept in \`validateClient\`, mapped to names your users recognize.
-const knownClients = new Map([["acme-cli", "Acme CLI"]]);
+const knownClients = new Map([
+  ["my-cli", "My CLI"],
+  ["my-tv-app", "My TV App"],
+]);
 
 type DeviceRequest = {
   user_code: string;
