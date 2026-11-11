@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/email
 title: "Email"
 description: ""
-access_date: 2026-10-16T19:08:56.642Z
-current_date: 2026-10-16T19:08:56.642Z
+access_date: 2026-11-11T13:07:02.599Z
+current_date: 2026-11-11T13:07:02.599Z
 ---
 
 # Email (/docs/concepts/email)
@@ -38,6 +38,8 @@ To enable email verification, you need to pass a function that sends a verificat
   * `token`: The verification token used to complete the email verification to be used when implementing a custom verification URL.
 
 and a `request` object as the second parameter.
+
+During a sign-up, Better Auth calls `sendVerificationEmail` after the new account is saved, so a sign-up that rolls back sends no email. A request can still fail after the email is sent if the account stays saved, for example on an adapter without transactions or when a `session` `after` hook throws. If the function throws, the sign-up still succeeds and the error is logged. To reject a sign-up, use a `user.create.before` [database hook](/docs/concepts/database#database-hooks).
 
 ```ts title="auth.ts"
 import { betterAuth } from 'better-auth';
@@ -198,6 +200,8 @@ export const auth = betterAuth({
 
 ## ### Callback on duplicate sign-up attempt
 The `onExistingUserSignUp` callback is triggered when someone tries to sign up with an email that already exists. This is useful for notifying the existing user that someone attempted to register with their email address.
+
+It runs after the sign-up request's database work completes. If it throws, the error is logged and the request still returns the generic response.
 
 > This callback is only called when `emailAndPassword.requireEmailVerification` is set to `true`, which enables the generic duplicate response (synthetic user) instead of throwing a duplicate-email error.
 
