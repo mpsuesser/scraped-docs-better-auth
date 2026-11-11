@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/database
 title: "Database"
 description: ""
-access_date: 2026-11-11T08:39:53.499Z
-current_date: 2026-11-11T08:39:53.499Z
+access_date: 2026-11-11T23:58:08.909Z
+current_date: 2026-11-11T23:58:08.909Z
 ---
 
 Learn about database adapters, migrations, secondary storage with Redis, core schema (user, session, account, verification), custom tables, extending schemas, ID generation, database hooks, and plugin schemas.
@@ -67,13 +67,11 @@ await runMigrations();
 
 ## Schema Validation
 
-During initialization, Better Auth compares the schema with the tables it writes and reports missing tables, missing columns, and required columns it never fills, together with their fixes. Errors appear through your configured logger without waiting for an authentication request. Requests await schema validation and fail if the schema does not match; validation does not automatically stop your server or build. Run [`npx auth@latest check schema`](https://better-auth.com/docs/concepts/cli#schema) whenever you want to check explicitly without making an authentication request.
+When the auth instance is first used, Better Auth checks that your database has the tables and columns it needs. If they don't match, requests fail with an error that explains how to fix it. To check ahead of time, run [`npx auth@latest check schema`](https://better-auth.com/docs/concepts/cli#schema).
 
-Validation is enabled by default, including in production, and caches completed validation results per adapter instance. Programmatic migrations invalidate cached checks for the same database instance. Requests waiting on an invalidated check await the new result. Restart after applying schema changes with other tools. Kysely reads live database metadata and needs database access during initialization. Drizzle checks the configured schema object and Prisma checks the generated client's data model, without querying the database. These local checks cannot detect migrations that were not applied to the database. The compact `prisma-client` model omits nullability, so required unwritten columns are reported by `auth generate` instead. Custom adapters without a registered check are not validated.
+Drizzle and Prisma are checked against your schema definitions, so the check cannot tell whether migrations were applied.
 
-For adapters without schema validation, initialization logs a warning if you explicitly set `validateSchema: true`, or a debug message if you omit the option. Database operations proceed normally.
-
-Set `advanced.database.validateSchema` to `false` to disable runtime validation and its skip message. `auth migrate` and `auth generate` retain their own schema diagnostics.
+To disable runtime validation, set `advanced.database.validateSchema` to `false`.
 
 ```
 import { betterAuth } from "better-auth";
