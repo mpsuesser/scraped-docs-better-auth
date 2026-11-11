@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/clients
 title: "Clients"
 description: ""
-access_date: 2026-11-10T15:42:54.528Z
-current_date: 2026-11-10T15:42:54.528Z
+access_date: 2026-11-11T21:44:57.593Z
+current_date: 2026-11-11T21:44:57.593Z
 ---
 
 # Clients and registration (/docs/plugins/oauth-provider/clients)
@@ -35,7 +35,7 @@ const { data, error } = await authClient.oauth2.createClient({
     client_name: "My Client", // Display name shown on the consent screen.
     token_endpoint_auth_method: "client_secret_basic", // How the client authenticates at the token endpoint. Use `"none"` for a public client.
     application_type: "web", // Controls redirect URI validation.
-    scope: "openid profile email", // Space-separated scopes the client may request. When omitted, the client may request every scope the server defines.
+    scope, // Space-separated scopes the client may request. When omitted, the client may request every scope the server defines.
 });
 ```
 
@@ -48,7 +48,7 @@ const data = await auth.api.createOAuthClient({
         client_name: "My Client", // Display name shown on the consent screen.
         token_endpoint_auth_method: "client_secret_basic", // How the client authenticates at the token endpoint. Use `"none"` for a public client.
         application_type: "web", // Controls redirect URI validation.
-        scope: "openid profile email", // Space-separated scopes the client may request. When omitted, the client may request every scope the server defines.
+        scope, // Space-separated scopes the client may request. When omitted, the client may request every scope the server defines.
     },
     // This endpoint requires session cookies.
     headers: await headers(),
@@ -78,7 +78,7 @@ type createOAuthClient = {
   /**
    * Space-separated scopes the client may request. When omitted, the client may request every scope the server defines.
    */
-  scope?: string = "openid profile email"
+  scope?: string
 }
 ```
 

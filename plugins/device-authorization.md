@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-11-11T12:56:05.812Z
-current_date: 2026-11-11T12:56:05.812Z
+access_date: 2026-11-11T21:44:57.593Z
+current_date: 2026-11-11T21:44:57.593Z
 ---
 
 OAuth 2.0 Device Authorization Grant for limited-input devices
@@ -457,7 +457,7 @@ The user code to deny
 
 #### Example Approval Page
 
-This page meets the [approval UI requirements](#production-security-requirements). `client_id` is the identifier the device sent, not a verified name. Show a name from your own client registry instead, and accept only registered IDs in [`validateClient`](#client-validation). Keep Approve disabled until `GET /device` returns the client and scopes.
+This page meets the [approval UI requirements](#production-security-requirements). `client_id` is the identifier the device sent, not a verified name. Show a name from your own client registry instead, and accept only registered IDs in [`validateClient`](#client-validation). Keep Approve disabled until `GET /device` returns the client and scopes. The page enables Approve only when that `client_id` is also in your own list of known clients.
 
 ```
 // Client IDs you accept in \`validateClient\`, mapped to names your users recognize.
@@ -489,6 +489,9 @@ export default function DeviceApprovalPage() {
 
   // Ignore details that belong to an earlier code.
   const details = request?.user_code === userCode ? request : null;
+  const clientName = details?.client_id
+    ? knownClients.get(details.client_id)
+    : undefined;
 
   const decide = async (action: "approve" | "deny") => {
     setIsProcessing(true);
@@ -512,7 +515,7 @@ export default function DeviceApprovalPage() {
       <h2>Device Authorization Request</h2>
       <p>
         Client: {details?.client_id
-          ? knownClients.get(details.client_id) ?? \`Unrecognized client (${details.client_id})\`
+          ? clientName ?? \`Unrecognized client (${details.client_id})\`
           : "Loading..."}
       </p>
       <p>Scopes: {details?.scope || "None"}</p>
@@ -524,7 +527,7 @@ export default function DeviceApprovalPage() {
       <p>Code: {userCode}</p>
       <p>Approve only if this code is showing right now on a device you have.</p>
 
-      <button onClick={() => decide("approve")} disabled={isProcessing || !details}>
+      <button onClick={() => decide("approve")} disabled={isProcessing || !clientName}>
         Approve
       </button>
       <button onClick={() => decide("deny")} disabled={isProcessing}>
