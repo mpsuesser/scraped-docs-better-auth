@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/options
 title: "Options"
 description: ""
-access_date: 2026-11-04T18:14:49.666Z
-current_date: 2026-11-04T18:14:49.666Z
+access_date: 2026-11-11T14:11:53.997Z
+current_date: 2026-11-11T14:11:53.997Z
 ---
 
 # Options (/docs/reference/options)
@@ -105,7 +105,7 @@ You can provide a function that returns origins dynamically:
 ```ts
 export const auth = betterAuth({
 	trustedOrigins: async (request) => {
-		// request is undefined during initialization and auth.api calls
+		// request is undefined at initialization and on some auth.api calls
 		if (!request) {
 			return ["https://my-frontend.com"];
 		}
@@ -115,7 +115,17 @@ export const auth = betterAuth({
 })
 ```
 
-> The `request` parameter is `undefined` during initialization and when calling `auth.api` directly. Make sure to handle this case by returning default trusted origins.
+> Return your default trusted origins when `request` is `undefined`. Better Auth calls the function without a request in these cases:
+> 
+> * **At initialization.** Better Auth calls the function once when it starts.
+> * **On a direct `auth.api` call with a static `baseURL`** (a string, or not set). These calls use the origins resolved at initialization.
+> * **On a direct `auth.api` call with a [dynamic `baseURL`](#dynamic-base-url)** that passes neither `request` nor `headers` with `Host` or `X-Forwarded-Host`. The call then uses your `fallback` URL. Without `fallback`, the call throws an error.
+> 
+> In the other cases, the function receives a `Request`:
+> 
+> * **A request to the auth handler.** The function receives the incoming `Request`.
+> * **A direct `auth.api` call with a dynamic `baseURL`.** The function receives the `request` you pass. If you pass `headers` instead, Better Auth builds a `Request` from them. The headers must include `Host`, or `X-Forwarded-Host` when `advanced.trustedProxyHeaders` is enabled.
+> * **A direct `auth.api` call with a static `baseURL` to an endpoint with its own CSRF check**, such as email sign-in and sign-up. That check can call the function again with the `request` you pass.
 
 ## ### Wildcard Support
 You can use wildcard patterns in trusted origins:
