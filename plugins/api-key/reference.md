@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/api-key/reference
 title: "Reference"
 description: ""
-access_date: 2026-08-25T05:48:23.554Z
-current_date: 2026-08-25T05:48:23.554Z
+access_date: 2026-11-11T06:55:50.818Z
+current_date: 2026-11-11T06:55:50.818Z
 ---
 
 API Key plugin options, permissions, and schema reference.
@@ -157,19 +157,15 @@ export const auth = betterAuth({
 
 Defer non-critical updates (rate limiting counters, timestamps, remaining count) to run after the response is sent using the global `backgroundTasks` handler. This can significantly improve response times on serverless platforms. Default is `false`.
 
-Requires `backgroundTasks.handler` to be configured in the main auth options.
-
-#### Vercel
+Requires a [`backgroundTasks` handler](https://better-auth.com/docs/reference/options#backgroundtasks), such as your platform's `waitUntil`.
 
 ```
-import { waitUntil } from "@vercel/functions";
-
 export const auth = betterAuth({
-  advanced: { 
-      backgroundTasks: {
-         handler: waitUntil,
-      },
-  }
+  advanced: {
+    backgroundTasks: {
+      handler: waitUntil,
+    },
+  },
   plugins: [
     apiKey({
       deferUpdates: true,
@@ -177,8 +173,6 @@ export const auth = betterAuth({
   ],
 });
 ```
-
-#### Cloudflare Workers
 
 `permissions` `{ defaultPermissions?: Statements | ((referenceId: string, ctx: GenericEndpointContext) => Statements | Promise<Statements>) }`
 

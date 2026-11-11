@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/integrations/hono
 title: "Hono"
 description: ""
-access_date: 2026-10-17T09:39:56.823Z
-current_date: 2026-10-17T09:39:56.823Z
+access_date: 2026-11-11T06:55:50.818Z
+current_date: 2026-11-11T06:55:50.818Z
 ---
 
 # Hono Integration (/docs/integrations/hono)
@@ -82,14 +82,7 @@ If you're using another runtime, keep your existing entry point and add the same
 
 ## ### Additional Configuration
 ## #### Cloudflare Workers
-Better Auth uses `AsyncLocalStorage`. Add the [`nodejs_compat` compatibility flag](https://developers.cloudflare.com/workers/configuration/compatibility-flags/#nodejs-compatibility-flag) to your Wrangler configuration:
-
-```jsonc title="wrangler.jsonc"
-{
-  // Use "nodejs_als" instead if you only need AsyncLocalStorage.
-  "compatibility_flags": ["nodejs_compat"],
-}
-```
+See the [Cloudflare guide](/docs/guides/cloudflare) for the Workers configuration Better Auth needs.
 
 ## ## CORS
 To allow cross-origin authentication requests, register Hono's [CORS middleware](https://hono.dev/docs/middleware/builtin/cors) before the Better Auth route:
