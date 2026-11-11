@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/generic-oauth
 title: "Generic Oauth"
 description: ""
-access_date: 2026-11-10T23:05:20.928Z
-current_date: 2026-11-10T23:05:20.928Z
+access_date: 2026-11-11T13:57:42.658Z
+current_date: 2026-11-11T13:57:42.658Z
 ---
 
 # Generic OAuth (/docs/plugins/generic-oauth)
@@ -381,7 +381,10 @@ genericOAuth({
 });
 ```
 
-**discoveryHeaders**: (Optional) Custom headers to include in the discovery request. Useful for providers that require special headers.
+**discoveryHeaders**: (Optional) Custom headers to include in the discovery request. Useful for providers that require special headers. Better Auth sends these headers only to the origin (scheme, host, and port) of `discoveryUrl`:
+
+* The discovery request follows a redirect only within that origin. If `discoveryUrl` redirects to another origin, discovery fails and Better Auth logs an error. Set `discoveryUrl` to the final URL.
+* The request for the provider's signing keys (`jwks_uri`) gets the headers when `jwks_uri` is on that origin. A `jwks_uri` on another origin gets no headers.
 
 **authorizationHeaders**: (Optional) Custom headers to include in requests to the token endpoint, both the authorization code exchange and token refresh. A custom `getToken` replaces the default code exchange, so it must add these headers itself. Useful for providers that require special headers.
 
