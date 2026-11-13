@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/mcp
 title: "Mcp"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-13T12:58:48.723Z
+current_date: 2026-11-13T12:58:48.723Z
 ---
 
 Turn your Better Auth server into an OAuth provider for MCP clients
@@ -220,7 +220,7 @@ export { POST };
 
 `createMcpHandler` returns JSON or request-scoped Server-Sent Events (SSE) as required by the operation; it does not require a Redis-backed MCP session store. If you implement `subscriptions/listen` across multiple server instances, provide the SDK with a shared event bus for that extension. OAuth clients, consent, authorization codes, refresh tokens, CIMD metadata, and DPoP replay detection still use durable state because they are authorization and security records, not MCP transport sessions.
 
-`requireMcpAuth` reads the `Authorization` header, verifies access tokens against the authorization server's JSON Web Key Set (JWKS), and checks the signature, issuer, audience, and expiry. It also enforces [RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449) Demonstrating Proof of Possession (DPoP) when an access token is DPoP-bound. Unauthenticated requests receive a JSON-RPC `401` with the RFC 9728 `WWW-Authenticate` header, so MCP clients can start the authorization flow. Tokens missing a required scope receive a `403` with an [RFC 6750](https://datatracker.ietf.org/doc/html/rfc6750#section-3.1) `insufficient_scope` challenge, which MCP clients use to step up their authorization.
+`requireMcpAuth` reads the `Authorization` header, verifies access tokens against the authorization server's JSON Web Key Set (JWKS), and checks the signature, issuer, audience, and expiry. It also enforces [RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449) Demonstrating Proof of Possession (DPoP) when an access token is DPoP-bound. Unauthenticated requests receive a JSON-RPC `401` with the RFC 9728 `WWW-Authenticate` header, so MCP clients can start the authorization flow. Tokens missing a required scope receive a `403` with an [RFC 6750](https://datatracker.ietf.org/doc/html/rfc6750#section-3.1) `insufficient_scope` challenge, which MCP clients use to step up their authorization. A client that sent its token with the `DPoP` scheme gets a `DPoP` challenge instead ([RFC 9449 §7.1](https://datatracker.ietf.org/doc/html/rfc9449#section-7.1)). It names the missing scopes in `scope` and the accepted proof algorithms in `algs`, and it has no `resource_metadata`.
 
 The wrapper passes the verified access-token claims as a second callback argument, not as a database record. The example keeps authentication at the route boundary; if a tool needs token context, convert those claims to the SDK's `AuthInfo` and pass it through `mcpServerHandler.fetch(request, { authInfo })`. `requireMcpAuth` never exposes a refresh token, and it checks the access token locally against the JWKS without a database round trip. DPoP replay protection uses your auth instance's database adapter by default so it works across server instances; pass `dpop.replayStore` only when you need a different shared store.
 
@@ -295,3 +295,5 @@ const handler = createMcpProtectedRequestHandler(
 ```
 
 `createMcpProtectedRequestHandler` returns the same RFC 9728 `WWW-Authenticate` response for unauthenticated requests. Set `requiredScopes` in its options to require scopes; a token missing any of them receives the same `403` `insufficient_scope` challenge as `requireMcpAuth`. Set `challengeScopes` in the same options object to advertise a scope hint on unauthenticated challenges.
+
+Both helpers expose `WWW-Authenticate` to browser clients on other origins. If your CORS layer sets `Access-Control-Expose-Headers`, see [Resource Server](https://better-auth.com/docs/plugins/oauth-provider/resource-server) for what it must include.

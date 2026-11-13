@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/telemetry
 title: "Telemetry"
 description: ""
-access_date: 2026-11-13T08:19:56.836Z
-current_date: 2026-11-13T08:19:56.836Z
+access_date: 2026-11-13T12:58:48.723Z
+current_date: 2026-11-13T12:58:48.723Z
 ---
 
 # Telemetry (/docs/reference/telemetry)
@@ -79,7 +79,7 @@ You can enable telemetry collection in your auth config or by setting an environ
   ```
 
 ## ### When is telemetry sent?
-* On `betterAuth` initialization (`type: "init"`).
+* On `betterAuth` initialization (`type: "init"`). If the anonymous project ID cannot be generated at that point, such as when the instance is created at module scope on Cloudflare Workers, no `init` event is sent for that instance.
 * On CLI actions: `generate` and `migrate` as described above.
 
 Telemetry is disabled automatically in tests (`NODE_ENV=test`) unless explicitly overridden by internal tooling.
