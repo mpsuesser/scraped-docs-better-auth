@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/jwt
 title: "Jwt"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-14T17:05:15.189Z
+current_date: 2026-11-14T17:05:15.189Z
 ---
 
 Authenticate users with JWT tokens in services that can't use the session
@@ -128,6 +128,8 @@ await authClient.getSession({
 The token can be verified in your own service, without the need for an additional verify call or database check. For this JWKS is used. The public key can be fetched from the `/api/auth/jwks` endpoint.
 
 Since this key is not subject to frequent changes, it can be cached indefinitely. The key ID (`kid`) that was used to sign a JWT is included in the header of the token. In case a JWT with a different `kid` is received, it is recommended to fetch the JWKS again.
+
+Verifiers that run in the same process as the auth server read the keys directly instead of requesting `/jwks`. These include the OAuth provider's introspection, revocation, and end-session endpoints, `oauthProviderResourceClient(auth)`, and `requireMcpAuth`. That read skips the router, so hooks and rate limits on `/jwks` do not apply to it.
 
 ```
 {

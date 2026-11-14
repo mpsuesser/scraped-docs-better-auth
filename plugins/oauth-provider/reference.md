@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-14T15:49:17.138Z
-current_date: 2026-11-14T15:49:17.138Z
+access_date: 2026-11-14T17:05:15.189Z
+current_date: 2026-11-14T17:05:15.189Z
 ---
 
 OAuth provider options, endpoints, errors, rate limits, extensions, and database schema.
@@ -305,6 +305,8 @@ The provider also serves both well-known documents at their issuer-relative path
 
 Errors use the [RFC 6749 §5.2](https://datatracker.ietf.org/doc/html/rfc6749#section-5.2) format. The built-in grants authenticate the client before they look up the grant, so an unknown `client_id` returns `invalid_client`, not `invalid_grant`.
 
+Every 401 from the provider, including client registration, also lists `WWW-Authenticate` in `Access-Control-Expose-Headers`, so a browser client on another origin can read the challenge. Names that a hook already exposed stay in the list.
+
 | Error | Status | Returned when |
 | --- | --- | --- |
 | `invalid_request` | 400 | A required request field is missing or malformed. |
@@ -386,7 +388,7 @@ Pass it the payload, the request's method and `DPoP` header, and:
 
 - `authorization`: the `Authorization` header parsed with `parseAccessTokenAuthorization`. When the header is missing or its `scheme` is neither `Bearer` nor `DPoP`, reject the request before you validate the token. Pass its `token` to `requireActiveAccessToken`, because the proof's `ath` is checked against it.
 - `url`: your `baseURL` plus the part of the request path below its base path. Do not take the host from `request.url` or from forwarded headers. See [DPoP](https://better-auth.com/docs/plugins/oauth-provider/tokens#dpop).
-- `replayStore`: `createDpopReplayStore(ctx.context.internalAdapter)`, created on each request. Without a replay store, a captured proof can be sent again within its `proofMaxAgeSeconds`. For its storage requirement, see [Verify access tokens](https://better-auth.com/docs/plugins/oauth-provider/resource-server#verify-access-tokens).
+- `replayStore`: `createDpopReplayStore(ctx.context)`, created on each request. It records each proof where your auth instance keeps verification values, as [Verify access tokens](https://better-auth.com/docs/plugins/oauth-provider/resource-server#verify-access-tokens) describes. Without a replay store, a captured proof can be sent again within its `proofMaxAgeSeconds`.
 - `proofMaxAgeSeconds` and `signingAlgorithms`: the values from your `dpop` options.
 
 An `auth.api` call has no HTTP request to check a proof against. When `ctx.request` is missing and `getDpopJktFromPayload(payload)` returns a value, reject the call with `invalid_token`.
