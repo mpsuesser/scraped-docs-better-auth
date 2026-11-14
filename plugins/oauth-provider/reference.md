@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-13T13:25:29.392Z
-current_date: 2026-11-13T13:25:29.392Z
+access_date: 2026-11-14T15:49:17.138Z
+current_date: 2026-11-14T15:49:17.138Z
 ---
 
 OAuth provider options, endpoints, errors, rate limits, extensions, and database schema.
@@ -379,6 +379,19 @@ export const customOAuthExtension = () =>
 - A `clientDiscovery` entry has a stable `id` stored as client provenance. Changing it requires migrating the owned clients, and removing it makes them fail closed.
 
 A grant handler receives `provider` (`getClient`, `authenticateClient`, `issueTokens`, `hashToken`, `validateAccessToken`, `requireActiveAccessToken`). Other endpoints get the same object from `getOAuthProviderApi(ctx, opts, grantType?)`. Without `grantType`, `issueTokens` throws. `validateAccessToken` can return an inactive payload; protected endpoints should use `requireActiveAccessToken`, which rejects inactive tokens with a bearer challenge.
+
+`requireActiveAccessToken` checks the token, not the request. For a DPoP-bound token, it returns the payload with the key thumbprint in `cnf.jkt` and does not check a DPoP proof ([RFC 9449 §6.2](https://datatracker.ietf.org/doc/html/rfc9449#section-6.2)). An endpoint that stops there accepts the token from anyone who holds it, without the client's key. After `requireActiveAccessToken` returns, call `enforceDpopBinding` from `better-auth/oauth2` on every request, as the UserInfo endpoint does. For a DPoP-bound token, it requires the `DPoP` scheme and a valid proof signed by the bound key ([RFC 9449 §7.1](https://datatracker.ietf.org/doc/html/rfc9449#section-7.1)).
+
+Pass it the payload, the request's method and `DPoP` header, and:
+
+- `authorization`: the `Authorization` header parsed with `parseAccessTokenAuthorization`. When the header is missing or its `scheme` is neither `Bearer` nor `DPoP`, reject the request before you validate the token. Pass its `token` to `requireActiveAccessToken`, because the proof's `ath` is checked against it.
+- `url`: your `baseURL` plus the part of the request path below its base path. Do not take the host from `request.url` or from forwarded headers. See [DPoP](https://better-auth.com/docs/plugins/oauth-provider/tokens#dpop).
+- `replayStore`: `createDpopReplayStore(ctx.context.internalAdapter)`, created on each request. Without a replay store, a captured proof can be sent again within its `proofMaxAgeSeconds`. For its storage requirement, see [Verify access tokens](https://better-auth.com/docs/plugins/oauth-provider/resource-server#verify-access-tokens).
+- `proofMaxAgeSeconds` and `signingAlgorithms`: the values from your `dpop` options.
+
+An `auth.api` call has no HTTP request to check a proof against. When `ctx.request` is missing and `getDpopJktFromPayload(payload)` returns a value, reject the call with `invalid_token`.
+
+When `enforceDpopBinding` throws, check the error with `isDpopBindingError`, and rethrow any other error. Wrap a binding error as `new APIError("UNAUTHORIZED", { error: error.code, error_description: error.message })`, pass it to [`createResourceServerChallenge`](https://better-auth.com/docs/plugins/oauth-provider/resource-server#verify-access-tokens) with your resource identifier and `{ dpopSigningAlgorithms, request: { authorizationHeader: ctx.headers?.get("authorization") } }`, and throw the result. The header form also covers an `auth.api` call, which has no `ctx.request`. Pass errors from `requireActiveAccessToken` through it too, so a client that used the `DPoP` scheme gets a `DPoP` challenge.
 
 To bind a token with `cnf` ([RFC 7800 §3](https://datatracker.ietf.org/doc/html/rfc7800#section-3)), pass `confirmation` to `issueTokens` or return it from a `clientAuthentication` strategy. Claim contributors cannot set `cnf`.
 
