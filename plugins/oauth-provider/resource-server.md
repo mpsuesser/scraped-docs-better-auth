@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/resource-server
 title: "Resource Server"
 description: ""
-access_date: 2026-11-14T20:07:30.458Z
-current_date: 2026-11-14T20:07:30.458Z
+access_date: 2026-11-14T20:28:15.586Z
+current_date: 2026-11-14T20:28:15.586Z
 ---
 
 # Protect your API (/docs/plugins/oauth-provider/resource-server)
@@ -82,7 +82,7 @@ export const serverClient = createAuthClient({
 The defaults come from your auth server's resolved base URL. That URL includes `basePath`, such as `https://auth.example.com/api/auth`:
 
 * `issuer` defaults to `jwt.issuer` when the JWT plugin sets it. Otherwise, it defaults to the base URL, which matches the issuer the provider signs.
-* Without `jwksUrl`, the signing keys are read from the auth instance in-process, with no request to its own `/jwks` endpoint. When the JWT plugin sets `jwks.remoteUrl`, the keys are fetched from that URL instead. With `disableJwtPlugin`, they are fetched from the base URL's `/jwks`. Set `jwksUrl` to fetch them from another URL.
+* Without `jwksUrl`, the signing keys are read from the auth instance in-process, with no request to its own `/jwks` endpoint. When the JWT plugin sets `jwks.remoteUrl`, the keys are fetched from that URL instead. Set `jwksUrl` to fetch them from another URL. With `disableJwtPlugin`, the provider issues only opaque access tokens, which have no signing keys to read, so verify them with `remoteVerify`, as shown in [JWT or opaque tokens](#jwt-or-opaque-tokens).
 * `audience` defaults to the base URL. See the warning below.
 
 With a dynamic `baseURL`, the base URL is known only per request, so the defaults that use it are empty. Pass `issuer`, `jwksUrl`, and `audience` explicitly.

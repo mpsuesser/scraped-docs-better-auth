@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/reference/options
 title: "Options"
 description: ""
-access_date: 2026-11-14T15:49:17.138Z
-current_date: 2026-11-14T15:49:17.138Z
+access_date: 2026-11-14T20:28:15.586Z
+current_date: 2026-11-14T20:28:15.586Z
 ---
 
 # Options (/docs/reference/options)
@@ -550,7 +550,7 @@ export const auth = betterAuth({
 
 * `modelName`: The model name for the verification table
 * `fields`: Map fields to different column names
-* `disableCleanup`: Disable deleting expired verification rows in the database. Without it, a verification lookup deletes expired rows, at most once a minute per server instance.
+* `disableCleanup`: Disable deleting expired verification rows in the database. Without it, a verification lookup that finds an expired row deletes that row. Once a minute per server instance, a lookup also deletes every expired row.
 * `storeIdentifier`: How to store verification identifiers such as tokens and OTP keys. Supports `"plain"`, `"hashed"`, or a custom hasher. You can also use `{ default, overrides }` to apply different strategies per identifier prefix.
 * `storeInDatabase`: Store verification records in the database even when `secondaryStorage` is configured. Default is `false`.
 
