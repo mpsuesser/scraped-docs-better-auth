@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/jwt
 title: "Jwt"
 description: ""
-access_date: 2026-11-14T17:05:15.189Z
-current_date: 2026-11-14T17:05:15.189Z
+access_date: 2026-11-14T20:07:30.458Z
+current_date: 2026-11-14T20:07:30.458Z
 ---
 
 Authenticate users with JWT tokens in services that can't use the session
@@ -129,7 +129,7 @@ The token can be verified in your own service, without the need for an additiona
 
 Since this key is not subject to frequent changes, it can be cached indefinitely. The key ID (`kid`) that was used to sign a JWT is included in the header of the token. In case a JWT with a different `kid` is received, it is recommended to fetch the JWKS again.
 
-Verifiers that run in the same process as the auth server read the keys directly instead of requesting `/jwks`. These include the OAuth provider's introspection, revocation, and end-session endpoints, `oauthProviderResourceClient(auth)`, and `requireMcpAuth`. That read skips the router, so hooks and rate limits on `/jwks` do not apply to it.
+Verifiers that run in the same process as the auth server read the keys directly instead of requesting `/jwks`, unless `jwks.remoteUrl` is set or the verifier is given an explicit `jwksUrl`. These verifiers include the OAuth provider's introspection, revocation, and end-session endpoints, `oauthProviderResourceClient(auth)`, and `requireMcpAuth`. That read skips the router, so hooks and rate limits on `/jwks` do not apply to it.
 
 ```
 {
@@ -584,3 +584,7 @@ jwt({
   }
 })
 ```
+
+When a verifier in the same process reads the keys, `getJwks` receives the request being verified in `ctx.request` and `ctx.headers`. That applies to introspection, revocation, end-session, and `requireMcpAuth`. `oauthProviderResourceClient(auth)` verifies a token without a request, so those fields are empty there.
+
+Because `getJwks` can return different keys for each request, such as per tenant, these verifiers do not cache its result. They call it on every verification, so cache inside your store if reads are expensive. Keep any such cache keyed by whatever your store selects keys by.
