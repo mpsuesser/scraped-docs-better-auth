@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/jwt
 title: "Jwt"
 description: ""
-access_date: 2026-11-14T20:28:15.586Z
-current_date: 2026-11-14T20:28:15.586Z
+access_date: 2026-11-14T21:12:59.686Z
+current_date: 2026-11-14T21:12:59.686Z
 ---
 
 Authenticate users with JWT tokens in services that can't use the session
@@ -129,7 +129,9 @@ The token can be verified in your own service, without the need for an additiona
 
 Since this key is not subject to frequent changes, it can be cached indefinitely. The key ID (`kid`) that was used to sign a JWT is included in the header of the token. In case a JWT with a different `kid` is received, it is recommended to fetch the JWKS again.
 
-Verifiers that run in the same process as the auth server read the keys directly instead of requesting `/jwks`, unless `jwks.remoteUrl` is set. These verifiers include the OAuth provider's introspection, revocation, and end-session endpoints, `oauthProviderResourceClient(auth)`, and `requireMcpAuth`. That read skips the router, so hooks and rate limits on `/jwks` do not apply to it. `oauthProviderResourceClient(auth)` and `requireMcpAuth` instead fetch the keys over HTTP when you pass them an explicit `jwksUrl`.
+When the OAuth provider signs tokens with the JWT plugin, verifiers in the same process as the auth server read the keys directly instead of requesting `/jwks`, unless `jwks.remoteUrl` is set. These include the provider's introspection, revocation, and end-session endpoints, `oauthProviderResourceClient(auth)`, and `requireMcpAuth`. The read skips the router, so hooks and rate limits on `/jwks` do not apply to it. Passing an explicit `jwksUrl` to `oauthProviderResourceClient(auth)` or `requireMcpAuth` fetches the keys over HTTP instead.
+
+Access tokens are JWTs only when the client requests a `resource` and `disableJwtPlugin` is off. Otherwise they are opaque, and have no signing keys to read. Verify opaque tokens by introspection with `remoteVerify` in `oauthProviderResourceClient` or `createMcpProtectedRequestHandler`; `requireMcpAuth` verifies JWT access tokens only.
 
 ```
 {
