@@ -2,38 +2,34 @@
 url: https://better-auth.com/llms.txt/docs/infrastructure/services/email
 title: "Email"
 description: ""
-access_date: 2026-11-17T17:36:53.593Z
-current_date: 2026-11-17T17:36:53.593Z
+access_date: 2026-11-18T16:52:05.775Z
+current_date: 2026-11-18T16:52:05.775Z
 ---
-
-# Email Service (/docs/infrastructure/services/email)
 
 Better Auth Infrastructure provides a managed transactional email service with pre-built templates for common authentication flows. Send verification emails, password resets, invitations, and more without managing email infrastructure.
 
+## Overview
 
-
-## ## Overview
 The email service offers:
 
-* Pre-built, professionally designed email templates
-* Multiple provider support (AWS SES, SendGrid, Resend)
-* Type-safe template variables
-* No infrastructure to manage
-* Deliverability optimization
+- Pre-built templates for common authentication flows
+- Type-safe template IDs and variables
+- Managed delivery
 
-## ## Installation
-The email service is included in the `@better-auth/infra` package:
+## Installation
 
-```ts
-import { sendEmail, createEmailSender } from "@better-auth/infra";
+The email service is included in `@better-auth/infra`. Install the package and set `BETTER_AUTH_API_KEY` as described in [Getting Started](https://better-auth.com/docs/infrastructure/getting-started).
+
+```
+import { sendEmail } from "@better-auth/infra";
 ```
 
-## ## Quick Start
-## ### Send a Single Email
-```ts
+## Quick Start
+
+```
 import { sendEmail } from "@better-auth/infra";
 
-await sendEmail({
+const result = await sendEmail({
   template: "verify-email",
   to: "user@example.com",
   variables: {
@@ -43,18 +39,23 @@ await sendEmail({
     appName: "Your App",
   },
 });
+
+if (!result.success) {
+  console.error("Failed to send email:", result.error);
+}
 ```
 
-## ### Create a Reusable Sender
-```ts
+These helpers return a result instead of throwing when delivery fails. Check `result.success` when the caller needs to know whether the email was sent.
+
+To reuse credentials across calls:
+
+```
 import { createEmailSender } from "@better-auth/infra";
 
 const emailSender = createEmailSender({
   apiKey: process.env.BETTER_AUTH_API_KEY,
-  apiUrl: process.env.BETTER_AUTH_API_URL,
 });
 
-// Send multiple emails
 await emailSender.send({
   template: "reset-password",
   to: "user@example.com",
@@ -65,11 +66,84 @@ await emailSender.send({
 });
 ```
 
-## ## Available Templates
-## ### verify-email
+## Use with Better Auth
+
+`dash()` does not send these emails for you. Pass `sendEmail` into Better Auth's email callbacks. Keep the callbacks `async` and `await` the send:
+
+```
+import { betterAuth } from "better-auth";
+import { organization } from "better-auth/plugins";
+import { sendEmail } from "@better-auth/infra";
+
+export const auth = betterAuth({
+  emailAndPassword: {
+    enabled: true,
+    async sendResetPassword({ user, url }) {
+      const result = await sendEmail({
+        template: "reset-password",
+        to: user.email,
+        variables: {
+          resetLink: url,
+          userEmail: user.email,
+          userName: user.name,
+          appName: "Your App",
+        },
+      });
+      if (!result.success) {
+        console.error("Failed to send email:", result.error);
+      }
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    async sendVerificationEmail({ user, url }) {
+      const result = await sendEmail({
+        template: "verify-email",
+        to: user.email,
+        variables: {
+          verificationUrl: url,
+          userEmail: user.email,
+          userName: user.name,
+          appName: "Your App",
+        },
+      });
+      if (!result.success) {
+        console.error("Failed to send email:", result.error);
+      }
+    },
+  },
+  plugins: [
+    organization({
+      async sendInvitationEmail(data) {
+        const inviteLink = \`https://yourapp.com/accept-invitation/${data.id}\`;
+        const result = await sendEmail({
+          template: "invitation",
+          to: data.email,
+          variables: {
+            inviteLink,
+            inviterName: data.inviter.user.name,
+            inviterEmail: data.inviter.user.email,
+            organizationName: data.organization.name,
+            role: data.role,
+            appName: "Your App",
+          },
+        });
+        if (!result.success) {
+          console.error("Failed to send email:", result.error);
+        }
+      },
+    }),
+  ],
+});
+```
+
+## Available Templates
+
+### verify-email
+
 Sends an email verification link to new users.
 
-```ts
+```
 await sendEmail({
   template: "verify-email",
   to: "user@example.com",
@@ -84,10 +158,11 @@ await sendEmail({
 });
 ```
 
-## ### reset-password
+### reset-password
+
 Sends a password reset link.
 
-```ts
+```
 await sendEmail({
   template: "reset-password",
   to: "user@example.com",
@@ -101,10 +176,11 @@ await sendEmail({
 });
 ```
 
-## ### change-email
+### change-email
+
 Confirms an email address change request.
 
-```ts
+```
 await sendEmail({
   template: "change-email",
   to: "newemail@example.com",
@@ -119,10 +195,11 @@ await sendEmail({
 });
 ```
 
-## ### sign-in-otp
+### sign-in-otp
+
 Sends a one-time password for passwordless sign-in.
 
-```ts
+```
 await sendEmail({
   template: "sign-in-otp",
   to: "user@example.com",
@@ -135,10 +212,11 @@ await sendEmail({
 });
 ```
 
-## ### verify-email-otp
+### verify-email-otp
+
 Sends an OTP code for email verification.
 
-```ts
+```
 await sendEmail({
   template: "verify-email-otp",
   to: "user@example.com",
@@ -151,10 +229,11 @@ await sendEmail({
 });
 ```
 
-## ### reset-password-otp
+### reset-password-otp
+
 Sends an OTP code for password reset.
 
-```ts
+```
 await sendEmail({
   template: "reset-password-otp",
   to: "user@example.com",
@@ -167,10 +246,11 @@ await sendEmail({
 });
 ```
 
-## ### magic-link
+### magic-link
+
 Sends a magic link for passwordless authentication.
 
-```ts
+```
 await sendEmail({
   template: "magic-link",
   to: "user@example.com",
@@ -183,10 +263,11 @@ await sendEmail({
 });
 ```
 
-## ### two-factor
+### two-factor
+
 Sends a two-factor authentication code.
 
-```ts
+```
 await sendEmail({
   template: "two-factor",
   to: "user@example.com",
@@ -200,10 +281,11 @@ await sendEmail({
 });
 ```
 
-## ### invitation
+### invitation
+
 Sends an organization invitation.
 
-```ts
+```
 await sendEmail({
   template: "invitation",
   to: "newmember@example.com",
@@ -219,10 +301,11 @@ await sendEmail({
 });
 ```
 
-## ### application-invite
+### application-invite
+
 Sends an application-level invitation (inviting users to the platform).
 
-```ts
+```
 await sendEmail({
   template: "application-invite",
   to: "newuser@example.com",
@@ -237,10 +320,11 @@ await sendEmail({
 });
 ```
 
-## ### delete-account
+### delete-account
+
 Sends account deletion confirmation.
 
-```ts
+```
 await sendEmail({
   template: "delete-account",
   to: "user@example.com",
@@ -254,10 +338,11 @@ await sendEmail({
 });
 ```
 
-## ### stale-account-user
+### stale-account-user
+
 Notifies a user that their dormant account was accessed.
 
-```ts
+```
 await sendEmail({
   template: "stale-account-user",
   to: "user@example.com",
@@ -274,10 +359,11 @@ await sendEmail({
 });
 ```
 
-## ### stale-account-admin
+### stale-account-admin
+
 Notifies an admin about dormant account reactivation.
 
-```ts
+```
 await sendEmail({
   template: "stale-account-admin",
   to: "admin@yourapp.com",
@@ -296,117 +382,120 @@ await sendEmail({
 });
 ```
 
-## ## Configuration
-## ### EmailConfig
-```ts
-interface EmailConfig {
-  apiKey?: string;   // Your Better Auth Infrastructure API key
-  apiUrl?: string;   // Custom API URL (optional)
-}
+## Configuration
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `apiKey` | `string` | Your API key. Falls back to `BETTER_AUTH_API_KEY`. |
+| `apiUrl` | `string` | Better Auth Infrastructure API URL. Default: `https://dash.better-auth.com` |
+| `apiOptions` | `object` | HTTP client options. Accepts `timeout?: number` (ms, default `3000`) and `headers?: Record<string, string>`. |
+| `apiTimeout` | `number` | Deprecated alias for `apiOptions.timeout`. |
+
+Pass this object to `createEmailSender`, or as the second argument to `sendEmail` / `sendBulkEmails`. If you omit `apiKey` or `apiUrl`, the client reads `BETTER_AUTH_API_KEY` and `BETTER_AUTH_API_URL`.
+
+## API Reference
+
+### sendEmail
+
+```
+async function sendEmail<T extends EmailTemplateId>(
+  options: SendEmailOptions<T>,
+  config?: EmailConfig
+): Promise<SendEmailResult>
 ```
 
-## ### Environment Variables
-The email service automatically reads from environment variables:
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| `template` | `EmailTemplateId` | Yes | Template to send. Variables are typed from this ID. |
+| `to` | `string` | Yes | Recipient email address. |
+| `variables` | `EmailTemplateVariables<T>` | Yes | Template variables. Required and optional fields depend on `template`. |
+| `subject` | `string` | No | Subject override. Uses the template default when omitted. |
+| `clientIp` | `string` | No | End-user IP for abuse limits. Omit in Better Auth callbacks. If you send outside a request, pass only an IP your server determined — never a client-supplied value. |
 
-```dotenv
-BETTER_AUTH_API_KEY=your_api_key_here
-BETTER_AUTH_API_URL=https://api.betterauth.com  # Optional
+### createEmailSender
+
+```
+const emailSender = createEmailSender(config?: EmailConfig);
+
+await emailSender.send(options);
+await emailSender.sendBulk(options);
+const templates = await emailSender.getTemplates();
 ```
 
-## ## Response Format
-## ### SendEmailResult
-```ts
-interface SendEmailResult {
-  success: boolean;
-  messageId?: string;  // Email provider message ID
-  error?: string;      // Error message if failed
-}
+`getTemplates()` lists templates available to your project. It returns an empty array if the request fails.
+
+### sendBulkEmails
+
+```
+async function sendBulkEmails<T extends EmailTemplateId>(
+  options: SendBulkEmailsOptions<T>,
+  config?: EmailConfig
+): Promise<SendBulkEmailsResult>
 ```
 
-## ### Example Usage
-```ts
-const result = await sendEmail({
-  template: "verify-email",
-  to: "user@example.com",
-  variables: {
-    verificationUrl: "https://yourapp.com/verify?token=abc",
-    userEmail: "user@example.com",
-  },
-});
-
-if (result.success) {
-  console.log("Email sent:", result.messageId);
-} else {
-  console.error("Failed to send email:", result.error);
-}
 ```
-
-## ## Plan Requirements
-| Feature             | Starter | Pro | Business | Enterprise |
-| ------------------- | ------- | --- | -------- | ---------- |
-| Transactional Email | -       | Yes | Yes      | Yes        |
-
-Transactional email is available on Pro plans and above.
-
-## ## Integration with Better Auth
-The email service integrates seamlessly with Better Auth's authentication flows. Here's a complete example:
-
-```ts title="auth.ts"
-import { betterAuth } from "better-auth";
-import { organization } from "better-auth/plugins";
-import { sendEmail } from "@better-auth/infra";
-
-export const auth = betterAuth({
-  emailAndPassword: {
-    enabled: true,
-    async sendResetPassword({ user, url }) {
-      await sendEmail({
-        template: "reset-password",
-        to: user.email,
-        variables: {
-          resetLink: url,
-          userEmail: user.email,
-          userName: user.name,
-          appName: "Your App",
-        },
-      });
-    },
-  },
-  emailVerification: {
-    sendOnSignUp: true,
-    async sendVerificationEmail({ user, url }) {
-      await sendEmail({
-        template: "verify-email",
-        to: user.email,
-        variables: {
-          verificationUrl: url,
-          userEmail: user.email,
-          userName: user.name,
-          appName: "Your App",
-        },
-      });
-    },
-  },
-  plugins: [
-    organization({
-      async sendInvitationEmail(data) {
-        const inviteLink = `https://yourapp.com/accept-invitation/${data.id}`;
-        await sendEmail({
-          template: "invitation",
-          to: data.email,
-          variables: {
-            inviteLink,
-            inviterName: data.inviter.user.name,
-            inviterEmail: data.inviter.user.email,
-            organizationName: data.organization.name,
-            role: data.role,
-            appName: "Your App",
-          },
-        });
+const result = await sendBulkEmails({
+  template: "reset-password",
+  emails: [
+    {
+      to: "user1@example.com",
+      variables: {
+        resetLink: "https://yourapp.com/reset?token=one",
+        userEmail: "user1@example.com",
       },
-    }),
+    },
+    {
+      to: "user2@example.com",
+      variables: {
+        resetLink: "https://yourapp.com/reset?token=two",
+        userEmail: "user2@example.com",
+      },
+    },
   ],
 });
 ```
 
-> Avoid awaiting the email sending in production to prevent timing attacks. On serverless platforms, use `waitUntil` or similar to ensure the email is sent without blocking the response.
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| `template` | `EmailTemplateId` | Yes | Template used for every email. |
+| `emails` | `Array<{ to: string; variables?: EmailTemplateVariables<T> }>` | Yes | Recipients. Per-recipient `variables` override shared `variables`. |
+| `subject` | `string` | No | Subject override shared across all emails. |
+| `variables` | `Record<string, string>` | No | Shared variables applied to every email. |
+| `clientIp` | `string` | No | Same rules as [`sendEmail`](#sendemail). |
+
+### Results
+
+```
+interface SendEmailResult {
+  success: boolean;
+  messageId?: string;
+  error?: string;
+}
+
+interface SendBulkEmailsResult {
+  success: boolean;
+  failures?: Record<string, { error?: string; messageId?: string }[]>;
+}
+```
+
+Treat `error` as an opaque string. Bulk `failures` is keyed by recipient address.
+
+## Plan Requirements
+
+| Feature | Starter | Pro | Business | Enterprise |
+| --- | --- | --- | --- | --- |
+| Transactional Email | \- | Yes | Yes | Yes |
+
+Transactional email is available on Pro plans and above.[Security Plugin (sentinel)](https://better-auth.com/docs/infrastructure/plugins/sentinel)
+
+[
+
+The \`sentinel()\` plugin provides comprehensive security and abuse protection for your authentication system. It detects and prevents various attack vectors including credential stuffing, impossible travel, free trial abuse, and more.
+
+](https://better-auth.com/docs/infrastructure/plugins/sentinel)[
+
+SMS Service
+
+Better Auth Infrastructure provides a managed SMS service for sending OTP codes for phone verification and two-factor authentication. Send verification codes without managing SMS providers.
+
+](https://better-auth.com/docs/infrastructure/services/sms)
