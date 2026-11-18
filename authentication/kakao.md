@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/kakao
 title: "Kakao"
 description: ""
-access_date: 2026-08-28T22:16:12.077Z
-current_date: 2026-08-28T22:16:12.077Z
+access_date: 2026-11-18T13:47:37.928Z
+current_date: 2026-11-18T13:47:37.928Z
 ---
 
 # Kakao (/docs/authentication/kakao)
@@ -14,15 +14,12 @@ Kakao provider setup and usage.
 
 
 ### ### Get your Kakao Credentials
-To use Kakao sign in, you need a client ID and client secret. You can get them from the [Kakao Developer Portal](https://developers.kakao.com).
+To use Kakao sign in, you need a Kakao [REST API key](https://developers.kakao.com/docs/en/app-setting/app#rest-api-key) and [client secret](https://developers.kakao.com/docs/en/app-setting/app#client-secret). Use the REST API key as the `clientId`. Kakao enables the client secret by default, so `clientSecret` must be configured. You can get them from the [Kakao Developer Portal](https://developers.kakao.com).
 
 Make sure to set the redirect URL to `http://localhost:3000/api/auth/callback/kakao` for local development. For production, you should set it to the URL of your application. If you change the base path of the auth routes, you should update the redirect URL accordingly.
 
 ### ### Configure the provider
 To configure the provider, you need to import the provider and pass it to the `socialProviders` option of the auth instance.
-
-> * The default scopes are `account_email`, `profile_image`, and `profile_nickname`.
-> * Note that retrieving `account_email` requires the app to be a **Biz App** (an app that has completed business verification). For more details, refer to the [Kakao Login scopes documentation](https://developers.kakao.com/docs/latest/kakaologin/utilize#scope-user).
 
 ```ts title="auth.ts"
 import { betterAuth } from "better-auth"
@@ -38,9 +35,7 @@ export const auth = betterAuth({
 ```
 
 ### ### Sign In with Kakao
-To sign in with Kakao, you can use the `signIn.social` function provided by the client. The `signIn` function takes an object with the following properties:
-
-* `provider`: The provider to use. It should be set to `kakao`.
+To sign in with Kakao, you can use the `signIn.social` function provided by the client.
 
 ```ts title="auth-client.ts"
 import { createAuthClient } from "better-auth/client"
@@ -48,7 +43,36 @@ const authClient =  createAuthClient()
 
 const signIn = async () => {
     const data = await authClient.signIn.social({
-        provider: "kakao"
+        provider: "kakao" // [!code highlight]
     })
 }
 ```
+
+
+## ## Options
+## ### Scopes
+The default scopes are `account_email`, `profile_image`, and `profile_nickname`. Retrieving `account_email` is available for **Biz Apps** and **test apps**. For more details, refer to the [Kakao Login utilization documentation](https://developers.kakao.com/docs/en/kakaologin/utilize#scope-user).
+
+If your app can't configure `account_email`, set `disableDefaultScope` to `true` and list the scopes you still need under `scope`.
+
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
+
+export const auth = betterAuth({
+    socialProviders: {
+        kakao: {
+            clientId: process.env.KAKAO_CLIENT_ID as string,
+            clientSecret: process.env.KAKAO_CLIENT_SECRET as string,
+            disableDefaultScope: true, // [!code highlight]
+            scope: ["profile_image", "profile_nickname"], // [!code highlight]
+        },
+    }
+})
+```
+
+## ## Troubleshooting
+## ### `KOE205` error
+Kakao returns `KOE205` when the authorization request includes a scope that isn't enabled for your app. Enable the scope in the Kakao Developers console, or change the requested scopes as shown in [Scopes](#scopes).
+
+## ### `email_not_found` error
+Kakao returns no email when `account_email` isn't requested or the user doesn't grant it. Add a fallback with `mapProfileToUser` as shown in [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email).

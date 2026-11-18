@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/oauth
 title: "Oauth"
 description: ""
-access_date: 2026-11-04T23:37:22.575Z
-current_date: 2026-11-04T23:37:22.575Z
+access_date: 2026-11-18T13:47:37.928Z
+current_date: 2026-11-18T13:47:37.928Z
 ---
 
 # OAuth (/docs/concepts/oauth)
@@ -406,6 +406,7 @@ The table below summarises, for each affected provider, when `email` may be abse
 | Discord            | Phone-only accounts; `email` scope not granted                                                                                                                           | `profile.id` (snowflake)                    | Reliable (dedicated `verified` field)                                                                                                                               |
 | Facebook           | No valid email on file, even with the `email` permission granted                                                                                                         | `profile.id` (app-scoped)                   | Unknown: Graph API exposes no per-email verification flag                                                                                                           |
 | GitHub             | User has set email to private; GitHub App lacks the "Email addresses" permission                                                                                         | `profile.id` (numeric)                      | Reliable                                                                                                                                                            |
+| Kakao              | `account_email` is not requested, not enabled for the app, or not granted by the user                                                                                    | `profile.id` (numeric)                      | Reliable                                                                                                                                                            |
 | LinkedIn           | No confirmed email on the member; `email` scope not granted                                                                                                              | `profile.sub` (pairwise per app)            | Reliable when present                                                                                                                                               |
 | Microsoft Entra ID | Managed users without a `mail` attribute, unless `email` is configured as an [optional claim](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims) | `profile.oid` (stable within `profile.tid`) | **Untrustworthy**: Microsoft [explicitly warns](https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference) never to use for authorization |
 | Roblox             | The default Roblox profile flow does not return an email; Better Auth creates a non-routable placeholder from `profile.sub`                                              | `profile.sub` (Roblox user ID)              | Unknown for the default profile flow                                                                                                                                |
