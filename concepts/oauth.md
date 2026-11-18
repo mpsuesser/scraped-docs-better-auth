@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/oauth
 title: "Oauth"
 description: ""
-access_date: 2026-11-18T13:47:37.928Z
-current_date: 2026-11-18T13:47:37.928Z
+access_date: 2026-11-18T15:50:58.144Z
+current_date: 2026-11-18T15:50:58.144Z
 ---
 
 # OAuth (/docs/concepts/oauth)
@@ -633,6 +633,59 @@ Keep security-sensitive fields such as roles, bans, internal flags, and organiza
 If a provider claim controls who may sign in, enforce the policy before Better Auth completes OAuth sign-in. Do not defer the check until after sign-in, because Better Auth may already have issued a valid session. Prefer a provider-specific option when one exists, such as the Google provider's [`hd` option](/docs/authentication/google#restrict-sign-in-to-google-workspace) for a Google Workspace domain. For flows that invoke [`getUserInfo`](/docs/concepts/oauth#getuserinfo), a custom implementation can verify the provider response and return `null` when the policy fails. Configure equivalent enforcement for separate sign-in paths that do not invoke `getUserInfo`.
 
 If you also need to store the verified claim, keep the field at `input: false` and write it with your application's database layer. Use `defaultValue` only for a static value that applies to every user created through that auth configuration, not for a value derived from a provider profile.
+
+## ### getAccountFields
+Use `getAccountFields` to store your own values on the provider account, such as the email address the provider reports or the tenant a user signed in from. Add a column for each value to `account.additionalFields`, then return the values from the hook. Run `npx auth@latest migrate` after you add a field.
+
+```ts title="auth.ts"
+import { betterAuth } from "better-auth";
+
+export const auth = betterAuth({
+  // Other configurations...
+  account: {
+    additionalFields: {
+      providerEmail: {
+        type: "string",
+        required: false,
+      },
+    },
+  },
+  socialProviders: {
+    google: {
+      clientId: "YOUR_GOOGLE_CLIENT_ID",
+      clientSecret: "YOUR_GOOGLE_CLIENT_SECRET",
+      getAccountFields: async (tokens, userInfo) => {
+        return {
+          providerEmail: userInfo.email,
+        };
+      },
+    },
+  },
+});
+```
+
+The hook receives the provider's tokens and the normalized user info. It runs only when you set it, after Better Auth verifies the provider response, so a provider without `getAccountFields` behaves as before.
+
+Better Auth writes the returned values when it creates the account and when it updates it:
+
+* A new user signs in, or an existing user signs in with a provider for the first time.
+* A signed-in user links the provider.
+* A user who is already linked signs in again or links again. On sign-in, Better Auth updates the values only while [`updateAccountOnSignIn`](/docs/reference/options#updateaccountonsignin) is not `false`.
+
+This covers the redirect flow and ID token sign-in and linking. For an ID token, the `tokens` argument holds only what the client sent: the `idToken`, plus the `accessToken` and `refreshToken` when the client includes them. Sign-in through One Tap and the OAuth Proxy plugin does not call the hook.
+
+Better Auth ignores these returned values:
+
+* Keys that are not declared in `account.additionalFields` or by a plugin.
+* Fields marked `input: false`.
+* Values that are `undefined`. A stored value stays as it is.
+* Better Auth's own account columns: `id`, `userId`, `providerId`, `accountId`, `accessToken`, `refreshToken`, `idToken`, `accessTokenExpiresAt`, `refreshTokenExpiresAt`, `scope`, `password`, `createdAt`, and `updatedAt`. A returned value can never rebind an account or replace its tokens.
+
+Return `null` for the whole result to store nothing. A `null` value for a key is stored as `null` and replaces the stored value.
+
+Values pass through the field's `validator.input` and `transform.input`. A value that fails validation stops the sign-in or link with a validation error, even when `updateAccountOnSignIn` is `false` and the value is not stored. In the redirect flow, the user lands on your error URL with `error=VALIDATION_ERROR`.
+
+Better Auth treats the returned values as provider input, like the values from `mapProfileToUser`. Keep security-sensitive fields, such as roles or internal flags, at `input: false` so that a provider claim cannot set them. Do not copy a provider claim you have not verified into a field your application trusts for authorization. See [server-owned fields and authorization claims](/docs/concepts/oauth#server-owned-fields-and-authorization-claims).
 
 ## ### refreshAccessToken
 A custom function to refresh the token. This feature is only supported for built-in social providers (Google, Facebook, GitHub, etc.) and is not currently supported for custom OAuth providers configured through the Generic OAuth Plugin. For built-in providers, you can provide a custom function to refresh the token if needed.
