@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/cimd
 title: "Cimd"
 description: ""
-access_date: 2026-09-11T11:38:56.986Z
-current_date: 2026-09-11T11:38:56.986Z
+access_date: 2026-11-18T15:37:44.548Z
+current_date: 2026-11-18T15:37:44.548Z
 ---
 
 Discover OAuth clients from HTTPS metadata documents.
@@ -54,7 +54,7 @@ export const auth = betterAuth({
 });
 ```
 
-`fetchClientMetadataResource` is required. Node.js deployments can use the `@better-auth/cimd/node` implementation shown above. It resolves the original hostname once, rejects the request if any DNS result is not public-routable, pins one approved address on an isolated connection, preserves the original Host and TLS certificate identity, and never follows redirects. This transport intentionally supports only `GET` and `HEAD`, which are the methods CIMD uses to retrieve metadata resources.
+`fetchClientMetadataResource` is required. Node.js deployments can use the `@better-auth/cimd/node` implementation shown above. It resolves the original hostname once, rejects the request if any DNS result is not public-routable, connects only to the validated addresses on an isolated connection and tries the next one when an address is unreachable, preserves the original Host and TLS certificate identity, and never follows redirects. A metadata URL whose host is a public IP literal, such as `https://[2606:2800:220:1:248:1893:25c8:1946]/client.json`, skips DNS and connects to that address directly. The certificate must then name the IP address, and a non-public literal is rejected. This transport intentionally supports only `GET` and `HEAD`, which are the methods CIMD uses to retrieve metadata resources.
 
 Bun, Deno, Workers, and other runtimes must provide the equivalent secure transport at their network boundary. The same transport is used for the metadata document and discovery-owned resources such as `jwks_uri`.
 
