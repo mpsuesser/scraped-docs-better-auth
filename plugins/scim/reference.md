@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/scim/reference
 title: "Reference"
 description: ""
-access_date: 2026-10-08T21:34:08.464Z
-current_date: 2026-10-08T21:34:08.464Z
+access_date: 2026-11-18T17:51:05.254Z
+current_date: 2026-11-18T17:51:05.254Z
 ---
 
 SCIM options, endpoints, resource behavior, and database schema.
@@ -168,7 +168,7 @@ const created = await auth.api.createSCIMManagedConnection({
 | `getSCIMManagedConnection` | `connectionId`, `provisioningDomainId` | Returns connection and credential metadata without secrets. |
 | `rotateSCIMManagedCredential` | `connectionId`, `provisioningDomainId`, `actorId`, `scopes`, `expiresAt` | Adds an overlapping credential atomically and returns its raw token once. |
 | `revokeSCIMManagedCredential` | `connectionId`, `provisioningDomainId`, `credentialId`, `actorId` | Immediately rejects future requests that use that credential. |
-| `listSCIMManagedConnectionEvents` | `connectionId`, `provisioningDomainId` | Returns the latest 100 connection and credential lifecycle events in sequence order. |
+| `listSCIMManagedConnectionEvents` | `connectionId`, `provisioningDomainId`, optional `limit`, optional `offset`, optional `sortDirection` | Returns connection and credential lifecycle events. Omitting pagination still returns the latest 100 events in ascending sequence order. `limit` defaults to 100 (max 100) and `offset` defaults to 0. `sortDirection` `"desc"` returns newest first; `"asc"` pages from the oldest event. |
 | `decommissionSCIMManagedConnection` | `connectionId`, `provisioningDomainId`, `actorId` | Disables credentials, runs canonical reconciliation, and permanently completes the connection. |
 
 Every item lookup is qualified by both the opaque connection ID and provisioning domain. A connection from another tenant and an unknown connection produce the same not-found response. Credential creation, rotation, revocation, and decommissioning use transaction fences; lowering the active-credential limit cannot leave a rotation above the new cap. Expired credentials free a slot, overlapping live credentials remain valid until expiry or explicit revocation, and decommissioning disables all credentials before it reconciles canonical lifecycle and projection state.
