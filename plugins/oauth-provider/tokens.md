@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/tokens
 title: "Tokens"
 description: ""
-access_date: 2026-11-17T04:46:07.391Z
-current_date: 2026-11-17T04:46:07.391Z
+access_date: 2026-11-18T15:44:31.867Z
+current_date: 2026-11-18T15:44:31.867Z
 ---
 
 # Tokens, scopes, and resources (/docs/plugins/oauth-provider/tokens)
@@ -134,6 +134,8 @@ oauthProvider({
 ## ## Refresh tokens
 Each refresh issues a new refresh token and invalidates the old one, following [OAuth 2.1 §4.3.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1#section-4.3.1). Reusing a rotated refresh token is treated as replay: every refresh token the user holds for that client is revoked, and the opaque access tokens they issued are deleted. JWT access tokens stay valid until they expire. After a replay, the refresh fails with `invalid_grant`, and the client must start a new authorization request to get tokens.
 
+A refresh keeps the `sid` of the session that authorized the grant while that session is live. Once the session has expired or been deleted, the refresh still succeeds, and the new access and ID tokens omit `sid` so that introspection and UserInfo accept them.
+
 Keep the default, `0`, unless your clients lose refresh responses. To let a client retry a refresh after a lost response, set `refreshTokenReuseInterval` to a number of seconds. A retry within that window gets the same response back, including the replacement refresh token. The retry gets that response only when it uses the same client, scopes, resources, and DPoP key as the first refresh. A retry that differs but is otherwise valid gets `invalid_grant`.
 
 Inside the window, reuse is not treated as replay, and the token family is never revoked. A stolen rotated token that passes these checks therefore gets the replacement refresh token. Keep the interval short.
@@ -157,6 +159,8 @@ oauthProvider({
   },
 })
 ```
+
+Introspection and revocation also pass values that are not refresh tokens to `decrypt`, such as an access token or an unknown string. For a value your format cannot decode, throw a JOSE error, as `compactDecrypt` does. The endpoint then treats the value as an unknown token. A key set failure (`JWKSTimeout`, `JWKSInvalid`, or `JWKSMultipleMatchingKeys`) and any other error are treated as a failure of `decrypt` and return a server error.
 
 ## ## PKCE
 PKCE ([RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636#section-1)) is **required** for every authorization code flow, and only the `S256` method is accepted. To let an admin-created confidential client skip PKCE, set `require_pkce: false` on it. That client then has no protection against intercepted or injected authorization codes beyond its secret and `state` ([RFC 9700 §2.1.1](https://datatracker.ietf.org/doc/html/rfc9700#section-2.1.1)). Public clients cannot opt out. For dynamically registered confidential clients, set the default with `clientRegistrationRequirePKCE`.

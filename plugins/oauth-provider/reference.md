@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-14T21:26:41.960Z
-current_date: 2026-11-14T21:26:41.960Z
+access_date: 2026-11-18T15:44:31.867Z
+current_date: 2026-11-18T15:44:31.867Z
 ---
 
 OAuth provider options, endpoints, errors, rate limits, extensions, and database schema.
@@ -137,6 +137,10 @@ Resources a registration may request. Each must be in `resources`. When both res
 `assertionMaxLifetime` `number`
 
 Maximum lifetime in seconds of a `private_key_jwt` assertion. Defaults to `300`. See [Private key JWT](https://better-auth.com/docs/plugins/oauth-provider/clients#private-key-jwt).
+
+`assertionClockTolerance` `number`
+
+Seconds of clock skew accepted on the `nbf`, `exp`, and `iat` of a `private_key_jwt` assertion. Defaults to `0`, which accepts no skew. Values above `60` are treated as `60`, and negative or non-finite values are treated as `0`. See [Private key JWT](https://better-auth.com/docs/plugins/oauth-provider/clients#private-key-jwt).
 
 `allowClientKeyRotation` `boolean`
 
@@ -307,7 +311,7 @@ Errors use the [RFC 6749 §5.2](https://datatracker.ietf.org/doc/html/rfc6749#se
 
 Every 401 from an endpoint that authenticates a client or an access token carries a `WWW-Authenticate` challenge, as [RFC 9110 §15.5.2](https://www.rfc-editor.org/rfc/rfc9110#section-15.5.2) requires. A client-authentication failure that the endpoint reports as 401 carries a `Basic` challenge. If the client sent an `Authorization` header with another scheme, the challenge names that scheme instead. When `allowUnauthenticatedClientRegistration` is off, client registration without a session or an initial access token returns 401 with a bare `Bearer` challenge.
 
-The token endpoint reports most client-authentication failures as 400 with no challenge, as [RFC 6749 §5.2](https://datatracker.ietf.org/doc/html/rfc6749#section-5.2) allows. It returns 401 with a challenge when the client authenticated through the `Authorization` header, and for some other failures, such as a `private_key_jwt` assertion that fails signature or claim verification.
+The token endpoint reports most client-authentication failures as 400 with no challenge, as [RFC 6749 §5.2](https://datatracker.ietf.org/doc/html/rfc6749#section-5.2) allows. It returns 401 with a challenge when the client authenticated through the `Authorization` header, and for a `private_key_jwt` assertion from a registered client that fails the JWT library's verification: signature, issuer, subject, audience, expiry, or not-before. Other assertion failures stay 400 with no challenge, such as an unsupported `client_assertion_type` or signing algorithm, a malformed assertion, a `client_id` that does not match the assertion, a client that is unknown, disabled, or not registered for `private_key_jwt`, client keys that are missing or cannot be fetched, a missing `exp`, an `iat` that is too old, an `exp` further out than `assertionMaxLifetime`, a missing `jti`, and a `jti` that was already used. Every one of them returns the `invalid_client` error code.
 
 The response also lists `WWW-Authenticate` in `Access-Control-Expose-Headers`, so a browser client on another origin can read the challenge. Names that a hook already exposed stay in the list.
 
@@ -315,7 +319,7 @@ The response also lists `WWW-Authenticate` in `Access-Control-Expose-Headers`, s
 | --- | --- | --- |
 | `invalid_request` | 400 | A required request field is missing or malformed. |
 | `invalid_client` | 400 | Client authentication failed, or the client used a method other than its registered `token_endpoint_auth_method`. |
-| `invalid_client` | 401 | `client_secret_basic` authentication failed. The response carries a `WWW-Authenticate: Basic` challenge. |
+| `invalid_client` | 401 | `client_secret_basic` authentication failed, or a `private_key_jwt` assertion failed verification. The response carries a `WWW-Authenticate` challenge. |
 | `invalid_grant` | 400 | The code, refresh token, or PKCE verifier is invalid, expired, or issued to another client. |
 | `invalid_user` | 400 | The user who approved an authorization code was deleted before the code was exchanged. |
 | `unauthorized_client` | 400 | The client is not registered for the grant, a public client used `client_credentials`, or the client has no `client_credentials` scopes. |

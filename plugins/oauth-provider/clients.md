@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/clients
 title: "Clients"
 description: ""
-access_date: 2026-11-11T21:44:57.593Z
-current_date: 2026-11-11T21:44:57.593Z
+access_date: 2026-11-18T15:44:31.867Z
+current_date: 2026-11-18T15:44:31.867Z
 ---
 
 # Clients and registration (/docs/plugins/oauth-provider/clients)
@@ -298,14 +298,17 @@ Prefer inline `jwks` for clients whose host you do not control.
 
 The client sends `client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer` and the signed `client_assertion` instead of a secret. The assertion is signed with `RS256`, `RS384`, `RS512`, `PS256`, `PS384`, `PS512`, `ES256`, `ES384`, `ES512`, or `EdDSA`, and must contain:
 
-| Claim | Requirement                                                                   |
-| ----- | ----------------------------------------------------------------------------- |
-| `iss` | The `client_id`                                                               |
-| `sub` | The `client_id`                                                               |
-| `aud` | The URL of the endpoint that receives the assertion, or the provider's issuer |
-| `exp` | Required. At most `assertionMaxLifetime` (default 300 seconds) from now       |
-| `jti` | Required. A unique value for each assertion                                   |
-| `iat` | Optional. When present, not older than `assertionMaxLifetime`                 |
+| Claim | Requirement                                                                                                        |
+| ----- | ------------------------------------------------------------------------------------------------------------------ |
+| `iss` | The `client_id`                                                                                                    |
+| `sub` | The `client_id`                                                                                                    |
+| `aud` | The URL of the endpoint that receives the assertion, or the provider's issuer                                      |
+| `exp` | Required. At most `assertionMaxLifetime` (default 300 seconds) from now. Allows `assertionClockTolerance` of skew. |
+| `nbf` | Optional. When present, not in the future. Allows `assertionClockTolerance` of skew.                               |
+| `jti` | Required. A unique value for each assertion                                                                        |
+| `iat` | Optional. When present, not older than `assertionMaxLifetime`. Allows `assertionClockTolerance` of skew.           |
+
+A client whose clock runs ahead of the provider's can send an `nbf` that is still in the future when the provider checks it, and one whose clock runs behind can send an `exp` that has already passed. Both fail with `401 invalid_client` and "client assertion signature verification failed". To accept a small skew, set `assertionClockTolerance` to the number of seconds to allow. It defaults to `0` and is capped at `60`. The provider keeps each `jti` until the assertion's `exp` plus the tolerance, so a replayed assertion is still rejected.
 
 ## ### Rotating client keys
 To let a client with inline `jwks` replace them without a user session, set `allowClientKeyRotation: true`. The client then calls `POST /oauth2/client/rotate-keys`. The request body holds `client_assertion`, `client_assertion_type`, and the complete new `jwks`. The assertion must be signed by a current key, and its `aud` must be the rotation endpoint URL.
