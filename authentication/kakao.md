@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/authentication/kakao
 title: "Kakao"
 description: ""
-access_date: 2026-11-18T13:47:37.928Z
-current_date: 2026-11-18T13:47:37.928Z
+access_date: 2026-11-18T15:10:14.566Z
+current_date: 2026-11-18T15:10:14.566Z
 ---
 
 # Kakao (/docs/authentication/kakao)
@@ -49,9 +49,45 @@ const signIn = async () => {
 ```
 
 
+## ## Usage
+## ### Sign In with Kakao using ID Token
+If your app signs in with Kakao's native SDKs (Android, iOS, or Flutter), you can pass the ID token to `signIn.social` to sign in without redirection.
+
+1. Enable [OpenID Connect](https://developers.kakao.com/docs/en/kakaologin/prerequisite#kakao-login-oidc) in the Kakao Developers console.
+2. ID tokens from the SDKs are issued for the app key used to initialize the SDK, so add your native app key to `clientId`. Keep the REST API key first, since the redirect flow uses the first key.
+
+```ts title="auth.ts"
+import { betterAuth } from "better-auth"
+
+export const auth = betterAuth({
+    socialProviders: {
+        kakao: {
+            clientId: [
+                process.env.KAKAO_REST_API_KEY as string, // [!code highlight]
+                process.env.KAKAO_NATIVE_APP_KEY as string, // [!code highlight]
+            ],
+            clientSecret: process.env.KAKAO_CLIENT_SECRET as string,
+        },
+    }
+})
+```
+
+```ts title="auth-client.ts"
+const data = await authClient.signIn.social({
+    provider: "kakao",
+    idToken: {
+        token: kakaoIdToken, // ID token from the Kakao SDK
+    },
+})
+```
+
+The user is created from the ID token claims (`sub`, `nickname`, `picture`, and `email`). The ID token has no email verification status, so `emailVerified` is `false`, and an existing user with the same email is linked only when Kakao is one of the [trusted providers](/docs/concepts/users-accounts#forced-linking).
+
 ## ## Options
 ## ### Scopes
 The default scopes are `account_email`, `profile_image`, and `profile_nickname`. Retrieving `account_email` is available for **Biz Apps** and **test apps**. For more details, refer to the [Kakao Login utilization documentation](https://developers.kakao.com/docs/en/kakaologin/utilize#scope-user).
+
+If OpenID Connect is enabled for your app, add `openid` to `scope` to receive an ID token in the redirect flow as well.
 
 If your app can't configure `account_email`, set `disableDefaultScope` to `true` and list the scopes you still need under `scope`.
 
@@ -75,4 +111,4 @@ export const auth = betterAuth({
 Kakao returns `KOE205` when the authorization request includes a scope that isn't enabled for your app. Enable the scope in the Kakao Developers console, or change the requested scopes as shown in [Scopes](#scopes).
 
 ## ### `email_not_found` error
-Kakao returns no email when `account_email` isn't requested or the user doesn't grant it. Add a fallback with `mapProfileToUser` as shown in [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email).
+Kakao returns no email when `account_email` isn't requested or the user doesn't grant it. Sign-in with an ID token fails with `USER_EMAIL_NOT_FOUND` for the same reason. Add a fallback with `mapProfileToUser` as shown in [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email).
