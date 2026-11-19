@@ -2,23 +2,28 @@
 url: https://better-auth.com/llms.txt/docs/concepts/oauth
 title: "Oauth"
 description: ""
-access_date: 2026-11-19T04:59:08.268Z
-current_date: 2026-11-19T04:59:08.268Z
+access_date: 2026-11-19T05:13:29.609Z
+current_date: 2026-11-19T05:13:29.609Z
 ---
+
+# OAuth (/docs/concepts/oauth)
 
 Learn how to configure social OAuth providers, sign in and link accounts, request scopes, pass additional data, refresh access tokens, map profiles, and customize provider options.
 
+
+
 Better Auth comes with built-in support for OAuth 2.0 and OpenID Connect. This allows you to authenticate users via popular OAuth providers like Google, Facebook, GitHub, and more.
 
-If your desired provider isn't directly supported, you can use the [Generic OAuth Plugin](https://better-auth.com/docs/plugins/generic-oauth) for custom integrations.
+If your desired provider isn't directly supported, you can use the [Generic OAuth Plugin](/docs/plugins/generic-oauth) for custom integrations.
 
-## Configuring Social Providers
+> This page covers signing users in with another provider. To connect each organization to its own OIDC or SAML identity provider, use [SSO](/docs/plugins/sso). To let other apps sign in with your app, use the [OAuth Provider](/docs/plugins/oauth-provider) plugin.
 
+## ## Configuring Social Providers
 To enable a social provider, you need to provide `clientId` and `clientSecret` for the provider.
 
 Here's an example of how to configure Google as a provider:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -32,20 +37,18 @@ export const auth = betterAuth({
 });
 ```
 
-## Usage
-
-### Sign In
-
+## ## Usage
+## ### Sign In
 To sign in with a social provider, you can use the `signIn.social` function with the `authClient` or `auth.api` for server-side usage.
 
-```
+```ts
 // client-side usage
 await authClient.signIn.social({
   provider: "google", // or any other provider id
 })
 ```
 
-```
+```ts
 // server-side usage
 await auth.api.signInSocial({
   body: {
@@ -54,11 +57,10 @@ await auth.api.signInSocial({
 });
 ```
 
-### Link account
-
+## ### Link account
 To link an account to a social provider, you can use the `linkAccount` function with the `authClient` or `auth.api` for server-side usage.
 
-```
+```ts
 await authClient.linkSocial({
   provider: "google", // or any other provider id
 })
@@ -66,7 +68,7 @@ await authClient.linkSocial({
 
 server-side usage:
 
-```
+```ts
 await auth.api.linkSocialAccount({
   body: {
     provider: "google", // or any other provider id
@@ -75,13 +77,12 @@ await auth.api.linkSocialAccount({
 });
 ```
 
-### Validate OAuth User Info
-
-Use [`user.validateUserInfo`](https://better-auth.com/docs/concepts/users-accounts#callbacks) to reject an OAuth identity before Better Auth creates a user, links a new account, or signs a returning user back in. The callback receives the mapped `user` and, in `source.oauth`, the provider id and raw provider profile.
+## ### Validate OAuth User Info
+Use [`user.validateUserInfo`](/docs/concepts/users-accounts#callbacks) to reject an OAuth identity before Better Auth creates a user, links a new account, or signs a returning user back in. The callback receives the mapped `user` and, in `source.oauth`, the provider id and raw provider profile.
 
 It runs when an OAuth identity is first provisioned (`create-user` from a regular callback, ID-token sign-in, One Tap, or OAuth Proxy), when a new account is linked (`link-account`), and again every time an existing OAuth user signs in (`sign-in`). On the `sign-in` action the `user` carries the *fresh* provider email, so a domain check rejects a user whose provider email later moved to a disallowed domain. It works in stateless setups because it runs at the same points regardless of the database.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -106,13 +107,12 @@ export const auth = betterAuth({
 });
 ```
 
-### Get Access Token
-
+## ### Get Access Token
 Use `getAccessToken` to retrieve the access token for a linked account. Every token or provider-profile request must select the account explicitly: pass the Better Auth account record's `id` as `accountId`, or pass `useAccountCookie: true` to select the account from its signed cookie. A `providerId` is never an account selector, and a request without either supported selector is invalid.
 
 The account record ID is available from `listAccounts`. If its access token is expired, Better Auth refreshes it before returning it.
 
-```
+```ts
 const { data: accounts, error } = await authClient.listAccounts();
 
 if (error) {
@@ -130,9 +130,9 @@ const { accessToken } = await authClient.getAccessToken({
 })
 ```
 
-When [`account.storeAccountCookie`](https://better-auth.com/docs/reference/options#storeaccountcookie) is enabled, select the account from the signed cookie explicitly:
+When [`account.storeAccountCookie`](/docs/reference/options#storeaccountcookie) is enabled, select the account from the signed cookie explicitly:
 
-```
+```ts
 const { accessToken } = await authClient.getAccessToken({
   useAccountCookie: true,
 });
@@ -140,7 +140,7 @@ const { accessToken } = await authClient.getAccessToken({
 
 For server-side usage, pass the same account record ID. A trusted server call can also provide `userId` when it does not include session headers.
 
-```
+```ts
 await auth.api.getAccessToken({
   body: {
     accountId: account.id,
@@ -149,11 +149,10 @@ await auth.api.getAccessToken({
 });
 ```
 
-### Refresh Access Token
-
+## ### Refresh Access Token
 Use `refreshToken` when you need to refresh the selected account's access token immediately. It uses the same explicit selector contract as `getAccessToken`.
 
-```
+```ts
 const tokens = await authClient.refreshToken({
   accountId: account.id,
 });
@@ -161,7 +160,7 @@ const tokens = await authClient.refreshToken({
 
 To use the signed account cookie instead:
 
-```
+```ts
 await auth.api.refreshToken({
   body: {
     useAccountCookie: true,
@@ -170,13 +169,12 @@ await auth.api.refreshToken({
 });
 ```
 
-### Get Account Info Provided by the provider
-
+## ### Get Account Info Provided by the provider
 Use `accountInfo` to retrieve current profile data from the provider for a linked account. Pass the Better Auth account record's `id`, not the provider's subject identifier.
 
 The response keeps identity and profile data separate. `account` contains the selected Better Auth record and its provider key, `user` contains mutable profile fields, and `data` contains the raw provider response.
 
-```
+```ts
 const info = await authClient.accountInfo({
   query: { accountId: account.id },
 });
@@ -187,7 +185,7 @@ console.log(info.data?.user.email);
 
 When the signed account cookie should select the account:
 
-```
+```ts
 const info = await authClient.accountInfo({
   query: { useAccountCookie: true },
 });
@@ -195,7 +193,7 @@ const info = await authClient.accountInfo({
 
 For server-side usage:
 
-```
+```ts
 await auth.api.accountInfo({
   query: {
     accountId: account.id,
@@ -204,13 +202,12 @@ await auth.api.accountInfo({
 });
 ```
 
-### Requesting Additional Scopes
-
+## ### Requesting Additional Scopes
 Sometimes your application may need additional OAuth scopes after the user has already signed up (e.g., for accessing GitHub repositories or Google Drive). Users may not want to grant extensive permissions initially, preferring to start with minimal permissions and grant additional access as needed.
 
 You can request additional scopes by using the `linkSocial` method with the same provider. This will trigger a new OAuth flow that requests the additional scopes while maintaining the existing account connection.
 
-```
+```ts
 const requestAdditionalScopes = async () => {
     await authClient.linkSocial({
         provider: "google",
@@ -219,11 +216,12 @@ const requestAdditionalScopes = async () => {
 };
 ```
 
-### Customizing the Authorization URL
+> Make sure you're running Better Auth version 1.2.7 or later. Earlier versions (like 1.2.2) may show a "Social account already linked" error when trying to link with an existing provider for additional scopes.
 
+## ### Customizing the Authorization URL
 To forward extra query parameters to the provider's authorization endpoint, pass `additionalParams` when calling `signIn.social` or `linkSocial`. The values are applied after the framework has written the OAuth state, PKCE challenge, and `redirect_uri`; the reserved keys `state`, `client_id`, `redirect_uri`, `response_type`, `code_challenge`, `code_challenge_method`, and `scope` are rejected with a 400 so a caller cannot break the callback correlation.
 
-```
+```ts
 await authClient.signIn.social({
   provider: "cognito",
   additionalParams: {
@@ -243,13 +241,12 @@ await authClient.linkSocial({
 
 The provider's own baked-in query parameters (for example Google's `include_granted_scopes=true`, Facebook's `config_id`, Cognito's `identity_provider` when set via `identityProvider`) are merged with call-time `additionalParams`; the call-time value wins on key collisions.
 
-### Passing Additional Data Through OAuth Flow
-
+## ### Passing Additional Data Through OAuth Flow
 Better Auth allows you to pass additional data through the OAuth flow without storing it in the database. This is useful for scenarios like tracking referral codes, analytics sources, or other temporary data that should be processed during authentication but not persisted.
 
 When initiating OAuth sign-in or account linking, pass the additional data:
 
-```
+```ts
 // Client-side: Sign in with additional data
 await authClient.signIn.social({
   provider: "google",
@@ -279,13 +276,14 @@ await auth.api.signInSocial({
 });
 ```
 
-#### Accessing Additional Data in Hooks
-
+## #### Accessing Additional Data in Hooks
 The additional data is available in your hooks during the OAuth callback through the `getOAuthState`.
+
+> This usually works for OAuth callback paths such as `/callback/:id`.
 
 Example using an after hook:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 import { createAuthMiddleware, getOAuthState } from "better-auth/api";
 
@@ -333,33 +331,44 @@ export const auth = betterAuth({
 
 Example using a database hook:
 
-```
-// You can also access additional data in database hooks
- databaseHooks: {
-   user: {
-     create: {
-       before: async (user, ctx) => {
-         if (ctx.path === "/callback/:id") {
-           const additionalData = await getOAuthState<{ referredFrom?: string }>();
-           if (additionalData?.referredFrom) {
-             return {
-               data: {
-                 referredFrom: additionalData.referredFrom,
-               },
-             };
-           }
-         }
-       },
-     },
-   },
- },
+```ts title="auth.ts"
+ // You can also access additional data in database hooks
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user, ctx) => {
+          if (ctx.path === "/callback/:id") {
+            const additionalData = await getOAuthState<{ referredFrom?: string }>();
+            if (additionalData?.referredFrom) {
+              return {
+                data: {
+                  referredFrom: additionalData.referredFrom,
+                },
+              };
+            }
+          }
+        },
+      },
+    },
+  },
 ```
 
-#### Passing Server-Trusted Data
+> By default OAuth state includes the following data:
+> 
+> * `callbackURL` - the callback URL for the OAuth flow
+> * `codeVerifier` - the code verifier for the OAuth flow
+> * `errorURL` - the error URL for the OAuth flow
+> * `newUserURL` - the new user URL for the OAuth flow
+> * `link` - the link for the OAuth flow (email and user id)
+> * `requestSignUp` - whether to request sign up for the OAuth flow
+> * `expiresAt` - the expiration time of the OAuth state
+> * `serverContext` - server-set values that survive the redirect (see [Passing Server-Trusted Data](#passing-server-trusted-data))
+> * `[key: string]` - the `additionalData` you passed in. This originates from the client, so treat it as untrusted.
 
+## #### Passing Server-Trusted Data
 `additionalData` is client-supplied, so it must be validated before use on the callback. When a plugin (or your own `before` hook) needs to carry server-derived data across the redirect, use `addOAuthServerContext`. It writes to a server-only slot that the client cannot populate, and the values are readable on the callback under `serverContext`.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 import {
   addOAuthServerContext,
@@ -386,28 +395,26 @@ export const auth = betterAuth({
 });
 ```
 
-## Handling Providers Without Email
-
+## ## Handling Providers Without Email
 Better Auth currently requires an email address on every user record. Most providers return one with the `email` scope, but several can legitimately omit it. When that happens the OAuth flow fails with `error=email_not_found` (or `error=email_is_missing` for the Generic OAuth plugin).
 
 The table below summarises, for each affected provider, when `email` may be absent, which stable identifier you can use as a fallback in `mapProfileToUser`, and how much to trust the provider's `email_verified` signal.
 
-| Provider | When `email` may be absent | Stable fallback ID | `email_verified` trust |
-| --- | --- | --- | --- |
-| Apple | Every sign-in after the first (Apple only emits `email` on the initial consent) | `profile.sub` (stable per Apple Team) | Reliable; relay addresses are also flagged verified |
-| Discord | Phone-only accounts; `email` scope not granted | `profile.id` (snowflake) | Reliable (dedicated `verified` field) |
-| Facebook | No valid email on file, even with the `email` permission granted | `profile.id` (app-scoped) | Unknown: Graph API exposes no per-email verification flag |
-| GitHub | User has set email to private; GitHub App lacks the "Email addresses" permission | `profile.id` (numeric) | Reliable |
-| Kakao | `account_email` is not requested, not enabled for the app, or not granted by the user | `profile.id` (numeric) | Reliable |
-| LinkedIn | No confirmed email on the member; `email` scope not granted | `profile.sub` (pairwise per app) | Reliable when present |
+| Provider           | When `email` may be absent                                                                                                                                               | Stable fallback ID                          | `email_verified` trust                                                                                                                                              |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Apple              | Every sign-in after the first (Apple only emits `email` on the initial consent)                                                                                          | `profile.sub` (stable per Apple Team)       | Reliable; relay addresses are also flagged verified                                                                                                                 |
+| Discord            | Phone-only accounts; `email` scope not granted                                                                                                                           | `profile.id` (snowflake)                    | Reliable (dedicated `verified` field)                                                                                                                               |
+| Facebook           | No valid email on file, even with the `email` permission granted                                                                                                         | `profile.id` (app-scoped)                   | Unknown: Graph API exposes no per-email verification flag                                                                                                           |
+| GitHub             | User has set email to private; GitHub App lacks the "Email addresses" permission                                                                                         | `profile.id` (numeric)                      | Reliable                                                                                                                                                            |
+| Kakao              | `account_email` is not requested, not enabled for the app, or not granted by the user                                                                                    | `profile.id` (numeric)                      | Reliable                                                                                                                                                            |
+| LinkedIn           | No confirmed email on the member; `email` scope not granted                                                                                                              | `profile.sub` (pairwise per app)            | Reliable when present                                                                                                                                               |
 | Microsoft Entra ID | Managed users without a `mail` attribute, unless `email` is configured as an [optional claim](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims) | `profile.oid` (stable within `profile.tid`) | **Untrustworthy**: Microsoft [explicitly warns](https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference) never to use for authorization |
-| Roblox | The default Roblox profile flow does not return an email; Better Auth creates a non-routable placeholder from `profile.sub` | `profile.sub` (Roblox user ID) | Unknown for the default profile flow |
+| Roblox             | The default Roblox profile flow does not return an email; Better Auth creates a non-routable placeholder from `profile.sub`                                              | `profile.sub` (Roblox user ID)              | Unknown for the default profile flow                                                                                                                                |
 
-### Create a placeholder email with mapProfileToUser
-
+## ### Create a placeholder email with `mapProfileToUser`
 Fall back to the provider's stable ID when the `email` field is null or absent:
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -416,45 +423,44 @@ export const auth = betterAuth({
       clientId: process.env.DISCORD_CLIENT_ID!,
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
       mapProfileToUser: (profile) => ({
-        email: profile.email ?? \`${profile.id}@discord.placeholder.invalid\`,
+        email: profile.email ?? `${profile.id}@discord.placeholder.invalid`,
       }),
     },
     apple: {
       clientId: process.env.APPLE_CLIENT_ID!,
       clientSecret: process.env.APPLE_CLIENT_SECRET!,
       mapProfileToUser: (profile) => ({
-        email: profile.email ?? \`${profile.sub}@apple.placeholder.invalid\`,
+        email: profile.email ?? `${profile.sub}@apple.placeholder.invalid`,
       }),
     },
     microsoft: {
       clientId: process.env.MICROSOFT_CLIENT_ID!,
       clientSecret: process.env.MICROSOFT_CLIENT_SECRET!,
       mapProfileToUser: (profile) => ({
-        email: profile.email ?? \`${profile.oid}@entra.placeholder.invalid\`,
+        email: profile.email ?? `${profile.oid}@entra.placeholder.invalid`,
       }),
     },
   },
 });
 ```
 
-### Provider-specific notes
+> Placeholder emails are not contact addresses. Plugins that send mail (password reset, magic link, email verification, organization invites) cannot deliver to them. Use a domain you control or the reserved `.invalid` domain so no real inbox is ever addressed by mistake.
 
-- **Apple**: persist the email the first time you see it. Apple provides no user-info endpoint, so if you don't store it on first sign-in you cannot retrieve it later. Both `email_verified` and `is_private_email` are serialized as **strings** (`"true"` / `"false"`), not booleans.
-- **GitHub**: the `user:email` scope is requested by default. Private emails still return `null` on `/user`; the primary verified address is available at [`/user/emails`](https://docs.github.com/en/rest/users/emails).
-- **Microsoft Entra ID**: because `email` is tenant-mutable and never verified, use `profile.oid` (immutable, stable within the tenant) as the identity anchor; treat `email` as a profile attribute only. Microsoft's [claims validation guidance](https://learn.microsoft.com/en-us/entra/identity-platform/claims-validation) explicitly warns never to use `email`, `preferred_username`, or `unique_name` for authorization decisions.
-- **Facebook**: without a per-email verification flag, treat every Facebook email as unverified unless you run your own verification challenge.
+## ### Provider-specific notes
+* **Apple**: persist the email the first time you see it. Apple provides no user-info endpoint, so if you don't store it on first sign-in you cannot retrieve it later. Both `email_verified` and `is_private_email` are serialized as **strings** (`"true"` / `"false"`), not booleans.
+* **GitHub**: the `user:email` scope is requested by default. Private emails still return `null` on `/user`; the primary verified address is available at [`/user/emails`](https://docs.github.com/en/rest/users/emails).
+* **Microsoft Entra ID**: because `email` is tenant-mutable and never verified, use `profile.oid` (immutable, stable within the tenant) as the identity anchor; treat `email` as a profile attribute only. Microsoft's [claims validation guidance](https://learn.microsoft.com/en-us/entra/identity-platform/claims-validation) explicitly warns never to use `email`, `preferred_username`, or `unique_name` for authorization decisions.
+* **Facebook**: without a per-email verification flag, treat every Facebook email as unverified unless you run your own verification challenge.
 
 Better Auth recognizes a returning OAuth account by its stable `(providerId, accountId)` key, but the linked Better Auth user still requires an email address. Support for users without an email is tracked in [#9124](https://github.com/better-auth/better-auth/issues/9124).
 
-## Provider Options
-
-### clientId
-
+## ## Provider Options
+## ### clientId
 The OAuth 2.0 Client ID issued by the provider.
 
 For providers that verify ID tokens by audience (Google, Apple, Microsoft Entra, Facebook, Cognito), you can pass an array to accept tokens issued for any of the configured clients. The first entry is used when Better Auth drives the authorization code flow; all entries are accepted when verifying an ID token's `aud` claim. This enables cross-platform sign-in (Web, iOS, Android) with a single backend configuration, where each platform's native SDK issues tokens under its own Client ID.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -474,11 +480,10 @@ export const auth = betterAuth({
 
 All Client IDs must live in the same provider project so consent is shared. For providers that don't verify ID tokens by audience, only a single string is accepted.
 
-### scope
-
+## ### scope
 The scope of the access request. For example, `email` or `profile`.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -493,11 +498,10 @@ export const auth = betterAuth({
 });
 ```
 
-### redirectURI
-
+## ### redirectURI
 Custom redirect URI for the provider. By default, it uses `/api/auth/callback/${providerName}`
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -512,19 +516,18 @@ export const auth = betterAuth({
 });
 ```
 
-### disableSignUp
-
+## ### disableSignUp
 Disables sign-up for new users.
 
-### disableIdTokenSignIn
-
+## ### disableIdTokenSignIn
 Disables the use of the ID token for sign-in. By default, it's enabled for some providers like Google and Apple.
 
-### verifyIdToken
-
+## ### verifyIdToken
 A custom function to verify the ID token. Receives the token, an optional nonce, and the request endpoint context so you can branch on headers or other request data.
 
-```
+> Providing `verifyIdToken` **replaces** the provider's built-in verification (signature, issuer, audience, and the `exp`, `nbf`, and `iat` time checks, which allow 30 seconds of clock skew). Your callback must perform those checks itself, including any clock tolerance. Client-supplied headers such as `x-platform` are attacker-controlled — use them only to select which audience (or other claim) to verify against, not as proof of identity on their own.
+
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 
@@ -563,19 +566,17 @@ export const auth = betterAuth({
 });
 ```
 
-### overrideUserInfoOnSignIn
-
+## ### overrideUserInfoOnSignIn
 A boolean value that determines whether to override the user information in the database when signing in. By default, it is set to `false`, meaning that the user information will not be overridden during sign-in. If you want to update the user information every time they sign in, set this to `true`.
 
-### requireEmailVerification
-
+## ### requireEmailVerification
 Require this provider's email to be verified before a session is created. Defaults to `false`.
 
 When the provider reports the email as unverified, Better Auth still creates or links the user and account, but it does not issue a session. The OAuth callback redirects with `?error=email_not_verified`, and ID token sign-in returns a `403` with the `EMAIL_NOT_VERIFIED` error code. A verification email is (re)sent according to your `emailVerification` settings: `sendOnSignUp` covers new users and `sendOnSignIn` covers returning users. Configure `emailVerification.sendVerificationEmail` and keep `sendOnSignUp` enabled so blocked users always receive a link to verify.
 
 The gate checks the local user's verification state rather than the provider's claim on each request. A user already verified through another method (such as email and password) keeps access even if the provider later reports the email as unverified.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -591,15 +592,16 @@ export const auth = betterAuth({
 
 This is opt-in per provider and is independent of `emailAndPassword.requireEmailVerification`: enabling email and password verification does not gate social sign-in.
 
-### mapProfileToUser
+> Only enable this for providers that report a trustworthy `email_verified` signal. Several providers always report the email as unverified (or never return one), so enabling it there blocks every sign-in. See [Handling Providers Without Email](/docs/concepts/oauth#handling-providers-without-email).
 
+## ### mapProfileToUser
 Use `mapProfileToUser` to change the default user mapping or populate additional user fields from the provider profile.
 
 Better Auth treats the function's return value as provider input, even though the function runs on your server. It applies the input rules from `user.additionalFields` during OAuth sign-up, sign-in profile override, and account-link profile sync. Mapped fields that allow input are parsed and stored, while mapped values for fields marked `input: false` are ignored.
 
 Profile mapping cannot redefine the provider account identity. Built-in providers derive identity from their documented immutable profile field. Generic OAuth providers use `accountSubject` when the default `sub` or `id` field is not the correct identifier.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -619,21 +621,23 @@ export const auth = betterAuth({
 });
 ```
 
-#### Server-Owned Fields and Authorization Claims
+> Declare mapped fields in the `user.additionalFields`
+> [option](/docs/concepts/database#extending-core-schema) and allow those fields
+> as input. The same rule applies to stateless auth setups.
 
+## #### Server-Owned Fields and Authorization Claims
 Keep security-sensitive fields such as roles, bans, internal flags, and organization membership at `input: false`. Do not enable input only so `mapProfileToUser` can persist a provider claim, because the same setting also lets generic sign-up and user-update requests supply that field.
 
 `input` and `returned` control separate directions. For example, `{ input: false, returned: true }` defines a readable server-owned field. API input and `mapProfileToUser` cannot supply it, but Better Auth includes its stored value in responses.
 
-If a provider claim controls who may sign in, enforce the policy before Better Auth completes OAuth sign-in. Do not defer the check until after sign-in, because Better Auth may already have issued a valid session. Prefer a provider-specific option when one exists, such as the Google provider's [`hd` option](https://better-auth.com/docs/authentication/google#restrict-sign-in-to-google-workspace) for a Google Workspace domain. For flows that invoke [`getUserInfo`](https://better-auth.com/docs/concepts/oauth#getuserinfo), a custom implementation can verify the provider response and return `null` when the policy fails. Configure equivalent enforcement for separate sign-in paths that do not invoke `getUserInfo`.
+If a provider claim controls who may sign in, enforce the policy before Better Auth completes OAuth sign-in. Do not defer the check until after sign-in, because Better Auth may already have issued a valid session. Prefer a provider-specific option when one exists, such as the Google provider's [`hd` option](/docs/authentication/google#restrict-sign-in-to-google-workspace) for a Google Workspace domain. For flows that invoke [`getUserInfo`](/docs/concepts/oauth#getuserinfo), a custom implementation can verify the provider response and return `null` when the policy fails. Configure equivalent enforcement for separate sign-in paths that do not invoke `getUserInfo`.
 
 If you also need to store the verified claim, keep the field at `input: false` and write it with your application's database layer. Use `defaultValue` only for a static value that applies to every user created through that auth configuration, not for a value derived from a provider profile.
 
-### getAccountFields
-
+## ### getAccountFields
 Use `getAccountFields` to store your own values on the provider account, such as the email address the provider reports or the tenant a user signed in from. Add a column for each value to `account.additionalFields`, then return the values from the hook. Run `npx auth@latest migrate` after you add a field.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -664,30 +668,29 @@ The hook receives the provider's tokens and the normalized user info. It runs on
 
 Better Auth writes the returned values when it creates the account and when it updates it:
 
-- A new user signs in, or an existing user signs in with a provider for the first time.
-- A signed-in user links the provider.
-- A user who is already linked signs in again or links again. On sign-in, Better Auth updates the values only while [`updateAccountOnSignIn`](https://better-auth.com/docs/reference/options#updateaccountonsignin) is not `false`.
+* A new user signs in, or an existing user signs in with a provider for the first time.
+* A signed-in user links the provider.
+* A user who is already linked signs in again or links again. On sign-in, Better Auth updates the values only while [`updateAccountOnSignIn`](/docs/reference/options#updateaccountonsignin) is not `false`.
 
 This covers the redirect flow and ID token sign-in and linking. For an ID token, the `tokens` argument holds only what the client sent: the `idToken`, plus the `accessToken` and `refreshToken` when the client includes them. Sign-in through One Tap and the OAuth Proxy plugin does not call the hook.
 
 Better Auth ignores these returned values:
 
-- Keys that are not declared in `account.additionalFields` or by a plugin.
-- Fields marked `input: false`.
-- Values that are `undefined`. A stored value stays as it is.
-- Better Auth's own account columns: `id`, `userId`, `providerId`, `accountId`, `accessToken`, `refreshToken`, `idToken`, `accessTokenExpiresAt`, `refreshTokenExpiresAt`, `scope`, `password`, `createdAt`, and `updatedAt`. A returned value can never rebind an account or replace its tokens.
+* Keys that are not declared in `account.additionalFields` or by a plugin.
+* Fields marked `input: false`.
+* Values that are `undefined`. A stored value stays as it is.
+* Better Auth's own account columns: `id`, `userId`, `providerId`, `accountId`, `accessToken`, `refreshToken`, `idToken`, `accessTokenExpiresAt`, `refreshTokenExpiresAt`, `scope`, `password`, `createdAt`, and `updatedAt`. A returned value can never rebind an account or replace its tokens.
 
 Return `null` for the whole result to store nothing. A `null` value for a key is stored as `null` and replaces the stored value.
 
 Values pass through the field's `validator.input` and `transform.input`. A value that fails validation stops the sign-in or link with a validation error, even when `updateAccountOnSignIn` is `false` and the value is not stored. In the redirect flow, the user lands on your error URL with `error=VALIDATION_ERROR`.
 
-Better Auth treats the returned values as provider input, like the values from `mapProfileToUser`. Keep security-sensitive fields, such as roles or internal flags, at `input: false` so that a provider claim cannot set them. Do not copy a provider claim you have not verified into a field your application trusts for authorization. See [server-owned fields and authorization claims](https://better-auth.com/docs/concepts/oauth#server-owned-fields-and-authorization-claims).
+Better Auth treats the returned values as provider input, like the values from `mapProfileToUser`. Keep security-sensitive fields, such as roles or internal flags, at `input: false` so that a provider claim cannot set them. Do not copy a provider claim you have not verified into a field your application trusts for authorization. See [server-owned fields and authorization claims](/docs/concepts/oauth#server-owned-fields-and-authorization-claims).
 
-### refreshAccessToken
-
+## ### refreshAccessToken
 A custom function to refresh the token. This feature is only supported for built-in social providers (Google, Facebook, GitHub, etc.) and is not currently supported for custom OAuth providers configured through the Generic OAuth Plugin. For built-in providers, you can provide a custom function to refresh the token if needed.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -707,11 +710,10 @@ export const auth = betterAuth({
 });
 ```
 
-### clientKey
-
+## ### clientKey
 The client key of your application. This is used by TikTok Social Provider instead of `clientId`.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -725,11 +727,10 @@ export const auth = betterAuth({
 });
 ```
 
-### getUserInfo
-
+## ### getUserInfo
 A custom function to get user info from the provider. This allows you to override the default user info retrieval process.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -742,7 +743,7 @@ export const auth = betterAuth({
         // Custom implementation to get user info
         const response = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
           headers: {
-            Authorization: \`Bearer ${token.accessToken}\`,
+            Authorization: `Bearer ${token.accessToken}`,
           },
         });
         const profile = await response.json();
@@ -761,11 +762,10 @@ export const auth = betterAuth({
 });
 ```
 
-### disableImplicitSignUp
-
+## ### disableImplicitSignUp
 Disables implicit sign up for new users. When set to true for the provider, sign-in needs to be called with `requestSignUp` as true to create new users.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -780,11 +780,10 @@ export const auth = betterAuth({
 });
 ```
 
-### prompt
-
+## ### prompt
 The prompt to use for the authorization code request. This controls the authentication flow behavior.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -799,11 +798,10 @@ export const auth = betterAuth({
 });
 ```
 
-### responseMode
-
+## ### responseMode
 The response mode to use for the authorization code request. This determines how the authorization response is returned.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -818,11 +816,10 @@ export const auth = betterAuth({
 });
 ```
 
-### disableDefaultScope
-
+## ### disableDefaultScope
 Removes the default scopes of the provider. By default, providers include certain scopes like `email` and `profile`. Set this to `true` to remove these default scopes and use only the scopes you specify.
 
-```
+```ts title="auth.ts"
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -838,18 +835,5 @@ export const auth = betterAuth({
 });
 ```
 
-### Other Provider Configurations
-
-Each provider may have additional options, check the specific provider documentation for more details.[Plugins](https://better-auth.com/docs/concepts/plugins)
-
-[
-
-Learn how to use and create Better Auth plugins, including defining endpoints, schemas, hooks, middleware, rate limits, trusted origins, and building client plugins with custom actions and atoms.
-
-](https://better-auth.com/docs/concepts/plugins)[
-
-Rate Limit
-
-Learn how to configure rate limiting in Better Auth, including IP address detection, IPv6 support, custom rate limit windows, storage backends, error handling, and per-endpoint rules.
-
-](https://better-auth.com/docs/concepts/rate-limit)
+## ### Other Provider Configurations
+Each provider may have additional options, check the specific provider documentation for more details.
