@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/tokens
 title: "Tokens"
 description: ""
-access_date: 2026-11-18T15:44:31.867Z
-current_date: 2026-11-18T15:44:31.867Z
+access_date: 2026-11-19T18:37:57.103Z
+current_date: 2026-11-19T18:37:57.103Z
 ---
 
 # Tokens, scopes, and resources (/docs/plugins/oauth-provider/tokens)
@@ -132,9 +132,14 @@ oauthProvider({
 ```
 
 ## ## Refresh tokens
-Each refresh issues a new refresh token and invalidates the old one, following [OAuth 2.1 §4.3.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1#section-4.3.1). Reusing a rotated refresh token is treated as replay: every refresh token the user holds for that client is revoked, and the opaque access tokens they issued are deleted. JWT access tokens stay valid until they expire. After a replay, the refresh fails with `invalid_grant`, and the client must start a new authorization request to get tokens.
+Each refresh issues a new refresh token and invalidates the old one, following [OAuth 2.1 §4.3.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1#section-4.3.1). Reusing a rotated refresh token is treated as replay: every refresh token the user holds for that client is revoked, and the opaque access tokens they issued are deleted. JWT access tokens stay valid until they expire. After a replay, the refresh fails with `invalid_grant`, and the client must start a new authorization request to get tokens. A refresh that narrows the scope to drop `offline_access` still returns a new refresh token, but that token lacks `offline_access`. Refreshing it later returns no new refresh token, so the client keeps the one it has.
 
-A refresh keeps the `sid` of the session that authorized the grant while that session is live. Once the session has expired or been deleted, the refresh still succeeds, and the new access and ID tokens omit `sid` so that introspection and UserInfo accept them.
+A refresh keeps the `sid` of the session that authorized the grant while that session is live. What happens once the session has expired or been deleted depends on `offline_access`:
+
+* With `offline_access`, the refresh still succeeds, and the new access and ID tokens omit `sid` so that introspection and UserInfo accept them. A refresh that would drop `offline_access`, through a narrower `scope` or a resource's allowed scopes, fails with `invalid_grant` instead, and the presented refresh token keeps working.
+* Without `offline_access`, the refresh token ends with its session. The refresh fails with `invalid_grant`, and introspection reports the refresh token inactive.
+
+Tokens from the device authorization grant are not tied to a session, so neither case applies to them.
 
 Keep the default, `0`, unless your clients lose refresh responses. To let a client retry a refresh after a lost response, set `refreshTokenReuseInterval` to a number of seconds. A retry within that window gets the same response back, including the replacement refresh token. The retry gets that response only when it uses the same client, scopes, resources, and DPoP key as the first refresh. A retry that differs but is otherwise valid gets `invalid_grant`.
 

@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/openid-connect
 title: "Openid Connect"
 description: ""
-access_date: 2026-11-19T15:39:26.326Z
-current_date: 2026-11-19T15:39:26.326Z
+access_date: 2026-11-19T18:37:57.103Z
+current_date: 2026-11-19T18:37:57.103Z
 ---
 
 # OpenID Connect and logout (/docs/plugins/oauth-provider/openid-connect)
@@ -164,7 +164,7 @@ await auth.api.adminCreateOAuthClient({
 
 * Recipients are found through the opaque access tokens and refresh tokens stored for the session. A client that holds only a JWT access token for it, such as after a `resource` request without `offline_access`, is not notified.
 * Logout Tokens carry `typ: logout+jwt`, always include `sid`, and live for 120 seconds. The JWT plugin signs them, so a client verifies them with your JWKS. Each [request](https://openid.net/specs/openid-connect-backchannel-1_0.html#BCRequest) has a 5 second timeout and is not retried.
-* Better Auth also revokes the session's access tokens and its refresh tokens without `offline_access`. Refresh tokens with `offline_access` survive, as [§2.7](https://openid.net/specs/openid-connect-backchannel-1_0.html#BCActions) allows.
+* Better Auth also revokes the session's access tokens and its refresh tokens without `offline_access`. Introspection and UserInfo then reject those access tokens, but a resource server that verifies JWT access tokens locally keeps accepting them until they expire. An opaque access token issued by a refresh that runs while sign-out is in progress can also stay active until it expires, on databases that enforce the session foreign key. Refresh tokens with `offline_access` survive, as [§2.7](https://openid.net/specs/openid-connect-backchannel-1_0.html#BCActions) allows. Tokens from the device authorization grant are not tied to a session, so sign-out does not end them.
 * `backchannel_logout_uri` must be a public `https` URL with no credentials or fragment. Loopback, private, and metadata hosts are rejected with `invalid_client_metadata`. The check does not resolve DNS, so a public name that resolves to a private address passes. If untrusted parties can register clients on your server, block outbound requests from the auth server to private networks.
 * Clients registered through [CIMD](/docs/plugins/cimd) cannot use back-channel logout.
 
