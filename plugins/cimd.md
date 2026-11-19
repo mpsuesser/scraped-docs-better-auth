@@ -2,15 +2,15 @@
 url: https://better-auth.com/llms.txt/docs/plugins/cimd
 title: "Cimd"
 description: ""
-access_date: 2026-11-19T17:22:20.852Z
-current_date: 2026-11-19T17:22:20.852Z
+access_date: 2026-11-19T17:36:48.362Z
+current_date: 2026-11-19T17:36:48.362Z
 ---
 
 Discover OAuth clients from HTTPS metadata documents.
 
 `OAuth2` `MCP`
 
-The [Client ID Metadata Document draft-02](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-02) lets an OAuth client identify itself without registering first. The client's `client_id` is the exact HTTPS URL of a metadata document it hosts. Better Auth validates the document and persists the client through the OAuth Provider's canonical registration path.
+The [Client ID Metadata Document draft-02](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-02) lets an OAuth client identify itself without registering first. The client's `client_id` is the exact HTTPS URL of a metadata document it hosts. Better Auth validates the document and persists the client through the OAuth Provider's canonical registration path. Validation follows draft-02; where [draft-03](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-03) changed a rule, this page cites the draft-03 section it follows.
 
 MCP 2026-07-28 normatively references CIMD draft-00. Use `metadataProfile: "mcp-2026-07-28"` when composing `cimd()` with `mcp()`. This explicit profile adds MCP's required `client_name` and `redirect_uris` fields without imposing those draft-00 restrictions on generic draft-02 clients.
 
@@ -102,7 +102,7 @@ cimd({
     maximumFetchesPerMinute: 120,
     maximumFetchesPerOriginPerMinute: 30,
   },
-  originBoundFields: ["post_logout_redirect_uris", "client_uri"],
+  originBoundFields: ["post_logout_redirect_uris"],
   isMetadataDocumentUrlAllowed(clientIdUrl) {
     return new URL(clientIdUrl).hostname.endsWith(".trusted.example");
   },
@@ -121,6 +121,14 @@ cimd({
 ```
 
 Prop
+
+### Origin-bound fields
+
+`originBoundFields` stops a metadata document from claiming URIs on a domain other than its own. By default, only `post_logout_redirect_uris` must share the `client_id` origin.
+
+The informative URIs `client_uri`, `logo_uri`, `tos_uri`, and `policy_uri` are not origin-bound by default. An application's website is often hosted apart from its metadata document. [CIMD draft-03 §4.4](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-03#section-4.4) forbids an authorization server from requiring `client_uri` to share the origin of the `client_id` or of any redirect URI. If you add `client_uri` to `originBoundFields`, that is your own policy, and it contradicts the draft. Clients whose website is on another origin then fail to register.
+
+Each informative URI must still be a credential-free HTTP(S) URL on a public host, whether or not it is origin-bound.
 
 ## Draft-02 validation
 
@@ -146,9 +154,43 @@ Generic CIMD validation follows draft-02:
 }
 ```
 
+## Key set origin
+
+By default, a discovered client's `jwks_uri` must be on the origin of its `client_id` URL or on one of your [`trustedOrigins`](https://better-auth.com/docs/reference/options#trustedorigins). Otherwise Better Auth rejects the client with `jwks_uri must belong to a trusted origin or the Client ID Metadata Document origin`.
+
+Anyone can publish a metadata document, and Better Auth fetches the `jwks_uri` that the document names. That fetch does not go through `isMetadataDocumentUrlAllowed` or `metadataFetchPolicy`. The origin rule is what limits where a document can make your server send requests ([CIMD draft-03 §4.4](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-03#section-4.4), [§10.7](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-03#section-10.7)).
+
+Some clients publish their document on one host and their keys on another. To accept such a client, return `true` from `isCrossOriginJwksUriAllowed` for that client origin and key origin:
+
+```
+cimd({
+  fetchClientMetadataResource,
+  isCrossOriginJwksUriAllowed: ({ clientId, jwksUri }) =>
+    new URL(clientId).origin === "https://client.example.com" &&
+    new URL(jwksUri).origin === "https://keys.example.com",
+});
+```
+
+Match the client origin and the key origin together. A function that allows a key origin for every `client_id` lets any document make your server fetch any URL on that origin.
+
+Do not add the key origin to `trustedOrigins` instead. `trustedOrigins` applies to the whole app, so that origin would also be trusted for redirects and request-origin checks.
+
+Better Auth calls `isCrossOriginJwksUriAllowed` only for a `jwks_uri` that the default rule rejects. It calls it at these points:
+
+- when the document is first registered
+- each time the document is refreshed
+- when an administrator updates the client, such as setting its `client_credentials_scopes`
+- before each client assertion is verified, so keep it fast
+
+Only a resolved `true` allows the key set. `false`, a thrown error, or a rejected promise keeps the rejection with the same error. The other `jwks_uri` checks still run first: HTTPS, no credentials, no fragment, and a public host. The keys are still fetched through `fetchClientMetadataResource`.
+
 ## Persistence and refresh
 
 Discovered clients are stored in `oauthClient` with `clientDiscoveryId: "cimd"`. This nullable provenance field prevents an existing managed or DCR client from being taken over merely because its identifier begins with `https://`, including during a fixed-ID registration race. After a process restart, a CIMD-owned record is fetched and refreshed only by the matching discovery. Managed records are returned without invoking CIMD, while a discovery-owned record fails closed if its owner is unavailable or cannot resolve it. Server-owned `clientCredentialsScopes` is never read from the document and is preserved exactly during refresh.
+
+For the fields the document owns, a refresh stores what the current document lists. When the document stops listing one of them, such as `client_name`, `contacts`, `jwks`, `jwks_uri`, `post_logout_redirect_uris`, or `dpop_bound_access_tokens`, the refresh clears the stored value. A key or post-logout redirect URI that the client removes from its document therefore stops working after the next refresh. A field that registration fills with a default gets that default again instead of being cleared: an omitted `token_endpoint_auth_method` becomes `none`, an omitted `grant_types` becomes `authorization_code`, and an omitted `response_types` becomes `code` while the grants include `authorization_code`, and is cleared otherwise.
+
+A refresh keeps some stored values when the document omits them. A stored `subject_type` stays when the document omits it, because changing it would give every user a different `sub` for the client. A document that states another `subject_type` still changes it. Server-owned settings such as `disabled`, `skipConsent`, `enableEndSession`, `requirePKCE`, and `clientCredentialsScopes` are never read from the document, and a refresh keeps them.
 
 Valid documents follow shared-cache semantics. `s-maxage` takes precedence over `max-age` and `Expires`; validators support conditional revalidation. `Cache-Control: no-store`, `private`, and `Vary: *` prevent cache insertion. A `304` is accepted only when the request sent `If-None-Match` or `If-Modified-Since` for an existing validated entry. Modified responses must be exactly `200`.
 
@@ -187,4 +229,5 @@ oauthProvider({
 
 - [OAuth Provider plugin](https://better-auth.com/docs/plugins/oauth-provider)
 - [IETF Client ID Metadata Document draft-02](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-02)
+- [IETF Client ID Metadata Document draft-03](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-03)
 - [MCP authorization spec: draft-00 CIMD profile](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/client-registration#client-id-metadata-documents)
