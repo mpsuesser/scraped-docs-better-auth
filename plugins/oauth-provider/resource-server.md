@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/resource-server
 title: "Resource Server"
 description: ""
-access_date: 2026-11-20T03:43:44.153Z
-current_date: 2026-11-20T03:43:44.153Z
+access_date: 2026-11-20T03:50:36.207Z
+current_date: 2026-11-20T03:50:36.207Z
 ---
 
 # Protect your API (/docs/plugins/oauth-provider/resource-server)
@@ -93,7 +93,7 @@ The defaults come from your auth server's resolved base URL. That URL includes `
 
 With a dynamic `baseURL`, the base URL is known only per request, so the defaults that use it are empty. Pass `issuer`, `jwksUrl`, and `audience` explicitly.
 
-> Do not rely on the default audience. It is the auth server's URL, not your API's identifier, and it is also the default `aud` of [JWT plugin](/docs/plugins/jwt#oauth-provider-mode) session JWTs. With the defaults, a signed-in user's session JWT can pass as an access token. Set `audience` to your API's resource identifier, and add `typ: "at+jwt"` and `requiredClaims: ["azp"]`.
+> Do not rely on the default audience. It is the auth server's URL, not your API's identifier, and it is also the default `aud` of [JWT plugin](/docs/plugins/jwt#oauth-provider-mode) session JWTs. With the defaults, a signed-in user's session JWT can pass as an access token. Set `audience` to your API's resource identifier, and add `typ: "at+jwt"` and `requiredClaims: ["azp"]`. The [MCP authorization specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#token-handling) says an MCP server must validate that a token was issued for it as the intended audience, so an MCP server should not use the default.
 
 ```ts title="api/posts.ts"
 import { isAPIError } from "better-auth/api";
@@ -125,6 +125,8 @@ export const POST = async (req: Request) => {
 If every JWT access token fails with a 401 `invalid access token` error, check that `issuer` matches the token's `iss` claim and `audience` matches its `aud` claim. The provider puts the `resource` the client requested in `aud`, such as `https://api.example.com`.
 
 To accept bearer tokens alone on a route, use `verifyBearerToken`. It takes a raw token string and rejects DPoP-bound tokens.
+
+Signing keys are cached for five minutes. If a refetch after that fails or times out, a key set fetched less than ten minutes ago still verifies tokens that name one of its keys, or name none, so a slow or unreachable auth server does not reject valid tokens right away. A key the issuer already rotated out can pass for up to ten minutes after the last successful fetch. Without a cached key set (a cold start, or a custom `jwt.adapter.getJwks`, whose keys are not cached), or for a token that names a key the set lacks, the failed refetch is reported as an error, as it is without this fallback. These windows are local choices and ignore the key set's `Cache-Control` header.
 
 > For DPoP-bound tokens:
 > 
