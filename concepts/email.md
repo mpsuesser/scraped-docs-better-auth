@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/concepts/email
 title: "Email"
 description: ""
-access_date: 2026-11-11T13:07:02.599Z
-current_date: 2026-11-11T13:07:02.599Z
+access_date: 2026-11-20T11:56:30.447Z
+current_date: 2026-11-20T11:56:30.447Z
 ---
 
 # Email (/docs/concepts/email)
@@ -24,6 +24,7 @@ For example, you might consider the following email provider:
 * [Mailtrap](https://docs.mailtrap.io/guides/integrations/better-auth)
 * [Wraps](https://wraps.dev/docs/guides/better-auth)
 * [eusend](https://eusend.dev/docs/integrations/better-auth)
+* [Sendora](https://sendora.se/docs/sending#send-from-better-auth)
 
 ## ## Email Verification
 Email verification is a security feature that ensures users provide a valid email address. It helps prevent spam and abuse by confirming that the email address belongs to the user. In this guide, you'll get a walk through of how to implement token based email verification in your app.
