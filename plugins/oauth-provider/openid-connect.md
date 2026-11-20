@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/openid-connect
 title: "Openid Connect"
 description: ""
-access_date: 2026-11-20T03:50:36.207Z
-current_date: 2026-11-20T03:50:36.207Z
+access_date: 2026-11-20T04:11:11.321Z
+current_date: 2026-11-20T04:11:11.321Z
 ---
 
 # OpenID Connect and logout (/docs/plugins/oauth-provider/openid-connect)
@@ -13,6 +13,16 @@ Configure discovery, ID token and UserInfo claims, subject identifiers, and logo
 
 
 Your OAuth provider is also an [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) provider. A client that requests the `openid` scope receives an ID token, can call UserInfo, and can take part in logout.
+
+To serve only OpenID Connect, set `requireOpenId`. A request to `/oauth2/authorize` that leaves out `openid`, or sends no `scope`, is then redirected to the client with `invalid_scope` instead of being served as plain OAuth. The redirect happens once the client and `redirect_uri` have passed validation. Earlier failures use the server's error page. The option does not apply to device authorization requests. `openid` must also be in `scopes`, or the plugin fails at startup:
+
+```ts title="auth.ts"
+oauthProvider({
+  scopes: ["openid", "profile", "email"],
+  requireOpenId: true, // [!code highlight]
+  // ...
+});
+```
 
 ## ## Discovery metadata
 Better Auth serves [OpenID Provider metadata](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderConfig) at `{issuer}/.well-known/openid-configuration` and [authorization server metadata](https://datatracker.ietf.org/doc/html/rfc8414#section-3) at `{issuer}/.well-known/oauth-authorization-server`. If your framework does not forward these routes to `auth.handler`, see [Expose the well-known metadata](/docs/plugins/oauth-provider#expose-the-well-known-metadata).

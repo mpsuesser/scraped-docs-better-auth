@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-20T03:50:36.207Z
-current_date: 2026-11-20T03:50:36.207Z
+access_date: 2026-11-20T04:11:11.321Z
+current_date: 2026-11-20T04:11:11.321Z
 ---
 
 OAuth provider options, endpoints, errors, rate limits, extensions, and database schema.
@@ -43,6 +43,10 @@ Lets `/oauth2/public-client-prelogin` answer before sign-in when the request car
 `scopes` `string[]`
 
 Scopes clients may request. Without `openid`, the provider is OAuth only. Defaults to `["openid", "profile", "email", "offline_access"]`. See [Scopes](https://better-auth.com/docs/plugins/oauth-provider/tokens#scopes).
+
+`requireOpenId` `boolean`
+
+Requires every request to `/oauth2/authorize` to include the `openid` scope, so the provider only serves OpenID Connect requests there. Once the client and `redirect_uri` have been validated, a request without `openid`, or with no `scope` at all, is redirected to the client's `redirect_uri` with `invalid_scope`. The option does not apply to a device authorization request at `/device/code`. Defaults to `false`, where a request without `openid` is served as plain OAuth and a request with no `scope` falls back to the client's registered `scopes`, or to the provider's `scopes` when the client has none. `openid` must be in `scopes`, or the plugin fails at startup.
 
 `advertisedMetadata` `{ scopes_supported?, claims_supported?, token_endpoint_auth_methods_supported? }`
 
