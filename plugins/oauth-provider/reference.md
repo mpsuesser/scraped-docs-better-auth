@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/reference
 title: "Reference"
 description: ""
-access_date: 2026-11-18T15:44:31.867Z
-current_date: 2026-11-18T15:44:31.867Z
+access_date: 2026-11-20T03:43:44.153Z
+current_date: 2026-11-20T03:43:44.153Z
 ---
 
 OAuth provider options, endpoints, errors, rate limits, extensions, and database schema.
@@ -44,9 +44,9 @@ Lets `/oauth2/public-client-prelogin` answer before sign-in when the request car
 
 Scopes clients may request. Without `openid`, the provider is OAuth only. Defaults to `["openid", "profile", "email", "offline_access"]`. See [Scopes](https://better-auth.com/docs/plugins/oauth-provider/tokens#scopes).
 
-`advertisedMetadata` `{ scopes_supported?, claims_supported? }`
+`advertisedMetadata` `{ scopes_supported?, claims_supported?, token_endpoint_auth_methods_supported? }`
 
-Overrides what discovery advertises. Every `scopes_supported` value must be in `scopes`. See [Discovery metadata](https://better-auth.com/docs/plugins/oauth-provider/openid-connect#discovery-metadata).
+Overrides what the two discovery documents advertise, and can add values as well as hide them. Every `scopes_supported` value must be in `scopes`. `token_endpoint_auth_methods_supported` lists exactly the methods you set in both discovery documents, and every method must be one the server supports (`none`, the built-in confidential methods, or a method contributed through `extensions` or a companion plugin's `extendOAuthProvider` call). The list cannot be empty or repeat a method, or the plugin fails at startup. An unsupported method throws when discovery metadata is built, because companion plugins register their methods after the provider is created. Unset, `none` is listed when `allowUnauthenticatedClientRegistration` is `true` or an extension contributes client discovery, such as the [CIMD plugin](https://better-auth.com/docs/plugins/cimd). These options change only what discovery advertises. They do not change which clients the token endpoint accepts, and they do not open `/oauth2/register`. See [Discovery metadata](https://better-auth.com/docs/plugins/oauth-provider/openid-connect#discovery-metadata).
 
 `customAccessTokenClaims` `(info) => Awaitable<Record<string, any>>`
 
@@ -155,6 +155,10 @@ Protected resources seeded into `oauthResource` at startup. See [Resources](http
 `resourceSeedMode` `"insertOnly" | "merge" | "overwrite"`
 
 How seeding treats existing rows: skip them, update only the configured fields, or replace them. Defaults to `"insertOnly"`.
+
+`resourceSeedScope` `"adapter" | "process"`
+
+How long a finished seed is remembered. `"adapter"` (default) remembers it per database adapter. `"process"` remembers each seeded entry for the life of the process, for apps that build Better Auth per request, such as on Cloudflare Workers. Use `"process"` only when every instance in the process uses the same database.
 
 `enforcePerClientResources` `boolean`
 

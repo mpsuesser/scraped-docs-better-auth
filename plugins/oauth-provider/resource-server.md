@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/resource-server
 title: "Resource Server"
 description: ""
-access_date: 2026-11-19T18:37:57.103Z
-current_date: 2026-11-19T18:37:57.103Z
+access_date: 2026-11-20T03:43:44.153Z
+current_date: 2026-11-20T03:43:44.153Z
 ---
 
 # Protect your API (/docs/plugins/oauth-provider/resource-server)
@@ -59,9 +59,15 @@ The thrown error has no `WWW-Authenticate` header, which [RFC 6750 §3](https://
 
 The challenge depends on whether the request presented a token. When it sent a token that failed verification, for example an expired or revoked one, the Bearer challenge carries `error="invalid_token"` and an `error_description` ([RFC 6750 §3.1](https://datatracker.ietf.org/doc/html/rfc6750#section-3.1)), so the client knows it must replace that token. When it sent no credentials at all, the challenge has no error code, so the client knows it must authorize first. When your own code rejects a presented token, throw an `APIError` with status `UNAUTHORIZED` and `error: "invalid_token"` to get the same challenge.
 
-Pass the failed request as `request`, as above. A client that sends its token with the `DPoP` scheme then gets a `DPoP` challenge for every 401, including an expired or revoked token ([RFC 9449 §7.2](https://datatracker.ietf.org/doc/html/rfc9449#section-7.2)). A client that supports only DPoP might not act on a `Bearer` challenge. A request that uses any other scheme, such as `Basic`, or sends a token with no scheme, gets a `Bearer` challenge, so the client can still find your protected resource metadata. Without `request`, only DPoP-specific failures, such as an invalid proof, get a `DPoP` challenge. A `DPoP` challenge lists the accepted proof algorithms in `algs` and has no `resource_metadata`. If your framework has no `Request`, pass `{ authorizationHeader }` instead.
+Pass the failed request as `request`, as above. The challenge for a 401 then depends on the scheme the client used to send its token:
 
-With `request`, an `insufficient_scope` 403 on a request that used the `DPoP` scheme also gets a `DPoP` challenge, such as `DPoP error="insufficient_scope", scope="files:write", algs="ES256"` ([RFC 9449 §7.1](https://datatracker.ietf.org/doc/html/rfc9449#section-7.1)). Its `scope` names the missing scopes, as in the `Bearer` challenge, so the client knows which scopes to request when it authorizes again.
+* A request that uses the `DPoP` scheme gets a `DPoP` challenge for every 401, including an expired or revoked token ([RFC 9449 §7.2](https://datatracker.ietf.org/doc/html/rfc9449#section-7.2)). A client that supports only DPoP might not act on a `Bearer` challenge.
+* A request that uses the `Bearer` scheme gets a `Bearer` challenge, unless the failure is DPoP-specific. A DPoP-specific failure, such as an invalid proof, gets a `DPoP` challenge.
+* A request that uses any other scheme, such as `Basic`, or sends a token with no scheme, gets a `Bearer` challenge. The client can then still find your protected resource metadata.
+
+Without `request`, only DPoP-specific failures get a `DPoP` challenge. A `DPoP` challenge lists the accepted proof algorithms in `algs` and has no `resource_metadata`. If your framework has no `Request`, pass `{ authorizationHeader }` instead.
+
+With `request`, an `insufficient_scope` 403 on a request that used the `DPoP` scheme also gets a `DPoP` challenge, such as `DPoP error="insufficient_scope", scope="files:write", error_description="access token is missing required scope: files:write", algs="ES256"` ([RFC 9449 §7.1](https://datatracker.ietf.org/doc/html/rfc9449#section-7.1)). Its `scope` names the missing scopes, as in the `Bearer` challenge, so the client knows which scopes to request when it authorizes again.
 
 Browsers hide `WWW-Authenticate` from cross-origin scripts unless the response lists it in `Access-Control-Expose-Headers`, because it is not a [CORS-safelisted response header](https://fetch.spec.whatwg.org/#cors-safelisted-response-header-name). The returned `headers` include `Access-Control-Expose-Headers: WWW-Authenticate`, so a browser client on another origin can read `resource_metadata`, `scope`, and `algs`. Your CORS layer must also answer the 401 and 403 responses with `Access-Control-Allow-Origin`. If it sets its own `Access-Control-Expose-Headers`, add `WWW-Authenticate` to that list, since it can replace the value on the challenge.
 
@@ -152,7 +158,7 @@ If your API also receives opaque tokens, have it introspect them:
 2. [Link it to the resource](#introspection).
 3. Pass its credentials as `remoteVerify`.
 
-With `remoteVerify` set, every token is introspected after the local JWT check. Introspection also confirms the session is still active. The `typ` check reads the JWT header, which the introspection result does not have, so only the local check applies it. Set `force: true` to skip the local check, including `typ`. Introspection reports a JWT as active only when it has `azp`, so session JWTs still fail with `force: true`.
+With `remoteVerify` set, every token is introspected after the local JWT check. Introspection also confirms the session is still active. The `typ` check reads the JWT header, which the introspection result does not have, so in 1.7 only the local check applies it. Set `force: true` to skip the local check, including `typ`. Introspection reports a JWT as active only when it has `azp`, so session JWTs still fail with `force: true`. In 1.7, introspection does not check `typ`, though. Any JWT signed with the provider's keys that carries an `azp` that names an enabled client and your API's `aud` reports active, including one your app signs with the [JWT plugin](/docs/plugins/jwt#oauth-provider-mode). Keep the local check, without `force`, so `typ: "at+jwt"` still applies. The gap is closed in 1.8: introspection and UserInfo require `typ: "at+jwt"`, and so does `requireMcpAuth` unless you set `jwksUrl`. From 1.8, `force: true` skips only the resource server's local check, and introspection still checks the original JWT header.
 
 ```ts title="api/posts.ts"
 const payload = await verifyAccessTokenRequest(requestToResourceInput(req), {

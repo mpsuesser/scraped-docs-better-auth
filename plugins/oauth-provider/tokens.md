@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/tokens
 title: "Tokens"
 description: ""
-access_date: 2026-11-19T18:37:57.103Z
-current_date: 2026-11-19T18:37:57.103Z
+access_date: 2026-11-20T03:43:44.153Z
+current_date: 2026-11-20T03:43:44.153Z
 ---
 
 # Tokens, scopes, and resources (/docs/plugins/oauth-provider/tokens)
@@ -81,6 +81,8 @@ The resources you configure are written to the `oauthResource` table at startup.
 * `insertOnly` (default): only adds missing rows, so edits made through the admin endpoints survive restarts.
 * `merge`: adds missing rows and updates the fields present in the config.
 * `overwrite`: replaces existing rows with the config values.
+
+Each instance reads the table once per configured resource to seed it. If you build Better Auth per request, for example on Cloudflare Workers with a database client per request, those reads run on every request. Set `resourceSeedScope: "process"` to remember each seeded entry for the life of the process instead, as long as every instance in the process uses the same database.
 
 ## ### Manage resources at runtime
 To change resources without a restart, call these server-only endpoints. Each one needs a session. `resourcePrivileges` decides which users may call them. Without `resourcePrivileges`, any signed-in user may.

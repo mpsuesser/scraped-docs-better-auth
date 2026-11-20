@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/sign-in-flow
 title: "Sign In Flow"
 description: ""
-access_date: 2026-11-19T17:22:20.852Z
-current_date: 2026-11-19T17:22:20.852Z
+access_date: 2026-11-20T03:43:44.153Z
+current_date: 2026-11-20T03:43:44.153Z
 ---
 
 # Sign-in and consent screens (/docs/plugins/oauth-provider/sign-in-flow)
@@ -17,7 +17,7 @@ When a client sends a user to `/oauth2/authorize`, Better Auth redirects the use
 ## ## How the redirect works
 To stop anyone from changing the authorize parameters while the user moves through your pages, each redirect carries the original parameters as a signed query. Your pages pass it back as `oauth_query`, and Better Auth verifies it before resuming. A query that was changed or has expired fails with an `invalid_signature` error. For example, a query with a different `redirect_uri` fails. The signature covers every authorize parameter, including custom ones, and expires after `codeExpiresIn` (10 minutes by default).
 
-The `oauthProviderClient` plugin sends `oauth_query` from the current page URL on every POST request. If you call the endpoints another way, send the signed query yourself. Your own page parameters can sit in the same URL, but keep them out of `oauth_query`.
+The `oauthProviderClient` plugin adds `oauth_query` to a request, other than GET and DELETE, only when the page URL carries a signed OAuth query. It handles JSON object and form-encoded bodies and leaves every other body, such as `FormData`, as written. If you call the endpoints another way, or send another kind of body, send the signed query yourself. Your own page parameters can sit in the same URL, but keep them out of `oauth_query`.
 
 The authorize endpoint runs these steps in order and stops at the first one that needs the user:
 
