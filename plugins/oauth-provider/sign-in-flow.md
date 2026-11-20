@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/oauth-provider/sign-in-flow
 title: "Sign In Flow"
 description: ""
-access_date: 2026-11-20T03:43:44.153Z
-current_date: 2026-11-20T03:43:44.153Z
+access_date: 2026-11-20T09:11:40.036Z
+current_date: 2026-11-20T09:11:40.036Z
 ---
 
 # Sign-in and consent screens (/docs/plugins/oauth-provider/sign-in-flow)
@@ -38,7 +38,7 @@ Better Auth also applies these rules to the authorize request ([OAuth 2.1 §4.1.
 * `resource` restricts the tokens to a resource server ([RFC 8707 §2](https://datatracker.ietf.org/doc/html/rfc8707#section-2)). See [Resources](/docs/plugins/oauth-provider/tokens#resources).
 
 ## ## Login page
-To send users to your sign-in page, set `loginPage`. When the sign-in request carries `oauth_query` and creates a session, the plugin continues the authorization flow. With `oauthProviderClient`, your page needs no OAuth code.
+To send users to your sign-in page, set `loginPage`. When the sign-in request carries `oauth_query` and creates a session, the plugin continues the authorization flow. Sign-ins that return through a provider callback continue it only through `/sign-in/social` and, for OIDC providers, `/sign-in/sso`; SAML and generic OAuth sign-ins end on `callbackURL`. With `oauthProviderClient`, your page needs no OAuth code.
 
 ```ts title="auth.ts"
 oauthProvider({
