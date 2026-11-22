@@ -2,33 +2,28 @@
 url: https://better-auth.com/llms.txt/docs/integrations/next
 title: "Next"
 description: ""
-access_date: 2026-11-07T23:03:14.765Z
-current_date: 2026-11-07T23:03:14.765Z
+access_date: 2026-11-22T04:36:49.619Z
+current_date: 2026-11-22T04:36:49.619Z
 ---
-
-# Next.js integration (/docs/integrations/next)
 
 Integrate Better Auth with Next.js.
 
+Better Auth can be easily integrated with Next.js. Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](https://better-auth.com/docs/installation).
 
+### Create API Route
 
-Better Auth can be easily integrated with Next.js. Before you start, make sure you have a Better Auth instance configured. If you haven't done that yet, check out the [installation](/docs/installation).
-
-## ### Create API Route
 We need to mount the handler to an API route. Create a route file inside `/api/auth/[...all]` directory. And add the following code:
 
-```ts title="api/auth/[...all]/route.ts"
+```
 import { auth } from "@/lib/auth";
 import { toNextJsHandler } from "better-auth/next-js";
 
 export const { GET, POST } = toNextJsHandler(auth);
 ```
 
-> You can change the path on your better-auth configuration but it's recommended to keep it as `/api/auth/[...all]`
-
 For `pages` route, you need to use `toNodeHandler` instead of `toNextJsHandler` and set `bodyParser` to `false` in the `config` object. Here is an example:
 
-```ts title="pages/api/auth/[...all].ts"
+```
 import { toNodeHandler } from "better-auth/node"
 import { auth } from "@/lib/auth"
 
@@ -38,10 +33,11 @@ export const config = { api: { bodyParser: false } }
 export default toNodeHandler(auth.handler)
 ```
 
-## ## Create a client
+## Create a client
+
 Create a client instance. You can name the file anything you want. Here we are creating `auth-client.ts` file inside the `lib/` directory.
 
-```ts title="auth-client.ts"
+```
 import { createAuthClient } from "better-auth/react" // make sure to import from better-auth/react
 
 export const authClient =  createAuthClient({
@@ -49,17 +45,17 @@ export const authClient =  createAuthClient({
 })
 ```
 
-Once you have created the client, you can use it to sign up, sign in, and perform other actions.
-Some of the actions are reactive. The client uses [nano-store](https://github.com/nanostores/nanostores) to store the state and re-render the components when the state changes.
+Once you have created the client, you can use it to sign up, sign in, and perform other actions. Some of the actions are reactive. The client uses [nano-store](https://github.com/nanostores/nanostores) to store the state and re-render the components when the state changes.
 
 The client also uses [better-fetch](https://github.com/bekacru/better-fetch) to make the requests. You can pass the fetch configuration to the client.
 
-## ## RSC and Server actions
+## RSC and Server actions
+
 The `api` object exported from the auth instance contains all the actions that you can perform on the server. Every endpoint made inside Better Auth is invocable as a function. Including plugins endpoints.
 
 **Example: Getting Session on a server action**
 
-```tsx title="server.ts"
+```
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 
@@ -73,7 +69,7 @@ const someAuthenticatedAction = async () => {
 
 **Example: Getting Session on a RSC**
 
-```tsx
+```
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 
@@ -92,30 +88,25 @@ export async function ServerComponent() {
 }
 ```
 
-> As RSCs cannot set cookies, the 
-> 
-> [cookie cache](/docs/concepts/session-management#cookie-cache)
-> 
->  will not be refreshed until the server is interacted with from the client via Server Actions or Route Handlers.
+### Server Action Cookies
 
-## ### Server Action Cookies
 When you call a function that needs to set cookies, like `signOut` in a server action, cookies won’t be set. This is because server actions need to use the `cookies` helper from Next.js to set cookies.
 
 To simplify this, you can use the `nextCookies` plugin, which will automatically set cookies for you whenever a `Set-Cookie` header is present in the response.
 
-```ts title="auth.ts"
+```
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
     //...your config
-    plugins: [nextCookies()] // make sure this is the last plugin in the array // [!code highlight]
+    plugins: [nextCookies()] // make sure this is the last plugin in the array
 })
 ```
 
 Now, when you call functions that set cookies, they will be automatically set.
 
-```ts
+```
 "use server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth"
@@ -127,13 +118,15 @@ export const signOut = async () => {
 }
 ```
 
-## ## Auth Protection
+## Auth Protection
+
 In Next.js proxy/middleware, it's recommended to only check for the existence of a session cookie to handle redirection to avoid blocking requests by making API or database calls.
 
-## ### Next.js 16+ (Proxy)
+### Next.js 16+ (Proxy)
+
 Next.js 16 replaces "middleware" with "proxy". You can use the Node.js runtime for full session validation with database checks:
 
-```ts title="proxy.ts"
+```
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
@@ -157,34 +150,33 @@ export const config = {
 
 For cookie-only checks (faster but less secure), use `getSessionCookie`:
 
-```ts title="proxy.ts"
+```
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
 export async function proxy(request: NextRequest) {
-	const sessionCookie = getSessionCookie(request);
+    const sessionCookie = getSessionCookie(request);
 
     // THIS IS NOT SECURE!
     // This is the recommended approach to optimistically redirect users
     // We recommend handling auth checks in each page/route
-	if (!sessionCookie) {
-		return NextResponse.redirect(new URL("/", request.url));
-	}
+    if (!sessionCookie) {
+        return NextResponse.redirect(new URL("/", request.url));
+    }
 
-	return NextResponse.next();
+    return NextResponse.next();
 }
 
 export const config = {
-	matcher: ["/dashboard"], // Specify the routes the middleware applies to
+    matcher: ["/dashboard"], // Specify the routes the middleware applies to
 };
 ```
 
-> **Migration from middleware:** Rename `middleware.ts` → `proxy.ts` and `middleware` → `proxy` function. All Better Auth methods work identically.
+### Next.js 15.2.0+ (Node.js Runtime Middleware)
 
-## ### Next.js 15.2.0+ (Node.js Runtime Middleware)
 From Next.js 15.2.0, you can use the Node.js runtime in middleware for full session validation with database checks:
 
-```ts title="middleware.ts"
+```
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
@@ -207,19 +199,15 @@ export const config = {
 };
 ```
 
-> Node.js runtime in middleware is experimental in Next.js versions before 16. Consider upgrading to Next.js 16+ for stable proxy support.
+### Next.js 13-15.1.x (Edge Runtime Middleware)
 
-## ### Next.js 13-15.1.x (Edge Runtime Middleware)
 In older Next.js versions, middleware runs on the Edge Runtime and cannot make database calls. Use cookie-based checks for optimistic redirects:
 
-> The <code>getSessionCookie()</code> function does not automatically reference the auth config specified in <code>auth.ts</code>. Therefore, if you customized the cookie name or prefix, you need to ensure that the configuration in <code>getSessionCookie()</code> matches the config defined in your <code>auth.ts</code>.
+#### For Next.js release 15.1.7 and below
 
-## #### For Next.js release `15.1.7` and below
 If you need the full session object, you'll have to fetch it from the `/api/auth/get-session` API route. Since Next.js middleware doesn't support running Node.js APIs directly, you must make an HTTP request.
 
-> The example uses [better-fetch](https://better-fetch.vercel.app), but you can use any fetch library.
-
-```ts title="middleware.ts"
+```
 import { betterFetch } from "@better-fetch/fetch";
 import type { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -227,32 +215,30 @@ import { NextRequest, NextResponse } from "next/server";
 type Session = typeof auth.$Infer.Session;
 
 export async function middleware(request: NextRequest) {
-	const { data: session } = await betterFetch<Session>("/api/auth/get-session", {
-		baseURL: request.nextUrl.origin,
-		headers: {
-			cookie: request.headers.get("cookie") || "", // Forward the cookies from the request
-		},
-	});
+    const { data: session } = await betterFetch<Session>("/api/auth/get-session", {
+        baseURL: request.nextUrl.origin,
+        headers: {
+            cookie: request.headers.get("cookie") || "", // Forward the cookies from the request
+        },
+    });
 
-	if (!session) {
-		return NextResponse.redirect(new URL("/sign-in", request.url));
-	}
+    if (!session) {
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
 
-	return NextResponse.next();
+    return NextResponse.next();
 }
 
 export const config = {
-	matcher: ["/dashboard"], // Apply middleware to specific routes
+    matcher: ["/dashboard"], // Apply middleware to specific routes
 };
 ```
 
-## #### For Next.js release `15.2.0` and above
+#### For Next.js release 15.2.0 and above
+
 From Next.js 15.2.0, you can use the Node.js runtime in middleware for full session validation with database checks:
 
-> You may refer to the [Next.js documentation](https://nextjs.org/docs/app/building-your-application/routing/middleware#runtime) for more information about runtime configuration, and how to enable it.
-> Be careful when using the new runtime. It's an experimental feature and it may be subject to breaking changes.
-
-```ts title="middleware.ts"
+```
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
@@ -275,63 +261,49 @@ export const config = {
 };
 ```
 
-## #### Cookie-based checks (recommended for all versions)
-```ts title="middleware.ts"
+#### Cookie-based checks (recommended for all versions)
+
+```
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
 export async function middleware(request: NextRequest) {
-	const sessionCookie = getSessionCookie(request);
+    const sessionCookie = getSessionCookie(request);
 
     // THIS IS NOT SECURE!
     // This is the recommended approach to optimistically redirect users
     // We recommend handling auth checks in each page/route
-	if (!sessionCookie) {
-		return NextResponse.redirect(new URL("/", request.url));
-	}
+    if (!sessionCookie) {
+        return NextResponse.redirect(new URL("/", request.url));
+    }
 
-	return NextResponse.next();
+    return NextResponse.next();
 }
 
 export const config = {
-	matcher: ["/dashboard"], // Specify the routes the middleware applies to
+    matcher: ["/dashboard"], // Specify the routes the middleware applies to
 };
 ```
 
-> **Security Warning:** The `getSessionCookie` function only checks for the
-> existence of a session cookie; it does **not** validate it. Relying solely
-> on this check for security is dangerous, as anyone can manually create a
-> cookie to bypass it. You must always validate the session on your server for
-> any protected actions or pages.
-
-> If you have a custom cookie name or prefix, you can pass it to the `getSessionCookie` function.
-> 
-> ```ts
-> const sessionCookie = getSessionCookie(request, {
->     cookieName: "my_session_cookie",
->     cookiePrefix: "my_prefix"
-> });
-> ```
-
 Alternatively, you can use the `getCookieCache` helper to get the session object from the cookie cache.
 
-```ts title="middleware.ts"
+```
 import { getCookieCache } from "better-auth/cookies";
 
 export async function middleware(request: NextRequest) {
-	const session = await getCookieCache(request);
-	if (!session) {
-		return NextResponse.redirect(new URL("/sign-in", request.url));
-	}
-	return NextResponse.next();
+    const session = await getCookieCache(request);
+    if (!session) {
+        return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+    return NextResponse.next();
 }
 ```
 
-## ### How to handle auth checks in each page/route
-In this example, we are using the `auth.api.getSession` function within a server component to get the session object,
-then we are checking if the session is valid. If it's not, we are redirecting the user to the sign-in page.
+### How to handle auth checks in each page/route
 
-```tsx title="app/dashboard/page.tsx"
+In this example, we are using the `auth.api.getSession` function within a server component to get the session object, then we are checking if the session is valid. If it's not, we are redirecting the user to the sign-in page.
+
+```
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -349,19 +321,21 @@ export default async function DashboardPage() {
 }
 ```
 
-## ## Next.js 16 Compatibility
+## Next.js 16 Compatibility
+
 Better Auth is fully compatible with Next.js 16. The main change is that "middleware" is now called "proxy". See the [Auth Protection](#auth-protection) section above for Next.js 16+ proxy examples.
 
-## ### Migration Guide
+### Migration Guide
+
 Use Next.js codemod for automatic migration:
 
-```bash
+```
 npx @next/codemod@canary middleware-to-proxy .
 ```
 
 Or manually:
 
-* Rename `middleware.ts` → `proxy.ts`
-* Change function name: `middleware` → `proxy`
+- Rename `middleware.ts` → `proxy.ts`
+- Change function name: `middleware` → `proxy`
 
 All Better Auth methods work identically. See the [Next.js migration guide](https://nextjs.org/docs/app/api-reference/file-conventions/proxy#migration-to-proxy) for details.
