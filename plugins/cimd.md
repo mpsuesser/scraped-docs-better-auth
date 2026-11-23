@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/cimd
 title: "Cimd"
 description: ""
-access_date: 2026-11-19T18:22:00.141Z
-current_date: 2026-11-19T18:22:00.141Z
+access_date: 2026-11-23T12:18:28.962Z
+current_date: 2026-11-23T12:18:28.962Z
 ---
 
 Discover OAuth clients from HTTPS metadata documents.
@@ -124,7 +124,7 @@ Prop
 
 ### Origin-bound fields
 
-`originBoundFields` stops a metadata document from claiming URIs on a domain other than its own. By default, only `post_logout_redirect_uris` must share the `client_id` origin.
+`originBoundFields` stops a metadata document from claiming URIs on a domain other than its own. By default, it checks only `post_logout_redirect_uris`. HTTP(S) loopback redirect URLs and authority-free private-use redirects such as `com.example.app:/logout` are exempt from this check.
 
 The informative URIs `client_uri`, `logo_uri`, `tos_uri`, and `policy_uri` are not origin-bound by default. An application's website is often hosted apart from its metadata document. [CIMD draft-03 §4.4](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-03#section-4.4) forbids an authorization server from requiring `client_uri` to share the origin of the `client_id` or of any redirect URI. If you add `client_uri` to `originBoundFields`, that is your own policy, and it contradicts the draft. Clients whose website is on another origin then fail to register.
 
@@ -221,9 +221,11 @@ A failed refresh then returns the stored client unchanged and logs a warning whe
 
 Only a successful refresh advances `updatedAt`. An administrator's edit of the client, such as setting its `client_credentials_scopes`, does not, so it cannot extend the bound. While it serves a stored client, Better Auth fetches the document at most once a minute. The document's cache directives, including `no-store`, do not apply, because the stored client is a registration rather than a cached response.
 
-Every other failure rejects the request as before. A terminal failure also stops this instance from serving the stored client until a refresh succeeds, so an owner can revoke a client by removing its document. A failure is terminal when a document was retrieved and rejected (any other status, a redirect, or an invalid document), when the OAuth provider refuses to save the refreshed document, or when the `client_id` URL is refused. Other transport errors, such as `ENOTFOUND`, reject the request without stopping stale serving. A `metadataFetchPolicy` limit or the Node transport's DNS lookup limit serves the stored client only within 5 minutes of its last transient failure.
+A `metadataFetchPolicy` limit or the Node transport's DNS lookup limit can also serve the stored client within the configured age limit, provided the last transient failure for that client occurred within five minutes. Otherwise the refusal returns `temporarily_unavailable`.
 
-For a `private_key_jwt` client with a `jwks_uri`, the option also keeps its cached keys in use under the same rules, counted from the last successful key fetch. Keys are cached in memory only, so after a restart they must be fetched before the client can authenticate. See [Private key JWT](https://better-auth.com/docs/plugins/oauth-provider/clients#private-key-jwt).
+Other failures reject the request. A terminal failure also stops this instance from serving the stored client until a refresh succeeds, so an owner can revoke a client by removing its document. A failure is terminal when a document was retrieved and rejected (any other status, a redirect, or an invalid document), when the OAuth provider refuses to save the refreshed document, or when the `client_id` URL is refused. Other transport errors, such as `ENOTFOUND`, reject the request without stopping stale serving.
+
+For a `private_key_jwt` client with a `jwks_uri`, the option can extend the existing ten-minute fallback for cached keys during a transient failure. Key age is measured from the last successful key fetch. A shorter setting leaves that fallback in place. Keys are cached in memory only, so after a restart they must be fetched before the client can authenticate. See [Private key JWT](https://better-auth.com/docs/plugins/oauth-provider/clients#private-key-jwt).
 
 ## Security boundary
 

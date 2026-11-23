@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/guides/1-7-upgrade-guide
 title: "1 7 Upgrade Guide"
 description: ""
-access_date: 2026-11-20T03:50:36.207Z
-current_date: 2026-11-20T03:50:36.207Z
+access_date: 2026-11-23T12:18:28.962Z
+current_date: 2026-11-23T12:18:28.962Z
 ---
 
 # Upgrading to Better Auth 1.7 (/docs/guides/1-7-upgrade-guide)
@@ -110,12 +110,12 @@ Better Auth 1.7.0 through 1.7.2 added a required `issuer` column to the `account
 > Databases created or migrated with 1.7.0 through 1.7.2 need the cleanup below. A required `issuer` column rejects new account writes, and schema checks can also block existing sign-ins and session requests.
 
 
-### #### Check whether the column is there
+### #### Check the column and index
 ```sql
 SELECT * FROM account WHERE 1 = 0;
 ```
 
-If neither the `issuer` column nor its old index exists, no issuer schema cleanup is needed. If you already dropped the column on MySQL, check whether the old index survived on `accountId` alone.
+On MySQL, also run `SHOW INDEX FROM account`. Find the old unique index by its `Key_name` and check its `Column_name` rows. If you already dropped `issuer`, the index may still exist on `accountId` alone. If both the column and the old index are gone, the cleanup is complete.
 
 ### #### Relax the constraint
 Pause authentication and background writes during the cutover, so no instance writes accounts while the index is gone. Remove the issuer index, then make the column nullable or drop it.
@@ -132,12 +132,17 @@ ALTER TABLE account ALTER COLUMN issuer DROP NOT NULL;
 
 #### MySQL
 
+If the old unique index still exists, drop it. This is the only step needed if you already dropped `issuer`.
+
 ```sql
 DROP INDEX account_issuer_accountId_uidx ON account;
-ALTER TABLE account MODIFY issuer VARCHAR(191) NULL;
 ```
 
-`MODIFY` resets any attribute you omit. If you customized the column's type, character set, or collation, check `SHOW CREATE TABLE account` and repeat them.
+If `issuer` still exists and is required, make it nullable. Check `SHOW CREATE TABLE account` first. The example uses the generated column type. If you customized its type, character set, or collation, repeat those attributes because `MODIFY` resets any you omit.
+
+```sql
+ALTER TABLE account MODIFY issuer VARCHAR(191) NULL;
+```
 
 In non-strict mode, MySQL can fill a missing required `issuer` with an empty string. The surviving unique index then rejects equal account IDs across providers. These databases also need cleanup.
 
