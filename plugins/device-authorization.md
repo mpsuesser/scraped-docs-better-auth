@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/device-authorization
 title: "Device Authorization"
 description: ""
-access_date: 2026-11-11T21:44:57.593Z
-current_date: 2026-11-11T21:44:57.593Z
+access_date: 2026-11-23T09:51:55.504Z
+current_date: 2026-11-23T09:51:55.504Z
 ---
 
 OAuth 2.0 Device Authorization Grant for limited-input devices
@@ -561,6 +561,8 @@ The callback runs on both `/device/code` and `/device/token`. Return `true` to a
 Customize how device and user codes are generated:
 
 ```
+import crypto from "node:crypto";
+
 deviceAuthorization({
   generateDeviceCode: async () => {
     // Custom device code generation
@@ -574,7 +576,7 @@ deviceAuthorization({
     const charset = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let code = "";
     for (let i = 0; i < 8; i++) {
-      code += charset[Math.floor(Math.random() * charset.length)];
+      code += charset[crypto.randomInt(charset.length)];
     }
     return code;
   },
