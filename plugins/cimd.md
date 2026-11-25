@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/plugins/cimd
 title: "Cimd"
 description: ""
-access_date: 2026-11-23T12:18:28.962Z
-current_date: 2026-11-23T12:18:28.962Z
+access_date: 2026-11-25T11:13:03.173Z
+current_date: 2026-11-25T11:13:03.173Z
 ---
 
 Discover OAuth clients from HTTPS metadata documents.
@@ -124,7 +124,7 @@ Prop
 
 ### Origin-bound fields
 
-`originBoundFields` stops a metadata document from claiming URIs on a domain other than its own. By default, it checks only `post_logout_redirect_uris`. HTTP(S) loopback redirect URLs and authority-free private-use redirects such as `com.example.app:/logout` are exempt from this check.
+`originBoundFields` stops a metadata document from claiming URIs on a domain other than its own. By default, it checks only `post_logout_redirect_uris`. HTTP(S) loopback redirect URLs are exempt from this check in both fields. In `redirect_uris`, any private-use redirect is exempt. In `post_logout_redirect_uris`, only the authority-free private-use form, such as `com.example.app:/logout`, is exempt.
 
 The informative URIs `client_uri`, `logo_uri`, `tos_uri`, and `policy_uri` are not origin-bound by default. An application's website is often hosted apart from its metadata document. [CIMD draft-03 §4.4](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-client-id-metadata-document-03#section-4.4) forbids an authorization server from requiring `client_uri` to share the origin of the `client_id` or of any redirect URI. If you add `client_uri` to `originBoundFields`, that is your own policy, and it contradicts the draft. Clients whose website is on another origin then fail to register.
 
