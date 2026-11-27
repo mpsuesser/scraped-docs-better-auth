@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/community-adapters
 title: "Community Adapters"
 description: ""
-access_date: 2026-11-04T11:18:59.977Z
-current_date: 2026-11-04T11:18:59.977Z
+access_date: 2026-11-27T13:56:12.510Z
+current_date: 2026-11-27T13:56:12.510Z
 ---
 
 Community-built database adapters that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom adapter, get started by reading our [Create a Database
 
 ## Browse Community Adapters
 
-Showing 25 of 25 adapters
+Showing 26 of 26 adapters
 
 |  |  |  |
 | --- | --- | --- |
@@ -45,3 +45,4 @@ Showing 25 of 25 adapters
 | [`@a77ay/better-auth-mikro-orm`](https://github.com/a77ay/better-auth-mikro-orm) | [MikroORM](https://mikro-orm.io/) | [![A77AY](https://github.com/a77ay.png) A77AY](https://github.com/a77ay) |
 | [`better-auth-arcadedb`](https://github.com/DevSnap/better-auth-arcadedb) | [ArcadeDB](https://arcadedb.com/) | [![DevSnap](https://github.com/DevSnap.png) DevSnap](https://github.com/DevSnap) |
 | [`@typesql/better-auth`](https://github.com/ismailkarsli/TypeSQL/tree/main/packages/better-auth) | [TypeSQL](https://typesql.karsli.net/) | [![ismailkarsli](https://github.com/ismailkarsli.png) ismailkarsli](https://github.com/ismailkarsli) |
+| [`better-auth-elasticsearch`](https://github.com/cemcevik/better-auth-elasticsearch) | [Elasticsearch](https://www.elastic.co/elasticsearch) | [![cemcevik](https://github.com/cemcevik.png) cemcevik](https://github.com/cemcevik) |
