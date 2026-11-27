@@ -2,8 +2,8 @@
 url: https://better-auth.com/llms.txt/docs/adapters/community-adapters
 title: "Community Adapters"
 description: ""
-access_date: 2026-11-27T13:56:12.510Z
-current_date: 2026-11-27T13:56:12.510Z
+access_date: 2026-11-27T14:06:59.972Z
+current_date: 2026-11-27T14:06:59.972Z
 ---
 
 Community-built database adapters that extend Better Auth.
@@ -16,7 +16,7 @@ To create your own custom adapter, get started by reading our [Create a Database
 
 ## Browse Community Adapters
 
-Showing 26 of 26 adapters
+Showing 27 of 27 adapters
 
 |  |  |  |
 | --- | --- | --- |
@@ -46,3 +46,4 @@ Showing 26 of 26 adapters
 | [`better-auth-arcadedb`](https://github.com/DevSnap/better-auth-arcadedb) | [ArcadeDB](https://arcadedb.com/) | [![DevSnap](https://github.com/DevSnap.png) DevSnap](https://github.com/DevSnap) |
 | [`@typesql/better-auth`](https://github.com/ismailkarsli/TypeSQL/tree/main/packages/better-auth) | [TypeSQL](https://typesql.karsli.net/) | [![ismailkarsli](https://github.com/ismailkarsli.png) ismailkarsli](https://github.com/ismailkarsli) |
 | [`better-auth-elasticsearch`](https://github.com/cemcevik/better-auth-elasticsearch) | [Elasticsearch](https://www.elastic.co/elasticsearch) | [![cemcevik](https://github.com/cemcevik.png) cemcevik](https://github.com/cemcevik) |
+| [`mongozod`](https://mongozod.dev/docs/adapters/better-auth) | [MongoDB](https://www.mongodb.com/) | [![Tobías D. Serdeiro](https://gravatar.com/avatar/031f50497b8573298c1f8f4177fe4f22a8e71fee624f2a1185efdf1268f89895) Tobías D. Serdeiro](https://x.com/tserdeiro) |
